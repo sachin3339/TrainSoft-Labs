@@ -180,7 +180,7 @@ const Participant = () => {
 
             </div>
         </div>
-        <DynamicTable {...{configuration,sourceData: dummyData}}/>
+        {/* <DynamicTable {...{configuration,sourceData: dummyData}}/> */}
                
     </div>)
 }
