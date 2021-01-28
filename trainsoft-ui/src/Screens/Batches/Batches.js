@@ -1,6 +1,14 @@
 import { useState } from "react";
 import './batches.css'
 import DynamicTable from "../../Components/DynamicTable/DynamicTable";
+import {Modal,Form} from 'react-bootstrap'
+import { Formik} from 'formik';
+import { ICN_TRASH,ICN_EDIT, ICN_CLOSE  } from "../../Constant/Icon";
+import { Button } from "../../Components/Buttons/Buttons";
+import { TextInput,DateInput,SelectInput } from "../../Components/InputField/InputField";
+import { Link } from "../../Shared/Router";
+
+
 const dummyData =[
     {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
     {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
@@ -9,14 +17,27 @@ const dummyData =[
     {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
 
 ]
+
+const createBatches = {
+    batchName: '',
+    trainingType: '',
+    endDate:'',
+    startDate: '',
+    course:'',
+    instructor:''
+
+}
 const Batches = () => {
+    const [show, setShow] = useState(false);
     const [configuration, setConfiguration] = useState({
         columns: {
             "batchName": {
                 "title": "Batch Name",
                 "sortDirection": null,
                 "sortEnabled": true,
-                isSearchEnabled: false
+                isSearchEnabled: false,
+                render: (data)=>  <Link to={`/dashboard/batch-details`} className="dt-name">{data.batchName}</Link> 
+
             },
             "technology": {
                 "title": "Technology",
@@ -62,18 +83,18 @@ const Batches = () => {
             configuration.sortDirection = configuration.columns[sortKey].sortDirection;
             setConfiguration({ ...configuration });
         },
-        // actions: [
-        //     {
-        //         "title": "Edit",
-        //         "icon": ICN_EDIT,
-        //         "onClick": (data, i) => { initTextTemplate(JSON.parse(JSON.stringify(data)), i); setVisibility(true); }
-        //     },
-        //     {
-        //         "title": "Delete",
-        //         "icon": ICN_TRASH,
-        //         "onClick": (data, i) => showConfirmModal(i)
-        //     }
-        // ],
+        actions: [
+            {
+                "title": "Edit",
+                "icon": ICN_EDIT,
+                "onClick": (data, i) => console.log(data)
+            },
+            {
+                "title": "Delete",
+                "icon": ICN_TRASH,
+                "onClick": (data, i) => console.log(data)
+            }
+        ],
         actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
         actionVariant: "", // user can pass action button variant like primary, dark, light,
         actionAlignment: true, // user can pass alignment property of dropdown menu by default it is alignLeft 
@@ -90,7 +111,72 @@ const Batches = () => {
                 <div className="">Batches</div>
             </div>
             <div>
-                <button className="btn btn-sm btn-primary">+ Add New </button>
+               <Button onClick={()=>setShow(true)}> + Add New </Button>
+            <Modal
+                size="lg"
+                show={show}
+                onHide={() => setShow(false)}
+                dialogClassName="modal-90w"
+                aria-labelledby="example-custom-modal-styling-title"
+            >
+        <Modal.Body className="px-5 py-4">
+            <div className="jcb mb-3">
+              <div className="title-md ">Add New Batches</div>
+              <div><div className="circle-md" onClick={()=>setShow(false)}>
+                        {ICN_CLOSE}
+                  </div>
+                </div>
+            </div>
+            <div className="form-container">
+            <Formik
+                onSubmit={()=>console.log('a')}
+                initialValues={createBatches}
+            >
+                {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
+                        <div className="edit-shipping">
+                            <Form.Group className="row">
+                                <div className="col-6">
+                                    <TextInput label="Batch Name" name="batchName"/>
+                                </div>
+                                <div className="col-6">
+                                  <SelectInput label="Training Type" option={['Online','Self','Offline']} name="trainingType"/>
+                                </div>
+                            </Form.Group>
+                            <Form.Group className="row">
+                                <div className="col-6">
+                                  <DateInput label="Start Date" name="startDate"/>
+                                </div>
+                                <div className="col-6">
+                                  <DateInput label="End date" name="endDate"/>
+                                </div>
+                            </Form.Group>
+                            <Form.Group className="row">
+                                <div className="col-6">
+                                  <SelectInput label="Course" name="course" option={['Online','Self','Offline']}/>
+                                </div>
+                                <div className="col-6">
+                                  <TextInput label="Instructor" name="instructor"/>
+                                </div>
+                            </Form.Group>
+                    </div>
+                    {/* modal footer which contains action button to save data or cancel current action */}
+                        <footer className="jcb">
+                        <div>
+                            <span className="title-sm">Upload participants</span>
+                        </div>
+                        <div>
+                           <Button type="submit" >Create Batches</Button>
+                        </div>
+                        
+                    </footer>
+                </form>
+                }
+            </Formik>
+            </div>
+            
+        </Modal.Body>
+      </Modal>
+
             </div>
         </div>
         <DynamicTable {...{configuration,sourceData: dummyData}}/>
