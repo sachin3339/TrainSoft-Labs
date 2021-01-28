@@ -9,6 +9,8 @@ import Participant from "../Participants/Participants";
 import Calender from "../Calender/Calender";
 import Labs from "../Labs/Labs";
 import Support from "../Support/Support";
+import BatchesDetails from "../Batches/BatchDetails";
+import ParticipantsDetails from "../Participants/ParticipantsDetails";
 
 
 const Dashboard = () => {
@@ -27,6 +29,8 @@ const Dashboard = () => {
                         <Calender path="calender"/>
                         <Labs path="labs"/>
                         <Support path="support"/>
+                        <BatchesDetails path="batch-details"/>
+                        {/* <ParticipantsDetails path="participants-details"/> */}
                     </Router>
                 </div>
             </div>

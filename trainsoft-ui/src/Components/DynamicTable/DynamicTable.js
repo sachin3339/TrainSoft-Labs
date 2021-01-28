@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, OverlayTrigger, Dropdown, Tooltip } from 'react-bootstrap';
-import { ICN_ARROW_DOWN } from '../../Constant/Icon';
+import { ICN_ARROW_DOWN,ICN_MORE } from '../../Constant/Icon';
+import { CustomToggle } from '../../Services/MethodFactory';
 import './dynamicTable.css';
 const htmlParser = require('html-react-parser');
 const NO_ARROW_HIGHLIGHTED = ICN_ARROW_DOWN
@@ -108,8 +109,8 @@ const TableBody = ({ sourceData, configuration, onSelect }) => sourceData.map((d
     @return {JSX} - Dropdown with set of actions which passed through props
 */
 const Action = ({ configuration = {}, row = {}, index = null }) => <Dropdown alignRight={configuration.actionAlignment ? configuration.actionAlignment : true}>
-    <Dropdown.Toggle variant={configuration.actionVariant ? configuration.actionVariant : ""} className={configuration.actionCustomClass} id={"actions-" + Math.random()} >
-        {/* <Font name="ellipsis-v" /> */}q
+    <Dropdown.Toggle as={CustomToggle} variant={configuration.actionVariant ? configuration.actionVariant : ""} className={configuration.actionCustomClass} id={"actions-" + Math.random()} >
+        {ICN_MORE}
     </Dropdown.Toggle>
     <Dropdown.Menu size="sm" >
         {

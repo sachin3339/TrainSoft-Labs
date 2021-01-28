@@ -3,3 +3,22 @@
     display: flex;
     justify-content: space-between;
 }
+.batch-info{
+    margin: 20px 0px;
+    font-size: 14px;
+    font-weight: 500;
+}
+.bDetail-action{
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+.pagination-div{
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
