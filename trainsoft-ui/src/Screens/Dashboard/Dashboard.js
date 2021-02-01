@@ -11,25 +11,31 @@ import Labs from "../Labs/Labs";
 import Support from "../Support/Support";
 import BatchesDetails from "../Batches/BatchDetails";
 import ParticipantsDetails from "../Participants/ParticipantsDetails";
+import LabStore from "../LabStore.js/LabStore";
+import LabList from "../LabStore.js/LabList";
+import Course from "../Course/Course";
 
 
-const Dashboard = () => {
+const Dashboard = ({location}) => {
+    console.log(location)
     return (
+        
         <div className="main-page">
             <div><Sidebar /></div>
             <div className="dashboard-page">
-                <Header />
+                <Header {...{location}} />
                 <div className="dashboard-container">
                     <Router>
                         <Home path="/" />
                         <Report path="report" />
                         <Setting path="setting" />
-                        <Batches path="batches"/>
-                        <Participant path="participant"/>
-                        <Calender path="calender"/>
-                        <Labs path="labs"/>
-                        <Support path="support"/>
-                        <BatchesDetails path="batch-details"/>
+                        <Batches path="batches/*"/>
+                        <Course path="course/*"/>
+                        <Participant path="participant/*"/>
+                        <Calender path="calender/*"/>
+                        <Labs path="labs/*"/>
+                        <Support path="support/*"/>
+                        <LabStore path="labstore/*"/>
                         {/* <ParticipantsDetails path="participants-details"/> */}
                     </Router>
                 </div>

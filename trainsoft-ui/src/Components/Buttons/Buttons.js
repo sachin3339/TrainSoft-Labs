@@ -20,9 +20,23 @@ export const Cancel = ({ children, className, onClick, name = "Cancel" }) => {
     @param {props} - children props default property
     @param {Boolean} - enable or disable the button
 */
-export const Button = ({ children, className=null, onClick, type = "button", disabled = false, name = "Submit" }) => {
+export const Button = ({ children, className='', onClick, type = "button", disabled = false, name = "Submit" }) => {
     return (<>
         <button type={type} onClick={onClick} disabled={disabled} className={"btn btn-sm btn-secondary px-3 " + className}>{!children && name} {children}</button>
+    </>)
+}
+
+/*
+    Common button 
+    @param {Objects} className - optional className for Cancel
+    @param {function} onClick - callback function
+    @param {String} type - set the type of button
+    @param {props} - children props default property
+    @param {Boolean} - enable or disable the button
+*/
+export const BtnPrimary = ({ children, className='', onClick, type = "button", disabled = false, name = "Submit" }) => {
+    return (<>
+        <button type={type} onClick={onClick} disabled={disabled} className={"btn btn-sm btn-primary px-3 " + className}>{!children && name} {children}</button>
     </>)
 }
 
