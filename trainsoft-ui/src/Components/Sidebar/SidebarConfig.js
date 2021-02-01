@@ -3,7 +3,7 @@ export const SidebarConfig = [
     {
         icon: ICN_HOME,
         title: "HOME",
-        pathname: "/dashboard",
+        pathname: "/",
         disabled: false
     },
     {
@@ -17,6 +17,18 @@ export const SidebarConfig = [
         icon: ICN_PARTICIPANT,
         title: "PARTICIPANT",
         pathname: "participant",
+        disabled: false
+    },
+    {
+        icon: ICN_PARTICIPANT,
+        title: "COURSE",
+        pathname: "course",
+        disabled: false
+    },
+    {
+        icon: ICN_PARTICIPANT,
+        title: "LAB STORE",
+        pathname: "labstore",
         disabled: false
     },
     {
@@ -44,10 +56,5 @@ export const SidebarConfig = [
         disabled: false
     },
 
-    {
-        icon: ICN_HOME,
-        title: "LABS",
-        pathname: "labs",
-        disabled: false
-    },
+
 ]
