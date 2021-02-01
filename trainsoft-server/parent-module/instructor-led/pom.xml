@@ -29,11 +29,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-        <dependency>
-        	<groupId>com.callcomm.eserve</groupId>
-			<artifactId>communicationframework-basic</artifactId>
-            <version>1.7.1-SNAPSHOT</version>
-        </dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
