@@ -4,20 +4,13 @@ import { CustomToggle } from '../../Services/MethodFactory';
 import './header.css'
 
 
-const Header = () => {
+const Header = ({location}) => {
+    console.log(location)
     return (<div className="header">
             <div className="header-title">
-                Dashboard
+                {/* {location && location.state.title} */}
             </div>
-            <div>
-                <div className="search-box">
-                    <div className="mr-2">{ICN_SEARCH}</div>
-                    <div className="full-w">
-                        <input placeholder="Search..." className="form-control form-control-sm" type="text"/>
-                    </div>
-                    
-                </div>
-            </div>
+           
             <div className="aic">
             <Dropdown className="notification">
                     <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
