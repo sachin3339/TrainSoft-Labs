@@ -23,6 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @Api(value = "Instructor led API's")
 @RequestMapping("/v1")
 public class InstructorController {
-	
+
 
 }

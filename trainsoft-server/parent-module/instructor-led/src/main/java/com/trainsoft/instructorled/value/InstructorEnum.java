@@ -7,7 +7,7 @@ public class InstructorEnum {
     }
 
     public enum VirtualAccountRole {
-        PROJECT_ADMIN,INSTRUCTOR,PARTICIPANT;
+        ADMIN,USER;
     }
 
     public enum Status {

@@ -1,7 +1,4 @@
 package com.trainsoft.instructorled.entity;
-
-import java.time.LocalDateTime;
-
 import javax.persistence.*;
 
 import com.trainsoft.instructorled.value.InstructorEnum;
@@ -15,7 +12,8 @@ import lombok.Setter;
 public class VirtualAccount extends BaseEntity {
 
 	@Column(name= "roles")
-	private String role;
+	@Enumerated(EnumType.STRING)
+	private InstructorEnum.VirtualAccountRole role;
 
 	@Column(name= "designation")
 	private String designation;
