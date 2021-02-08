@@ -1,6 +1,11 @@
 package com.trainsoft.instructorled.controller;
 
 import java.util.List;
+
+import com.trainsoft.instructorled.jwttoken.JWTDecode;
+import com.trainsoft.instructorled.jwttoken.JWTTokenTO;
+import com.trainsoft.instructorled.service.ICompanyService;
+import com.trainsoft.instructorled.to.CompanyTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,5 +29,25 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/v1")
 public class InstructorController {
 
+    ICompanyService companyService;
 
+    @PostMapping("/create")
+    @ApiOperation(value = "createCompany", notes = "API to create new Company.")
+    public ResponseEntity<?> createCompany(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Create Company payload", required = true) @RequestBody CompanyTO companyTO) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        companyTO.setCreatedByVASid(jwt.getVirtualAccountSid());
+        CompanyTO createCompany = companyService.createCompany(companyTO);
+        return ResponseEntity.ok(createCompany);
+    }
+
+    @GetMapping("/company/{companySid}")
+    @ApiOperation(value = "getCompanyBySid", notes = "Get list of Company")
+    public ResponseEntity<?> getCompanyBySid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid) {
+        return ResponseEntity.ok(companyService.getCompanyBySid(companySid));
+    }
 }
+

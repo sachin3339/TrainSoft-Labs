@@ -1,5 +1,6 @@
 package com.trainsoft.instructorled.service.impl;
 
+import com.trainsoft.instructorled.dozer.DozerUtils;
 import com.trainsoft.instructorled.entity.BaseEntity;
 import com.trainsoft.instructorled.entity.Company;
 import com.trainsoft.instructorled.entity.VirtualAccount;
@@ -7,6 +8,7 @@ import com.trainsoft.instructorled.repository.IAppUserRepository;
 import com.trainsoft.instructorled.repository.ICompanyRepository;
 import com.trainsoft.instructorled.repository.IVirtualAccountRepository;
 import com.trainsoft.instructorled.service.ICompanyService;
+import com.trainsoft.instructorled.to.CompanyTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,25 +20,24 @@ import java.util.Date;
 public class CompanyServiceImpl implements ICompanyService {
     private IVirtualAccountRepository virtualAccountRepository;
     private ICompanyRepository repository;
+    private DozerUtils mapper;
 
     @Override
-    public Company getCompanyBySid(String sid) {
+    public CompanyTO getCompanyBySid(String sid) {
         Company company = repository.findCompanyBySid(BaseEntity.hexStringToByteArray(sid));
-        return company;
+        return mapper.convert(company, CompanyTO.class);
     }
 
     @Override
-    public Company createCompany(Company company) {
-        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(company.getCreatedBy().getStringSid()));
+    public CompanyTO createCompany(CompanyTO companyTO) {
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(companyTO.getCreatedByVASid()));
         long epochMilli = Instant.now().toEpochMilli();
-        Company company1= new Company();
-        company1.generateUuid();
-        company1.setName(company.getName());
-        company1.setEmailId(company.getEmailId());
-        company1.setPhoneNumber(company.getPhoneNumber());
-        company1.setCreatedBy(virtualAccount);
-        company1.setCreatedOn(new Date(epochMilli));
-        Company savedCompany = repository.save(company1);
-        return savedCompany;
+        Company company = mapper.convert(companyTO, Company.class);
+        company.generateUuid();
+        company.setCreatedBy(virtualAccount);
+        company.setCreatedOn(new Date(epochMilli));
+        CompanyTO savedCompanyTO = mapper.convert(repository.save(company), CompanyTO.class);
+        savedCompanyTO.setCreatedByVASid(virtualAccount.getStringSid());
+        return savedCompanyTO;
     }
 }

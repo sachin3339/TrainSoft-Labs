@@ -17,4 +17,7 @@ public class InstructorEnum {
     public enum TrainingType {
         INSTRUCTOR_LED,SELF_PACED,LAB_ONLY;
     }
+    public enum AccessType {
+        BATCH_MGMT, COURSE_MGMT, USER_MGMT, INSTRUCTOR_MGMT, TRAINING_MGMT
+    }
 }

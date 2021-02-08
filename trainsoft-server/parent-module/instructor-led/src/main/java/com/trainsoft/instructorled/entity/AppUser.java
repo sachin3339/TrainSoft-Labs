@@ -27,4 +27,11 @@ public class AppUser extends BaseEntity{
 	@Column(name="status")
 	@Enumerated(EnumType.STRING)
 	private InstructorEnum.Status status;
+
+	@Column(name = "emp_id")
+	private String employeeId;
+
+	@Column(name="access_level")
+	@Enumerated(EnumType.STRING)
+	private InstructorEnum.AccessType accessType;
 }
