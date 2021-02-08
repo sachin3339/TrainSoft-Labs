@@ -34,6 +34,20 @@ export const Button = ({ children, className='', onClick, type = "button", disab
     @param {props} - children props default property
     @param {Boolean} - enable or disable the button
 */
+export const BtnRound = ({ children, className='', onClick, type = "button", disabled = false, name = "Submit" }) => {
+    return (<>
+        <button type={type} onClick={onClick} disabled={disabled} className={"btn btn-sm btn-secondary btn-round px-3 " + className}>{!children && name} {children}</button>
+    </>)
+}
+
+/*
+    Common button 
+    @param {Objects} className - optional className for Cancel
+    @param {function} onClick - callback function
+    @param {String} type - set the type of button
+    @param {props} - children props default property
+    @param {Boolean} - enable or disable the button
+*/
 export const BtnPrimary = ({ children, className='', onClick, type = "button", disabled = false, name = "Submit" }) => {
     return (<>
         <button type={type} onClick={onClick} disabled={disabled} className={"btn btn-sm btn-primary px-3 " + className}>{!children && name} {children}</button>
