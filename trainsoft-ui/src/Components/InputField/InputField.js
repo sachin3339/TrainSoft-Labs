@@ -11,9 +11,9 @@ import { ICN_EVENT } from '../../Constant/Icon';
     @param {function} onClick - callback function
     @param {children} props default property
 */
-export const TextInput = ({ label='',name }) => {
+export const TextInput = ({ label=null,name }) => {
     return (<>
-        <Form.Label className="label">{label}</Form.Label>
+        {label && <Form.Label className="label">{label}</Form.Label>}
         <div className="input-field">
         <Field name={name} className="form-control form-control-sm" />
         </div>
