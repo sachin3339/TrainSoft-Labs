@@ -6,7 +6,10 @@ import { ICN_PLAY } from '../../../Constant/Icon';
 const OnlineMedia = () => {
     const [mediaLink, setMediaLink] = useState(null)
     return (<div className="media-link">
-        {mediaLink && <ReactPlayer url={mediaLink} controls={true}/>}
+        {mediaLink && <ReactPlayer
+        width='100%'
+        height='100%'
+        url={mediaLink} controls={true}/>}
 
         {!mediaLink && <div>
             <Formik
@@ -16,7 +19,7 @@ const OnlineMedia = () => {
                     <Form>
                         <div className="chat-send">
                             <div>
-                                <Field type="text" className="form-control" name="mediaLink" placeholder="Type your message..." />
+                                <Field type="text" className="form-control" name="mediaLink" placeholder="Past your media link here..." />
                             </div>
                         </div>
                         <div>

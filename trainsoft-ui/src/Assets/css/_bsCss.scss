@@ -1,0 +1,109 @@
+@import './variable';
+.btn-primary {
+	background-color: $primary;
+	border-color: $primary;
+    border-radius: 15px;
+    box-shadow: 0px 0px 7px 0px #72727247;
+}
+.bg-primary{
+	background-color: $primary !important;
+}
+.bg-secondary{
+	background-color: $secondary !important;
+}
+.bg-danger{
+	background: $danger !important;
+}
+
+.btn-primary:hover {
+	color: #fff;
+	background-color: $primary;
+	border-color: $primary;
+}
+.btn-primary.focus,
+.btn-primary:focus {
+	color: #fff;
+	background-color: $primary;
+	border-color: $primary;
+	box-shadow: 0 0 0 0.2rem #2D62ED4d;
+}
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.show > .btn-primary.dropdown-toggle {
+	color: #fff;
+	background-color: $primary;
+	border-color: $primary;
+}
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.show > .btn-primary.dropdown-toggle:focus {
+	box-shadow: 0 0 0 0.2rem #2D62ED41;
+}
+.primary-color {
+	background: $primary;
+}
+.secondary-color {
+	background: $secondary;
+}
+.btn-secondary {
+	background-color: $secondary;
+	border-color: $secondary;
+	border-radius: 1.2rem;
+}
+.btn-secondary:hover {
+	color: #fff;
+	background-color: $secondary;
+	border-color: $secondary;
+}
+.btn-secondary.focus,
+.btn-secondary:focus {
+	color: #fff;
+	background-color: $secondary;
+	border-color: $secondary;
+	box-shadow: 0 0 0 0.2rem #79ecfc4d;
+}
+.btn-secondary:not(:disabled):not(.disabled).active,
+.btn-secondary:not(:disabled):not(.disabled):active,
+.show > .btn-secondary.dropdown-toggle {
+	color: #fff;
+	background-color: $secondary;
+	border-color: $secondary;
+}
+.btn-secondary:not(:disabled):not(.disabled):active:focus,
+.show > .btn-secondary.dropdown-toggle:focus {
+	box-shadow: 0 0 0 0.2rem #8efbffb2;
+}
+
+.primary-color {
+	background: $primary;
+}
+// dropdown 
+
+.dropdown-menus{
+	display: block;
+    // box-shadow: 0px 3px 6px #272d3b33;
+    border: 0px;
+}
+
+// page-items
+.page-item.active .page-link {
+	z-index: 3;
+	color: #272d3b;
+    font-weight: 600;
+	background-color: #007bff00;
+	border-color: #007bff;
+}
+.page-link:hover {
+    z-index: 2;
+    color: $fontColor !important;
+    text-decoration: none;
+    background-color: #e9ecef00 !important;
+}
+.page-link:focus {
+    z-index: 3;
+    outline: 0;
+    box-shadow: 0 0 0 0 rgb(175, 175, 175) !important;
+}
+.page-link {
+    border: 0px;
+    color: $fontColor;
+}

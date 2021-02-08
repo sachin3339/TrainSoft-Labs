@@ -9,6 +9,7 @@ import OnlineMedia from './OnlineMedia/OnlineMedia';
 import Content from './Content/Content';
 import ClassPoll from './ClassPoll/ClassPoll';
 import { BsDropDown } from '../../Components/BsUtils/Bsutills';
+import CodeEditor from './CodeEditor/CodeEditor';
 
 const ClassLab = () => {
     const [show,setShow] = useState(false)
@@ -43,7 +44,7 @@ const ClassLab = () => {
                         </Dropdown>
 
                     </div>
-                    <div className="box-shadow vic">
+                    <div className="class-lab vic">
 
                         {/* ...Whiteboard  .... */}
                         {selectedTab === "Whiteboard" && <div className="whiteboard">
@@ -57,7 +58,7 @@ const ClassLab = () => {
 
                           {/* ...Code Editor.... */}
                           {selectedTab === "Code editor" && <div className="codeEditor">
-                               Code Editor
+                               <CodeEditor/>
                         </div>}
                         {/* ...Code Editor.... */}
 

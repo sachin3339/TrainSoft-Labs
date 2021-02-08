@@ -1,0 +1,94 @@
+@import './variable';
+// typography
+.label {
+	color: $fontColor;
+	font-size: 14px;
+	font-weight: 600;
+}
+.title-lg {
+	font-size: 25px;
+	color: $titleColor;
+	font-weight: bold;
+	margin-bottom: 10px;
+	line-height: 30px;
+}
+.title-md {
+	font-size: 18px;
+	font-weight: bold;
+	color: $titleColor;
+	margin-bottom: 10px;
+	line-height: 22px;
+}
+
+.title-sm {
+	font-size: 14px;
+	font-weight: 600;
+	color: $fontColor;
+}
+.full-w {
+	width: 100%;
+}
+.full-h {
+	height: 100%;
+}
+
+.flx1 {
+	flex: 1;
+}
+.flx3 {
+	flex: 3;
+}
+.flx4 {
+	flex: 4;
+}
+.flx5 {
+	flex: 5;
+}
+.column {
+	display: flex;
+	flex-direction: column;
+}
+.jcb {
+	display: flex;
+	justify-content: space-between;
+}
+.jcb-c {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+.jcc-c {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.jcc {
+	display: flex;
+	justify-content: center;
+}
+.vic {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+.aic {
+	display: flex;
+	align-items: center;
+}
+.jce {
+	display: flex;
+	justify-content: flex-end;
+}
+.jcse {
+	display: flex;
+	justify-content: space-evenly;
+}
+.flx {
+	display: flex;
+}
+.elps{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
