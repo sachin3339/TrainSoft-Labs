@@ -11,7 +11,7 @@ import java.util.Date;
 @Entity
 @Table(name = "company")
 @Getter @Setter @NoArgsConstructor
-public class Company extends BaseEntity{
+public class Company extends BaseEntity {
 	@Column(name = "name")
 	private String name;
 

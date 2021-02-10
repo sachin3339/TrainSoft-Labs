@@ -4,7 +4,6 @@ import com.trainsoft.instructorled.dozer.DozerUtils;
 import com.trainsoft.instructorled.entity.BaseEntity;
 import com.trainsoft.instructorled.entity.Company;
 import com.trainsoft.instructorled.entity.VirtualAccount;
-import com.trainsoft.instructorled.repository.IAppUserRepository;
 import com.trainsoft.instructorled.repository.ICompanyRepository;
 import com.trainsoft.instructorled.repository.IVirtualAccountRepository;
 import com.trainsoft.instructorled.service.ICompanyService;
@@ -40,4 +39,6 @@ public class CompanyServiceImpl implements ICompanyService {
         savedCompanyTO.setCreatedByVASid(virtualAccount.getStringSid());
         return savedCompanyTO;
     }
+
+
 }

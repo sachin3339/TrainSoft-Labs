@@ -5,16 +5,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
-@Table(name = "course_has_technology")
+@Table(name = "training_has_course")
 @Getter @Setter @NoArgsConstructor
-public class CourseTechnology extends BaseEntity {
+public class TrainingCourse extends BaseEntity {
     
     @ManyToOne
-    @JoinColumn(name = "technology_id", referencedColumnName = "id",nullable = false)
-    private Technology technology;
+    @JoinColumn(name = "training_id", referencedColumnName = "id",nullable = false)
+    private Training training;
 
     @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id",nullable = false)

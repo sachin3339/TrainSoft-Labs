@@ -1,6 +1,5 @@
 package com.trainsoft.instructorled.entity;
 
-import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

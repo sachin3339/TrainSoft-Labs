@@ -8,17 +8,17 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "course_has_batch")
+@Table(name = "training_has_batch")
 @Getter @Setter @NoArgsConstructor
-public class CourseBatch extends BaseEntity {
+public class TrainingBatch extends BaseEntity {
     
     @ManyToOne
     @JoinColumn(name = "batch_id", referencedColumnName = "id",nullable = false)
     private Batch batch;
 
     @ManyToOne
-    @JoinColumn(name = "course_id", referencedColumnName = "id",nullable = false)
-    private Course course;
+    @JoinColumn(name = "training_id", referencedColumnName = "id",nullable = false)
+    private Training traning;
 
     @Column(name="created_on")
     private Date createdOn;

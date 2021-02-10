@@ -1,6 +1,5 @@
 package com.trainsoft.instructorled.entity;
 
-import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,27 +10,24 @@ import java.util.Date;
 @Entity
 @Table(name = "course")
 @Getter @Setter @NoArgsConstructor
-public class Course extends BaseEntity{
-	@Column(name = "name")
-	private String name;
+public class Course extends BaseEntity {
+    @Column(name = "name")
+    private String name;
 
-	@Column(name="start_date")
-	private Date startDate;
+    @Column(name = "description")
+    private String description;
 
-	@Column(name="end_date")
-	private Date endDate;
+    @Column(name="created_on")
+    private Date createdOn;
 
-	@Column(name="status")
-	@Enumerated(EnumType.STRING)
-	private InstructorEnum.Status status;
+    @Column(name="updated_on")
+    private Date updatedOn;
 
-	@Column(name="is_lab")
-	private boolean lab;
+    @ManyToOne
+    @JoinColumn(name = "created_by", referencedColumnName = "id")
+    private VirtualAccount createdBy;
 
-	@Column(name="created_on")
-	private Date createdOn;
-
-	@ManyToOne
-	@JoinColumn(name = "created_by", referencedColumnName = "id")
-	private VirtualAccount createdBy;
+    @ManyToOne
+    @JoinColumn(name = "updated_by", referencedColumnName = "id")
+    private VirtualAccount updatedBy;
 }
