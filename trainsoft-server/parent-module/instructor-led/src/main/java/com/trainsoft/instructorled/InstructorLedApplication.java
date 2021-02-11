@@ -1,7 +1,7 @@
 package com.trainsoft.instructorled;
 
-import com.trainsoft.instructorled.jwttoken.JWTTokenGen;
-import com.trainsoft.instructorled.jwttoken.JWTTokenTO;
+import com.trainsoft.instructorled.commons.JWTTokenGen;
+import com.trainsoft.instructorled.commons.JWTTokenTO;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

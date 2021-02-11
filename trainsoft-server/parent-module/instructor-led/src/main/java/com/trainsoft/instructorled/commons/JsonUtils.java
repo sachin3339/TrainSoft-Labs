@@ -1,4 +1,4 @@
-package com.trainsoft.instructorled.jwttoken;
+package com.trainsoft.instructorled.commons;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;

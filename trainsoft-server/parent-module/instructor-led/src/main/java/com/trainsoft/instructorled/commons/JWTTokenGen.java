@@ -1,4 +1,4 @@
-package com.trainsoft.instructorled.jwttoken;
+package com.trainsoft.instructorled.commons;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;

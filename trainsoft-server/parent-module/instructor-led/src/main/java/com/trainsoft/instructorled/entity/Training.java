@@ -38,14 +38,6 @@ public class Training extends BaseEntity{
     @Column(name = "instructor_name")
     private String instructorName;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by", referencedColumnName = "id")
-    private VirtualAccount createdBy;
-
-    @ManyToOne
-    @JoinColumn(name = "updated_by", referencedColumnName = "id")
-    private VirtualAccount updatedBy;
-
     @OneToMany
     @JoinColumn(name = "batch_id", referencedColumnName = "id")
     private List<Batch> batches;
@@ -57,5 +49,15 @@ public class Training extends BaseEntity{
     @OneToOne
     @JoinColumn(name = "appuser_id", referencedColumnName = "id")
     private AppUser appUser;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by", referencedColumnName = "id")
+    private VirtualAccount createdBy;
+
+    @ManyToOne
+    @JoinColumn(name = "updated_by", referencedColumnName = "id")
+    private VirtualAccount updatedBy;
+
+
 
 }

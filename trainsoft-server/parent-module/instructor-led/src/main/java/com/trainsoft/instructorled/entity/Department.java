@@ -1,5 +1,6 @@
 package com.trainsoft.instructorled.entity;
 
+import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,10 @@ public class Department extends BaseEntity {
 
 	@Column(name = "is_active")
 	private String active;
+
+	@Column(name="status")
+	@Enumerated(EnumType.STRING)
+	private InstructorEnum.Status status;
 
 	@Column(name="created_on")
 	private Date createdOn;

@@ -1,4 +1,4 @@
-package com.trainsoft.instructorled.jwttoken;
+package com.trainsoft.instructorled.commons;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;

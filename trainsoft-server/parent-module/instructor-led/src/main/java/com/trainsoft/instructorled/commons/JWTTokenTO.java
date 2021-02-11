@@ -1,4 +1,4 @@
-package com.trainsoft.instructorled.jwttoken;
+package com.trainsoft.instructorled.commons;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
