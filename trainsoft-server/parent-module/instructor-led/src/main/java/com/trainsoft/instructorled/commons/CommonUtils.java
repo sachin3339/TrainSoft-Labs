@@ -1,8 +1,7 @@
 package com.trainsoft.instructorled.commons;
 
 import com.google.gson.Gson;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
