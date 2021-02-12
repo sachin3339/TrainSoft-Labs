@@ -1,0 +1,12 @@
+.session-container{
+    width: 100%;
+}
+.se-list{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+.se-name{
+    display: flex;
+
+}

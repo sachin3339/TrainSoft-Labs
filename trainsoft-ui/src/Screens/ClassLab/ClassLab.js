@@ -8,8 +8,9 @@ import { BtnRound, Button } from '../../Components/Buttons/Buttons'
 import OnlineMedia from './OnlineMedia/OnlineMedia';
 import Content from './Content/Content';
 import ClassPoll from './ClassPoll/ClassPoll';
-import { BsDropDown } from '../../Components/BsUtils/Bsutills';
+import { BsDropDown } from '../../Components/BsUtils/BsUtils';
 import CodeEditor from './CodeEditor/CodeEditor';
+import WhiteBoard from './WhiteBoard/WhiteBoard';
 
 const ClassLab = () => {
     const [show,setShow] = useState(false)
@@ -47,13 +48,11 @@ const ClassLab = () => {
                     <div className="class-lab vic">
 
                         {/* ...Whiteboard  .... */}
-                        {selectedTab === "Whiteboard" && <div className="whiteboard">
-                            whiteboard
-                        </div>}
+                        {selectedTab === "Whiteboard" && <WhiteBoard/> }
                         {/* ...End Whiteboard  .... */}
 
                            {/* ...Content  .... */}
-                        {selectedTab === "Content" && <Content/>}
+                        {selectedTab === "Content" && <Content/> }
                         {/* ... End Content  .... */}
 
                           {/* ...Code Editor.... */}

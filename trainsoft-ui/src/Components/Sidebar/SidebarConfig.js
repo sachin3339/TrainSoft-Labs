@@ -8,15 +8,20 @@ export const SidebarConfig = [
     },
     {
         icon: ICN_BATCHES,
-        title: "BATCHES",
-        pathname: "batches",
+        title: "ORG MGMT",
+        pathname: "org-mgmt",
         disabled: false
     },
-
     {
         icon: ICN_PARTICIPANT,
-        title: "PARTICIPANT",
-        pathname: "participant",
+        title: "TRAINING",
+        pathname: "training",
+        disabled: false
+    },
+    {
+        icon: ICN_BATCHES,
+        title: "BATCHES",
+        pathname: "batches",
         disabled: false
     },
     {

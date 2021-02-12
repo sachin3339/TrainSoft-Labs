@@ -5,7 +5,7 @@ import { CustomToggle } from '../../Services/MethodFactory';
 
 
 // progress bar
-export const Progress = ({ value= 0, variant, label=""}) =>  <ProgressBar label={label}  variant={variant} now={value} />
+export const Progress = ({ value= 0, variant, label="",className=""}) =>  <ProgressBar className={className} label={label}  variant={variant} now={value} />
 
 export const BsDropDown = ({children, header="",direction="right"})=>  <Dropdown className="dropdown-menus">
 <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">

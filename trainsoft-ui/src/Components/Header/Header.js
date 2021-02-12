@@ -5,10 +5,9 @@ import './header.css'
 
 
 const Header = ({location}) => {
-    console.log(location)
     return (<div className="header">
-            <div className="header-title">
-                {/* {location && location.state.title} */}
+            <div className="title-lg mb-0">
+                {location.state && location.state.title}
             </div>
            
             <div className="aic">
@@ -46,6 +45,7 @@ const Header = ({location}) => {
               
                
             </div>
+            
     </div>)
 }
 

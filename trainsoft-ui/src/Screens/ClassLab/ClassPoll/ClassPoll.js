@@ -6,7 +6,7 @@ import { BtnRound, Button } from "../../../Components/Buttons/Buttons";
 import { TextInput, DateInput, SelectInput } from "../../../Components/InputField/InputField";
 import { Form } from 'react-bootstrap';
 import { ICN_ASSESSMENT, ICN_RECORD } from '../../../Constant/Icon';
-import { Progress } from '../../../Components/BsUtils/Bsutills';
+import { Progress } from '../../../Components/BsUtils/BsUtils';
 import { Pie } from 'react-chartjs-2';
 
 const createBatches = {

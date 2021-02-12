@@ -1,53 +1,98 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Editor from "@monaco-editor/react";
 import './codeEditor.css'
 import { Language } from './Language';
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown, Spinner } from 'react-bootstrap';
 import { CustomToggle } from '../../../Services/MethodFactory';
+import axios from 'axios';
 import { ICN_ARROW_DOWN, ICN_DOWNLOAD, ICN_FULL_SCREEN, ICN_PLAY, ICN_PUBLISH, ICN_SAVE, ICN_STAR_HALF } from '../../../Constant/Icon';
-const CodeEditor = ()=>{
+const CodeEditor = () => {
+    const [inputData, setInputData] = useState('')
+    const editorRef = useRef(null);
     const [lang, setLang] = useState(Language[0])
-    const [lightTheams,setLightTheams] = useState(true)
+    const [lightTheams, setLightTheams] = useState(false)
+    const [output, setOutput] = useState('')
+    const [inputTab, setInputTab] = useState(true)
+    const [spinners,setSpinners] = useState(false)
+
+    const handleEditorDidMount = (editor, monaco) => {
+        editorRef.current = editor;
+    }
+
+    const runCode = () => {
+        setSpinners(true)
+        const payload = {
+            "stdin": inputData,
+            "script": editorRef.current.getValue(),
+            "language": lang.language,
+        }
+        axios.post(`http://ec2-65-1-14-123.ap-south-1.compute.amazonaws.com/insled/v1/jdoodle/execute`, payload)
+            .then(({ data }) => {
+                setOutput(data.output)
+                setInputTab(false)
+                setSpinners(false)
+            })
+    }
+
+    useEffect(() => {
+        setOutput('')
+        setInputTab('')
+        setInputTab(true)
+    }, [lang])
 
     return (<>
         <div className="jcb">
             <div className=""></div>
             <div className="editor-tab">
                 <div>
-                <Dropdown className="dropdown-menus">
-                    <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                        <div className="editor-tab-w">{lang.language} {ICN_ARROW_DOWN}</div>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu as="div" align="right">
-                        {Language.map(res=> <Dropdown.Item onClick={()=> setLang(res)}>{res.language}</Dropdown.Item> )}
-                    </Dropdown.Menu>
-                </Dropdown>
+                    <Dropdown className="dropdown-menus">
+                        <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                            <div className="editor-tab-w">{lang.label} {ICN_ARROW_DOWN}</div>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu as="div" align="right">
+                            {Language.map(res => <Dropdown.Item onClick={() => setLang(res)}>{res.label}</Dropdown.Item>)}
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </div>
                 <div className="editor-btn">
-                    <div>
-                       {ICN_PLAY}
+                    <div onClick={() => runCode()}>
+                        {spinners ? <><Spinner animation="border" size="sm" /></> : <div>{ICN_PLAY}</div>}
                     </div>
                     <div>
                         {ICN_DOWNLOAD}
                     </div>
-                    <div className={`rotate-45 ${lightTheams ? '': 'color-blue'}` } onClick={()=> setLightTheams(!lightTheams)}>
-                       <span >{ICN_STAR_HALF}</span> 
+                    <div className={`rotate-45 ${lightTheams ? '' : 'color-blue'}`} onClick={() => setLightTheams(!lightTheams)}>
+                        <span >{ICN_STAR_HALF}</span>
                     </div>
                     <div>
-                      {ICN_FULL_SCREEN}
+                        {ICN_FULL_SCREEN}
                     </div>
-                    
+
                 </div>
             </div>
         </div>
         <Editor
-             height="100%"
-             width="100%"
-             defaultLanguage={lang.language}
-             defaultValue={lang.value}
-             path={lang.name}
-             theme={ lightTheams ? "vs-light" : "vs-dark"}
-          />
+            height="100%"
+            width="100%"
+            defaultLanguage={lang.language}
+            defaultValue={lang.value}
+            theme={lightTheams ? "vs-light" : "vs-dark"}
+            onMount={handleEditorDidMount}
+        />
+        <div className="p-2 column">
+            <div className="flx">
+                <div onClick={() => setInputTab(true)} className={`class-mode ${inputTab === true ? 'bg-primary' : ''}`}>Input</div>
+                <div onClick={() => setInputTab(false)} className={`class-mode ${inputTab === false ? 'bg-primary' : ''}`}>Output</div>
+            </div>
+            {inputTab ?
+                <div className="editor-output">
+                    <div><textarea rows="3" placeholder="Enter input" className="form-control" onChange={(e) => setInputData(e.target.value)} type="text" /></div>
+                </div>
+                : <div className="editor-output">
+                    <div>{output}</div>
+                </div>
+            }
+        </div>
     </>)
 
 }

@@ -55,12 +55,24 @@ export const BtnPrimary = ({ children, className='', onClick, type = "button", d
 }
 
 /*
+    Common TabBtn for cancel
+    @param {Objects} className - optional className for Cancel
+    @param {function} onClick - callback function
+    @param {children} props default property
+*/
+export const TabBtn = ({ children, className="", onClick,}) => <div
+    onClick={onClick}
+    className={"tab-btn " + className}>
+    {children}
+</div>
+
+/*
     Common lightBtn for cancel
     @param {Objects} className - optional className for Cancel
     @param {function} onClick - callback function
     @param {children} props default property
 */
-export const LightBtn = ({ children, className, onClick, name = "Button", disabled = false }) => <button
+export const LightBtn = ({ children, className="", onClick, name = "Button", disabled = false }) => <button
     onClick={onClick}
     className={"btn btn-light btn-sm btn-outlined " + className}
     disabled={disabled}
