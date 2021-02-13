@@ -1,23 +1,22 @@
 import { useState } from "react";
-import './batches.css'
+import './../Batches/batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import {Modal,Form} from 'react-bootstrap'
 import { Formik} from 'formik';
-import { ICN_TRASH,ICN_EDIT, ICN_CLOSE  } from '../../Common/icon';
+import { ICN_TRASH,ICN_EDIT, ICN_CLOSE  } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
 import { TextInput,DateInput,SelectInput } from "../../Common/InputField/InputField";
-import { Link, Router } from "../../../Shared/Router";
-import BatchesDetails from "./BatchDetails";
+import { Link, Router } from "../../Common/Router";
 import { BsModal } from "../../Common/BsUtils";
 
 
 
 const dummyData =[
-    {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
-    {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
-    {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
-    {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
-    {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
+    {course: 'Angular',batchName: 'ITU_01',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
+    {course: 'Angular',batchName: 'ITU_01',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
+    {course: 'Angular',batchName: 'ITU_01',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
+    {course: 'Angular',batchName: 'ITU_01',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
+    {course: 'Angular',batchName: 'ITU_01',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
 
 ]
 
@@ -30,23 +29,24 @@ const createBatches = {
     instructor:''
 
 }
-const Batch = () => {
+const Courses = () => {
     const [show, setShow] = useState(false);
     const [configuration, setConfiguration] = useState({
         columns: {
+            "course": {
+                "title": "Course Name",
+                "sortDirection": null,
+                "sortEnabled": true,
+                isSearchEnabled: false,
+                render: (data)=>  <Link to={'batches-details'} className="dt-name">{data.course}</Link> 
+
+            },
             "batchName": {
                 "title": "Batch Name",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data)=>  <Link to={'batches-details'} className="dt-name">{data.batchName}</Link> 
 
-            },
-            "technology": {
-                "title": "Technology",
-                "sortDirection": null,
-                "sortEnabled": true,
-                isSearchEnabled: false
             }
             ,
             "createdDate": {
@@ -172,12 +172,11 @@ const Batch = () => {
 }
 
 
-const Batches = () => {
+const Course = () => {
     return(
         <Router>
-                <Batch path="/" />
-                <BatchesDetails path="batches-details"/>
+                <Courses path="/" />
         </Router>
     )
 }
-export default Batches
+export default Course

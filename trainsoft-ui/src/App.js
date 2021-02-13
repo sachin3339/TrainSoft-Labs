@@ -1,10 +1,10 @@
 import { Fragment } from "react";
-import Login from "./Screens/Auth/Login";
+import Login from "./Components/Screens/Auth/Login";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Assets/css/main.css'
-import Dashboard from "./Screens/Dashboard/Dashboard";
-import { Router } from "./Shared/Router";
-import ClassLab from "./Screens/ClassLab/ClassLab";
+import Dashboard from "./Components/Layout/Dashboard/Dashboard";
+import { Router } from "./Components/Common/Router";
+import ClassLab from "./Components/Screens/ClassLab/ClassLab";
 
 
 function App() {

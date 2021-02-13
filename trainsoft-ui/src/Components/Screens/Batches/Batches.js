@@ -3,10 +3,10 @@ import './batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import {Modal,Form} from 'react-bootstrap'
 import { Formik} from 'formik';
-import { ICN_TRASH,ICN_EDIT, ICN_CLOSE  } from '../../Common/icon';
+import { ICN_TRASH,ICN_EDIT, ICN_CLOSE  } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
 import { TextInput,DateInput,SelectInput } from "../../Common/InputField/InputField";
-import { Link, Router } from "../../../Shared/Router";
+import { Link, Router } from "../../Common/Router";
 import BatchesDetails from "./BatchDetails";
 import { BsModal } from "../../Common/BsUtils";
 
