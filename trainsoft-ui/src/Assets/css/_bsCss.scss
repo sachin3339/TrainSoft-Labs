@@ -14,6 +14,9 @@
 .bg-danger{
 	background: $danger !important;
 }
+.bg-success{
+	background: $success !important;
+}
 
 .btn-primary:hover {
 	color: #fff;
@@ -106,4 +109,35 @@
 .page-link {
     border: 0px;
     color: $fontColor;
+}
+
+//progress 
+
+.progress {
+    display: flex;
+    height: 2rem;
+    overflow: hidden;
+    line-height: 0;
+    font-size: .75rem;
+    background-color: #ffffff;
+	border-radius: .25rem;
+	margin-bottom: 10px;
+}
+.progress-bar {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: #fff;
+    text-align: left;
+    font-size: 14px;
+    padding: 0px 10px;
+    justify-content: center;
+    white-space: nowrap;
+    background-color: #007bff;
+	transition: width .6s ease;
+	border-radius: 20px;
+}
+.progress-sh{
+	height: 20px;
+	border-bottom: 0px;
 }

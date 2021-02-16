@@ -1,0 +1,56 @@
+.sideBarNav{
+    width: 240px;
+    height: 100%;
+    background: #2D62ED;
+    overflow-y: auto;
+}
+.navMenu{
+    cursor: pointer;
+    font-size: 15px;
+    align-items: center;
+    font-weight: 600;
+
+}
+
+
+.navMenu a {
+    color: #dfdfdfc2;
+    text-decoration: none;
+    background-color: transparent;
+    padding: 5px 28px;
+    margin: 22px 0px;
+    transition: 500ms;
+
+}
+.navMenu a:hover {
+    color: #ffffff;
+    text-decoration: none;
+    background-color: transparent;
+    border-left: 3px solid;
+    transition: 500ms;
+    
+}
+.nav-title{
+    font-size: 35px;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    padding: 20px 10px;
+}
+.navMenu svg{
+    opacity: .5;
+    width: 22px;
+}
+.navMenu:hover svg{
+    opacity: 1;
+}
+.sideBarNav .active a{
+    color: #ffffff;
+    text-decoration: none;
+    background-color: transparent;
+    border-left: 3px solid;
+    transition: 500ms;
+}
+.sideBarNav .active svg{
+    opacity: 1;
+}

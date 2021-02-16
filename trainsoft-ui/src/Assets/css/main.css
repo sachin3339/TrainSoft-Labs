@@ -18,6 +18,10 @@
   background: #FF007C !important;
 }
 
+.bg-success {
+  background: #00D983 !important;
+}
+
 .btn-primary:hover {
   color: #fff;
   background-color: #2D62ED;
@@ -126,6 +130,47 @@
   color: #272D3B;
 }
 
+.progress {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: 2rem;
+  overflow: hidden;
+  line-height: 0;
+  font-size: .75rem;
+  background-color: #ffffff;
+  border-radius: .25rem;
+  margin-bottom: 10px;
+}
+
+.progress-bar {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  overflow: hidden;
+  color: #fff;
+  text-align: left;
+  font-size: 14px;
+  padding: 0px 10px;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  white-space: nowrap;
+  background-color: #007bff;
+  -webkit-transition: width .6s ease;
+  transition: width .6s ease;
+  border-radius: 20px;
+}
+
+.progress-sh {
+  height: 20px;
+  border-bottom: 0px;
+}
+
 .label {
   color: #272D3B;
   font-size: 14px;
@@ -133,7 +178,7 @@
 }
 
 .title-lg {
-  font-size: 25px;
+  font-size: 22px;
   color: #272D3B;
   font-weight: bold;
   margin-bottom: 10px;
@@ -141,7 +186,7 @@
 }
 
 .title-md {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   color: #272D3B;
   margin-bottom: 10px;
@@ -292,6 +337,79 @@
   text-overflow: ellipsis;
 }
 
+.table-bless .table td, .table th {
+  padding: 5px 0px;
+}
+
+.table-bless thead td {
+  padding-bottom: 10px !important;
+}
+
+.checkbox-div {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.308);
+  cursor: pointer;
+  margin: 0px 5px;
+}
+
+.tab-btn {
+  width: 100%;
+  background: #2D62ED;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 2px;
+  cursor: pointer;
+  text-align: center;
+  -webkit-box-shadow: 0px 1px 2px 0px #000000bf;
+          box-shadow: 0px 1px 2px 0px #000000bf;
+}
+
+.success-checkbox .custom-input input:checked + label:before {
+  background-color: #00D983;
+  border: 1px solid #00D983;
+}
+
+.batch-pr {
+  color: white;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 1px 15px;
+  text-align: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 0px 10px;
+  background-color: #2D62ED !important;
+}
+
+.batch-sec {
+  color: white;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 1px 15px;
+  text-align: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 0px 10px;
+  background-color: #00CCF2 !important;
+}
+
+.btn-active {
+  opacity: 1;
+}
+
+body {
+  font-size: 15px;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 0px;
+}
+
 .main-page {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -315,8 +433,7 @@
 
 .box-shadow {
   width: 100%;
-  height: 100%;
-  min-height: 100px;
+  min-height: 180px;
   -webkit-box-shadow: 0px 3px 6px #00000029;
           box-shadow: 0px 3px 6px #00000029;
   border-radius: 20px;
@@ -329,6 +446,13 @@
   border-radius: 20px;
   overflow: hidden;
   width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 
 .dashboard-container {
@@ -353,7 +477,7 @@
           align-items: center;
 }
 
-.action-btn {
+.square-btn {
   padding: 3px 5px;
   text-align: center;
   border-radius: 3px;
@@ -409,42 +533,6 @@
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-}
-
-.progress {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  height: 2rem;
-  overflow: hidden;
-  line-height: 0;
-  font-size: .75rem;
-  background-color: #ffffff;
-  border-radius: .25rem;
-  margin-bottom: 10px;
-}
-
-.progress-bar {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  overflow: hidden;
-  color: #fff;
-  text-align: left;
-  font-size: 14px;
-  padding: 0px 10px;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  white-space: nowrap;
-  background-color: #007bff;
-  -webkit-transition: width .6s ease;
-  transition: width .6s ease;
-  border-radius: 20px;
 }
 
 .bg-purple {
@@ -663,7 +751,23 @@
   opacity: 0.5;
 }
 
-.btn-active {
-  opacity: 1;
+.activity-card {
+  width: 100%;
+  height: 130px;
+  border-radius: 10px;
+  background: #00CCF2;
+  padding: 10px;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.table-footer-action {
+  margin: 20px 0px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
 }
 /*# sourceMappingURL=main.css.map */
