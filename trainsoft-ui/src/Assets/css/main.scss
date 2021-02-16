@@ -1,4 +1,12 @@
 @import './variable','./bsCss','./utils';
+body{
+	font-size: 15px;
+	
+}
+p {
+    margin-top: 0;
+    margin-bottom: 0px;
+}
 .main-page {
 	display: flex;
 	height: 100%;
@@ -13,8 +21,8 @@
 }
 .box-shadow {
 	width: 100%;
-	height: 100%;
-	min-height: 100px;
+	// height: 100%;
+	min-height: 180px;
 	box-shadow: $boxShadow;
 	border-radius: 20px;
 	padding: 10px 20px;
@@ -25,6 +33,8 @@
 	border-radius: 20px;
 	overflow: hidden;
 	width: 100%;
+	display: flex;
+	flex-direction: column;
 }
 .dashboard-container {
 	width: 100%;
@@ -43,7 +53,7 @@
     display: flex;
     align-items: center;
 }
-.action-btn{
+.square-btn{
 	padding: 3px 5px;
     text-align: center;
     border-radius: 3px;
@@ -86,30 +96,7 @@
     display: grid;
     justify-content: center;
 }
-.progress {
-    display: flex;
-    height: 2rem;
-    overflow: hidden;
-    line-height: 0;
-    font-size: .75rem;
-    background-color: #ffffff;
-	border-radius: .25rem;
-	margin-bottom: 10px;
-}
-.progress-bar {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    color: #fff;
-    text-align: left;
-    font-size: 14px;
-    padding: 0px 10px;
-    justify-content: center;
-    white-space: nowrap;
-    background-color: #007bff;
-	transition: width .6s ease;
-	border-radius: 20px;
-}
+
 .bg-purple {
 	background: #7d00b5 !important;
 }
@@ -258,6 +245,18 @@
 	color: white;
 	opacity: 0.5;
 }
-.btn-active{
-	opacity: 1;
+
+.activity-card{
+	width: 100%;
+	height: 130px;
+	border-radius: 10px;
+	background: $secondary;
+	padding: 10px;
+	margin-bottom: 15px;
+	color: white;
+}
+.table-footer-action{
+    margin: 20px 0px;
+    display: flex;
+    justify-content: flex-end;
 }
