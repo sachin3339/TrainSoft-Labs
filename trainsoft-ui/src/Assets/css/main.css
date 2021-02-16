@@ -18,6 +18,10 @@
   background: #FF007C !important;
 }
 
+.bg-success {
+  background: #00D983 !important;
+}
+
 .btn-primary:hover {
   color: #fff;
   background-color: #2D62ED;
@@ -362,8 +366,48 @@
           box-shadow: 0px 1px 2px 0px #000000bf;
 }
 
+.success-checkbox .custom-input input:checked + label:before {
+  background-color: #00D983;
+  border: 1px solid #00D983;
+}
+
+.batch-pr {
+  color: white;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 1px 15px;
+  text-align: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 0px 10px;
+  background-color: #2D62ED !important;
+}
+
+.batch-sec {
+  color: white;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 1px 15px;
+  text-align: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 0px 10px;
+  background-color: #00CCF2 !important;
+}
+
+.btn-active {
+  opacity: 1;
+}
+
 body {
   font-size: 15px;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 0px;
 }
 
 .main-page {
@@ -402,6 +446,13 @@ body {
   border-radius: 20px;
   overflow: hidden;
   width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 
 .dashboard-container {
@@ -698,10 +749,6 @@ body {
   cursor: pointer;
   color: white;
   opacity: 0.5;
-}
-
-.btn-active {
-  opacity: 1;
 }
 
 .activity-card {

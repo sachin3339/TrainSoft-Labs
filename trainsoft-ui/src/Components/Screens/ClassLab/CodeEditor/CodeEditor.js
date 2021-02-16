@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 import Editor from "@monaco-editor/react";
 import './codeEditor.css'
 import { Language } from './Language';
@@ -6,7 +6,9 @@ import { Dropdown, Spinner } from 'react-bootstrap';
 import { CustomToggle } from '../../../../Services/MethodFactory';
 import axios from 'axios';
 import { ICN_ARROW_DOWN, ICN_DOWNLOAD, ICN_FULL_SCREEN, ICN_PLAY, ICN_PUBLISH, ICN_SAVE, ICN_STAR_HALF } from '../../../Common/Icon';
+import AppContext from '../../../../Store/AppContext';
 const CodeEditor = () => {
+    const {spinner} = useContext(AppContext) 
     const [inputData, setInputData] = useState('')
     const editorRef = useRef(null);
     const [lang, setLang] = useState(Language[0])
@@ -21,6 +23,7 @@ const CodeEditor = () => {
 
     const runCode = () => {
         setSpinners(true)
+        spinner.show()
         const payload = {
             "stdin": inputData,
             "script": editorRef.current.getValue(),
@@ -31,7 +34,9 @@ const CodeEditor = () => {
                 setOutput(data.output)
                 setInputTab(false)
                 setSpinners(false)
+                spinner.hide()
             })
+            
     }
 
     useEffect(() => {

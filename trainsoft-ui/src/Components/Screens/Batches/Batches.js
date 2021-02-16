@@ -1,33 +1,34 @@
 import { useState } from "react";
 import './batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
-import {Modal,Form} from 'react-bootstrap'
-import { Formik} from 'formik';
-import { ICN_TRASH,ICN_EDIT, ICN_CLOSE  } from "../../Common/Icon";
+import { Form } from 'react-bootstrap'
+import { Formik } from 'formik';
+import { ICN_TRASH, ICN_EDIT, ICN_CLOSE } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
-import { TextInput,DateInput,SelectInput } from "../../Common/InputField/InputField";
+import { TextInput, DateInput, SelectInput } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
 import BatchesDetails from "./BatchDetails";
 import { BsModal } from "../../Common/BsUtils";
+import CardHeader from "../../Common/CardHeader";
 
 
 
-const dummyData =[
-    {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
-    {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
-    {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
-    {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
-    {batchName: 'ITU_01',technology: 'Angular',createdData:'22 june 2020',learners:'333',status:'Active',startDate:'123213',endDate:'323213'},
+const dummyData = [
+    { batchName: 'ITU_01', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
+    { batchName: 'ITU_01', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
+    { batchName: 'ITU_01', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
+    { batchName: 'ITU_01', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
+    { batchName: 'ITU_01', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
 
 ]
 
 const createBatches = {
     batchName: '',
     trainingType: '',
-    endDate:'',
+    endDate: '',
     startDate: '',
-    course:'',
-    instructor:''
+    course: '',
+    instructor: ''
 
 }
 const Batch = () => {
@@ -39,7 +40,7 @@ const Batch = () => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data)=>  <Link to={'batches-details'} className="dt-name">{data.batchName}</Link> 
+                render: (data) => <Link to={'batches-details'} className="dt-name">{data.batchName}</Link>
 
             },
             "technology": {
@@ -108,75 +109,71 @@ const Batch = () => {
         showCheckbox: true,
         clearSelection: false
     });
-    return (<div className="table-shadow">
-        <div className="table-top-action ">
+    return (<><div className="table-shadow">
+            <CardHeader/>
+        <DynamicTable {...{ configuration, sourceData: dummyData }} />
+    </div>
+    <div className="table-footer-action">
             <div>
-                <div className="">Batches</div>
-            </div>
-            <div>
-               <Button onClick={()=>setShow(true)}> + Add New </Button>
+                <Button onClick={() => setShow(true)}> + Add New </Button>
 
-            <BsModal {...{show,setShow,headerTitle: "Add new Batches",size:"lg"}}>
-            <div className="form-container">
-            <Formik
-                onSubmit={()=>console.log('a')}
-                initialValues={createBatches}
-            >
-                {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
-                        <div className="edit-shipping">
-                            <Form.Group className="row">
-                                <div className="col-6">
-                                    <TextInput label="Batch Name" name="batchName"/>
+                <BsModal {...{ show, setShow, headerTitle: "Add new Batches", size: "lg" }}>
+                    <div className="form-container">
+                        <Formik
+                            onSubmit={() => console.log('a')}
+                            initialValues={createBatches}
+                        >
+                            {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
+                                <div>
+                                    <Form.Group className="row">
+                                        <div className="col-6">
+                                            <TextInput label="Batch Name" name="batchName" />
+                                        </div>
+                                        <div className="col-6">
+                                            <SelectInput label="Training Type" option={['Online', 'Self', 'Offline']} name="trainingType" />
+                                        </div>
+                                    </Form.Group>
+                                    <Form.Group className="row">
+                                        <div className="col-6">
+                                            <DateInput label="Start Date" name="startDate" />
+                                        </div>
+                                        <div className="col-6">
+                                            <DateInput label="End date" name="endDate" />
+                                        </div>
+                                    </Form.Group>
+                                    <Form.Group className="row">
+                                        <div className="col-6">
+                                            <SelectInput label="Course" name="course" option={['Online', 'Self', 'Offline']} />
+                                        </div>
+                                        <div className="col-6">
+                                            <TextInput label="Instructor" name="instructor" />
+                                        </div>
+                                    </Form.Group>
                                 </div>
-                                <div className="col-6">
-                                  <SelectInput label="Training Type" option={['Online','Self','Offline']} name="trainingType"/>
-                                </div>
-                            </Form.Group>
-                            <Form.Group className="row">
-                                <div className="col-6">
-                                  <DateInput label="Start Date" name="startDate"/>
-                                </div>
-                                <div className="col-6">
-                                  <DateInput label="End date" name="endDate"/>
-                                </div>
-                            </Form.Group>
-                            <Form.Group className="row">
-                                <div className="col-6">
-                                  <SelectInput label="Course" name="course" option={['Online','Self','Offline']}/>
-                                </div>
-                                <div className="col-6">
-                                  <TextInput label="Instructor" name="instructor"/>
-                                </div>
-                            </Form.Group>
+                                <footer className="jcb">
+                                    <div>
+                                        <span className="title-sm">Upload participants</span>
+                                    </div>
+                                    <div>
+                                        <Button type="submit" >Create Batches</Button>
+                                    </div>
+                                </footer>
+                            </form>
+                            }
+                        </Formik>
                     </div>
-                    {/* modal footer which contains action button to save data or cancel current action */}
-                    <footer className="jcb">
-                        <div>
-                            <span className="title-sm">Upload participants</span>
-                        </div>
-                        <div>
-                           <Button type="submit" >Create Batches</Button>
-                        </div>
-                    </footer>
-                </form>
-                }
-            </Formik>
-            </div>
-         </BsModal>
-
+                </BsModal>
             </div>
         </div>
-        <DynamicTable {...{configuration,sourceData: dummyData}}/>
-               
-    </div>)
+    </>)
 }
 
 
 const Batches = () => {
-    return(
+    return (
         <Router>
-                <Batch path="/" />
-                <BatchesDetails path="batches-details"/>
+            <Batch path="/" />
+            <BatchesDetails path="batches-details" />
         </Router>
     )
 }

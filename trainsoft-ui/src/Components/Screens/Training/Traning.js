@@ -9,6 +9,7 @@ import { TextInput, DateInput, SelectInput } from "../../Common/InputField/Input
 import { Link, Router } from "../../Common/Router";
 import SearchBox from "../../Common/SearchBox/SearchBox";
 import TrainingDetails from "./TrainingDetails";
+import CardHeader from "../../Common/CardHeader";
 
 const dummyData = [
     { names: 'Jack A', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
@@ -109,10 +110,7 @@ const Trainings = () => {
     return (<>
 
         <div className="table-shadow">
-            <div className="jcb px-3 py-2">
-                <div className="">Training</div>
-                <SearchBox />
-            </div>
+            <CardHeader/>
             <DynamicTable {...{ configuration, sourceData: dummyData }} />
         </div>
         <div className="table-footer-action ">

@@ -116,3 +116,28 @@
 	text-align: center;
     box-shadow: 0px 1px 2px 0px #000000bf;
 }
+.success-checkbox .custom-input input:checked + label:before{
+	background-color: $success;
+	border: 1px solid $success;
+  }
+
+@mixin gnBatch {
+	color: white;
+	border-radius: 5px;
+	font-size: 14px;
+	padding: 1px 15px;
+	text-align: center;
+	align-items: center;
+	margin: 0px 10px;
+}
+.batch-pr{
+	@include gnBatch;
+	background-color: $primary !important;
+}
+.batch-sec{
+	@include gnBatch;
+	background-color: $secondary !important;
+}
+.btn-active{
+	opacity: 1;
+}
