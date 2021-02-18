@@ -30,7 +30,7 @@ const createBatches = {
     instructor: ''
 
 }
-const Courses = () => {
+const Courses = ({location}) => {
     const [show, setShow] = useState(false);
     const [configuration, setConfiguration] = useState({
         columns: {
@@ -39,7 +39,7 @@ const Courses = () => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'batches-details'} className="dt-name">{data.course}</Link>
+                render: (data) => <Link to={'batches-details'} state={{title: "BATCHES",subTitle:'',}} className="dt-name">{data.course}</Link>
 
             },
             "batchName": {
@@ -110,7 +110,7 @@ const Courses = () => {
         clearSelection: false
     });
     return (<><div className="table-shadow">
-        <CardHeader />
+        <div className="p-3"><CardHeader {...{location}}/></div> 
         <DynamicTable {...{ configuration, sourceData: dummyData }} />
     </div>
         <div className="table-footer-action">

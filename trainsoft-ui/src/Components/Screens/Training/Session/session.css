@@ -22,3 +22,6 @@
 .session-onExpand{
     padding: 10px 23px;
 }
+.session-modal-container{
+    width: 80%;
+}

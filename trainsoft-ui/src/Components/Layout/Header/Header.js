@@ -2,6 +2,7 @@ import { Dropdown } from 'react-bootstrap';
 import { ICN_NOTIFICATION, ICN_SEARCH } from '../../Common/Icon';
 import { CustomToggle } from '../../../Services/MethodFactory';
 import './header.css'
+import { ProfileImg } from '../../Common/BsUtils';
 
 
 const Header = ({location}) => {
@@ -39,7 +40,7 @@ const Header = ({location}) => {
                         <div className="text-md text-center pointer">View More</div>  
                 </Dropdown.Menu>
             </Dropdown>
-               <div className="user-profile">JD</div> 
+            <ProfileImg name="JD" size="md"/>
             </div>
             
     </div>)

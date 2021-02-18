@@ -74,9 +74,9 @@ export const BtnPrimary = ({ children, className='', onClick, type = "button", d
     @param {function} onClick - callback function
     @param {children} props default property
 */
-export const TabBtn = ({ children, className="", onClick,}) => <div
+export const TabBtn = ({ children, className="", onClick, active }) => <div
     onClick={onClick}
-    className={"tab-btn " + className}>
+    className={`tab-btn ${active ? 'bg-primary' : ''}` + className}>
     {children}
 </div>
 

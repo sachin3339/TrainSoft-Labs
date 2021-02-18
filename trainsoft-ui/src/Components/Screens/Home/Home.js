@@ -78,7 +78,7 @@ const Home = () => {
                                             trailColor: "#F5FBFF",
                                             pathColor: "#2D62ED",
                                         })} />
-                                    <div>Active Learner</div>
+                                    <div className="mt-2">Active Learner</div>
                                 </div>
                                 <div className="text-center mx-4">
                                     <CircularProgressbar
@@ -88,7 +88,7 @@ const Home = () => {
                                             trailColor: "#F5FBFF",
                                             pathColor: "#7D00B5",
                                         })} />
-                                    <div>Active Learner</div>
+                                    <div className="mt-2">Visitor Rate</div>
                                 </div>
 
                                 <div className="text-center">
@@ -100,7 +100,7 @@ const Home = () => {
                                             trailColor: "#F5FBFF",
                                             pathColor: "#00CCF2",
                                         })} />
-                                    <div>Active Learner</div>
+                                    <div className="mt-2">Total Learners</div>
                                 </div>
 
                             </div>

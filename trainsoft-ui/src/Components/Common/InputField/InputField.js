@@ -31,6 +31,18 @@ export const DateInput = ({ label='',name }) => {
     </>)
 }
 
+export const TextArea = ({ label='',name, option=[] }) => {
+    return (<>
+        <Form.Label className="label">{label}</Form.Label>
+        <div className="input-field">
+           <Field as="textarea" name={name} className="form-control form-control-sm" >
+           {option.map(res => <option value={res}>{res}</option>)}
+           </Field>
+        </div>
+        <ErrorMessage component={name} name="province" className="text-danger mb-2 small-text" />
+    </>)
+}
+
 export const SelectInput = ({ label='',name, option=[] }) => {
     return (<>
         <Form.Label className="label">{label}</Form.Label>

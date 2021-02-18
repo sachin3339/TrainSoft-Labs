@@ -21,7 +21,7 @@
 }
 
 .title-sm {
-	font-size: 14px;
+	font-size: 13px;
 	font-weight: 600;
 	color: $fontColor;
 }
@@ -108,7 +108,7 @@
 }
 .tab-btn{
     width: 100%;
-    background: #2D62ED;
+    background: $secondary;
     color: white;
     padding: 5px 10px;
     border-radius: 2px;
@@ -130,7 +130,7 @@
 	align-items: center;
 	margin: 0px 10px;
 }
-.batch-pr{
+.batch-pri{
 	@include gnBatch;
 	background-color: $primary !important;
 }
@@ -140,4 +140,11 @@
 }
 .btn-active{
 	opacity: 1;
+}
+.link{
+	color:#2D62ED;
+	cursor: pointer;
+}
+.d-grid{
+	display: grid;
 }
