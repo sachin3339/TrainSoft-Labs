@@ -171,6 +171,28 @@
   border-bottom: 0px;
 }
 
+.breadcrumb {
+  background: transparent;
+  padding: .75rem 0rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  display: inline-block;
+  padding-right: .5rem;
+  color: #6c757d;
+  content: ">";
+  font-family: monospace;
+}
+
+.breadcrumb-item.active {
+  color: #272D3B;
+  font-weight: bold;
+}
+
+.breadcrumb-item a {
+  color: #272D3B;
+}
+
 .label {
   color: #272D3B;
   font-size: 14px;
@@ -194,7 +216,7 @@
 }
 
 .title-sm {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #272D3B;
 }
@@ -356,7 +378,7 @@
 
 .tab-btn {
   width: 100%;
-  background: #2D62ED;
+  background: #00CCF2;
   color: white;
   padding: 5px 10px;
   border-radius: 2px;
@@ -371,7 +393,7 @@
   border: 1px solid #00D983;
 }
 
-.batch-pr {
+.batch-pri {
   color: white;
   border-radius: 5px;
   font-size: 14px;
@@ -401,13 +423,31 @@
   opacity: 1;
 }
 
+.link {
+  color: #2D62ED;
+  cursor: pointer;
+}
+
+.d-grid {
+  display: -ms-grid;
+  display: grid;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: local("Montserrat"), url("../Fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
+  font-weight: normal;
+}
+
 body {
-  font-size: 15px;
+  font-size: 14px;
+  font-family: Montserrat !important;
 }
 
 p {
   margin-top: 0;
   margin-bottom: 0px;
+  color: #272D3B;
 }
 
 .main-page {

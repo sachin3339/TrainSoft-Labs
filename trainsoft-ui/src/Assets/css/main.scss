@@ -1,11 +1,19 @@
 @import './variable','./bsCss','./utils';
+
+@font-face {
+	font-family: "Montserrat";
+	src: local("Montserrat"),
+	  url("../Fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
+	font-weight: normal;
+  }
 body{
-	font-size: 15px;
-	
+	font-size: 14px;
+	font-family: Montserrat !important;
 }
 p {
     margin-top: 0;
     margin-bottom: 0px;
+	color: $fontColor;
 }
 .main-page {
 	display: flex;

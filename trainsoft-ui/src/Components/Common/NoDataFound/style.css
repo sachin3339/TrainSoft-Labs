@@ -1,0 +1,25 @@
+.no-item-show {
+    text-align: center;
+    color: #888;
+    padding-top: 30px!important;
+    padding-bottom: 20px!important;
+    width: 100%;
+}
+.no-title {
+    font-size: 16px;
+    margin-bottom: 5px!important;
+    color: #bbb;
+    font-weight: 600;
+    margin-top: 10px;
+    padding: 0 20px;
+}
+.no-micro {
+    font-size: 13px;
+    color: #bdbdbd;
+    margin: 0;
+    font-weight: 400;
+    padding: 0 20px;
+}
+.mb10 {
+    margin-bottom: 10px;
+}

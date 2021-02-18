@@ -8,3 +8,38 @@
     align-items: center;
     justify-content: center;
 }
+.user-profile{
+
+    border-radius: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.11);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.profile-lg{
+    width: 70px;
+    height: 70px;
+    font-size: 20px;
+    font-weight: 600;
+}
+.profile-md{
+    width: 45px;
+    height: 45px;
+    font-size: 15px;
+    font-weight: 600;
+}
+.profile-sm{
+    width: 35px;
+    height: 35px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.user-profile img{
+    width: 100%;
+}
+
+.forum-reply-profile{
+    padding-right: 10px;
+}

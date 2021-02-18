@@ -3,6 +3,7 @@ import './batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { ICN_TRASH,ICN_EDIT  } from "../../Common/Icon";
 import PaginationOne from "../../Common/Pagination";
+import CardHeader from "../../Common/CardHeader";
 
 
 
@@ -25,7 +26,7 @@ const createBatches = {
     instructor:''
 
 }
-const BatchesDetails = () => {
+const BatchesDetails = ({location}) => {
     const [configuration, setConfiguration] = useState({
         columns: {
             "name": {
@@ -93,12 +94,10 @@ const BatchesDetails = () => {
         showCheckbox: false,
         clearSelection: false
     });
-    return (<div className="table-shadow">
+    return (<div className="table-shadow p-3">
+        <CardHeader {...{location}}/>
         <div className="bDetail-action">
             <div className="full-w ">
-            <div>
-                <div className="">Batches Details</div>
-            </div>
             <div className="batch-info">
             <div className="row">
                 <div className="col-md-4">

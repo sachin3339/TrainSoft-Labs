@@ -64,7 +64,7 @@ const TrainingInfo = ()=>{
             <div className="col-6">c1</div>
         </div>
     </div>
-    <div className="jcc mt-4">
+    <div className="jcc mt-2">
         <div className="training-progress">
             <CircularProgressbar
                 maxValue="100"
@@ -74,10 +74,12 @@ const TrainingInfo = ()=>{
                     trailColor: "#F5FBFF",
                     pathColor: "#2D62ED",
                 })} />
-            <div className="title-md mt-2">Training progress</div>
-            <div className="pointer">Download Report</div>
         </div>
     </div>
+        <div className="text-center mt-2">
+             <div className="title-md ">Training progress</div>
+            <div className="pointer">Download Report</div>
+        </div>
 </div>
 <div className="flx3">
     <div className="jcb">

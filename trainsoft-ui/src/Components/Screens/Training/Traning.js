@@ -29,7 +29,7 @@ const createBatches = {
     instructor: ''
 
 }
-const Trainings = () => {
+const Trainings = ({location}) => {
     const [show, setShow] = useState(false);
     const [configuration, setConfiguration] = useState({
         columns: {
@@ -38,7 +38,7 @@ const Trainings = () => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={`training-details`} className="dt-name">{data.names}</Link>
+                render: (data) => <Link to={`training-details`} state={{ title: 'TRAINING', subTitle:"Training Info", subPath:'/' }} className="dt-name">{data.names}</Link>
 
             },
             "technology": {
@@ -110,7 +110,7 @@ const Trainings = () => {
     return (<>
 
         <div className="table-shadow">
-            <CardHeader/>
+        <div className="p-3"><CardHeader {...{location}}/></div> 
             <DynamicTable {...{ configuration, sourceData: dummyData }} />
         </div>
         <div className="table-footer-action ">
@@ -188,6 +188,7 @@ const Trainings = () => {
 
 const Training = () => {
     return (
+        
         <Router>
             <Trainings path="/" />
             <TrainingDetails path="training-details/*" />

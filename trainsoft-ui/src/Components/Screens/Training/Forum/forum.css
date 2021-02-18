@@ -1,0 +1,30 @@
+
+.forum-list{
+    padding: 15px 0px;
+    display: flex;
+    border-top: 1px solid #ddd;
+}
+
+.forum-body{
+    margin-top: 10px;
+}
+.forum-profile{
+    height: auto;
+    margin-right: 25px;
+}
+.forum-reply{
+    display: flex;
+    margin-top: 15px;
+}
+.forum-reply-header{
+    display: flex;
+    justify-content: space-between;
+    width: 260px;
+}
+.forum-content{
+    margin-top: 10px;
+}
+.forum-body p{
+    font-size: 14px;
+    color: #000000b5;
+}

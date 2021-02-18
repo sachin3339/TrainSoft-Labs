@@ -1,8 +1,11 @@
+import NoDataFound from "../../Common/NoDataFound/NoDataFound"
 
 const Calender = () => {
-    return (<div>
-            Calender
-    </div>)
+    return (
+        <div className="table-shadow">
+            <NoDataFound title="Work on Progress"/>
+    </div>
+    )
 }
 
 export default Calender

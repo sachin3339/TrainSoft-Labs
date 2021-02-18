@@ -30,7 +30,8 @@ const Session = ()=>{
                         <div onClick={()=> onClickToggle(i)}>{res.name}</div>
                     </div>
                      <div className="se-date">
-                         <div className="batch-sec">Scheduled</div>
+                        {res.active ? <div className="batch-pri">Scheduled</div> : <div className="batch-sec">Not Scheduled</div>} 
+                         
                         <div>{res.date}</div>
                         <div></div>
                     </div>

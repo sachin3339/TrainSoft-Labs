@@ -31,7 +31,7 @@ const createBatches = {
     instructor: ''
 
 }
-const Batch = () => {
+const Batch = ({location}) => {
     const [show, setShow] = useState(false);
     const [configuration, setConfiguration] = useState({
         columns: {
@@ -40,7 +40,7 @@ const Batch = () => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'batches-details'} className="dt-name">{data.batchName}</Link>
+                render: (data) => <Link to={'batches-details'} state={{path: 'batches-details',title: 'BATCHES',subTitle:"Batch Details"}} className="dt-name">{data.batchName}</Link>
 
             },
             "technology": {
@@ -110,13 +110,12 @@ const Batch = () => {
         clearSelection: false
     });
     return (<><div className="table-shadow">
-            <CardHeader/>
+           <div className="p-3"><CardHeader {...{location}}/></div> 
         <DynamicTable {...{ configuration, sourceData: dummyData }} />
     </div>
     <div className="table-footer-action">
             <div>
                 <Button onClick={() => setShow(true)}> + Add New </Button>
-
                 <BsModal {...{ show, setShow, headerTitle: "Add new Batches", size: "lg" }}>
                     <div className="form-container">
                         <Formik
