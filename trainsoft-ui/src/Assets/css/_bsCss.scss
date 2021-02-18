@@ -141,3 +141,21 @@
 	height: 20px;
 	border-bottom: 0px;
 }
+.breadcrumb{
+	background: transparent;
+	padding: .75rem 0rem;
+}
+.breadcrumb-item+.breadcrumb-item::before {
+    display: inline-block;
+    padding-right: .5rem;
+    color: #6c757d;
+    content: ">";
+	font-family: monospace;
+}
+.breadcrumb-item.active {
+    color: $fontColor;
+	font-weight: bold;
+}
+.breadcrumb-item a{
+	color: $fontColor;
+}

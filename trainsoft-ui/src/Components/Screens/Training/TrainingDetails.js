@@ -4,30 +4,35 @@ import './training.css'
 import { TabBtn } from "../../Common/Buttons/Buttons";
 import SearchBox from "../../Common/SearchBox/SearchBox";
 import TrainingInfo from "./TrainingInfo/TrainingInfo";
-import { navigate, Router } from "../../Common/Router";
+import { Router } from "../../Common/Router";
 import Session from "./Session/Session";
+import Assessment from "./Assessment/Assessment";
+import Forum from "./Forum/Forum";
+import Report from "./Report/Report";
+import { useNavigate } from "@reach/router"
+import CardHeader from "../../Common/CardHeader";
 
 
-const TrainingDetails = ({location}) => {
-    console.log(location)
+const TrainingDetails = ({ location }) => {
+    const navigate = useNavigate();
     return (<>
         <div className="table-shadow p-3">
-        <div className="jcb ">
-                <div className="">Training</div>
-                <SearchBox/>
-            </div>
+            <CardHeader {...{location}}/>
             <div className="flx my-2">
-                <TabBtn onClick={()=>navigate("/training/training-details")}>Training Info</TabBtn>
-                <TabBtn onClick={()=>navigate(location.pathname + "/session")}>Sessions</TabBtn>
-                <TabBtn>Labs</TabBtn>
-                <TabBtn>Assessments</TabBtn>
-                <TabBtn>Reports</TabBtn>
+                <TabBtn active={location.state.subPath === "/"} onClick={() => navigate("/training/training-details", { state: { path:'training', title: 'TRAINING',subTitle:"Training Info", subPath:"/" } })}>Training Info</TabBtn>
+                <TabBtn active={location.state.subPath === "session"} onClick={() => navigate("/training/training-details/session", { state: {path:'training', title: 'TRAINING',subTitle:"Sessions",subPath:"session" } })}>Sessions</TabBtn>
+                <TabBtn active={location.state.subPath === "assessment"} onClick={() => navigate("/training/training-details/assessment", {path:'training', state: { title: 'TRAINING',subTitle:"Assessments",subPath:"assessment" } })}>Assessments</TabBtn>
+                <TabBtn active={location.state.subPath === "reports"} onClick={() => navigate("/training/training-details/report", { state: {path:'training', title: 'TRAINING',subTitle:"Reports",subPath:"report" } })}>Reports</TabBtn>
+                <TabBtn active={location.state.subPath === "forum"} onClick={() => navigate("/training/training-details/forum", { state: {path:'training', title: 'TRAINING',subTitle:"Discussion Forum",subPath:"forum" } })}>Discussion Forum</TabBtn>
             </div>
-           <Router>
-                  <TrainingInfo path="/"/>
-                  <Session path="session"/>
-           </Router>
-           
+            <Router>
+                <TrainingInfo path="/" />
+                <Session path="session" />
+                <Assessment path="assessment" />
+                <Report path="report" />
+                <Forum path="forum" />
+            </Router>
+
         </div></>)
 }
 export default TrainingDetails

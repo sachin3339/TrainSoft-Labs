@@ -1,5 +1,5 @@
 import React from 'react'
-import  Breadcrumb  from 'react-bootstrap/Breadcrumb'
+import Breadcrumb from 'react-bootstrap/Breadcrumb'
 import { Dropdown, Modal, ProgressBar } from 'react-bootstrap';
 import { CustomToggle } from '../../Services/MethodFactory';
 import { ICN_CLOSE } from './Icon'
@@ -30,8 +30,6 @@ export const BsModal = ({ children, setShow, show, headerTitle, size = "md" }) =
     )
 }
 
-
-
 // progress bar
 export const Progress = ({ value = 0, variant, label = "", className = "" }) => <ProgressBar className={className} label={label} variant={variant} now={value} />
 
@@ -44,7 +42,6 @@ export const BsDropDown = ({ children, header = "", direction = "right" }) => <D
         {children}
     </Dropdown.Menu>
 </Dropdown>
-
 
 // card
 export const Card = ({ children, title, action, className = "" }) => {
@@ -61,6 +58,7 @@ export const Card = ({ children, title, action, className = "" }) => {
     )
 }
 
+// Breadcrumbs
 export const Breadcrumbs = () => <Breadcrumb>
     <Breadcrumb.Item href="#">Home</Breadcrumb.Item>
     <Breadcrumb.Item href="https://getbootstrap.com/docs/4.0/components/Breadcrumb/">
@@ -68,3 +66,22 @@ export const Breadcrumbs = () => <Breadcrumb>
 </Breadcrumb.Item>
     <Breadcrumb.Item active>Data</Breadcrumb.Item>
 </Breadcrumb>
+
+
+// profile
+// Assets/Images/vid.jpg
+export const ProfileImg = ({url= null,name="",size="sm" }) =>{
+    return (<>
+        <div className={`user-profile profile-${size}`}>
+            {url === null ? <div className="">{name}</div> : <img src={url}/> }
+           
+        </div>
+    </>)
+}
+
+export const BsCheckbox = ({label="",clicked,id,onChange})=>{
+        return( <div className="custom-input">
+                  <input type="checkbox" id={id} checked={clicked} onChange={onChange} />
+              <label htmlFor={id}><span className="pl-2">{label}</span></label>
+        </div>)
+}

@@ -14,15 +14,7 @@
 .header svg{
     width: 22px;
 }
-.user-profile{
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    border: 1px solid #ddd;
-    border-radius: 50%;
-    justify-content: center;
-}
+
 .search-box{
     display: flex;
     padding: 5px 18px;

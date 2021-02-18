@@ -1,3 +1,4 @@
+import { Children } from 'react'
 import {ICN_HOME,ICN_CALENDER,ICN_SETTING, ICN_SUPPORT, ICN_REPORT, ICN_PARTICIPANT, ICN_BATCHES} from '../../Common/Icon'
 export const SidebarConfig = [
     {
@@ -10,7 +11,7 @@ export const SidebarConfig = [
         icon: ICN_BATCHES,
         title: "ORG MGMT",
         pathname: "org-mgmt",
-        disabled: false
+        disabled: true
     },
     {
         icon: ICN_PARTICIPANT,
@@ -28,37 +29,50 @@ export const SidebarConfig = [
         icon: ICN_PARTICIPANT,
         title: "COURSE",
         pathname: "course",
-        disabled: false
+        disabled: true
     },
     {
         icon: ICN_PARTICIPANT,
         title: "LAB STORE",
         pathname: "labstore",
-        disabled: false
+        subPath:'labstore',
+        disabled: false,
+        Children: [
+            {
+                title: "Catalog",
+                pathName:'labstore',
+                disabled: false,
+            },
+            {
+                title: "My Lab",
+                pathName:'mylab',
+                disabled: false,
+            }
+        ]
     },
     {
         icon: ICN_REPORT,
         title: "REPORT",
         pathname: "report",
-        disabled: false
+        disabled: true
     },
     {
         icon: ICN_CALENDER,
         title: "CALENDER",
         pathname: "calender",
-        disabled: false
+        disabled: true
     },
     {
         icon: ICN_SUPPORT,
         title: "SUPPORT",
         pathname: "support",
-        disabled: false
+        disabled: true
     },
     {
         icon: ICN_SETTING,
         title: "SETTING",
         pathname: "setting",
-        disabled: false
+        disabled: true
     },
 
 
