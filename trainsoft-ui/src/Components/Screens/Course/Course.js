@@ -9,6 +9,7 @@ import { TextInput, DateInput, SelectInput } from "../../Common/InputField/Input
 import { Link, Router } from "../../Common/Router";
 import { BsModal } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
+import CourseDetails from "./CourseDetails";
 
 
 
@@ -39,7 +40,7 @@ const Courses = ({location}) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'batches-details'} state={{title: "BATCHES",subTitle:'',}} className="dt-name">{data.course}</Link>
+                render: (data) => <Link to={'course-details'} state={{title: "Course",subTitle:'Course Details',}} className="dt-name">{data.course}</Link>
 
             },
             "batchName": {
@@ -173,6 +174,7 @@ const Course = () => {
     return (
         <Router>
             <Courses path="/" />
+            <CourseDetails path="course-details"/>
         </Router>
     )
 }

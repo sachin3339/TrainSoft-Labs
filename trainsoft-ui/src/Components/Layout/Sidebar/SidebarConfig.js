@@ -25,6 +25,12 @@ export const SidebarConfig = [
         pathname: "batches",
         disabled: false
     },
+    // {
+    //     icon: ICN_BATCHES,
+    //     title: "USER",
+    //     pathname: "user",
+    //     disabled: false
+    // },
     {
         icon: ICN_PARTICIPANT,
         title: "COURSE",
@@ -56,24 +62,24 @@ export const SidebarConfig = [
         pathname: "report",
         disabled: true
     },
-    {
-        icon: ICN_CALENDER,
-        title: "CALENDER",
-        pathname: "calender",
-        disabled: true
-    },
+    // {
+    //     icon: ICN_CALENDER,
+    //     title: "CALENDER",
+    //     pathname: "calender",
+    //     disabled: true
+    // },
     {
         icon: ICN_SUPPORT,
         title: "SUPPORT",
         pathname: "support",
         disabled: true
     },
-    {
-        icon: ICN_SETTING,
-        title: "SETTING",
-        pathname: "setting",
-        disabled: true
-    },
+    // {
+    //     icon: ICN_SETTING,
+    //     title: "SETTING",
+    //     pathname: "setting",
+    //     disabled: true
+    // },
 
 
 ]
