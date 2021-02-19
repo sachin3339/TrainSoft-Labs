@@ -3,12 +3,14 @@ package com.trainsoft.instructorled.customexception;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Setter @Getter
 @AllArgsConstructor @NoArgsConstructor
-public class InstructorException extends RuntimeException {
+public class InstructorException {
     private HttpStatus status;
     private String message;
-    private String error;
+    private LocalDateTime timestamp;
 }
 
