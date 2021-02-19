@@ -16,7 +16,6 @@ public class CourseTO extends BaseTO{
     private String name;
     private String description;
     private InstructorEnum.Status status;
-    private String trainingSid;
     private long createdOn;
     private String createdByVASid;
     private long updatedOn;

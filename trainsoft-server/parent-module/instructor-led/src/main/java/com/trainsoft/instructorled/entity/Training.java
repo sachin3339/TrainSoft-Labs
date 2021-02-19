@@ -42,7 +42,7 @@ public class Training extends BaseEntity{
     @JoinColumn(name = "batch_id", referencedColumnName = "id")
     private List<Batch> batches;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 
