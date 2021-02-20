@@ -27,7 +27,6 @@ const Content = () => {
         };
 
     return (<div className="media-link">
-        {console.log(file)}
         {content && <ImageView image={content}/>}
         
 

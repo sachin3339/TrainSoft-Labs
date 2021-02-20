@@ -40,7 +40,7 @@ const Courses = ({location}) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'course-details'} state={{title: "Course",subTitle:'Course Details',}} className="dt-name">{data.course}</Link>
+                render: (data) => <Link to={'course-details'} state={{title: "COURSE",subTitle:'Course Details',}} className="dt-name">{data.course}</Link>
 
             },
             "batchName": {

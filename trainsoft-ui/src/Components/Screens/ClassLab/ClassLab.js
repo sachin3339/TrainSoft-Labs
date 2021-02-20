@@ -11,13 +11,13 @@ import ClassPoll from './ClassPoll/ClassPoll';
 import { BsDropDown } from '../../Common/BsUtils';
 import CodeEditor from './CodeEditor/CodeEditor';
 import WhiteBoard from './WhiteBoard/WhiteBoard';
+import NoDataFound from '../../Common/NoDataFound/NoDataFound';
 
 const ClassLab = () => {
     const [show,setShow] = useState(false)
     const [tab, setTab] = useState([])
     const [selectedTab, setSelectedTab] = useState()
-    
-    
+    const [onClickMedia,setOnClickMedia] = useState(false) 
     return (<>
         <div className="p-4 full-w full-h">
             <div className="flx full-w full-h ">
@@ -25,22 +25,20 @@ const ClassLab = () => {
                     <div className="title-lg">TrainSoft - Instructor</div>
                     <div className="flx">
                         {tab.length !== 0 ?
-                            tab.map(res => <div className="class-mode">
-                                <div className="" onClick={()=> setSelectedTab(res)}>{res}</div><div className="mode-close" onClick={() => { setTab(tab.filter(resp => resp !== res)); setSelectedTab('') }}>{ICN_CLOSE}</div>
+                            tab.map((res,i) => <div  className={`class-mode ${selectedTab === res && 'active-tab-class'}`}  key={i}>
+                                <div className="" onClick={()=> {setSelectedTab(res);onClickMedia(false)}}>{res}</div><div className={`mode-close }`} onClick={() => { setTab(tab.filter(resp => resp !== res)); setSelectedTab(tab[tab.length-1]) }}>{ICN_CLOSE}</div>
                             </div>)
                             : <div className="class-mode">New</div>}
-
-
                         <Dropdown className="dropdown-menus">
                             <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                 <div className="plus-btn">+</div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu as="div" align="right">
-                                <Dropdown.Item onClick={() => { setTab(prevState => [...prevState, 'Online Media']); setSelectedTab('Online Media') }}>Online Media</Dropdown.Item>
-                                <Dropdown.Item onClick={() => { setTab(prevState => [...prevState, 'Whiteboard']); setSelectedTab('Whiteboard') }}>Whiteboard</Dropdown.Item>
-                                <Dropdown.Item onClick={() => { setTab(prevState => [...prevState, 'Content']); setSelectedTab('Content') }}>Content</Dropdown.Item>
-                                <Dropdown.Item onClick={() => { setTab(prevState => [...prevState, 'Code editor']); setSelectedTab('Code editor') }}>Code editor</Dropdown.Item>
-                                <Dropdown.Item onClick={() => { setTab(prevState => [...prevState, 'Development Env']); setSelectedTab('Development Env') }}>Development Env</Dropdown.Item>
+                                <Dropdown.Item className={`${tab.some(res => res === "Online Media") ? 'd-none': 'd-block'}`} onClick={() => { setTab(prevState => [...prevState, 'Online Media']); setSelectedTab('Online Media');setOnClickMedia(true) }}>Online Media</Dropdown.Item>
+                                <Dropdown.Item className={`${tab.some(res => res === "Whiteboard") ? 'd-none': 'd-block'}`} onClick={() => { setTab(prevState => [...prevState, 'Whiteboard']); setSelectedTab('Whiteboard') }}>Whiteboard</Dropdown.Item>
+                                <Dropdown.Item className={`${tab.some(res => res === "Content") ? 'd-none': 'd-block'}`} onClick={() => { setTab(prevState => [...prevState, 'Content']); setSelectedTab('Content') }}>Content</Dropdown.Item>
+                                <Dropdown.Item className={`${tab.some(res => res === "Code editor") ? 'd-none': 'd-block'}`} onClick={() => { setTab(prevState => [...prevState, 'Code editor']); setSelectedTab('Code editor') }}>Code editor</Dropdown.Item>
+                                <Dropdown.Item className={`${tab.some(res => res === "Development Env") ? 'd-none': 'd-block'}`} onClick={() => { setTab(prevState => [...prevState, 'Development Env']); setSelectedTab('Development Env') }}>Development Env</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
 
@@ -48,21 +46,28 @@ const ClassLab = () => {
                     <div className="class-lab vic">
 
                         {/* ...Whiteboard  .... */}
-                        {selectedTab === "Whiteboard" && <WhiteBoard/> }
+                         <WhiteBoard className={`${selectedTab === "Whiteboard" ? 'd-inline': 'd-none'}`}/>
+                         
                         {/* ...End Whiteboard  .... */}
 
                            {/* ...Content  .... */}
-                        {selectedTab === "Content" && <Content/> }
+                           <div className={`${selectedTab === "Content" ? 'd-block': 'd-none'} full-h full-w`}><Content/> </div>
                         {/* ... End Content  .... */}
 
                           {/* ...Code Editor.... */}
-                          {selectedTab === "Code editor" && <div className="codeEditor"><CodeEditor/> </div>}
+                          <div className={`${selectedTab === "Code editor" ? 'column': 'd-none'} full-h full-w `}><CodeEditor/></div>
                           {/* ...Code Editor.... */}
 
 
                         {/* ...Media Link .... */}
-                        {selectedTab === "Online Media" && <OnlineMedia/>}
+                        <div className={`${selectedTab === "Online Media" ? 'd-block': 'd-none'} full-h full-w`}><OnlineMedia/></div>
                         {/* ...End Media Link .... */}
+
+                            {/* ... Development Env .... */}
+                            <div className={`${selectedTab === "Development Env" ? 'd-block': 'd-none'} full-h full-w`}>
+                                <NoDataFound title="Development Env" subTitle="Work on"/>
+                            </div>
+                        {/* ...Development Env .... */}
 
                         {tab.length === 0 && <div className="">
                             <div className="title-md mb-3">You are currently not sharing anything </div>

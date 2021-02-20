@@ -2,7 +2,7 @@ import { useState,useEffect } from 'react';
 import { SketchField, Tools } from 'react-sketch';
 import { ICN_CIRCLE, ICN_PAINT, ICN_PEN, ICN_SELECT, ICN_STOP, ICN_TEXT_FIELD , ICN_CALL_MADE, ICN_EDIT, ICN_DELETE} from '../../../Common/Icon';
 import './boardStyle.css'
-const WhiteBoard = () => {
+const WhiteBoard = ({className}) => {
     const [toolType, setToolType] = useState(Tools.Select)
     const [color,setColor] = useState("black")
     const [canUndo,setCanUndo] = useState(false)
@@ -41,7 +41,7 @@ const WhiteBoard = () => {
         
 
     return (
-        <div className="whiteboard">
+        <div className={` whiteboard ${className}`}>
             <div className="aic">
                 <div className="board-menu bg-secondary">
                     <div  onClick={()=> setToolType(Tools.Select)} className={`board-btn ${toolType === Tools.Select ? 'board-btn-active' : ''}`}>
@@ -56,10 +56,10 @@ const WhiteBoard = () => {
                     <div className={`board-btn ${toolType === Tools.Circle ? 'board-btn-active' : ''}`} onClick={()=> setToolType(Tools.Circle)}>
                         {ICN_CIRCLE}
                     </div>
-                    <div className={`board-btn ${toolType === Tools.Circle ? 'board-btn-active' : ''}`} onClick={()=> _addText()}>
+                    <div className={`board-btn`} onClick={()=> _addText()}>
                         {ICN_TEXT_FIELD}
                     </div>
-                    <div className={`board-btn ${toolType === Tools.Circle ? 'board-btn-active' : ''}`} onClick={()=> _removeSelected()}>
+                    <div className={`board-btn `} onClick={()=> _removeSelected()}>
                         {ICN_DELETE}
                     </div>
                     <div className={`board-btn wb-color`} onClick={()=> setToolType(Tools.Circle)}>
@@ -81,7 +81,7 @@ const WhiteBoard = () => {
                 <SketchField
                     width='900px'
                     className="board-style"
-                    height='568px'
+                    height='500px'
                     tool={toolType}
                     lineColor={color}
                     fillColor={color}
