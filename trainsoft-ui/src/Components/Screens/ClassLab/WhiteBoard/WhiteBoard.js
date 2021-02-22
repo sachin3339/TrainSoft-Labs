@@ -79,9 +79,9 @@ const WhiteBoard = ({className}) => {
                 </div>
                 <div className="full-w">
                 <SketchField
-                    width='900px'
+                    width='920px'
                     className="board-style"
-                    height='500px'
+                    height='570px'
                     tool={toolType}
                     lineColor={color}
                     fillColor={color}
