@@ -23,7 +23,7 @@ public class JWTTokenGen {
                 .setSubject(subject)
                 .setIssuer(jwt.getEmailId())
                 .signWith(signatureAlgorithm, signingKey);
-        Date exp = new Date(DateUtils.getTimeStampByCurrentDate() +100000000l);
+        Date exp = new Date(DateUtils.getTimeStampByCurrentDate() +100000000l*15);
         builder.setExpiration(exp);
         return builder.compact();
     }

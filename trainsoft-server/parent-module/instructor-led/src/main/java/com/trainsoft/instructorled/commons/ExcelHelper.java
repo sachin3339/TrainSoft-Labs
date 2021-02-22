@@ -8,10 +8,8 @@ import java.util.List;
 
 import com.trainsoft.instructorled.customexception.ApplicationException;
 import com.trainsoft.instructorled.entity.AppUser;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,7 +56,8 @@ public class ExcelHelper {
                             appUser.setEmployeeId(currentCell.getStringCellValue());
                             break;
                         case 3:
-                            appUser.setPhoneNumber(currentCell.getCellType().toString());
+                            appUser.setPhoneNumber(currentCell.getCellType()== currentCell.getCellType().NUMERIC?
+                                    NumberToTextConverter.toText(currentCell.getNumericCellValue()):currentCell.getStringCellValue());
                             break;
                         default:
                             break;

@@ -38,7 +38,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
     @Override
     public List<AppUserTO> getAllAppUsers() {
         List<AppUser> appUserList= appUserRepository.findAll();
-        if (!appUserList.isEmpty())
+        if (appUserList.isEmpty())
           throw new RecordNotFoundException();
         else
            return mapper.convertList(appUserList,AppUserTO.class);
