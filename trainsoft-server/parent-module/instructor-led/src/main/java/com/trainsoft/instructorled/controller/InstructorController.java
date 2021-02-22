@@ -4,16 +4,14 @@ import com.trainsoft.instructorled.commons.HttpUtils;
 import com.trainsoft.instructorled.commons.JWTDecode;
 import com.trainsoft.instructorled.commons.JWTTokenTO;
 import com.trainsoft.instructorled.service.ICompanyService;
+import com.trainsoft.instructorled.service.ICourseService;
+import com.trainsoft.instructorled.service.IDepartmentService;
 import com.trainsoft.instructorled.to.CompanyTO;
+import com.trainsoft.instructorled.to.CourseTO;
+import com.trainsoft.instructorled.to.DepartmentTO;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -31,6 +29,7 @@ import java.util.Map;
 public class InstructorController {
 
     ICompanyService companyService;
+    IDepartmentService departmentService;
 
     @PostMapping("/create")
     @ApiOperation(value = "createCompany", notes = "API to create new Company.")
@@ -44,11 +43,53 @@ public class InstructorController {
     }
 
     @GetMapping("/company/{companySid}")
-    @ApiOperation(value = "getCompanyBySid", notes = "Get list of Company")
+    @ApiOperation(value = "getCompanyBySid", notes = "Get Company by Sid")
     public ResponseEntity<?> getCompanyBySid(
-           // @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid) {
         return ResponseEntity.ok(companyService.getCompanyBySid(companySid));
+    }
+
+    @PostMapping("dept/create")
+    @ApiOperation(value = "createDepartment", notes = "API to create new Department.")
+    public ResponseEntity<?> createDepartment(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Create Department payload", required = true) @RequestBody DepartmentTO DepartmentTO) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        DepartmentTO.setCreatedByVASid(jwt.getVirtualAccountSid());
+        DepartmentTO.setCompanySid(jwt.getCompanySid());
+        DepartmentTO createDepartment = departmentService.createDepartment(DepartmentTO);
+        return ResponseEntity.ok(createDepartment);
+    }
+
+    @PutMapping("dept/update")
+    @ApiOperation(value = "updateDepartment", notes = "API to update existing Department.")
+    public ResponseEntity<?> updateDepartment(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Update Department payload", required = true) @RequestBody DepartmentTO DepartmentTO) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        DepartmentTO.setUpdatedByVASid(jwt.getVirtualAccountSid());
+        DepartmentTO.setCompanySid(jwt.getCompanySid());
+        DepartmentTO updateDepartment = departmentService.updateDepartment(DepartmentTO);
+        return ResponseEntity.ok(updateDepartment);
+
+    }
+
+    @GetMapping("/dept/{deptSid}")
+    @ApiOperation(value = "getDepartmentBySid", notes = "Get Department by Sid")
+    public ResponseEntity<?> getDepartmentBySid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Department Sid", required = true) @PathVariable("deptSid") String deptSid) {
+        return ResponseEntity.ok(departmentService.getDepartmentBySid(deptSid));
+    }
+
+    @DeleteMapping("/delete/dept/{deptSid}")
+    @ApiOperation(value = "deleteDepartment", notes = "API to delete Department")
+    public ResponseEntity<?> deleteDepartment(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Department sid", required = true) @PathVariable("deptSid") String deptSid) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(departmentService.deleteDepartmentBySid(deptSid, jwt.getVirtualAccountSid()));
     }
 
     @PostMapping(value = "/jdoodle/execute",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)

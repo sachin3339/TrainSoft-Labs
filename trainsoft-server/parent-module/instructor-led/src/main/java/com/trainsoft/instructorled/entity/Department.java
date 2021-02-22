@@ -24,9 +24,6 @@ public class Department extends BaseEntity {
 	@Column(name = "location")
 	private String location;
 
-	@Column(name = "is_active")
-	private String active;
-
 	@Column(name="status")
 	@Enumerated(EnumType.STRING)
 	private InstructorEnum.Status status;

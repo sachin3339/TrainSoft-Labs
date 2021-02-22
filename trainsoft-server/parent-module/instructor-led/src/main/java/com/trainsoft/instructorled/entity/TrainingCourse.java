@@ -10,12 +10,12 @@ import javax.persistence.*;
 @Table(name = "training_has_course")
 @Getter @Setter @NoArgsConstructor
 public class TrainingCourse extends BaseEntity {
-    
-    @ManyToOne
-    @JoinColumn(name = "training_id", referencedColumnName = "id",nullable = false)
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "training_id", referencedColumnName = "id")
     private Training training;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id", referencedColumnName = "id",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 }
