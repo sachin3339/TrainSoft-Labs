@@ -43,3 +43,24 @@
 .forum-reply-profile{
     padding-right: 10px;
 }
+.activeBox-div{
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+}
+.on-going .activeBox-div{
+    background: #FFCCE5;
+    border: 1px solid #FF007C;
+}
+.delayed .activeBox-div{
+    background: #BEBDBC;
+    border: 1px solid #3D3D3D;
+}
+.upcoming .activeBox-div{
+    background: #E5CCF0;
+    border: 1px solid #7D00B5;
+}
+.complete .activeBox-div{
+    background: #0AADE833;
+    border: 1px solid #00CCF2;
+}

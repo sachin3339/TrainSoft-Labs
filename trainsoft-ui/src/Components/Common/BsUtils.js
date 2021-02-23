@@ -79,9 +79,18 @@ export const ProfileImg = ({url= null,name="",size="sm" }) =>{
     </>)
 }
 
-export const BsCheckbox = ({label="",clicked,id,onChange})=>{
-        return( <div className="custom-input">
-                  <input type="checkbox" id={id} checked={clicked} onChange={onChange} />
+export const BsCheckbox = ({label="",checked=false,id,onChange, className=""})=>{
+        return( <div className={`custom-input ${className}`}>
+                  <input type="checkbox" id={id} checked={checked} onChange={onChange} />
               <label htmlFor={id}><span className="pl-2">{label}</span></label>
         </div>)
+}
+
+export const ActiveBox = ({label="",className="",bgColor=''})=>{
+    return( <div className={`aic ${className} ${bgColor}`}>
+                <div className="activeBox-div">
+
+                </div>
+                <div className="mx-2 mr-4">{label}</div>
+    </div>)
 }

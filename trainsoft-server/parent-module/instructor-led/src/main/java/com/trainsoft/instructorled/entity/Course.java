@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "course")
@@ -28,8 +30,8 @@ public class Course extends BaseEntity {
     @Column(name="updated_on")
     private Date updatedOn;
 
-    @OneToOne(mappedBy = "course")
-    private Training training;
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<TrainingCourse> trainingCourses = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "created_by", referencedColumnName = "id")

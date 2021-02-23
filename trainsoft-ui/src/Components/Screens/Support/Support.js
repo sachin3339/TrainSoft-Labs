@@ -1,9 +1,9 @@
 import NoDataFound from "../../Common/NoDataFound/NoDataFound"
-
+import "./style.css";
 const Support = () => {
-    return (<div className="table-shadow">
-    <NoDataFound title="Work on Progress"/>
-</div>)
+    return (<>
+    
+    </>)
 }
 
 export default Support

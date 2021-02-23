@@ -12,6 +12,7 @@ import LabStore from "../../Screens/LabStore.js/LabStore";
 import Course from "../../Screens/Course/Course";
 import OrgMgmt from "../../Screens/OrgMgmt/OrgMgmt";
 import Training from "../../Screens/Training/Traning";
+import User from "../../Screens/Users/Users";
 
 const Dashboard = ({location}) => {
     console.log(location)
@@ -32,6 +33,7 @@ const Dashboard = ({location}) => {
                         <Training path="training/*"/>
                         <Calender path="calender/*"/>
                         <Labs path="labs/*"/>
+                        <User path="user"/>
                         <Support path="support/*"/>
                         <LabStore path="labstore/*"/>
                     </Router>

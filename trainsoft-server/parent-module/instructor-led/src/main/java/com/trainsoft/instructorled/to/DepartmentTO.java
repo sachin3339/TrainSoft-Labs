@@ -14,7 +14,6 @@ public class DepartmentTO extends BaseTO{
     private String description;
     private String emailId;
     private String location;
-    private String active;
     private InstructorEnum.Status status;
     private long createdOn;
     private long updatedOn;

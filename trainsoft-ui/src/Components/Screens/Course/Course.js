@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import './../Batches/batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Modal, Form } from 'react-bootstrap'
 import { Formik } from 'formik';
-import { ICN_TRASH, ICN_EDIT, ICN_CLOSE } from "../../Common/Icon";
+import { ICN_TRASH, ICN_EDIT } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
-import { TextInput, DateInput, SelectInput } from "../../Common/InputField/InputField";
+import { TextInput, DateInput, SelectInput, TextArea } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
 import { BsModal } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
+import CourseDetails from "./CourseDetails";
+import RestService from "../../../Services/api.service";
 
 
 
@@ -32,31 +34,24 @@ const createBatches = {
 }
 const Courses = ({location}) => {
     const [show, setShow] = useState(false);
+    const [courseList,setCourseList] = useState([])
     const [configuration, setConfiguration] = useState({
         columns: {
-            "course": {
+            "name": {
                 "title": "Course Name",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'batches-details'} state={{title: "BATCHES",subTitle:'',}} className="dt-name">{data.course}</Link>
+                render: (data) => <Link to={'course-details'} state={{title: "COURSE",subTitle:'Course Details', rowData:data,}} className="dt-name">{data.name}</Link>
 
             },
-            "batchName": {
+            "description": {
                 "title": "Batch Name",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
 
-            }
-            ,
-            "createdDate": {
-                "title": "Created Date",
-                "sortDirection": null,
-                "sortEnabled": true,
-                isSearchEnabled: false
-            }
-            ,
+            },
             "learner": {
                 "title": "learners",
                 "sortDirection": null,
@@ -64,15 +59,8 @@ const Courses = ({location}) => {
                 isSearchEnabled: false
             }
             ,
-            "status": {
-                "title": "Status",
-                "sortDirection": null,
-                "sortEnabled": true,
-                isSearchEnabled: false
-            }
-            ,
             "startDate": {
-                "title": "Start Date",
+                "title": "Creation Date",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false
@@ -109,9 +97,48 @@ const Courses = ({location}) => {
         showCheckbox: true,
         clearSelection: false
     });
+
+    // get all course list
+    const getAllCourse = ()=>{
+        try{
+            RestService.getAllCourse().then((res) => {
+                    setCourseList(res.data)
+                },err => console.log(err)
+            ); 
+        }
+        catch(err){
+            console.error('error occur on getAllCourse',err)
+        }
+    }
+
+    // get all course list
+    const createCourse = (data)=>{
+        try{
+            let payload = {
+            "createdByVASid": "string",
+            "description": data.description,
+            "name": data.name,
+            "sid": null,
+            "status": "ENABLED",
+            "updatedByVASid": "string",
+            }
+            RestService.CreateCourse(payload).then(response => {
+                   setShow(false) 
+                   console.log(response)
+                }, err => console.log(err)
+            ); 
+        }
+        catch(err){
+            console.error('error occur on getAllCourse',err)
+        }
+    }
+
+    useEffect(() => {
+        getAllCourse()
+    }, [location])
     return (<><div className="table-shadow">
         <div className="p-3"><CardHeader {...{location}}/></div> 
-        <DynamicTable {...{ configuration, sourceData: dummyData }} />
+        <DynamicTable {...{ configuration, sourceData: courseList }} />
     </div>
         <div className="table-footer-action">
             <div>
@@ -119,33 +146,20 @@ const Courses = ({location}) => {
                 <BsModal {...{ show, setShow, headerTitle: "Add new Batches", size: "lg" }}>
                     <div className="form-container">
                         <Formik
-                            onSubmit={() => console.log('a')}
-                            initialValues={createBatches}
+                            onSubmit={(value) => createCourse(value)}
+                            initialValues={{
+                                name:'',
+                                description:''
+                            }}
                         >
                             {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
-                                <div className="edit-shipping">
+                                <div>
                                     <Form.Group className="row">
-                                        <div className="col-6">
-                                            <TextInput label="Batch Name" name="batchName" />
+                                        <div className="col-12">
+                                            <TextInput label="Course Name" name="name" />
                                         </div>
-                                        <div className="col-6">
-                                            <SelectInput label="Training Type" option={['Online', 'Self', 'Offline']} name="trainingType" />
-                                        </div>
-                                    </Form.Group>
-                                    <Form.Group className="row">
-                                        <div className="col-6">
-                                            <DateInput label="Start Date" name="startDate" />
-                                        </div>
-                                        <div className="col-6">
-                                            <DateInput label="End date" name="endDate" />
-                                        </div>
-                                    </Form.Group>
-                                    <Form.Group className="row">
-                                        <div className="col-6">
-                                            <SelectInput label="Course" name="course" option={['Online', 'Self', 'Offline']} />
-                                        </div>
-                                        <div className="col-6">
-                                            <TextInput label="Instructor" name="instructor" />
+                                        <div className="col-12">
+                                            <TextArea name="description" label="Description"/>
                                         </div>
                                     </Form.Group>
                                 </div>
@@ -155,7 +169,7 @@ const Courses = ({location}) => {
                                         <span className="title-sm">Upload participants</span>
                                     </div>
                                     <div>
-                                        <Button type="submit" >Create Batches</Button>
+                                        <Button type="submit" >Create Course</Button>
                                     </div>
                                 </footer>
                             </form>
@@ -173,6 +187,7 @@ const Course = () => {
     return (
         <Router>
             <Courses path="/" />
+            <CourseDetails path="course-details"/>
         </Router>
     )
 }
