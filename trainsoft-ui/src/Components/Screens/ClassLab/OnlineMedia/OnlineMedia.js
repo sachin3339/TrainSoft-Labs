@@ -1,10 +1,18 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Formik, Field, Form } from 'formik';
 import ReactPlayer from 'react-player/lazy'
 import { Button } from '../../../Common/Buttons/Buttons'
 import { ICN_PLAY } from '../../../Common/Icon';
-const OnlineMedia = () => {
+const OnlineMedia = ({ fromClose, setFromClose,removedTag}) => {
     const [mediaLink, setMediaLink] = useState(null)
+
+    useEffect(() => {
+        if (fromClose && removedTag === "Online Media") {
+            setFromClose(false)
+            setMediaLink(null)
+        }
+    }, [fromClose])
+
     return (<div className="media-link">
         {mediaLink && <ReactPlayer
         width='100%'
@@ -18,7 +26,7 @@ const OnlineMedia = () => {
                 {() => (
                     <Form>
                         <div className="chat-send">
-                            <div>
+                            <div className="full-w">
                                 <Field type="text" className="form-control" name="mediaLink" placeholder="Past your media link here..." />
                             </div>
                         </div>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './classlab.css'
 import vid from '../../../Assets/Images/vid.jpg';
-import { ICN_ASSESSMENT, ICN_CLOSE, ICN_EXIT, ICN_MIC, ICN_PEOPLE,  ICN_RECORD, ICN_SCREEN_SHARE, ICN_SEND, ICN_VIDEO } from '../../Common/Icon';
+import { ICN_ASSESSMENT, ICN_CLOSE, ICN_EXIT, ICN_MIC, ICN_PEOPLE, ICN_RECORD, ICN_SCREEN_SHARE, ICN_SEND, ICN_VIDEO } from '../../Common/Icon';
 import { CustomToggle } from '../../../Services/MethodFactory';
 import { Dropdown } from 'react-bootstrap';
 import { BtnRound, BtnSquare, Button } from '../../Common/Buttons/Buttons'
@@ -11,13 +11,16 @@ import ClassPoll from './ClassPoll/ClassPoll';
 import { BsDropDown } from '../../Common/BsUtils';
 import CodeEditor from './CodeEditor/CodeEditor';
 import WhiteBoard from './WhiteBoard/WhiteBoard';
+import NoDataFound from '../../Common/NoDataFound/NoDataFound';
+
 
 const ClassLab = () => {
-    const [show,setShow] = useState(false)
+    const [show, setShow] = useState(false)
     const [tab, setTab] = useState([])
     const [selectedTab, setSelectedTab] = useState()
-    
-    
+    const [removedTag,setRemovedTag]  = useState('')
+    const [fromClose, setFromClose] = useState(false)
+    const classTab = ['Online Media', 'Whiteboard', 'Content', 'Code editor', 'Development Env']
     return (<>
         <div className="p-4 full-w full-h">
             <div className="flx full-w full-h ">
@@ -25,49 +28,32 @@ const ClassLab = () => {
                     <div className="title-lg">TrainSoft - Instructor</div>
                     <div className="flx">
                         {tab.length !== 0 ?
-                            tab.map(res => <div className="class-mode">
-                                <div className="" onClick={()=> setSelectedTab(res)}>{res}</div><div className="mode-close" onClick={() => { setTab(tab.filter(resp => resp !== res)); setSelectedTab('') }}>{ICN_CLOSE}</div>
+                            tab.map((res, i) => <div className={`class-mode ${selectedTab === res && 'active-tab-class'}`} key={i}>
+                                <div className="" onClick={() => { setSelectedTab(res) }}>{res}</div><div className={`mode-close }`} onClick={() => { setTab(tab.filter(resp => resp !== res)); setFromClose(true);setRemovedTag(res) }}>{ICN_CLOSE}</div>
                             </div>)
                             : <div className="class-mode">New</div>}
-
-
                         <Dropdown className="dropdown-menus">
                             <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
                                 <div className="plus-btn">+</div>
                             </Dropdown.Toggle>
                             <Dropdown.Menu as="div" align="right">
-                                <Dropdown.Item onClick={() => { setTab(prevState => [...prevState, 'Online Media']); setSelectedTab('Online Media') }}>Online Media</Dropdown.Item>
-                                <Dropdown.Item onClick={() => { setTab(prevState => [...prevState, 'Whiteboard']); setSelectedTab('Whiteboard') }}>Whiteboard</Dropdown.Item>
-                                <Dropdown.Item onClick={() => { setTab(prevState => [...prevState, 'Content']); setSelectedTab('Content') }}>Content</Dropdown.Item>
-                                <Dropdown.Item onClick={() => { setTab(prevState => [...prevState, 'Code editor']); setSelectedTab('Code editor') }}>Code editor</Dropdown.Item>
-                                <Dropdown.Item onClick={() => { setTab(prevState => [...prevState, 'Development Env']); setSelectedTab('Development Env') }}>Development Env</Dropdown.Item>
+                                {classTab.map(resp => <Dropdown.Item className={`${tab.some(res => res === resp) ? 'd-none' : 'd-block'}`} onClick={() => { setTab(prevState => [...prevState, resp]); setSelectedTab(resp) }}>{resp}</Dropdown.Item>)}
                             </Dropdown.Menu>
                         </Dropdown>
-
                     </div>
                     <div className="class-lab vic">
-
-                        {/* ...Whiteboard  .... */}
-                        {selectedTab === "Whiteboard" && <WhiteBoard/> }
-                        {/* ...End Whiteboard  .... */}
-
-                           {/* ...Content  .... */}
-                        {selectedTab === "Content" && <Content/> }
-                        {/* ... End Content  .... */}
-
-                          {/* ...Code Editor.... */}
-                          {selectedTab === "Code editor" && <div className="codeEditor"><CodeEditor/> </div>}
-                          {/* ...Code Editor.... */}
-
-
-                        {/* ...Media Link .... */}
-                        {selectedTab === "Online Media" && <OnlineMedia/>}
-                        {/* ...End Media Link .... */}
-
-                        {tab.length === 0 && <div className="">
-                            <div className="title-md mb-3">You are currently not sharing anything </div>
-                            <div>Start sharing now!</div>
-                        </div>}
+                        {tab.length > 0 ? <>
+                            {selectedTab === "Whiteboard" && <WhiteBoard className={`${selectedTab === "Whiteboard" ? 'd-block' : 'd-none'}`} />}
+                            <div className={`${selectedTab === "Content" ? 'd-block' : 'd-none'} full-h full-w`}><Content {...{fromClose,setFromClose,removedTag}} /> </div>
+                            <div className={`${selectedTab === "Code editor" ? 'column' : 'd-none'} full-h full-w `}><CodeEditor {...{fromClose,setFromClose,removedTag}} /></div>
+                            <div className={`${selectedTab === "Online Media" ? 'd-block' : 'd-none'} full-h full-w`}><OnlineMedia {...{fromClose,setFromClose,removedTag}} /></div>
+                            {selectedTab === "Development Env" && <div>
+                                <NoDataFound title="Development Env" subTitle="Work on" />
+                            </div>}
+                        </> : <div className="">
+                                <div className="title-md mb-3">You are currently not sharing anything </div>
+                                <div>Start sharing now!</div>
+                            </div>}
                     </div>
                 </div>
 
@@ -77,10 +63,10 @@ const ClassLab = () => {
                         <BtnSquare>{ICN_SCREEN_SHARE}</BtnSquare>
                         <BtnSquare>{ICN_RECORD}</BtnSquare>
                         <BtnSquare> {ICN_PEOPLE}</BtnSquare>
-                        <BsDropDown 
-                        header={<BtnSquare>{ICN_ASSESSMENT}</BtnSquare>}>
-                           <Dropdown.Item  onClick={()=> setShow(true)}>Create a poll</Dropdown.Item>
-                           <Dropdown.Item>Result</Dropdown.Item>
+                        <BsDropDown
+                            header={<BtnSquare>{ICN_ASSESSMENT}</BtnSquare>}>
+                            <Dropdown.Item onClick={() => setShow(true)}>Create a poll</Dropdown.Item>
+                            <Dropdown.Item>Result</Dropdown.Item>
                         </BsDropDown>
                         <BtnSquare>{ICN_ASSESSMENT}</BtnSquare>
                         <BtnSquare>{ICN_EXIT}</BtnSquare>
@@ -92,8 +78,8 @@ const ClassLab = () => {
                                 <div></div>
                             </div>
                             <div className="footer-video-action">
-                                        <BtnRound className="mr-3">{ICN_VIDEO}</BtnRound>
-                                        <BtnRound>{ICN_MIC}</BtnRound>
+                                <BtnRound className="mr-3">{ICN_VIDEO}</BtnRound>
+                                <BtnRound>{ICN_MIC}</BtnRound>
                             </div>
                         </div>
                     </div>
@@ -131,7 +117,7 @@ const ClassLab = () => {
                 {/* end right panel */}
             </div>
         </div>
-        <ClassPoll {...{setShow,show}}/>
+        <ClassPoll {...{ setShow, show }} />
     </>)
 }
 export default ClassLab

@@ -9,6 +9,7 @@ import {
     buildStyles
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import CalenderGraph from '../../Common/CalenderGraph/CalenderGraph';
 const tableData = [
     { name: "ITU_01", avgScr: 50 },
     { name: "ITU_02", avgScr: 70 },
@@ -169,56 +170,7 @@ const Home = () => {
                 
                     {/* ..........Calender......... */}
                     <Card title="Calender" className="full-h">
-                        <div className="date-timeline">
-                            <div className="time-title">
-                                8 am
-                            </div>
-                            <div className="borderLing">
-                                <div className="line"></div>
-                                <div className="timeline-bubble bubble-blue">
-                                        <div className="title-sm">
-                                            <div>Data Science</div>
-                                            <div>8:15-8:45</div>
-                                        </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="date-timeline">
-                            <div className="time-title">
-                                8:30 am
-                            </div>
-                            <div className="borderLing">
-                                <div className="line"></div>
-                                <div className="timeline-bubble bubble-red">
-                                        <div className="title-sm">
-                                            <div>Data Science</div>
-                                            <div>8:15-8:45</div>
-                                        </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="date-timeline">
-                            <div className="time-title">
-                                9 am
-                            </div>
-                            <div className="borderLing">
-                                <div className="line"></div>
-                                <div className="timeline-bubble bubble-db">
-                                        <div className="title-sm">
-                                            <div>Data Science</div>
-                                            <div>8:15-8:45</div>
-                                        </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="date-timeline">
-                            <div className="time-title">
-                                9:30 am
-                            </div>
-                            <div className="borderLing">
-                                <div className="line"></div>
-                            </div>
-                        </div>
+                        <CalenderGraph/>
                     </Card>
                     {/* ..........End Calender......... */}
             </div>

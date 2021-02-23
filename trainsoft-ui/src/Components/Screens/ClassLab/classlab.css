@@ -112,3 +112,6 @@ input[type="file"] {
 .docs-viewer-wrapper{
     overflow: unset !important;
 }
+.active-tab-class{
+    background: #62a6ec !important
+}
