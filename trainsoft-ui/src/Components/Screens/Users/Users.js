@@ -213,7 +213,7 @@ const User = ({ location }) => {
 const Users = () => {
     return (
         <Router>
-            <Users path="/" />
+            <User path="/" />
         </Router>
     )
 }
