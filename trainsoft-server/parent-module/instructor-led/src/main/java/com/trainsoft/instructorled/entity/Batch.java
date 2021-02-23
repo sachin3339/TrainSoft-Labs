@@ -23,12 +23,6 @@ public class Batch extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private InstructorEnum.TrainingType trainingType;
 
-	@Column(name="start_date")
-	private Date startDate;
-
-	@Column(name="end_date")
-	private Date endDate;
-
 	@Column(name="created_on")
 	private Date createdOn;
 

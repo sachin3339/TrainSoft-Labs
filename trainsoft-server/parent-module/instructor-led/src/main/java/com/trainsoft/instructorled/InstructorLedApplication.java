@@ -14,7 +14,7 @@ public class InstructorLedApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		JWTTokenTO tokenTO = new JWTTokenTO();
+		/*JWTTokenTO tokenTO = new JWTTokenTO();
 		tokenTO.setCompanyRole("USER");
 		tokenTO.setCompanySid("5D66EAB00B4446C9A7ADB898C43C2C119456C5E6CA4D4499AE237822E3A41CB7");
 		tokenTO.setDepartmentSid("C23FC402F27A4A689092F1F4CA4417C7277483AF6EC746C9ACE51FA8196C205D");
@@ -23,6 +23,6 @@ public class InstructorLedApplication implements CommandLineRunner {
 		tokenTO.setEmailId("kumarkanhiya21@gmail.com");
 		tokenTO.setVirtualAccountSid("083DC9411AD54B89AA94C4A0A7A8743F383CDDBA2ACC4A17A84B2BD011F5012B");
 		String abc = JWTTokenGen.generateGWTToken(tokenTO);
-		System.out.println(abc);
+		System.out.println(abc);*/
 	}
 }
