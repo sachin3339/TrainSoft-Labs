@@ -19,10 +19,13 @@
 
 *
 */
+import GLOBELCONSTANT from "../Constant/GlobleConstant.js";
 import AxiosService from "./axios.service.js";
 
 const RestService =  {
-   login:(headers) => AxiosService.post("http://15.206.210.159:9091/am/v1/login", {}, {}, headers),
+  //  course
+    getAllCourse: () => AxiosService.get(GLOBELCONSTANT.COURSE.GET_COURSE),
+    CreateCourse: (payload) => AxiosService.post(GLOBELCONSTANT.COURSE.CREATE_COURSE,payload)
 };
 
 export default RestService;

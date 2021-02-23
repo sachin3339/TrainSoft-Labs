@@ -4,7 +4,7 @@ import { Button } from '../../../Common/Buttons/Buttons'
 import { ICN_PLAY, ICN_PRESENT } from '../../../Common/Icon';
 import { AttachmentViewer } from 'dev-react-attachment-viewer';
 
-const Content = ({ fromClose, setFromClose }) => {
+const Content = ({ fromClose, setFromClose,removedTag }) => {
     const [content, setContent] = useState(null)
     const [file, setFile] = useState("");
 
@@ -12,7 +12,7 @@ const Content = ({ fromClose, setFromClose }) => {
         setFile(event.target.files[0]);
     }
     useEffect(() => {
-        if (fromClose) {
+        if (fromClose && removedTag === "Content") {
             setFromClose(false)
             setContent(null)
         }

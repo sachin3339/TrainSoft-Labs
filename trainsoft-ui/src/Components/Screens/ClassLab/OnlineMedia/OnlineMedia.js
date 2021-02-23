@@ -3,12 +3,15 @@ import { Formik, Field, Form } from 'formik';
 import ReactPlayer from 'react-player/lazy'
 import { Button } from '../../../Common/Buttons/Buttons'
 import { ICN_PLAY } from '../../../Common/Icon';
-const OnlineMedia = ({clickByMenu = false}) => {
+const OnlineMedia = ({ fromClose, setFromClose,removedTag}) => {
     const [mediaLink, setMediaLink] = useState(null)
 
     useEffect(() => {
-        clickByMenu && setMediaLink(null)
-    }, [clickByMenu])
+        if (fromClose && removedTag === "Online Media") {
+            setFromClose(false)
+            setMediaLink(null)
+        }
+    }, [fromClose])
 
     return (<div className="media-link">
         {mediaLink && <ReactPlayer

@@ -1,5 +1,5 @@
 import { Children } from 'react'
-import {ICN_HOME,ICN_CALENDER,ICN_SETTING, ICN_SUPPORT, ICN_REPORT, ICN_PARTICIPANT, ICN_BATCHES} from '../../Common/Icon'
+import {ICN_HOME,ICN_CALENDER,ICN_SETTING,ICN_ORG_MGT, ICN_SUPPORT, ICN_REPORT, ICN_PARTICIPANT, ICN_BATCHES, ICN_BOOK, ICN_STORE} from '../../Common/Icon'
 export const SidebarConfig = [
     {
         icon: ICN_HOME,
@@ -8,7 +8,7 @@ export const SidebarConfig = [
         disabled: false
     },
     {
-        icon: ICN_BATCHES,
+        icon: ICN_ORG_MGT,
         title: "ORG MGMT",
         pathname: "org-mgmt",
         disabled: true
@@ -25,20 +25,20 @@ export const SidebarConfig = [
         pathname: "batches",
         disabled: false
     },
-    // {
-    //     icon: ICN_BATCHES,
-    //     title: "USER",
-    //     pathname: "user",
-    //     disabled: false
-    // },
     {
-        icon: ICN_PARTICIPANT,
+        icon: ICN_BATCHES,
+        title: "USER",
+        pathname: "user",
+        disabled: false
+    },
+    {
+        icon: ICN_BOOK,
         title: "COURSE",
         pathname: "course",
         disabled: true
     },
     {
-        icon: ICN_PARTICIPANT,
+        icon: ICN_STORE,
         title: "LAB STORE",
         pathname: "labstore",
         subPath:'labstore',
@@ -62,12 +62,12 @@ export const SidebarConfig = [
         pathname: "report",
         disabled: true
     },
-    // {
-    //     icon: ICN_CALENDER,
-    //     title: "CALENDER",
-    //     pathname: "calender",
-    //     disabled: true
-    // },
+    {
+        icon: ICN_CALENDER,
+        title: "CALENDER",
+        pathname: "calender",
+        disabled: true
+    },
     {
         icon: ICN_SUPPORT,
         title: "SUPPORT",

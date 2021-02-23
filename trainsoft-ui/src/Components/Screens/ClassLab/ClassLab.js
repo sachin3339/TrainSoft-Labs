@@ -18,6 +18,7 @@ const ClassLab = () => {
     const [show, setShow] = useState(false)
     const [tab, setTab] = useState([])
     const [selectedTab, setSelectedTab] = useState()
+    const [removedTag,setRemovedTag]  = useState('')
     const [fromClose, setFromClose] = useState(false)
     const classTab = ['Online Media', 'Whiteboard', 'Content', 'Code editor', 'Development Env']
     return (<>
@@ -28,7 +29,7 @@ const ClassLab = () => {
                     <div className="flx">
                         {tab.length !== 0 ?
                             tab.map((res, i) => <div className={`class-mode ${selectedTab === res && 'active-tab-class'}`} key={i}>
-                                <div className="" onClick={() => { setSelectedTab(res) }}>{res}</div><div className={`mode-close }`} onClick={() => { setTab(tab.filter(resp => resp !== res)); setFromClose(true) }}>{ICN_CLOSE}</div>
+                                <div className="" onClick={() => { setSelectedTab(res) }}>{res}</div><div className={`mode-close }`} onClick={() => { setTab(tab.filter(resp => resp !== res)); setFromClose(true);setRemovedTag(res) }}>{ICN_CLOSE}</div>
                             </div>)
                             : <div className="class-mode">New</div>}
                         <Dropdown className="dropdown-menus">
@@ -43,9 +44,9 @@ const ClassLab = () => {
                     <div className="class-lab vic">
                         {tab.length > 0 ? <>
                             {selectedTab === "Whiteboard" && <WhiteBoard className={`${selectedTab === "Whiteboard" ? 'd-block' : 'd-none'}`} />}
-                            <div className={`${selectedTab === "Content" ? 'd-block' : 'd-none'} full-h full-w`}><Content {...{fromClose,setFromClose}} /> </div>
-                            <div className={`${selectedTab === "Code editor" ? 'column' : 'd-none'} full-h full-w `}><CodeEditor {...{fromClose,setFromClose}} /></div>
-                            <div className={`${selectedTab === "Online Media" ? 'd-block' : 'd-none'} full-h full-w`}><OnlineMedia {...{fromClose,setFromClose}} /></div>
+                            <div className={`${selectedTab === "Content" ? 'd-block' : 'd-none'} full-h full-w`}><Content {...{fromClose,setFromClose,removedTag}} /> </div>
+                            <div className={`${selectedTab === "Code editor" ? 'column' : 'd-none'} full-h full-w `}><CodeEditor {...{fromClose,setFromClose,removedTag}} /></div>
+                            <div className={`${selectedTab === "Online Media" ? 'd-block' : 'd-none'} full-h full-w`}><OnlineMedia {...{fromClose,setFromClose,removedTag}} /></div>
                             {selectedTab === "Development Env" && <div>
                                 <NoDataFound title="Development Env" subTitle="Work on" />
                             </div>}
