@@ -62,7 +62,7 @@
 .media-link .chat-send{
     width: 400px;
 }
-input[type="file"] {
+.media-link input[type="file"] {
     display: none;
 }
 .custom-file-upload {

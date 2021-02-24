@@ -12,14 +12,16 @@ const GLOBELCONSTANT = {
             CREATE_COURSE: "v1/course/create",
             GET_COURSE_SID : 'v1/course/',
             CREATE_SESSION : 'v1/create/coursesession',
-            GET_COURSE_SESSION: '/v1/coursesession/course/{courseSid}',
-            GET_PARTICIPANT_LIST: "v1/list/participant",
-            UPLOAD_PARTICIPANT: "v1/upload/list/participants"
+            GET_COURSE_SESSION: '/v1/coursesession/course/',
         },  
         BATCHES: {
             GET_BATCH_SID: 'v1/batch/{batchSid}',
             GET_BATCH_LIST: 'v1/batches',
             CREATE_BATCHES: 'v1/batch/create'
-        }     
+        },
+        PARTICIPANT: {
+            GET_PARTICIPANT: "v1/list/participant",
+            UPLOAD_PARTICIPANT: "v1/upload/list/participants"
+        }  
     }
 export default GLOBELCONSTANT;

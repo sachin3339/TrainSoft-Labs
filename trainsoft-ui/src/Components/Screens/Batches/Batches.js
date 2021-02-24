@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import './batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Form } from 'react-bootstrap'
@@ -10,53 +10,22 @@ import { Link, Router } from "../../Common/Router";
 import BatchesDetails from "./BatchDetails";
 import { BsModal } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
+import RestService from "../../../Services/api.service";
+import moment from 'moment'
 
-
-
-const dummyData = [
-    { batchName: 'ITU_01', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-    { batchName: 'ITU_01', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-    { batchName: 'ITU_01', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-    { batchName: 'ITU_01', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-    { batchName: 'ITU_01', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-
-]
-
-const createBatches = {
-    batchName: '',
-    trainingType: '',
-    endDate: '',
-    startDate: '',
-    course: '',
-    instructor: ''
-
-}
 const Batch = ({location}) => {
     const [show, setShow] = useState(false);
+    const [batchList,setBatchList] = useState([])
     const [configuration, setConfiguration] = useState({
         columns: {
-            "batchName": {
+            "name": {
                 "title": "Batch Name",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'batches-details'} state={{path: 'batches-details',title: 'BATCHES',subTitle:"Batch Details"}} className="dt-name">{data.batchName}</Link>
+                render: (data) => <Link to={'batches-details'} state={{path: 'batches-details',title: 'BATCHES',subTitle:"Batch Details"}} className="dt-name">{data.name}</Link>
 
             },
-            "technology": {
-                "title": "Technology",
-                "sortDirection": null,
-                "sortEnabled": true,
-                isSearchEnabled: false
-            }
-            ,
-            "createdDate": {
-                "title": "Created Date",
-                "sortDirection": null,
-                "sortEnabled": true,
-                isSearchEnabled: false
-            }
-            ,
             "learner": {
                 "title": "learners",
                 "sortDirection": null,
@@ -71,11 +40,12 @@ const Batch = ({location}) => {
                 isSearchEnabled: false
             }
             ,
-            "startDate": {
-                "title": "Start Date",
+            "createdOn": {
+                "title": "Created Date",
                 "sortDirection": null,
                 "sortEnabled": true,
-                isSearchEnabled: false
+                isSearchEnabled: false,
+                render: (data) => moment(data.createdOn).format('Do MMMM YYYY')
             }
         },
         headerTextColor: '#454E50', // user can change table header text color
@@ -110,11 +80,43 @@ const Batch = ({location}) => {
         clearSelection: false
     });
 
-
+    // get all course list
+    const getAllBatches = ()=>{
+        try{
+            RestService.getAllBatches().then((res) => {
+                    setBatchList(res.data)
+                },err => console.log(err)
+            ); 
+        }
+        catch(err){
+            console.error('error occur on getAllCourse',err)
+        }
+    }
+    // create batches
+    const createBatch = (data)=>{
+        try{
+            let payload = {
+                "name": data.name,
+                "status": "ENABLED",
+                "trainingType": "INSTRUCTOR_LED",
+            }
+            RestService.CreateBatch(payload).then(response => {
+                   setShow(false) 
+                   console.log(response)
+                }, err => console.log(err)
+            ); 
+        }
+        catch(err){
+            console.error('error occur on getAllCourse',err)
+        }
+    }
     
+    useEffect(() => {
+        getAllBatches()
+    }, [])
     return (<><div className="table-shadow">
            <div className="p-3"><CardHeader {...{location}}/></div> 
-        <DynamicTable {...{ configuration, sourceData: dummyData }} />
+        <DynamicTable {...{ configuration, sourceData: batchList }} />
     </div>
     <div className="table-footer-action">
             <div>
@@ -122,35 +124,23 @@ const Batch = ({location}) => {
                 <BsModal {...{ show, setShow, headerTitle: "Add new Batches", size: "lg" }}>
                     <div className="form-container">
                         <Formik
-                            onSubmit={() => console.log('a')}
-                            initialValues={createBatches}
+                            onSubmit={(value)=>createBatch(value)}
+                            initialValues={{
+                                name:'',
+                                trainingType:''
+                            }}
                         >
                             {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
                                 <div>
                                     <Form.Group className="row">
                                         <div className="col-6">
-                                            <TextInput label="Batch Name" name="batchName" />
+                                            <TextInput label="Batch Name" name="name" />
                                         </div>
                                         <div className="col-6">
-                                            <SelectInput label="Training Type" option={['Online', 'Self', 'Offline']} name="trainingType" />
+                                            <SelectInput label="Training Type" option={['INSTRUCTOR_LED', 'Self', 'Offline']} name="trainingType" />
                                         </div>
                                     </Form.Group>
-                                    <Form.Group className="row">
-                                        <div className="col-6">
-                                            <DateInput label="Start Date" name="startDate" />
-                                        </div>
-                                        <div className="col-6">
-                                            <DateInput label="End date" name="endDate" />
-                                        </div>
-                                    </Form.Group>
-                                    <Form.Group className="row">
-                                        <div className="col-6">
-                                            <SelectInput label="Course" name="course" option={['Online', 'Self', 'Offline']} />
-                                        </div>
-                                        <div className="col-6">
-                                            <TextInput label="Instructor" name="instructor" />
-                                        </div>
-                                    </Form.Group>
+                                  
                                 </div>
                                 <footer className="jcb">
                                     <div>

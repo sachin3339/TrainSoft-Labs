@@ -5,7 +5,7 @@ import { Language } from './Language';
 import { Dropdown, Spinner } from 'react-bootstrap';
 import { CustomToggle } from '../../../../Services/MethodFactory';
 import axios from 'axios';
-import { ICN_ARROW_DOWN, ICN_DOWNLOAD, ICN_FULL_SCREEN, ICN_PLAY, ICN_PUBLISH, ICN_SAVE, ICN_STAR_HALF } from '../../../Common/Icon';
+import { ICN_ARROW_DOWN, ICN_DOWNLOAD, ICN_FULL_SCREEN, ICN_PLAY, ICN_STAR_HALF } from '../../../Common/Icon';
 import AppContext from '../../../../Store/AppContext';
 const CodeEditor = () => {
     const {spinner} = useContext(AppContext) 
