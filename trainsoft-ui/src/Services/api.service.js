@@ -22,10 +22,19 @@
 import GLOBELCONSTANT from "../Constant/GlobleConstant.js";
 import AxiosService from "./axios.service.js";
 
-const RestService =  {
+const RestService = {
   //  course
-    getAllCourse: () => AxiosService.get(GLOBELCONSTANT.COURSE.GET_COURSE),
-    CreateCourse: (payload) => AxiosService.post(GLOBELCONSTANT.COURSE.CREATE_COURSE,payload)
+  getAllCourse: () => AxiosService.get(GLOBELCONSTANT.COURSE.GET_COURSE),
+  CreateCourse: (payload) => AxiosService.post(GLOBELCONSTANT.COURSE.CREATE_COURSE, payload),
+  CreateSession: (payload) => AxiosService.post(GLOBELCONSTANT.COURSE.CREATE_SESSION, payload),
+  getCourseSession : (sid) => AxiosService.get(GLOBELCONSTANT.COURSE.GET_COURSE_SESSION + sid),
+  //batches
+  getAllBatches: () => AxiosService.get(GLOBELCONSTANT.BATCHES.GET_BATCH_LIST),
+  CreateBatch: (payload) => AxiosService.post(GLOBELCONSTANT.BATCHES.CREATE_BATCHES, payload),
+  //participant
+  getAllParticipant: () => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.GET_PARTICIPANT),
+  UploadParticipant: (payload) => AxiosService.uploadMultiPart(GLOBELCONSTANT.PARTICIPANT.UPLOAD_PARTICIPANT, payload),
+  
 };
 
 export default RestService;

@@ -1,38 +1,29 @@
 import { useState, useEffect } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Modal, Form } from 'react-bootstrap'
-import { Formik } from 'formik';
+import { Field, Formik } from 'formik';
 import { ICN_TRASH, ICN_EDIT, ICN_DOWNLOAD } from "../../Common/Icon";
 import { BtnPrimary, Button } from "../../Common/Buttons/Buttons";
 import { TextInput, DateInput, SelectInput, TextArea } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
 import { BsModal } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
+import RestService from "../../../Services/api.service";
 import './style.css'
 import './../Batches/batches.css'
+import useFetch from "../../../Store/useFetch";
+import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 
-
-const dummyData = [
-    { name: 'Jack A', empId: '6589', emailId: 'amitk0055@gmail.com', phoneNo: '333', status: 'Active', department: 'It Department', role: 'User' },
-    { name: 'Jill B', empId: '6589', emailId: 'jill@gmail.com', phoneNo: '333', status: 'Active', department: 'It Department', role: 'User' },
-    { name: 'Jane C', empId: '6589', emailId: 'jane@gmail.com', phoneNo: '333', status: 'Active', department: 'It Department', role: 'User' },
-    { name: 'Cody D', empId: '6589', emailId: 'cody@gmail.com', phoneNo: '333', status: 'Active', department: 'It Department', role: 'User' },
-    { name: 'Blackwell E', empId: '6589', emailId: 'black@gmail.com', phoneNo: '333', status: 'Active', department: 'It Department', role: 'User' },
-
-]
-
-const createBatches = {
-    batchName: '',
-    trainingType: '',
-    endDate: '',
-    startDate: '',
-    course: '',
-    instructor: ''
-
-}
 const User = ({ location }) => {
     const [show, setShow] = useState(false);
-    const [courseList, setCourseList] = useState([])
+    const [participant,setParticipant] = useState([])
+    const [file,setFile] = useState(null)
+    const {response} = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.PARTICIPANT.GET_PARTICIPANT,
+        errorMsg: 'error occur on get participant'
+     });
+
     const [configuration, setConfiguration] = useState({
         columns: {
             "name": {
@@ -55,7 +46,7 @@ const User = ({ location }) => {
                 "sortEnabled": true,
                 isSearchEnabled: false
             },
-            "phoneNo": {
+            "phoneNumber": {
                 "title": "Phone No",
                 "sortDirection": null,
                 "sortEnabled": true,
@@ -113,6 +104,23 @@ const User = ({ location }) => {
         clearSelection: false
     });
 
+    // create new session
+    const uploadParticipant = (data) => {
+        try {
+            RestService.UploadParticipant(data).then(resp => {
+                setShow(false)
+                console.log(resp)
+            }, err => console.log(err)
+            );
+        }
+        catch (err) {
+            console.error('error occur on createCourse', err)
+        }
+    }
+
+    // initialize  component
+    useEffect(() =>  response && setParticipant(response), [response])
+
     return (<><div className="table-shadow">
         <div className="p-3"><CardHeader {...{ location }} /></div>
         <div className="flx px-3 mb-2">
@@ -126,7 +134,7 @@ const User = ({ location }) => {
             </div>
 
         </div>
-        <DynamicTable {...{ configuration, sourceData: dummyData }} />
+        <DynamicTable {...{ configuration, sourceData: participant }} />
     </div>
         <div className="table-footer-action">
             <div>
@@ -145,7 +153,8 @@ const User = ({ location }) => {
                                 department: '',
                                 role: '',
                                 password: '',
-                                level: ''
+                                level: '',
+                                upload:''
                             }}
                         >
                             {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
@@ -187,7 +196,7 @@ const User = ({ location }) => {
                                             <div className="title-sm">Require this user to change their password when they first sign in</div>
                                         </div>
                                         <div className="col-6">
-                                            <div>Upload bulk users</div> <div></div>
+                                            <div>Upload bulk users</div> <div><Field name="upload"  placeholder="Browse File" onChange={(e)=> {console.log(e.target.files[0]); uploadParticipant(e.target.files[0])}} type="file"/></div>
                                         </div>
                                     </Form.Group>
                                 </div>

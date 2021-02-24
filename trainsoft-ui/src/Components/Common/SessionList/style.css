@@ -1,0 +1,28 @@
+.session-container{
+    width: 100%;
+    margin: 15px 0px;
+}
+.se-list{
+    border-bottom: 1px solid #0000001f;
+    border-top: 1px solid #0000001f;
+    padding: 10px 0px;
+    width: 100%;
+    margin-top: -2px;
+    justify-content: space-between;
+    background: white;
+}
+.se-name{
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+}
+.se-date{
+    display: flex;
+    padding-right: 15px;
+}
+.session-onExpand{
+    padding: 0px 23px;
+}
+.session-modal-container{
+    width: 80%;
+}

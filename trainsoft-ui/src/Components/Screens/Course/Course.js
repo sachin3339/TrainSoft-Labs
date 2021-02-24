@@ -11,6 +11,8 @@ import { BsModal } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
 import CourseDetails from "./CourseDetails";
 import RestService from "../../../Services/api.service";
+import useFetch from "../../../Store/useFetch";
+import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 
 
 
@@ -35,6 +37,11 @@ const createBatches = {
 const Courses = ({location}) => {
     const [show, setShow] = useState(false);
     const [courseList,setCourseList] = useState([])
+    const {response} = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.COURSE.GET_COURSE,
+        errorMsg: 'error occur on get course'
+     });
     const [configuration, setConfiguration] = useState({
         columns: {
             "name": {
@@ -42,7 +49,7 @@ const Courses = ({location}) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'course-details'} state={{title: "COURSE",subTitle:'Course Details', rowData:data,}} className="dt-name">{data.name}</Link>
+                render: (data) => <Link to={'course-details'} state={{title: "COURSE",subTitle: data.name, rowData:data, sid:data.sid}} className="dt-name">{data.name}</Link>
 
             },
             "description": {
@@ -98,44 +105,40 @@ const Courses = ({location}) => {
         clearSelection: false
     });
 
-    // get all course list
-    const getAllCourse = ()=>{
-        try{
-            RestService.getAllCourse().then((res) => {
-                    setCourseList(res.data)
-                },err => console.log(err)
-            ); 
-        }
-        catch(err){
-            console.error('error occur on getAllCourse',err)
-        }
-    }
+    // // get all course list
+    // const getAllCourse = ()=>{
+    //     try{
+    //         RestService.getAllCourse().then((res) => {
+    //                 setCourseList(res.data)
+    //             },err => console.log(err)
+    //         ); 
+    //     }
+    //     catch(err){
+    //         console.error('error occur on getAllCourse',err)
+    //     }
+    // }
 
     // get all course list
     const createCourse = (data)=>{
         try{
             let payload = {
-            "createdByVASid": "string",
             "description": data.description,
             "name": data.name,
-            "sid": null,
             "status": "ENABLED",
-            "updatedByVASid": "string",
             }
-            RestService.CreateCourse(payload).then(response => {
+            RestService.CreateCourse(payload).then(resp => {
                    setShow(false) 
-                   console.log(response)
                 }, err => console.log(err)
             ); 
         }
         catch(err){
-            console.error('error occur on getAllCourse',err)
+            console.error('error occur on createCourse',err)
         }
     }
 
     useEffect(() => {
-        getAllCourse()
-    }, [location])
+        response && setCourseList(response)
+    }, [response])
     return (<><div className="table-shadow">
         <div className="p-3"><CardHeader {...{location}}/></div> 
         <DynamicTable {...{ configuration, sourceData: courseList }} />
