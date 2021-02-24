@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor
@@ -61,15 +62,35 @@ public class BatchServiceImpl implements IBatchService {
 
     @Override
     public BatchTO getBatchBySid(String batchSid) {
+        BatchTO batchTO=null;
         Batch batch = batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(batchSid));
         try {
-            if (!StringUtils.isEmpty(batchSid) && batch != null)
-                return mapper.convert(batch, BatchTO.class);
-            else
+            if (!StringUtils.isEmpty(batchSid) && batch != null){
+                batchTO = mapper.convert(batch, BatchTO.class);
+                batchTO.setCreatedByVASid(batch.getCreatedBy() == null ? null : batch.getCreatedBy().getStringSid());
+                batchTO.setUpdatedByVASid(batch.getUpdatedBy() == null ? null : batch.getUpdatedBy().getStringSid());
+            return batchTO;
+        }else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
             log.info("throwing exception while fetching the batch details by sid");
             throw new ApplicationException("Something went wrong while fetching the batch details by sid");
+        }
+    }
+
+    @Override
+    public List<BatchTO> getBatches() {
+        try {
+            List<Batch> batches = batchRepository.findAll();
+            return batches.stream().map(batch->{
+                BatchTO to= mapper.convert(batch, BatchTO.class);
+                to.setCreatedByVASid(batch.getCreatedBy()==null?null:batch.getCreatedBy().getStringSid());
+                to.setUpdatedByVASid(batch.getUpdatedBy()==null?null:batch.getUpdatedBy().getStringSid());
+                return to;
+            }).collect(Collectors.toList());
+        }catch (Exception e) {
+            log.info("throwing exception while fetching the all batch details");
+            throw new ApplicationException("Something went wrong while fetching the batch details");
         }
     }
 

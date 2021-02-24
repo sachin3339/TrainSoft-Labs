@@ -1,11 +1,11 @@
 package com.trainsoft.instructorled.controller;
 
-import com.trainsoft.instructorled.commons.ExcelHelper;
 import com.trainsoft.instructorled.commons.JWTDecode;
 import com.trainsoft.instructorled.commons.JWTTokenTO;
-import com.trainsoft.instructorled.entity.AppUser;
+import com.trainsoft.instructorled.service.IBatchService;
 import com.trainsoft.instructorled.service.IBulkUploadService;
 import com.trainsoft.instructorled.service.ICourseService;
+import com.trainsoft.instructorled.to.BatchTO;
 import com.trainsoft.instructorled.to.CourseSessionTO;
 import com.trainsoft.instructorled.to.CourseTO;
 import io.swagger.annotations.Api;
@@ -28,6 +28,7 @@ import java.util.List;
 public class TrainingController {
 
     ICourseService courseService;
+    IBatchService batchService;
     IBulkUploadService bulkUploadService;
 
     @PostMapping("course/create")
@@ -66,6 +67,42 @@ public class TrainingController {
         courseSessionTO.setCreatedByVASid(jwt.getVirtualAccountSid());
         CourseSessionTO createSession = courseService.createSession(courseSessionTO);
         return ResponseEntity.ok(createSession);
+    }
+
+    @GetMapping("/coursesession/course/{courseSid}")
+    @ApiOperation(value = "getCourseSessionByCourseSid ", notes = "Get list of Course session")
+    public ResponseEntity<?> getCourseSessionByCourseSid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Course Sid", required = true) @PathVariable("courseSid") String courseSid) {
+        log.info(String.format("Request received : User for GET /v1/courses"));
+        return ResponseEntity.ok(courseService.findCourseSessionByCourseSid(courseSid));
+    }
+
+    @PostMapping("batch/create")
+    @ApiOperation(value = "createBatch", notes = "API to create new Batch.")
+    public ResponseEntity<?> createBatch(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Create Batch payload", required = true) @RequestBody BatchTO batchTO) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        batchTO.setCreatedByVASid(jwt.getVirtualAccountSid());
+        BatchTO createBatch = batchService.createBatch(batchTO);
+        return ResponseEntity.ok(createBatch);
+    }
+
+    @GetMapping("/batch/{batchSid}")
+    @ApiOperation(value = "getBatchBySid", notes = "Get Batch by Sid")
+    public ResponseEntity<?> getBatchBySid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Batch Sid", required = true) @PathVariable("batchSid") String batchSid) {
+        return ResponseEntity.ok(batchService.getBatchBySid(batchSid));
+    }
+
+    @GetMapping("/batches")
+    @ApiOperation(value = "getBatches", notes = "Get list of batch")
+    public ResponseEntity<?> getBatches(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token) {
+        log.info(String.format("Request received : User for GET /v1/batches"));
+        return ResponseEntity.ok(batchService.getBatches());
     }
 
     @PostMapping("/upload/list/participants")
