@@ -56,7 +56,7 @@ const ClassPoll = ({ show, setShow }) => {
                             
                             </Form.Group>
                             <div className="">
-                            <label class="label form-label">Options</label>
+                            <label className="label form-label">Options</label>
                             <div className="row">
                                <div className="col-1">
                                  <div className="check-box"></div>

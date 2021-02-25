@@ -4,7 +4,7 @@ import { Modal, Form } from 'react-bootstrap'
 import { Field, Formik } from 'formik';
 import { ICN_TRASH, ICN_EDIT, ICN_DOWNLOAD } from "../../Common/Icon";
 import { BtnPrimary, Button } from "../../Common/Buttons/Buttons";
-import { TextInput, DateInput, SelectInput, TextArea } from "../../Common/InputField/InputField";
+import { TextInput, DateInput,CheckboxGroup, SelectInput, TextArea, RadioBox, Checkbox } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
 import { BsModal } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
@@ -13,11 +13,23 @@ import './style.css'
 import './../Batches/batches.css'
 import useFetch from "../../../Store/useFetch";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
+import * as Yup from 'yup';
 
 const User = ({ location }) => {
     const [show, setShow] = useState(false);
     const [participant,setParticipant] = useState([])
     const [file,setFile] = useState(null)
+
+    const schema = Yup.object().shape({
+        name: Yup.string()
+        .min(2, 'Too Short!')
+        .required("Required!"),
+        phoneNo:Yup.string()
+        .min(10, 'Too Short!')
+        .max(10,"to Long!")
+        .required("Required!"),
+      });
+
     const {response} = useFetch({
         method: "get",
         url: GLOBELCONSTANT.PARTICIPANT.GET_PARTICIPANT,
@@ -154,8 +166,11 @@ const User = ({ location }) => {
                                 role: '',
                                 password: '',
                                 level: '',
-                                upload:''
+                                upload:'',
+                                box:false,
+                                check:[]
                             }}
+                            validationSchema={schema}
                         >
                             {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
                                 <div>
@@ -188,12 +203,12 @@ const User = ({ location }) => {
                                             <TextInput label="Password" name="password" />
                                         </div>
                                         <div className="col-6">
-                                            <SelectInput label="Role" name="role" option={['Batch Mgmt', 'Course Mgmt', 'User Mgmt']} />
+                                            <SelectInput label="Privilege/Access Level" name="level" option={['Batch Mgmt', 'Course Mgmt', 'User Mgmt']} />
                                         </div>
                                     </Form.Group>
                                     <Form.Group className="row">
                                         <div className="col-6">
-                                            <div className="title-sm">Require this user to change their password when they first sign in</div>
+                                            <Checkbox name="check" id="check" label="Require this user to change their password when they first sign in" />
                                         </div>
                                         <div className="col-6">
                                             <div>Upload bulk users</div> <div><Field name="upload"  placeholder="Browse File" onChange={(e)=> {console.log(e.target.files[0]); uploadParticipant(e.target.files[0])}} type="file"/></div>

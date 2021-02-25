@@ -1,56 +1,138 @@
 import React from 'react';
-import {  ErrorMessage, Field } from 'formik';
-import {Form} from 'react-bootstrap'
+import { ErrorMessage, Field, useField } from 'formik';
+import { Form } from 'react-bootstrap'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import './inputField.css'
+import { ICN_CALENDER } from '../../Common/Icon'
+import CustomDropdown from '../CustomDropdown/CustomDropdown';
 
-
-/*
-    Common button for cancel
-    @param {Objects} className - optional className for Cancel
-    @param {function} onClick - callback function
-    @param {children} props default property
-*/
-export const TextInput = ({ label=null,name }) => {
+// text input field
+export const TextInput = (props) => {
+    const [field, meta] = useField(props);
     return (<>
-        {label && <Form.Label className="label">{label}</Form.Label>}
-        <div className="input-field">
-        <Field name={name} className="form-control form-control-sm" />
+        {props.label && <Form.Label className="label">{props.label}</Form.Label>}
+        <div className="input-wrapper">
+            <div className={`input-field ${meta.touched && meta.error ? 'border border-danger' : ''}`}>
+                <input {...field}  {...props} className="form-control form-control-sm" />
+            </div>
+            <ErrorMessage component="div" name={props.name} className="text-danger small-text" />
         </div>
-        <ErrorMessage component={name} name="province" className="text-danger mb-2 small-text" />
     </>)
 }
 
-export const DateInput = ({ label='',name }) => {
+// date input field
+export const DateInput = (props) => {
+    const [field, meta, helpers] = useField(props);
+    const { setValue } = helpers;
     return (<>
-        <Form.Label className="label">{label}</Form.Label>
-        <div className="input-field">
-        <Field type="date" name={name} className="form-control form-control-sm" />
-         {/* {ICN_EVENT} */}
+        <Form.Label className="label">{props.label}</Form.Label>
+        <div className="input-wrapper">
+            <div className="input-field">
+                <DatePicker
+                    name={props.name}
+                    selected={meta.value}
+                    placeholderText="Select Date"
+                    {...field}
+                    dateFormat="MMMM d, yyyy"
+                    value={meta.value}
+                    onChange={e => setValue(e)}
+                    className="form-control form-control-sm" />
+                {ICN_CALENDER}
+            </div>
+            <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
         </div>
-        <ErrorMessage component={name} name="province" className="text-danger mb-2 small-text" />
     </>)
 }
 
-export const TextArea = ({ label='',name, option=[] }) => {
+// date input field
+export const TextArea = (props) => {
+    const [field, meta] = useField(props);
     return (<>
-        <Form.Label className="label">{label}</Form.Label>
-        <div className="input-field">
-           <Field as="textarea" name={name} className="form-control form-control-sm" >
-           {option.map(res => <option value={res}>{res}</option>)}
-           </Field>
+        <Form.Label className="label">{props.label}</Form.Label>
+        <div className={`input-field ${meta.touched && meta.error ? 'border border-danger' : ''}`}>
+            <textarea  {...field}  {...props} className="form-control form-control-sm" />
         </div>
-        <ErrorMessage component={name} name="province" className="text-danger mb-2 small-text" />
+        <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
     </>)
 }
 
-export const SelectInput = ({ label='',name, option=[] }) => {
+// select input field
+export const SelectInput = (props) => {
+        const [field, meta, helpers] = useField(props);
+        const { setValue } = helpers;
+        const { value } = meta;
     return (<>
-        <Form.Label className="label">{label}</Form.Label>
-        <div className="input-field">
-           <Field as="select" name={name} className="form-control form-control-sm" >
-           {option.map(res => <option value={res}>{res}</option>)}
-           </Field>
+        <Form.Label className="label">{props.label}</Form.Label>
+        <div className="input-wrapper">
+            <div className="input-field">
+                <CustomDropdown {...{
+                    bindKey: props.bindKey ? props.bindKey : null,
+                    data: props.option,
+                    searchKeywords: "",
+                    onSelect: setValue,
+                    title:'Select',
+                    selectedVal: value,
+                }} />
+            </div>
+            <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
         </div>
-        <ErrorMessage component={name} name="province" className="text-danger mb-2 small-text" />
     </>)
 }
+
+// input type RadioBox
+export const RadioBox = (props) => {
+    const [field, meta, helpers] = useField(props);
+    const { setValue } = helpers;
+    const { value } = meta;
+    return (<>
+        { props.options.map((option, i) => <Form.Check
+            key={i}
+            custom
+            label={option}
+            id={option}
+            inline
+            checked={value === option ? true : false}
+            type="radio"
+            onChange={(e) => setValue(option)}
+        />)}
+        <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
+    </>)
+};
+
+// input type checkbox
+export const Checkbox = (props) => {
+    const [field, helpers] = useField(props);
+    const { setValue } = helpers;
+    return (<>
+        <Form.Check
+            custom
+            type="checkbox"
+            onChange={(e) => setValue(e.target.value)}
+            {...field}
+            {...props}
+        />
+        <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
+        </>)
+};
+
+
+// input type CheckboxGroup
+export const CheckboxGroup = (props) => {
+    const [field, meta, helpers] = useField(props);
+    const { setValue } = helpers;
+    const { value } = meta;
+    return (<>
+        { props.options.map((option, i) => <Form.Check
+            key={i}
+            custom
+            label={option}
+            id={option}
+            inline
+            checked={value.some(res => res === option)}
+            type="checkbox"
+            onChange={(e) => e.target.checked ? setValue([...value, option]) : setValue(value.filter(res => res !== option))}
+        />)}
+        <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
+    </>)
+};

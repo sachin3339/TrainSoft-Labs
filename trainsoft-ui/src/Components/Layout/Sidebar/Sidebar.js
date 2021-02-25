@@ -2,7 +2,6 @@ import { Link } from "@reach/router";
 import "./sideBar.css";
 import { SidebarConfig } from './SidebarConfig'
 const Sidebar = ({location}) => {
-    console.log(location);
     return (<div className="sideBarNav">
         <div className="nav-title">TrainSoft</div>
         {location && SidebarConfig.map(res =>

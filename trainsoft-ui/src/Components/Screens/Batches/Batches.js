@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import './batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Form } from 'react-bootstrap'
 import { Formik } from 'formik';
@@ -11,11 +10,20 @@ import BatchesDetails from "./BatchDetails";
 import { BsModal } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
 import RestService from "../../../Services/api.service";
+import './batches.css'
+import * as Yup from 'yup';
 import moment from 'moment'
 
 const Batch = ({location}) => {
     const [show, setShow] = useState(false);
     const [batchList,setBatchList] = useState([])
+
+    const schema = Yup.object().shape({
+        name: Yup.string()
+        .min(2, 'Too Short!')
+        .required("Required!"),
+      });
+
     const [configuration, setConfiguration] = useState({
         columns: {
             "name": {
@@ -129,6 +137,7 @@ const Batch = ({location}) => {
                                 name:'',
                                 trainingType:''
                             }}
+                            validationSchema={schema}
                         >
                             {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
                                 <div>

@@ -18,16 +18,8 @@ const AxiosService = {
     },
     put:(resource, data) => axios.put(resource, data),
     delete:(resource) => axios.delete(resource),
-    uploadMultiPart:(resource, formData)=> {
-        return axios({
-            method: "POST",
-            url: resource,
-            data: formData,
-            headers: {
-              "Content-Type": "multipart/form-data"
-            }
-          });
-    }
+    uploadMultiPart:(resource, formData)=>  axios.post(resource, formData, { headers: { 'Content-Type': 'multipart/form-data'}})
+    
 }
 
 export default AxiosService

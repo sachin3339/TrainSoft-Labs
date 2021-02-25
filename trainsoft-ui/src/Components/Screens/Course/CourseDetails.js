@@ -9,6 +9,7 @@ import SessionList from '../../Common/SessionList/SessionList'
 import RestService from '../../../Services/api.service'
 import useFetch from '../../../Store/useFetch'
 import GLOBELCONSTANT from '../../../Constant/GlobleConstant'
+import * as Yup from 'yup';
 
 
 const CourseDetails = ({ location }) => {
@@ -19,6 +20,15 @@ const CourseDetails = ({ location }) => {
         url: GLOBELCONSTANT.COURSE.GET_COURSE_SESSION + location.state.sid,
         errorMsg: 'error occur on get session'
      });
+     const schema = Yup.object().shape({
+        topicDescription: Yup.string()
+        .min(2, 'Too Short!')
+        .required("Required!"),
+        topicName:Yup.string()
+        .min(2, 'Too Short!')
+        .required("Required!"),
+      });
+
 
     // create new session
     const createSession = (data) => {
@@ -57,6 +67,7 @@ const CourseDetails = ({ location }) => {
                                 "topicName": '',
                                 "topicDescription": '',
                             }}
+                            validationSchema={schema}
                             onSubmit={(values) => createSession(values)}>
                             {({ handleSubmit }) => (<>
                                 <form onSubmit={handleSubmit}>
