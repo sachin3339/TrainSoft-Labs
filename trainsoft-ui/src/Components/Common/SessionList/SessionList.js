@@ -20,7 +20,7 @@ const SessionList = ({ sessionList = [], role = "admin", sessionType = 'course' 
             <div className="se-list">
                 <div className="jcb full-w">
                     <div className="se-name title-sm">
-                        <div className="mr-2 success-checkbox"><div class="custom-input"><input checked={res.active} type="checkbox" id={`a${i}`} /><label htmlFor={`a${i}`}></label></div></div>
+                        <div className="mr-2 success-checkbox"><div className="custom-input"><input checked={res.active} type="checkbox" id={`a${i}`} /><label htmlFor={`a${i}`}></label></div></div>
                         <div onClick={() => onClickToggle(i)}>{res.topicName}</div>
                     </div>
                     <div className="se-date">

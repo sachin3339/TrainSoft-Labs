@@ -126,7 +126,7 @@ const Trainings = ({location}) => {
                 >
                     <Modal.Body className="px-5 py-4">
                         <div className="jcb mb-3">
-                            <div className="title-md ">Add New Batches</div>
+                            <div className="title-md ">Add Training</div>
                             <div><div className="circle-md" onClick={() => setShow(false)}>
                                 {ICN_CLOSE}
                             </div>
@@ -137,7 +137,7 @@ const Trainings = ({location}) => {
                                 onSubmit={() => console.log('a')}
                                 initialValues={createBatches}
                             >
-                                {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
+                                {({ handleSubmit, isSubmitting, dirty,setFieldValue,values}) => <form onSubmit={handleSubmit} className="create-batch" >
                                     <div className="edit-shipping">
                                         <Form.Group className="row">
                                             <div className="col-6">
@@ -149,10 +149,10 @@ const Trainings = ({location}) => {
                                         </Form.Group>
                                         <Form.Group className="row">
                                             <div className="col-6">
-                                                <DateInput label="Start Date" name="startDate" />
+                                                <DateInput label="Start Date" name="startDate" setFieldValue={setFieldValue} values={values} />
                                             </div>
                                             <div className="col-6">
-                                                <DateInput label="End date" name="endDate" />
+                                                <DateInput label="End date" name="endDate" setFieldValue={setFieldValue} values={values} />
                                             </div>
                                         </Form.Group>
                                         <Form.Group className="row">

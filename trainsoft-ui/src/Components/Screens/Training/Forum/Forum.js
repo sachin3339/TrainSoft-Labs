@@ -9,10 +9,10 @@ const Forum = () =>{
             <div></div>
             <div className="aic ">
                 <div>
-                  <div class="custom-input"><input  type="checkbox" id='view-all'/><label htmlFor='view-all' className="mx-2"> View All</label></div>   
+                  <div className="custom-input"><input  type="checkbox" id='view-all'/><label htmlFor='view-all' className="mx-2"> View All</label></div>   
                 </div>
                 <div>
-                  <div class="custom-input"><input  type="checkbox" id='view-all'/><label  className="mx-2" htmlFor='view-all'> Your Post</label></div>   
+                  <div className="custom-input"><input  type="checkbox" id='view-all'/><label  className="mx-2" htmlFor='view-all'> Your Post</label></div>   
 
                 </div>
                 <div>

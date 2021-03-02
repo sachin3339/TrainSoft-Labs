@@ -20,11 +20,14 @@
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "monaco-editor": "^0.22.3",
+    "prop-types": "^15.7.2",
+    "rct-bs-alert": "0.0.4",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
     "react-calendar": "^3.3.1",
     "react-chartjs-2": "^2.11.1",
     "react-circular-progressbar": "^2.0.3",
+    "react-datepicker": "^3.6.0",
     "react-dom": "^17.0.1",
     "react-drawing-board": "^0.3.6",
     "react-monaco-editor": "^0.41.2",
@@ -34,7 +37,8 @@
     "react-sketch": "^0.5.1",
     "react-sketch-whiteboard": "^3.9.3",
     "redux": "^4.0.5",
-    "web-vitals": "^0.2.4"
+    "web-vitals": "^0.2.4",
+    "yup": "^0.32.9"
   },
   "scripts": {
     "start": "react-scripts start",

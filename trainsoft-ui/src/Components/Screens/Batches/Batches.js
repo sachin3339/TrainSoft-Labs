@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import './batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Form } from 'react-bootstrap'
 import { Formik } from 'formik';
@@ -11,11 +10,24 @@ import BatchesDetails from "./BatchDetails";
 import { BsModal } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
 import RestService from "../../../Services/api.service";
+import './batches.css'
+import * as Yup from 'yup';
 import moment from 'moment'
+import useToast from "../../../Store/ToastHook";
+
+
 
 const Batch = ({location}) => {
+    const Toast = useToast();
     const [show, setShow] = useState(false);
     const [batchList,setBatchList] = useState([])
+
+    const schema = Yup.object().shape({
+        name: Yup.string()
+        .min(2, 'Too Short!')
+        .required("Required!"),
+      });
+
     const [configuration, setConfiguration] = useState({
         columns: {
             "name": {
@@ -92,6 +104,7 @@ const Batch = ({location}) => {
             console.error('error occur on getAllCourse',err)
         }
     }
+
     // create batches
     const createBatch = (data)=>{
         try{
@@ -100,9 +113,10 @@ const Batch = ({location}) => {
                 "status": "ENABLED",
                 "trainingType": "INSTRUCTOR_LED",
             }
-            RestService.CreateBatch(payload).then(response => {
+            RestService.CreateBatch(payload).then(res => {
+                   setBatchList([...batchList,res.data])
+                   Toast.success({ message: `Batch is Successfully Created`});
                    setShow(false) 
-                   console.log(response)
                 }, err => console.log(err)
             ); 
         }
@@ -111,12 +125,15 @@ const Batch = ({location}) => {
         }
     }
     
+    // initilize component
     useEffect(() => {
         getAllBatches()
     }, [])
+
+
     return (<><div className="table-shadow">
            <div className="p-3"><CardHeader {...{location}}/></div> 
-        <DynamicTable {...{ configuration, sourceData: batchList }} />
+        <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse() }} />
     </div>
     <div className="table-footer-action">
             <div>
@@ -129,6 +146,7 @@ const Batch = ({location}) => {
                                 name:'',
                                 trainingType:''
                             }}
+                            validationSchema={schema}
                         >
                             {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
                                 <div>

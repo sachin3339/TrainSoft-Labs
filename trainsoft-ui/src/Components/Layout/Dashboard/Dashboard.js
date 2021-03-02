@@ -15,9 +15,7 @@ import Training from "../../Screens/Training/Traning";
 import User from "../../Screens/Users/Users";
 
 const Dashboard = ({location}) => {
-    console.log(location)
     return (
-        
         <div className="main-page">
             <div><Sidebar {...{location}} /></div>
             <div className="dashboard-page">

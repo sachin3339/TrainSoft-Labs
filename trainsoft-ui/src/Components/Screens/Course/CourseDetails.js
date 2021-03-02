@@ -9,9 +9,13 @@ import SessionList from '../../Common/SessionList/SessionList'
 import RestService from '../../../Services/api.service'
 import useFetch from '../../../Store/useFetch'
 import GLOBELCONSTANT from '../../../Constant/GlobleConstant'
+import moment from 'moment'
+import useToast from "../../../Store/ToastHook";
+import * as Yup from 'yup';
 
 
 const CourseDetails = ({ location }) => {
+    const Toast = useToast();
     const [show, setShow] = useState(false)
     const [sessionList, setSessionList] = useState([])
     const {response} = useFetch({
@@ -19,6 +23,15 @@ const CourseDetails = ({ location }) => {
         url: GLOBELCONSTANT.COURSE.GET_COURSE_SESSION + location.state.sid,
         errorMsg: 'error occur on get session'
      });
+     const schema = Yup.object().shape({
+        topicDescription: Yup.string()
+        .min(2, 'Too Short!')
+        .required("Required!"),
+        topicName:Yup.string()
+        .min(2, 'Too Short!')
+        .required("Required!"),
+      });
+
 
     // create new session
     const createSession = (data) => {
@@ -31,6 +44,8 @@ const CourseDetails = ({ location }) => {
          
             RestService.CreateSession(payload).then(res => {
                 setShow(false)
+                setSessionList([...sessionList,res.data])
+                Toast.success({ message: `Topic is Successfully Created`});
             }, err => console.log(err)
             );
         }
@@ -47,7 +62,7 @@ const CourseDetails = ({ location }) => {
     return (<>
         <div className="table-shadow p-3">
             <CardHeader {...{ location }} />
-            <SessionList {...{ sessionList }} />
+            <SessionList {...{ sessionList:sessionList.slice().reverse() }} />
             <div className="full-w mt-2"><Button className="btn-block" onClick={() => setShow(true)}>+ Add Session</Button></div>
             <BsModal {...{ show, setShow, headerTitle: "Add Topic", size: "lg" }}>
                 <div className="">
@@ -57,6 +72,7 @@ const CourseDetails = ({ location }) => {
                                 "topicName": '',
                                 "topicDescription": '',
                             }}
+                            validationSchema={schema}
                             onSubmit={(values) => createSession(values)}>
                             {({ handleSubmit }) => (<>
                                 <form onSubmit={handleSubmit}>

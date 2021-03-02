@@ -147,7 +147,7 @@ const Home = () => {
                                     </div>
                         <div className="jce">
                             <div className="grid-batch-icon">
-                            <i class="bi bi-arrows-angle-expand"></i>
+                            <i className="bi bi-arrows-angle-expand"></i>
                                         </div>
                         </div>
                     </div>
@@ -160,7 +160,7 @@ const Home = () => {
                                     </div>
                         <div className="jce">
                             <div className="grid-batch-icon">
-                            <i class="bi bi-arrows-angle-expand"></i>
+                            <i className="bi bi-arrows-angle-expand"></i>
                                         </div>
                         </div>
                     </div>

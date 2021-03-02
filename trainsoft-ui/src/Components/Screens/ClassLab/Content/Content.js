@@ -43,7 +43,7 @@ const Content = ({ fromClose, setFromClose,removedTag }) => {
                     <Form>
                         <div className="chat-send">
                             <div className="full-w">
-                                <label for="file-upload" class="custom-file-upload">
+                                <label for="file-upload" className="custom-file-upload">
                                     <div className="elps">{file && file.name}</div> <div className="elps">Browse file</div>
                                 </label>
                                 {/* <input id="file-upload" type="file"/> */}
