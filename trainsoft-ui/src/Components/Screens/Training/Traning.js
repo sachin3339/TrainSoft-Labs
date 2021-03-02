@@ -126,7 +126,7 @@ const Trainings = ({location}) => {
                 >
                     <Modal.Body className="px-5 py-4">
                         <div className="jcb mb-3">
-                            <div className="title-md ">Add New Batches</div>
+                            <div className="title-md ">Add Training</div>
                             <div><div className="circle-md" onClick={() => setShow(false)}>
                                 {ICN_CLOSE}
                             </div>
