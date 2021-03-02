@@ -13,8 +13,12 @@ import RestService from "../../../Services/api.service";
 import './batches.css'
 import * as Yup from 'yup';
 import moment from 'moment'
+import useToast from "../../../Store/ToastHook";
+
+
 
 const Batch = ({location}) => {
+    const Toast = useToast();
     const [show, setShow] = useState(false);
     const [batchList,setBatchList] = useState([])
 
@@ -100,6 +104,7 @@ const Batch = ({location}) => {
             console.error('error occur on getAllCourse',err)
         }
     }
+
     // create batches
     const createBatch = (data)=>{
         try{
@@ -108,9 +113,10 @@ const Batch = ({location}) => {
                 "status": "ENABLED",
                 "trainingType": "INSTRUCTOR_LED",
             }
-            RestService.CreateBatch(payload).then(response => {
+            RestService.CreateBatch(payload).then(res => {
+                   setBatchList([...batchList,res.data])
+                   Toast.success({ message: `Batch is Successfully Created`});
                    setShow(false) 
-                   console.log(response)
                 }, err => console.log(err)
             ); 
         }
@@ -119,12 +125,15 @@ const Batch = ({location}) => {
         }
     }
     
+    // initilize component
     useEffect(() => {
         getAllBatches()
     }, [])
+
+
     return (<><div className="table-shadow">
            <div className="p-3"><CardHeader {...{location}}/></div> 
-        <DynamicTable {...{ configuration, sourceData: batchList }} />
+        <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse() }} />
     </div>
     <div className="table-footer-action">
             <div>

@@ -13,28 +13,11 @@ import CourseDetails from "./CourseDetails";
 import RestService from "../../../Services/api.service";
 import useFetch from "../../../Store/useFetch";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
+import useToast from "../../../Store/ToastHook";
+import moment from 'moment'
 
-
-
-const dummyData = [
-    { course: 'Angular', batchName: 'ITU_01', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-    { course: 'Angular', batchName: 'ITU_01', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-    { course: 'Angular', batchName: 'ITU_01', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-    { course: 'Angular', batchName: 'ITU_01', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-    { course: 'Angular', batchName: 'ITU_01', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-
-]
-
-const createBatches = {
-    batchName: '',
-    trainingType: '',
-    endDate: '',
-    startDate: '',
-    course: '',
-    instructor: ''
-
-}
 const Courses = ({location}) => {
+    const Toast = useToast();
     const [show, setShow] = useState(false);
     const [courseList,setCourseList] = useState([])
     const {response} = useFetch({
@@ -66,11 +49,12 @@ const Courses = ({location}) => {
                 isSearchEnabled: false
             }
             ,
-            "startDate": {
+            "createdOn": {
                 "title": "Creation Date",
                 "sortDirection": null,
                 "sortEnabled": true,
-                isSearchEnabled: false
+                isSearchEnabled: false,
+                render: (data) => moment(data.createdOn).format('Do MMMM YYYY')
             }
         },
         headerTextColor: '#454E50', // user can change table header text color
@@ -105,19 +89,6 @@ const Courses = ({location}) => {
         clearSelection: false
     });
 
-    // // get all course list
-    // const getAllCourse = ()=>{
-    //     try{
-    //         RestService.getAllCourse().then((res) => {
-    //                 setCourseList(res.data)
-    //             },err => console.log(err)
-    //         ); 
-    //     }
-    //     catch(err){
-    //         console.error('error occur on getAllCourse',err)
-    //     }
-    // }
-
     // get all course list
     const createCourse = (data)=>{
         try{
@@ -126,22 +97,27 @@ const Courses = ({location}) => {
             "name": data.name,
             "status": "ENABLED",
             }
-            RestService.CreateCourse(payload).then(resp => {
+            RestService.CreateCourse(payload).then(res => {
+                  setCourseList([...courseList, res.data])
+                  Toast.success({ message: `Course is Successfully Created`});
                    setShow(false) 
                 }, err => console.log(err)
             ); 
         }
         catch(err){
             console.error('error occur on createCourse',err)
+            Toast.error({ message: `Something wrong!!`});
         }
     }
+
 
     useEffect(() => {
         response && setCourseList(response)
     }, [response])
+
     return (<><div className="table-shadow">
         <div className="p-3"><CardHeader {...{location}}/></div> 
-        <DynamicTable {...{ configuration, sourceData: courseList }} />
+        <DynamicTable {...{ configuration, sourceData: courseList.slice().reverse() }} />
     </div>
         <div className="table-footer-action">
             <div>
