@@ -9,7 +9,6 @@ import SessionList from '../../Common/SessionList/SessionList'
 import RestService from '../../../Services/api.service'
 import useFetch from '../../../Store/useFetch'
 import GLOBELCONSTANT from '../../../Constant/GlobleConstant'
-import moment from 'moment'
 import useToast from "../../../Store/ToastHook";
 import * as Yup from 'yup';
 
