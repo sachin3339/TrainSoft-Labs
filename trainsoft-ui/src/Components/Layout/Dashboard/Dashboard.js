@@ -23,7 +23,7 @@ const Dashboard = ({location}) => {
                 <div className="dashboard-container">
                     <Router>
                         <Home path="/" />
-                        <Report path="report" />
+                        <Report path="report/*" />
                         <Setting path="setting" />
                         <Batches path="batches/*"/>
                         <OrgMgmt path="org-mgmt/*"/>
