@@ -30,6 +30,9 @@ public class Course extends BaseEntity {
     @Column(name="updated_on")
     private Date updatedOn;
 
+/*    @OneToOne(mappedBy = "course")
+    private TrainingSession trainingSession;*/
+
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<TrainingCourse> trainingCourses = new ArrayList<>();
 

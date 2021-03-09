@@ -5,9 +5,8 @@ import com.trainsoft.instructorled.commons.JWTTokenTO;
 import com.trainsoft.instructorled.service.IBatchService;
 import com.trainsoft.instructorled.service.IBulkUploadService;
 import com.trainsoft.instructorled.service.ICourseService;
-import com.trainsoft.instructorled.to.BatchTO;
-import com.trainsoft.instructorled.to.CourseSessionTO;
-import com.trainsoft.instructorled.to.CourseTO;
+import com.trainsoft.instructorled.service.ITrainingService;
+import com.trainsoft.instructorled.to.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -29,6 +28,7 @@ public class TrainingController {
 
     ICourseService courseService;
     IBatchService batchService;
+    ITrainingService trainingService;
     IBulkUploadService bulkUploadService;
 
     @PostMapping("course/create")
@@ -123,5 +123,56 @@ public class TrainingController {
         return ResponseEntity.ok(bulkUploadService.getAllAppUsers());
         }
 
+    @PostMapping("training/create")
+    @ApiOperation(value = "createTraining", notes = "API to create new Training.")
+    public ResponseEntity<?> createTraining(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Create Training payload", required = true) @RequestBody TrainingTO trainingTO) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        trainingTO.setCreatedByVASid(jwt.getVirtualAccountSid());
+        TrainingTO createTraining = trainingService.createTraining(trainingTO);
+        return ResponseEntity.ok(createTraining);
+    }
+    @GetMapping("/training/{trainingSid}")
+    @ApiOperation(value = "getTrainingBySid", notes = "Get Training by Sid")
+    public ResponseEntity<?> getTrainingBySid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training Sid", required = true) @PathVariable("trainingSid") String trainingSid) {
+        return ResponseEntity.ok(trainingService.getTrainingBySid(trainingSid));
+    }
 
+    @GetMapping("/trainings")
+    @ApiOperation(value = "getTrainings", notes = "Get list of training")
+    public ResponseEntity<?> getTrainings(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token) {
+        log.info(String.format("Request received : User for GET /v1/trainings"));
+        return ResponseEntity.ok(trainingService.getTrainings());
+    }
+
+    @PostMapping("trainingSession/create")
+    @ApiOperation(value = "createTrainingSession", notes = "API to create new TrainingSession.")
+    public ResponseEntity<?> createTrainingSession(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Create TrainingSession payload", required = true) @RequestBody TrainingSessionTO trainingSessionTO) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        trainingSessionTO.setCreatedByVASid(jwt.getVirtualAccountSid());
+        TrainingSessionTO createTrainingSessionTO = trainingService.createTrainingSession(trainingSessionTO);
+        return ResponseEntity.ok(createTrainingSessionTO);
+    }
+    @GetMapping("/trainingSession/{trainingSessionSid}")
+    @ApiOperation(value = "getTrainingBySid", notes = "Get Training by Sid")
+    public ResponseEntity<?> getTrainingSessionBySid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "trainingSession Sid", required = true) @PathVariable("trainingSessionSid") String trainingSessionSid) {
+        return ResponseEntity.ok(trainingService.getTrainingSessionBySid(trainingSessionSid));
+    }
+
+    @GetMapping("/trainingsession/training/{trainingSid}")
+    @ApiOperation(value = "getTrainingSessionByTrainingSid ", notes = "Get list of Training session")
+    public ResponseEntity<?> getTrainingSessionByTrainingSid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training Sid", required = true) @PathVariable("trainingSid") String trainingSid) {
+        log.info(String.format("Request received : User for GET /v1/trainingsession"));
+        return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSid(trainingSid));
+    }
 }
