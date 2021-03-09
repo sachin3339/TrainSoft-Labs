@@ -16,12 +16,10 @@ public class TrainingTO extends BaseTO{
     private long startDate;
     private long endDate;
     private InstructorEnum.Status status;
-    private String lab;
     private String instructorName;
     private long createdOn;
     private String createdByVASid;
     private long updatedOn;
     private String updatedByVASid;
     private String courseSid;
-    private List<Batch> batches;
 }

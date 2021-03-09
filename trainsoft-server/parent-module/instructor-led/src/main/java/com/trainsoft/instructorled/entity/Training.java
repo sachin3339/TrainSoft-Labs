@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,9 +39,8 @@ public class Training extends BaseEntity{
     @Column(name = "instructor_name")
     private String instructorName;
 
-    @OneToMany
-    @JoinColumn(name = "batch_id", referencedColumnName = "id")
-    private List<Batch> batches;
+    @OneToMany(mappedBy = "batch", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<TrainingBatch> trainingBatches = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "id")
@@ -57,7 +57,5 @@ public class Training extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "updated_by", referencedColumnName = "id")
     private VirtualAccount updatedBy;
-
-
 
 }

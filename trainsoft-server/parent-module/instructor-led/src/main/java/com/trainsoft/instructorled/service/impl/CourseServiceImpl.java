@@ -46,6 +46,7 @@ public class CourseServiceImpl implements ICourseService {
                 course.setStatus(InstructorEnum.Status.ENABLED);
                 course.setUpdatedOn(null);
                 course.setTrainingCourses(null);
+               // course.setTrainingSession(null);
                 course.setCreatedOn(new Date(Instant.now().toEpochMilli()));
                 CourseTO savedCourseTO = mapper.convert(courseRepository.save(course), CourseTO.class);
                 savedCourseTO.setCreatedByVASid(virtualAccount.getStringSid());
