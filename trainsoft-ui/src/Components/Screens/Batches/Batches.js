@@ -14,6 +14,9 @@ import './batches.css'
 import * as Yup from 'yup';
 import moment from 'moment'
 import useToast from "../../../Store/ToastHook";
+import { set } from "lodash";
+import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
+import useFetch from "../../../Store/useFetch";
 
 
 
@@ -21,6 +24,11 @@ const Batch = ({location}) => {
     const Toast = useToast();
     const [show, setShow] = useState(false);
     const [batchList,setBatchList] = useState([])
+    let {response} = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.BATCHES.GET_BATCH_LIST,
+        errorMsg: 'error occur on get Batches'
+     });
 
     const schema = Yup.object().shape({
         name: Yup.string()
@@ -91,20 +99,6 @@ const Batch = ({location}) => {
         showCheckbox: true,
         clearSelection: false
     });
-
-    // get all course list
-    const getAllBatches = ()=>{
-        try{
-            RestService.getAllBatches().then((res) => {
-                    setBatchList(res.data)
-                },err => console.log(err)
-            ); 
-        }
-        catch(err){
-            console.error('error occur on getAllCourse',err)
-        }
-    }
-
     // create batches
     const createBatch = (data)=>{
         try{
@@ -125,15 +119,15 @@ const Batch = ({location}) => {
         }
     }
     
-    // initilize component
     useEffect(() => {
-        getAllBatches()
-    }, [])
+         setBatchList(response)
+    }, [response])
+
 
 
     return (<><div className="table-shadow">
            <div className="p-3"><CardHeader {...{location}}/></div> 
-        <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse() }} />
+       {batchList && batchList.length > 0 &&  <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse() }} />}
     </div>
     <div className="table-footer-action">
             <div>
@@ -182,7 +176,7 @@ const Batch = ({location}) => {
 const Batches = () => {
     return (
         <Router>
-            <Batch path="/" />
+            <Batch path="/"/>
             <BatchesDetails path="batches-details" />
         </Router>
     )

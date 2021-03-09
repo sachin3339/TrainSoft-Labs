@@ -46,6 +46,7 @@ const CodeEditor = () => {
     }, [lang])
 
     return (<>
+    <div className="editor-wrapper">
         <div className="jcb">
             <div className=""></div>
             <div className="editor-tab">
@@ -84,7 +85,7 @@ const CodeEditor = () => {
             theme={lightTheams ? "vs-light" : "vs-dark"}
             onMount={handleEditorDidMount}
         />
-        <div className="p-2 column">
+        <div className="py-2 column">
             <div className="flx">
                 <div onClick={() => setInputTab(true)} className={`class-mode ${inputTab === true ? 'bg-primary' : ''}`}>Input</div>
                 <div onClick={() => setInputTab(false)} className={`class-mode ${inputTab === false ? 'bg-primary' : ''}`}>Output</div>
@@ -98,6 +99,7 @@ const CodeEditor = () => {
                 </div>
             }
         </div>
+    </div>
     </>)
 
 }

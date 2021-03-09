@@ -25,6 +25,7 @@ const Courses = ({location}) => {
         url: GLOBELCONSTANT.COURSE.GET_COURSE,
         errorMsg: 'error occur on get course'
      });
+     
     const [configuration, setConfiguration] = useState({
         columns: {
             "name": {

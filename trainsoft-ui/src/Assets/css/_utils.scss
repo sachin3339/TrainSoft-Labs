@@ -120,6 +120,18 @@
 	background-color: $success;
 	border: 1px solid $success;
   }
+  .tw{
+	  color: white;
+  }
+  .tb{
+	color: rgb(5, 5, 5);
+}
+.f12{
+	font-size: 12px;
+}
+.op5{
+	opacity: 0.5;
+}
 
 @mixin gnBatch {
 	color: white;

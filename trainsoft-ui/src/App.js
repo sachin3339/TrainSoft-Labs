@@ -14,7 +14,7 @@ function App() {
   return (<>
       <Spinner value={appContext.spinner}/>
       <Router basepath="/">
-         <Login path="login"/>
+         <Login path="/"/>
          <Dashboard path="/*"/>
          <ClassLab path="class/*"/>
       </Router>

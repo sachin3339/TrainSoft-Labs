@@ -1,7 +1,6 @@
+import React, { useContext } from 'react'
 import Charts from '../../Charts/Charts'
 import Table from 'react-bootstrap/Table'
-import './home.css'
-
 import { ICN_COPY, ICN_COMING_BATCHES } from '../../Common/Icon';
 import { Progress, Card} from '../../Common/BsUtils';
 import {
@@ -10,6 +9,10 @@ import {
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import CalenderGraph from '../../Common/CalenderGraph/CalenderGraph';
+import AppContext from '../../../Store/AppContext';
+import './home.css'
+import UserHome from './UserHome';
+
 const tableData = [
     { name: "ITU_01", avgScr: 50 },
     { name: "ITU_02", avgScr: 70 },
@@ -23,14 +26,16 @@ const tableData = [
 
 ]
 
-const Home = () => {
+const AdminHome = () => {
+    const {user} = useContext(AppContext)
+    
     return (<div>
         <div className="row">
             <div className="col-md-8">
                 {/* ..........user info......... */}
                 <Card title="">
                     <div className="user-info">
-                        <div className="title-lg">Welcome back Julie!</div>
+                        <div className="title-lg">Welcome back {user.name}!</div>
                         <div>
                             Since your last login on the system, there were:
                                <div>
@@ -47,7 +52,7 @@ const Home = () => {
             </div>
             <div className="col-md-4 ">
                 {/* ..........Lms insight......... */}
-                <Card title="Lms insight" action={true}>
+                <Card title={`${user.role === 'admin' ? 'Lms insight' : 'Attendance Rate'} `} action={true}>
                     <div className="">
                         <div className="lms-card"><div className="lms-card-g">AWS Solution Architect</div><div>45 Enrolled <span>a</span></div></div>
                         <div className="lms-card"><div className="lms-card-p">Machine Learning</div><div>40 Enrolled</div> <span>a</span></div>
@@ -178,4 +183,11 @@ const Home = () => {
     </div>)
 }
 
+const Home = ()=> {
+    const {user} = useContext(AppContext)
+    return(<>
+        <AdminHome/>
+    </>)
+
+}
 export default Home

@@ -7,9 +7,13 @@ export const AppConsumer = AppContext.Consumer;
 
 export const AppProvider = (props) => {
     const spinner = useSpinner() 
+    const [user,setUser] = useState(null) 
+
    
     const appData = {
-        spinner
+        spinner,
+        user,
+        setUser
     };
 
     return <AppContext.Provider value={{

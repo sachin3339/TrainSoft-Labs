@@ -1,30 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState,useContext } from 'react'
 import { BtnPrimary, TabBtn } from "../../Common/Buttons/Buttons";
 import SearchBox from "../../Common/SearchBox/SearchBox"
 import { ICN_TRASH, ICN_EDIT, ICN_BOOK, ICN_LIBRARY, ICN_PROGRESS, ICN_STORE } from "../../Common/Icon";
 import { navigate, Router, Link } from "../../Common/Router";
-import { Formik } from "formik"
-import { Button } from "../../Common/Buttons/Buttons"
-import { TextArea } from "../../Common/InputField/InputField"
 import CardHeader from '../../Common/CardHeader'
 import { TextInput, SelectInput } from '../../Common/InputField/InputField'
-import DynamicTable from "../../Common/DynamicTable/DynamicTable";
-import moment from 'moment'
-import { BsCheckbox } from '../../Common/BsUtils';
-import "./report.css";
 import ReportChart from '../../Charts/ReportChart';
 import ReportDownload from './ReportDownload';
-
+import AppContext from '../../../Store/AppContext';
+import './report.css'
 
 const Report = ({ location }) => {
+    const {user} = useContext(AppContext)
     return (
         <div className="table-shadow p-3">
             <CardHeader {...{ location }} />
             <div className="flx storeTab-shadow mb-3">
                 <TabBtn active={location.state.subPath === "batch"} onClick={() => navigate("/report", { state: { title: 'REPORT', subTitle: "Batch", subPath: "batch" } })}>Batch</TabBtn>
                 <TabBtn active={location.state.subPath === "course"} onClick={() => navigate("/report/course", { state: { title: 'REPORT', subTitle: "Course", subPath: "course" } })}>Course</TabBtn>
-                <TabBtn active={location.state.subPath === "participants"} onClick={() => navigate("/report/participants", { state: { title: 'REPORT', subTitle: "Participants", subPath: "participants" } })}>Participants</TabBtn>
-                <TabBtn active={location.state.subPath === "download"} onClick={() => navigate("/report/download", { state: { title: 'REPORT', subTitle: "Download", subPath: "download" } })}>Download</TabBtn>
+               {user.role !== "user" &&  <TabBtn active={location.state.subPath === "participants"} onClick={() => navigate("/report/participants", { state: { title: 'REPORT', subTitle: "Participants", subPath: "participants" } })}>Participants</TabBtn>}
+               {user.role !== "user" &&  <TabBtn active={location.state.subPath === "download"} onClick={() => navigate("/report/download", { state: { title: 'REPORT', subTitle: "Download", subPath: "download" } })}>Download</TabBtn>}
 
             </div>
             <Router>

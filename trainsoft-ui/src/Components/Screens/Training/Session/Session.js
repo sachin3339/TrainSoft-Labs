@@ -6,9 +6,9 @@ import './session.css'
 const Session = ()=>{
     const [show, setShow] = useState(false)
     const listValue = [
-        { name:"OOAD Methodology",date:"07/06/2019",active:true },
-        { name:"Charteristic and features of OOP",date:"07/06/2019",active:false },
-        { name:"Development Processes",date:"07/06/2019",active:false },
+        { topicName:"OOAD Methodology",date:"07/06/2019",active:true },
+        { topicName:"Charteristic and features of OOP",date:"07/06/2019",active:false },
+        { topicName:"Development Processes",date:"07/06/2019",active:false },
     ]
 
     return(<>
