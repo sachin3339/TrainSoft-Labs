@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -23,14 +24,6 @@ public class TrainingSession extends BaseEntity {
 
 	@Column(name = "recording")
 	private String recording;
-
-	@Column(name="status")
-	@Enumerated(EnumType.STRING)
-	private InstructorEnum.Status status;
-
-	@Column(name="training_type")
-	@Enumerated(EnumType.STRING)
-	private InstructorEnum.TrainingType trainingType;
 
 	@Column(name="session_date")
 	private Date sessionDate;
@@ -50,6 +43,10 @@ public class TrainingSession extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "training_id", referencedColumnName = "id")
 	private Training training;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "course_id", referencedColumnName = "id")
+	private Course course;
 
 	@ManyToOne
 	@JoinColumn(name = "created_by", referencedColumnName = "id")

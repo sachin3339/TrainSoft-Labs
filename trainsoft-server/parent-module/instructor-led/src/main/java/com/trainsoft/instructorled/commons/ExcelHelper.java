@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.trainsoft.instructorled.customexception.ApplicationException;
 import com.trainsoft.instructorled.entity.AppUser;
+import com.trainsoft.instructorled.value.InstructorEnum;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -27,7 +28,6 @@ public class ExcelHelper {
     public static List<AppUser> excelToAppUsers(InputStream is) {
         try {
             Workbook workbook = new XSSFWorkbook(is);
-           // Sheet sheet = workbook.getSheet(SHEET);
             Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rows = sheet.iterator();
             List<AppUser> appUsers = new ArrayList<>();
@@ -53,11 +53,15 @@ public class ExcelHelper {
                             appUser.setEmailId(currentCell.getStringCellValue());
                             break;
                         case 2:
-                            appUser.setEmployeeId(currentCell.getStringCellValue());
+                            appUser.setEmployeeId(currentCell.getCellType()== currentCell.getCellType().NUMERIC?
+                                    NumberToTextConverter.toText(currentCell.getNumericCellValue()):currentCell.getStringCellValue());
                             break;
                         case 3:
                             appUser.setPhoneNumber(currentCell.getCellType()== currentCell.getCellType().NUMERIC?
                                     NumberToTextConverter.toText(currentCell.getNumericCellValue()):currentCell.getStringCellValue());
+                            break;
+                        case 4:
+                            appUser.setAccessType(InstructorEnum.AccessType.valueOf(currentCell.getStringCellValue()));
                             break;
                         default:
                             break;

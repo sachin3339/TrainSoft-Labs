@@ -28,7 +28,6 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
             try {
                 List<AppUser> appUserList = ExcelHelper.excelToAppUsers(file.getInputStream());
                 appUserRepository.saveAll(appUserList);
-
             } catch (IOException e) {
                 throw new ApplicationException("fail to store excel data: " + e.getMessage());
             }

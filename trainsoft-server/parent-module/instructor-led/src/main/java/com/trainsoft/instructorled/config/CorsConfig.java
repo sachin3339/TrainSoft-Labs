@@ -11,15 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
  
-    @Value("${cors.origins}")
+    @Value("*")
     private String corsOrigins;
     
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-    	String mappingPattern = "/v1/**";
+    	String mappingPattern = "/**";
     	registry
-    		.addMapping(mappingPattern).allowedMethods("PUT","POST","GET","DELETE","OPTIONS")
-    		.allowedOrigins(corsOrigins.split(","));
+                .addMapping(mappingPattern).allowedMethods("HEAD","PUT","POST","GET","DELETE","OPTIONS","PATCH");
     	log.info(String.format("CORS configuration set to %s for mapping %s", corsOrigins, mappingPattern));
     }
 }
