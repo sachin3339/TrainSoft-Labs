@@ -18,7 +18,7 @@ public class TrainingBatch extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "training_id", referencedColumnName = "id",nullable = false)
-    private Training traning;
+    private Training training;
 
     @Column(name="created_on")
     private Date createdOn;

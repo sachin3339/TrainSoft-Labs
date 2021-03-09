@@ -223,3 +223,11 @@ CREATE TABLE `course_session` (
                                   CONSTRAINT `fk_course_session_1` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),
                                   CONSTRAINT `fk_course_session_2` FOREIGN KEY (`created_by`) REFERENCES `virtual_account` (`id`)
 );
+
+#--================= vw_training ==================--
+
+DROP VIEW IF EXISTS vw_training;
+create view vw_training
+as
+select tr.id,tr.sid,tr.name,count(trbh.sid) as no_of_batches,cr.name as course_name,tr.instructor_name,tr.start_date,tr.end_date,tr.status,tr.created_by,tr.updated_by
+from training tr inner join training_has_batch trbh on tr.id=trbh.training_id inner join course cr on tr.course_id=cr.id

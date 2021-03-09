@@ -6,9 +6,7 @@ import com.trainsoft.instructorled.dozer.DozerUtils;
 import com.trainsoft.instructorled.entity.*;
 import com.trainsoft.instructorled.repository.*;
 import com.trainsoft.instructorled.service.ITrainingService;
-import com.trainsoft.instructorled.to.CourseSessionTO;
-import com.trainsoft.instructorled.to.TrainingSessionTO;
-import com.trainsoft.instructorled.to.TrainingTO;
+import com.trainsoft.instructorled.to.*;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +29,8 @@ public class TrainingServiceImpl implements ITrainingService {
     private ICourseRepository courseRepository;
     private ITrainingRepository trainingRepository;
     private ITrainingSessionRepository trainingSessionRepository;
+    private ITrainingBatchRepository trainingBatchRepository;
+    private ITrainingViewRepository trainingViewRepository;
     private DozerUtils mapper;
 
     @Override
@@ -50,7 +51,12 @@ public class TrainingServiceImpl implements ITrainingService {
                 training.setStartDate(new Date(trainingTO.getStartDate()));
                 training.setEndDate(new Date(trainingTO.getEndDate()));
                 training.setCreatedOn(new Date(Instant.now().toEpochMilli()));
-                TrainingTO savedTrainingTO = mapper.convert(trainingRepository.save(training), TrainingTO.class);
+                Training savedTraining=trainingRepository.save(training);
+                if(trainingTO.getTrainingBatchs()!=null && trainingTO.getTrainingBatchs().size()!=0)
+                    saveTrainingBatch(savedTraining, trainingTO.getTrainingBatchs());
+                else
+                    trainingTO.setTrainingBatchs(Collections.EMPTY_LIST);
+                TrainingTO savedTrainingTO = mapper.convert(savedTraining, TrainingTO.class);
                 savedTrainingTO.setCreatedByVASid(virtualAccount.getStringSid());
                 savedTrainingTO.setCourseSid(course.getStringSid());
                 return savedTrainingTO;
@@ -63,14 +69,13 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public List<TrainingTO> getTrainings() {
+    public List<TrainingViewTO> getTrainings() {
         try {
-            List<Training> trainings = trainingRepository.findAll();
-            return trainings.stream().map(training -> {
-                TrainingTO to = mapper.convert(training, TrainingTO.class);
-                to.setCreatedByVASid(training.getCreatedBy() == null ? null : training.getCreatedBy().getStringSid());
-                to.setUpdatedByVASid(training.getUpdatedBy() == null ? null : training.getUpdatedBy().getStringSid());
-                to.setCourseSid(training.getCourse() == null ? null : training.getCourse().getStringSid());
+            List<TrainingView> trainingViews = trainingViewRepository.findAll();
+            return trainingViews.stream().map(trainingView -> {
+                TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
+                to.setCreatedByVASid(trainingView.getCreatedBy() == null ? null : trainingView.getCreatedBy().getStringSid());
+                to.setUpdatedByVASid(trainingView.getUpdatedBy() == null ? null : trainingView.getUpdatedBy().getStringSid());
                 return to;
             }).collect(Collectors.toList());
         } catch (Exception e) {
@@ -174,5 +179,17 @@ public class TrainingServiceImpl implements ITrainingService {
                 log.info("throwing exception while fetching the all trainingSession details");
                 throw new ApplicationException("Something went wrong while fetching the trainingSession details");
             }
+    }
+
+    private void saveTrainingBatch(Training trd, List<TrainingBatchTO> tbTO)
+    {
+        tbTO.forEach(tBatchTO-> {
+            Batch batch = batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(tBatchTO.getBatchSid()));
+            TrainingBatch  trb = new TrainingBatch();
+            trb.generateUuid();
+            trb.setBatch(batch);
+            trb.setTraining(trd);
+            trainingBatchRepository.save(trb);
+        });
     }
 }
