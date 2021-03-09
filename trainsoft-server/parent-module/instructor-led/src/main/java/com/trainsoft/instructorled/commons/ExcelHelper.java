@@ -63,6 +63,7 @@ public class ExcelHelper {
                         case 4:
                             appUser.setAccessType(InstructorEnum.AccessType.valueOf(currentCell.getStringCellValue()));
                             break;
+
                         default:
                             break;
                     }
