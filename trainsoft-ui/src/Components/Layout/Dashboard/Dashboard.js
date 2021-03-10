@@ -13,6 +13,8 @@ import Course from "../../Screens/Course/Course";
 import OrgMgmt from "../../Screens/OrgMgmt/OrgMgmt";
 import Training from "../../Screens/Training/Traning";
 import User from "../../Screens/Users/Users";
+import UserHome from "../../Screens/Home/UserHome";
+import CodeEditor from '../../Screens/ClassLab/CodeEditor/CodeEditor'
 
 const Dashboard = ({location}) => {
     return (
@@ -22,7 +24,8 @@ const Dashboard = ({location}) => {
                 <Header {...{location}} />
                 <div className="dashboard-container">
                     <Router>
-                        <Home path="/" />
+                        <Home path="dashboard" />
+                        <UserHome path="home"/>
                         <Report path="report/*" />
                         <Setting path="setting" />
                         <Batches path="batches/*"/>
@@ -34,6 +37,7 @@ const Dashboard = ({location}) => {
                         <User path="user"/>
                         <Support path="support/*"/>
                         <LabStore path="labstore/*"/>
+                        <CodeEditor path="compiler/*"/>
                     </Router>
                 </div>
             </div>

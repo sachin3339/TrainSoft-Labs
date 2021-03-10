@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Form } from 'react-bootstrap'
 import { Formik } from 'formik';
@@ -10,17 +10,27 @@ import BatchesDetails from "./BatchDetails";
 import { BsModal } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
 import RestService from "../../../Services/api.service";
-import './batches.css'
 import * as Yup from 'yup';
 import moment from 'moment'
 import useToast from "../../../Store/ToastHook";
+import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
+import useFetch from "../../../Store/useFetch";
+import AppContext from "../../../Store/AppContext";
+import './batches.css'
+
 
 
 
 const Batch = ({location}) => {
+    const {user} = useContext(AppContext)
     const Toast = useToast();
     const [show, setShow] = useState(false);
     const [batchList,setBatchList] = useState([])
+    let {response} = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.BATCHES.GET_BATCH_LIST,
+        errorMsg: 'error occur on get Batches'
+     });
 
     const schema = Yup.object().shape({
         name: Yup.string()
@@ -91,20 +101,6 @@ const Batch = ({location}) => {
         showCheckbox: true,
         clearSelection: false
     });
-
-    // get all course list
-    const getAllBatches = ()=>{
-        try{
-            RestService.getAllBatches().then((res) => {
-                    setBatchList(res.data)
-                },err => console.log(err)
-            ); 
-        }
-        catch(err){
-            console.error('error occur on getAllCourse',err)
-        }
-    }
-
     // create batches
     const createBatch = (data)=>{
         try{
@@ -125,19 +121,19 @@ const Batch = ({location}) => {
         }
     }
     
-    // initilize component
     useEffect(() => {
-        getAllBatches()
-    }, [])
+         setBatchList(response)
+    }, [response])
+
 
 
     return (<><div className="table-shadow">
            <div className="p-3"><CardHeader {...{location}}/></div> 
-        <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse() }} />
+       {batchList && batchList.length > 0 &&  <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse() }} />}
     </div>
     <div className="table-footer-action">
             <div>
-                <Button onClick={() => setShow(true)}> + Add New </Button>
+               {user.role === 'admin' &&  <Button onClick={() => setShow(true)}> + Add New </Button> }
                 <BsModal {...{ show, setShow, headerTitle: "Add new Batches", size: "lg" }}>
                     <div className="form-container">
                         <Formik
@@ -182,7 +178,7 @@ const Batch = ({location}) => {
 const Batches = () => {
     return (
         <Router>
-            <Batch path="/" />
+            <Batch path="/"/>
             <BatchesDetails path="batches-details" />
         </Router>
     )

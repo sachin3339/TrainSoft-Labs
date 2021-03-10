@@ -2,10 +2,10 @@ import React from 'react';
 import { ErrorMessage, Field, useField } from 'formik';
 import { Form } from 'react-bootstrap'
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import './inputField.css'
 import { ICN_CALENDER } from '../../Common/Icon'
 import CustomDropdown from '../CustomDropdown/CustomDropdown';
+import "react-datepicker/dist/react-datepicker.css";
+import './inputField.css'
 
 // text input field
 export const TextInput = (props) => {
@@ -32,11 +32,11 @@ export const DateInput = (props) => {
                 <DatePicker
                     name={props.name}
                     selected={meta.value}
-                    placeholderText="Select Date"
+                    placeholderText={props.placeholder ? props.placeholder : "Select Date"}
                     {...field}
                     dateFormat="MMMM d, yyyy"
                     value={meta.value}
-                    onChange={e => setValue(e)}
+                    onChange={e => setValue(e.getTime())}
                     className="form-control form-control-sm" />
                 {ICN_CALENDER}
             </div>
@@ -59,19 +59,20 @@ export const TextArea = (props) => {
 
 // select input field
 export const SelectInput = (props) => {
-        const [field, meta, helpers] = useField(props);
-        const { setValue } = helpers;
-        const { value } = meta;
+    const [field, meta, helpers] = useField(props);
+    const { setValue } = helpers;
+    const { value } = meta;
     return (<>
         <Form.Label className="label">{props.label}</Form.Label>
         <div className="input-wrapper">
             <div className="input-field">
                 <CustomDropdown {...{
                     bindKey: props.bindKey ? props.bindKey : null,
+                    valueKey: props.valueKey ? props.valueKey : null,
                     data: props.option,
                     searchKeywords: "",
                     onSelect: setValue,
-                    title:'Select',
+                    title: 'Select Course',
                     selectedVal: value,
                 }} />
             </div>
@@ -113,7 +114,7 @@ export const Checkbox = (props) => {
             {...props}
         />
         <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
-        </>)
+    </>)
 };
 
 

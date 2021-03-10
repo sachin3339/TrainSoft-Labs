@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import '../Batches/batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Modal, Form } from 'react-bootstrap'
@@ -7,63 +7,58 @@ import { ICN_TRASH, ICN_EDIT, ICN_CLOSE } from '../../Common/Icon';
 import { Button } from "../../Common/Buttons/Buttons";
 import { TextInput, DateInput, SelectInput } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
-import SearchBox from "../../Common/SearchBox/SearchBox";
+import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import TrainingDetails from "./TrainingDetails";
 import CardHeader from "../../Common/CardHeader";
+import RestService from "../../../Services/api.service";
+import useFetch from "../../../Store/useFetch";
+import useToast from "../../../Store/ToastHook";
+import moment from 'moment'
+import AppContext from "../../../Store/AppContext";
+import TrainingContext, { TrainingProvider } from "../../../Store/TrainingContext";
 
-const dummyData = [
-    { names: 'Jack A', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-    { names: 'Jill B', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-    { names: 'Jane C', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-    { names: 'Cody D', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-    { names: 'Blackwell E', technology: 'Angular', createdData: '22 june 2020', learners: '333', status: 'Active', startDate: '123213', endDate: '323213' },
-
-]
-
-const createBatches = {
-    batchName: '',
-    trainingType: '',
-    endDate: '',
-    startDate: '',
-    course: '',
-    instructor: ''
-
-}
-const Trainings = ({location}) => {
+const Trainings = ({ location }) => {
+    const { setTraining } = useContext(TrainingContext)
+    const Toast = useToast()
+    const { course, batches,spinner, user } = useContext(AppContext)
     const [show, setShow] = useState(false);
+    const [trainingList, setTrainingList] = useState([])
+
+    const { response } = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.TRAINING.GET_TRAINING,
+        errorMsg: 'error occur on get training'
+    });
+
+    // set training list
+    useEffect(() => {
+        setTrainingList(response)
+    }, [response])
     const [configuration, setConfiguration] = useState({
         columns: {
-            "names": {
-                "title": "Name",
+            "name": {
+                "title": "Training Name",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={`training-details`} state={{ title: 'TRAINING', subTitle:"Training Info", subPath:'/' }} className="dt-name">{data.names}</Link>
+                render: (data) => <Link onClick={()=>setTraining(data)} to={`training-details`} state={{ title: 'TRAINING', rowData:data, subTitle: "Training Info", subPath: '/' }} className="dt-name">{data.name}</Link>
 
             },
-            "technology": {
-                "title": "Technology",
+            "noOfBatches": {
+                "title": "No of Batches",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false
-            }
-            ,
-            "createdDate": {
-                "title": "Created Date",
+            },
+            "course": {
+                "title": "Course",
                 "sortDirection": null,
                 "sortEnabled": true,
-                isSearchEnabled: false
-            }
-            ,
-            "learner": {
-                "title": "learners",
-                "sortDirection": null,
-                "sortEnabled": true,
-                isSearchEnabled: false
-            }
-            ,
-            "status": {
-                "title": "Status",
+                isSearchEnabled: false,
+
+            },
+            "instructor": {
+                "title": "Instructor",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false
@@ -73,8 +68,28 @@ const Trainings = ({location}) => {
                 "title": "Start Date",
                 "sortDirection": null,
                 "sortEnabled": true,
-                isSearchEnabled: false
+                isSearchEnabled: false,
+                render: (data) => moment(data.startDate).format('Do MMMM YYYY')
+
             }
+            ,
+            "endDate": {
+                "title": "End Date",
+                "sortDirection": null,
+                "sortEnabled": true,
+                isSearchEnabled: false,
+                render: (data) => moment(data.endDate).format('Do MMMM YYYY')
+
+            }
+            ,
+            "status": {
+                "title": "Status",
+                "sortDirection": null,
+                "sortEnabled": true,
+                isSearchEnabled: false,
+                render: (data) => data.status === "ENABLED" ? 'Active' : 'Not Activate'
+            }
+
         },
         headerTextColor: '#454E50', // user can change table header text color
         sortBy: null,  // by default sort table by name key
@@ -107,16 +122,50 @@ const Trainings = ({location}) => {
         showCheckbox: true,
         clearSelection: false
     });
+
+    // get all course list
+    const createTraining = (data) => {
+        try {
+            spinner.show()
+            let payload = data
+                payload.courseSid = data.courseSid.sid
+                payload.trainingBatchs = [
+                    {
+                      batchSid: data.trainingBatchs.sid
+                    }]
+                payload.status = "ENABLED"
+
+            RestService.createTraining(payload).then(res => {
+                setTrainingList([...trainingList, res.data])
+                spinner.hide()
+                Toast.success({ message: `Course is Successfully Created` });
+                setShow(false)
+            }, err => {
+                spinner.hide()
+                console.error(err)
+            }
+            );
+        }
+        catch (err) {
+            spinner.hide()
+
+            console.error('error occur on createTraining', err)
+            Toast.error({ message: `Something wrong!!` });
+        }
+    }
+
     return (<>
 
         <div className="table-shadow">
-        <div className="p-3"><CardHeader {...{location}}/></div> 
-            <DynamicTable {...{ configuration, sourceData: dummyData }} />
+            <div className="p-3"><CardHeader {...{ location }} /></div>
+            <DynamicTable {...{ configuration, sourceData: trainingList && trainingList.slice().reverse() }} />
         </div>
         <div className="table-footer-action ">
             <div>
+                {user.role === 'admin' &&<>
                 <Button> Report </Button>
                 <Button onClick={() => setShow(true)} className="ml-4" > + Add New </Button>
+                </>}
                 <Modal
                     size="lg"
                     show={show}
@@ -134,17 +183,24 @@ const Trainings = ({location}) => {
                         </div>
                         <div className="form-container">
                             <Formik
-                                onSubmit={() => console.log('a')}
-                                initialValues={createBatches}
+                                onSubmit={createTraining}
+                                initialValues={{
+                                    name: '',
+                                    instructorName: '',
+                                    courseSid: '',
+                                    startDate: '',
+                                    endDate: '',
+                                    trainingBatchs:''
+                                }}
                             >
-                                {({ handleSubmit, isSubmitting, dirty,setFieldValue,values}) => <form onSubmit={handleSubmit} className="create-batch" >
+                                {({ handleSubmit, isSubmitting, dirty, setFieldValue, values }) => <form onSubmit={handleSubmit} className="create-batch" >
                                     <div className="edit-shipping">
                                         <Form.Group className="row">
                                             <div className="col-6">
-                                                <TextInput label="Batch Name" name="batchName" />
+                                                <TextInput label="Training Name" name="name" />
                                             </div>
                                             <div className="col-6">
-                                                <SelectInput label="Training Type" option={['Online', 'Self', 'Offline']} name="trainingType" />
+                                                <SelectInput label="Select Batch(s)" bindKey="name" option={batches} name="trainingBatchs" />
                                             </div>
                                         </Form.Group>
                                         <Form.Group className="row">
@@ -157,22 +213,20 @@ const Trainings = ({location}) => {
                                         </Form.Group>
                                         <Form.Group className="row">
                                             <div className="col-6">
-                                                <SelectInput label="Course" name="course" option={['Online', 'Self', 'Offline']} />
+                                                <SelectInput label="Course" bindKey="name" payloadKey="sid"   name="courseSid" option={course} />
                                             </div>
                                             <div className="col-6">
-                                                <TextInput label="Instructor" name="instructor" />
+                                                <TextInput label="Instructor" name="instructorName" />
                                             </div>
                                         </Form.Group>
                                     </div>
                                     {/* modal footer which contains action button to save data or cancel current action */}
                                     <footer className="jcb">
                                         <div>
-                                            <span className="title-sm">Upload Trainings</span>
                                         </div>
                                         <div>
-                                            <Button type="submit" >Create Batches</Button>
+                                            <Button type="submit" >Create</Button>
                                         </div>
-
                                     </footer>
                                 </form>
                                 }
@@ -188,11 +242,12 @@ const Trainings = ({location}) => {
 
 const Training = () => {
     return (
-        
+       <TrainingProvider>
         <Router>
             <Trainings path="/" />
             <TrainingDetails path="training-details/*" />
         </Router>
+     </TrainingProvider>
     )
 
 }

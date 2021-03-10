@@ -45,7 +45,7 @@ const User = ({ location }) => {
                 isSearchEnabled: false,
 
             },
-            "empId": {
+            "employeeId": {
                 "title": "Emp Id",
                 "sortDirection": null,
                 "sortEnabled": true,

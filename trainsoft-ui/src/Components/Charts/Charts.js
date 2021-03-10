@@ -16,6 +16,15 @@ const Charts = ({ChartData,ChartType,labelLeft,labelRight}) =>{
                     backgroundColor: '#00CCF2',
                     // yAxisID: 'right-y-axis'
                 },
+                course: {
+                    type: 'bar',
+                    fill: true,
+                    label: '',
+                    data: [10,20,30,20],
+                    borderColor: '#00CCF2',
+                    backgroundColor: '#00CCF2',
+                    // yAxisID: 'right-y-axis'
+                },
                 analytics: {
                     fill: false,
                     type: 'line',
@@ -30,8 +39,8 @@ const Charts = ({ChartData,ChartType,labelLeft,labelRight}) =>{
                 case 'activities':
                     dataArr = [data.activities]
                     break;
-                case 'analytics':
-                    dataArr = [data.analytics, ]
+                case 'course':
+                    dataArr = [data.course ]
                     break;
                     default:
                         break;

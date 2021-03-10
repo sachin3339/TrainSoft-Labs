@@ -3,10 +3,13 @@ import { ICN_NOTIFICATION, ICN_SEARCH } from '../../Common/Icon';
 import { CustomToggle } from '../../../Services/MethodFactory';
 import './header.css'
 import { ProfileImg } from '../../Common/BsUtils';
+import { navigate } from '../../Common/Router';
 
 
 const Header = ({location}) => {
-    return (<div className="header">
+    return (<>
+    { location.state.title !== "COMPILER" &&
+    <div className="header">
             <div className="title-lg mb-0">
                 {location.state && location.state.title}
             </div>
@@ -40,10 +43,18 @@ const Header = ({location}) => {
                         <div className="text-md text-center pointer">View More</div>  
                 </Dropdown.Menu>
             </Dropdown>
-            <ProfileImg name="JD" size="md"/>
+            
+            <Dropdown className="">
+                    <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
+                         <div><ProfileImg name="JD" size="md"/></div>
+                    </Dropdown.Toggle>
+                <Dropdown.Menu as="div" align="left">
+                  <Dropdown.Item onClick={()=>navigate('/')}>Logout</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
             </div>
             
-    </div>)
+    </div>}</>)
 }
 
 export default Header

@@ -2,7 +2,7 @@ import React from 'react'
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
 import { Dropdown, Modal, ProgressBar } from 'react-bootstrap';
 import { CustomToggle } from '../../Services/MethodFactory';
-import { ICN_CLOSE } from './Icon'
+import { ICN_CLOSE, ICN_EXPAND } from './Icon'
 import "./bsUtils.css";
 
 // model
@@ -16,8 +16,8 @@ export const BsModal = ({ children, setShow, show, headerTitle, size = "md" }) =
             aria-labelledby="example-custom-modal-styling-title"
         >
             <Modal.Body className="px-5 py-4">
-                <div className="jcb mb-3">
-                    <div className="title-md ">{headerTitle}</div>
+                <div className="jcb mb-3 aic">
+                    <div className="title-md mb-0">{headerTitle}</div>
                     <div><div className="circle-md" onClick={() => setShow(false)}>
                         {ICN_CLOSE}
                     </div>
@@ -50,7 +50,7 @@ export const Card = ({ children, title, action, className = "" }) => {
             {title && <div className="d-flex jcb aic pb-2">
                 <div className="title-md">{title}</div>
                 <div>
-                    {action && <div className="card-action-icon">A</div>}
+                    {action && <div className="card-action-icon">{ICN_EXPAND}</div>}
                 </div>
             </div>}
             {children}
@@ -70,9 +70,9 @@ export const Breadcrumbs = () => <Breadcrumb>
 
 // profile
 // Assets/Images/vid.jpg
-export const ProfileImg = ({url= null,name="",size="sm" }) =>{
+export const ProfileImg = ({url= null,name="",size="sm", onClick }) =>{
     return (<>
-        <div className={`user-profile profile-${size}`}>
+        <div className={`user-profile profile-${size}`} onClick={onClick}>
             {url === null ? <div className="">{name}</div> : <img src={url}/> }
            
         </div>

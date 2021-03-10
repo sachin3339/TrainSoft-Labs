@@ -22,6 +22,12 @@ const GLOBELCONSTANT = {
         PARTICIPANT: {
             GET_PARTICIPANT: "v1/list/participant",
             UPLOAD_PARTICIPANT: "v1/upload/list/participants"
-        }  
+        },  
+        TRAINING: {
+            GET_TRAINING: "v1/trainings",
+            CREATE_TRAINING: "v1/training/create",
+            GET_TRAINING_SESSION: "/v1/trainingsession/training/",
+            CREATE_SESSION: "/v1/trainingSession/create"
+        }
     }
 export default GLOBELCONSTANT;

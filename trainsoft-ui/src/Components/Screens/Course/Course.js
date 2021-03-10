@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect, useContext} from "react";
 import './../Batches/batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Modal, Form } from 'react-bootstrap'
@@ -15,8 +15,10 @@ import useFetch from "../../../Store/useFetch";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import useToast from "../../../Store/ToastHook";
 import moment from 'moment'
+import AppContext from "../../../Store/AppContext";
 
 const Courses = ({location}) => {
+    const {user} = useContext(AppContext)
     const Toast = useToast();
     const [show, setShow] = useState(false);
     const [courseList,setCourseList] = useState([])
@@ -25,6 +27,7 @@ const Courses = ({location}) => {
         url: GLOBELCONSTANT.COURSE.GET_COURSE,
         errorMsg: 'error occur on get course'
      });
+     
     const [configuration, setConfiguration] = useState({
         columns: {
             "name": {
@@ -36,7 +39,7 @@ const Courses = ({location}) => {
 
             },
             "description": {
-                "title": "Batch Name",
+                "title": "Description",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
@@ -122,7 +125,7 @@ const Courses = ({location}) => {
         <div className="table-footer-action">
             <div>
                 <Button onClick={() => setShow(true)}> + Add New </Button>
-                <BsModal {...{ show, setShow, headerTitle: "Add new Batches", size: "lg" }}>
+                <BsModal {...{ show, setShow, headerTitle: "Add new Course", size: "lg" }}>
                     <div className="form-container">
                         <Formik
                             onSubmit={(value) => createCourse(value)}
@@ -143,12 +146,11 @@ const Courses = ({location}) => {
                                     </Form.Group>
                                 </div>
                                 {/* modal footer which contains action button to save data or cancel current action */}
-                                <footer className="jcb">
+                                <footer className="jcb mt-3">
                                     <div>
-                                        <span className="title-sm">Upload participants</span>
                                     </div>
                                     <div>
-                                        <Button type="submit" >Create Course</Button>
+                                       {user.role === "admin" && <Button type="submit" >Create Course</Button>} 
                                     </div>
                                 </footer>
                             </form>

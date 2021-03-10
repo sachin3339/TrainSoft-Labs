@@ -1,46 +1,30 @@
-const someJSCodeExample = `
-
-  const CANCELATION_MESSAGE = {
-    type: 'cancelation',
-    msg: 'operation is manually canceled',
-  };
-
-  function makeCancelable(promise) {
-    let hasCanceled_ = false;
-
-    const wrappedPromise = new Promise((resolve, reject) => {
-      promise.then(val => hasCanceled_ ? reject(CANCELATION_MESSAGE) : resolve(val));
-      promise.catch(reject);
-    });
-
-    return (wrappedPromise.cancel = () => (hasCanceled_ = true), wrappedPromise);
-  }
-
-  export default makeCancelable;
+const c = `
+#include <stdio.h>
+int main() {
+   // printf() displays the string inside quotation
+   printf("Hello, World!");
+   return 0;
+}
 `;
 
-const someCSSCodeExample = `
+const java = `import java.util.Scanner;
 
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    outline: none;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  *::-webkit-scrollbar {
-    display: none;
-  }
+public class HelloWorld {
 
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+    public static void main(String[] args) {
+
+        // Creates a reader instance which takes
+        // input from standard input - keyboard
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Enter a number: ");
+
+        // nextInt() reads the next integer from the keyboard
+        int number = reader.nextInt();
+
+        // println() prints the following line to the output screen
+        System.out.println("You entered: " + number);
+    }
+}
 `;
 
 
@@ -56,23 +40,36 @@ sum = num1 + num2
 # Display the sum
 print('The sum of {0} and {1} is {2}'.format(num1, num2, sum))`
 
-const sql = ``
+const cPlus2 = `// Your First C++ Program
+
+#include <iostream>
+
+int main() {
+    std::cout << "Hello World!";
+    return 0;
+}`
 
 export const Language = [
       {
         label: "Java",
         name: "index.java",
         language: "java",
-        value: ''
+        value: java
       },
       {
         label: "C",
         name: "index.c",
         language: "c",
-        value: ''
+        value: c
       },
       {
-        label: "Python2",
+        label: "C++",
+        name: "index.c",
+        language: "CPP",
+        value: cPlus2
+      },
+      {
+        label: "Python",
         name: "index.cpp",
         language: "python2",
         value: python

@@ -1,15 +1,21 @@
+import React, { useContext, useEffect } from 'react'
 import Charts from '../../Charts/Charts'
 import Table from 'react-bootstrap/Table'
-import './home.css'
-
 import { ICN_COPY, ICN_COMING_BATCHES } from '../../Common/Icon';
-import { Progress, Card} from '../../Common/BsUtils';
+import { Progress, Card } from '../../Common/BsUtils';
 import {
     CircularProgressbar,
     buildStyles
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import CalenderGraph from '../../Common/CalenderGraph/CalenderGraph';
+import AppContext from '../../../Store/AppContext';
+import './home.css'
+import useFetch from "../../../Store/useFetch";
+import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
+import { Router } from '../../Common/Router';
+
+
 const tableData = [
     { name: "ITU_01", avgScr: 50 },
     { name: "ITU_02", avgScr: 70 },
@@ -23,14 +29,16 @@ const tableData = [
 
 ]
 
-const Home = () => {
+const AdminHome = () => {
+    const { user } = useContext(AppContext)
+
     return (<div>
         <div className="row">
             <div className="col-md-8">
                 {/* ..........user info......... */}
                 <Card title="">
                     <div className="user-info">
-                        <div className="title-lg">Welcome back Julie!</div>
+                        <div className="title-lg">Welcome back {user.name}!</div>
                         <div>
                             Since your last login on the system, there were:
                                <div>
@@ -47,7 +55,7 @@ const Home = () => {
             </div>
             <div className="col-md-4 ">
                 {/* ..........Lms insight......... */}
-                <Card title="Lms insight" action={true}>
+                <Card title={`${user.role === 'admin' ? 'Lms insight' : 'Attendance Rate'} `} action={true}>
                     <div className="">
                         <div className="lms-card"><div className="lms-card-g">AWS Solution Architect</div><div>45 Enrolled <span>a</span></div></div>
                         <div className="lms-card"><div className="lms-card-p">Machine Learning</div><div>40 Enrolled</div> <span>a</span></div>
@@ -147,8 +155,8 @@ const Home = () => {
                                     </div>
                         <div className="jce">
                             <div className="grid-batch-icon">
-                            <i className="bi bi-arrows-angle-expand"></i>
-                                        </div>
+                                <i className="bi bi-arrows-angle-expand"></i>
+                            </div>
                         </div>
                     </div>
 
@@ -160,22 +168,52 @@ const Home = () => {
                                     </div>
                         <div className="jce">
                             <div className="grid-batch-icon">
-                            <i className="bi bi-arrows-angle-expand"></i>
-                                        </div>
+                                <i className="bi bi-arrows-angle-expand"></i>
+                            </div>
                         </div>
                     </div>
 
                 </div>
 
-                
-                    {/* ..........Calender......... */}
-                    <Card title="Calender" className="full-h">
-                        <CalenderGraph/>
-                    </Card>
-                    {/* ..........End Calender......... */}
+
+                {/* ..........Calender......... */}
+                <Card title="Calender" className="full-h">
+                    <CalenderGraph />
+                </Card>
+                {/* ..........End Calender......... */}
             </div>
         </div>
     </div>)
 }
 
+const Home = () => {
+    const { setCourse,setBatches } = useContext(AppContext)
+
+    // get all courses
+    const allCourse = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.COURSE.GET_COURSE,
+        errorMsg: 'error occur on get course'
+    });
+
+    // get all batches
+    const allBatches = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.BATCHES.GET_BATCH_LIST,
+        errorMsg: 'error occur on get Batches'
+     });
+
+
+    useEffect(() => {
+        allCourse.response && setCourse(allCourse.response)
+        allBatches.response && setBatches(allBatches.response)
+    }, [allCourse.response,allBatches.response])
+
+    return (<>
+    <Router>
+         <AdminHome path="/" />
+    </Router>
+    </>)
+
+}
 export default Home
