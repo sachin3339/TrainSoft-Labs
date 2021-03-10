@@ -1,8 +1,8 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Charts from '../../Charts/Charts'
 import Table from 'react-bootstrap/Table'
 import { ICN_COPY, ICN_COMING_BATCHES } from '../../Common/Icon';
-import { Progress, Card} from '../../Common/BsUtils';
+import { Progress, Card } from '../../Common/BsUtils';
 import {
     CircularProgressbar,
     buildStyles
@@ -11,7 +11,10 @@ import "react-circular-progressbar/dist/styles.css";
 import CalenderGraph from '../../Common/CalenderGraph/CalenderGraph';
 import AppContext from '../../../Store/AppContext';
 import './home.css'
-import UserHome from './UserHome';
+import useFetch from "../../../Store/useFetch";
+import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
+import { Router } from '../../Common/Router';
+
 
 const tableData = [
     { name: "ITU_01", avgScr: 50 },
@@ -27,8 +30,8 @@ const tableData = [
 ]
 
 const AdminHome = () => {
-    const {user} = useContext(AppContext)
-    
+    const { user } = useContext(AppContext)
+
     return (<div>
         <div className="row">
             <div className="col-md-8">
@@ -152,8 +155,8 @@ const AdminHome = () => {
                                     </div>
                         <div className="jce">
                             <div className="grid-batch-icon">
-                            <i className="bi bi-arrows-angle-expand"></i>
-                                        </div>
+                                <i className="bi bi-arrows-angle-expand"></i>
+                            </div>
                         </div>
                     </div>
 
@@ -165,28 +168,51 @@ const AdminHome = () => {
                                     </div>
                         <div className="jce">
                             <div className="grid-batch-icon">
-                            <i className="bi bi-arrows-angle-expand"></i>
-                                        </div>
+                                <i className="bi bi-arrows-angle-expand"></i>
+                            </div>
                         </div>
                     </div>
 
                 </div>
 
-                
-                    {/* ..........Calender......... */}
-                    <Card title="Calender" className="full-h">
-                        <CalenderGraph/>
-                    </Card>
-                    {/* ..........End Calender......... */}
+
+                {/* ..........Calender......... */}
+                <Card title="Calender" className="full-h">
+                    <CalenderGraph />
+                </Card>
+                {/* ..........End Calender......... */}
             </div>
         </div>
     </div>)
 }
 
-const Home = ()=> {
-    const {user} = useContext(AppContext)
-    return(<>
-        <AdminHome/>
+const Home = () => {
+    const { setCourse,setBatches } = useContext(AppContext)
+
+    // get all courses
+    const allCourse = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.COURSE.GET_COURSE,
+        errorMsg: 'error occur on get course'
+    });
+
+    // get all batches
+    const allBatches = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.BATCHES.GET_BATCH_LIST,
+        errorMsg: 'error occur on get Batches'
+     });
+
+
+    useEffect(() => {
+        allCourse.response && setCourse(allCourse.response)
+        allBatches.response && setBatches(allBatches.response)
+    }, [allCourse.response,allBatches.response])
+
+    return (<>
+    <Router>
+         <AdminHome path="/" />
+    </Router>
     </>)
 
 }

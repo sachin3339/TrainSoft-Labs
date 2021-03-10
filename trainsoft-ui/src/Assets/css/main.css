@@ -201,14 +201,19 @@
 
 .alert-primary {
   color: #ffffff;
-  background-color: #00CCF2;
+  background-color: #00ccf2;
   border-color: #d3d3d382;
   -webkit-box-shadow: 0px 0px 13px 0px #8080805e;
           box-shadow: 0px 0px 13px 0px #8080805e;
 }
 
 .bg-light {
-  background: #F5FBFF;
+  background: #f5fbff;
+}
+
+.spinner-border {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .label {
@@ -377,7 +382,8 @@
   text-overflow: ellipsis;
 }
 
-.table-bless .table td, .table th {
+.table-bless .table td,
+.table th {
   padding: 5px 0px;
 }
 
@@ -437,6 +443,7 @@
       -ms-flex-align: center;
           align-items: center;
   margin: 0px 10px;
+  cursor: pointer;
   background-color: #2D62ED !important;
 }
 
@@ -450,6 +457,7 @@
       -ms-flex-align: center;
           align-items: center;
   margin: 0px 10px;
+  cursor: pointer;
   background-color: #00CCF2 !important;
 }
 
@@ -458,7 +466,7 @@
 }
 
 .link {
-  color: #2D62ED;
+  color: #2d62ed;
   cursor: pointer;
 }
 
@@ -541,7 +549,7 @@ p {
   height: 25px;
   -webkit-box-shadow: 0px 3px 6px #00000029;
           box-shadow: 0px 3px 6px #00000029;
-  background: #F5FBFF;
+  background: #f5fbff;
   border-radius: 2px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -556,7 +564,7 @@ p {
   text-align: center;
   border-radius: 3px;
   cursor: pointer;
-  background-color: #00CCF2;
+  background-color: #00ccf2;
   -webkit-box-shadow: 0px 2px 3px #000000a6;
           box-shadow: 0px 2px 3px #000000a6;
   color: white;
@@ -700,7 +708,7 @@ p {
   border-radius: 20px;
   width: 100%;
   padding: 0px 10px;
-  background: #F5FBFF;
+  background: #f5fbff;
   height: 39px;
   margin: 15px;
   margin-bottom: 10px;
@@ -812,7 +820,7 @@ p {
   padding: 10px;
   display: -ms-grid;
   display: grid;
-  background: #4A72CF;
+  background: #4a72cf;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;

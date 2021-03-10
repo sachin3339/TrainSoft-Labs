@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 
 import { Formik } from 'formik';
-import { TextInput } from '../../Common/InputField/InputField';
+import { Checkbox, TextInput } from '../../Common/InputField/InputField';
 import { Button } from '../../Common/Buttons/Buttons';
 import Screen from '../../../Assets/Images/screen.jpg'
 import './auth.css'
@@ -47,6 +47,7 @@ const Login = () => {
                     initialValues={{
                         "email": '',
                         "password": '',
+                        "term":''
 
                     }}
                     // validationSchema={schema}
@@ -55,9 +56,14 @@ const Login = () => {
                         <form onSubmit={handleSubmit} className="login-form">
                             <TextInput name="email" label="User Name" />
                             <TextInput name="password" label="Password" />
+                            <Checkbox className="mb-3" name="term" label="I accept the terms of service and privacy policy" id="term"/>
                             <div className="text-right">
                                 <Button className="btn-am btn-block py-2" type="submit">Login</Button>
+                               
                             </div>
+                            <div className="text-center mt-2">
+                                Not registered? Contact us
+                                </div>
                             <div>
                                 {/* <button className="btn btn-primary btn-am btn-block" type="submit" onClick={()=> navigate('/dashboard',{ replace: true })}>Login</button> */}
                             </div>

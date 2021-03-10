@@ -16,8 +16,8 @@ export const BsModal = ({ children, setShow, show, headerTitle, size = "md" }) =
             aria-labelledby="example-custom-modal-styling-title"
         >
             <Modal.Body className="px-5 py-4">
-                <div className="jcb mb-3">
-                    <div className="title-md ">{headerTitle}</div>
+                <div className="jcb mb-3 aic">
+                    <div className="title-md mb-0">{headerTitle}</div>
                     <div><div className="circle-md" onClick={() => setShow(false)}>
                         {ICN_CLOSE}
                     </div>

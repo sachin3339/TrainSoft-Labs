@@ -12,6 +12,7 @@ import { BsDropDown } from '../../Common/BsUtils';
 import CodeEditor from './CodeEditor/CodeEditor';
 import WhiteBoard from './WhiteBoard/WhiteBoard';
 import NoDataFound from '../../Common/NoDataFound/NoDataFound';
+import { navigate } from '../../Common/Router';
 
 
 const ClassLab = () => {
@@ -25,10 +26,10 @@ const ClassLab = () => {
         <div className="p-4 full-w full-h">
             <div className="flx full-w full-h ">
                 <div className="full-w full-h flx3 column">
-                    <div className="title-lg">TrainSoft - Instructor</div>
+                    <div className="title-lg pointer" onClick={()=>navigate('/home')}>TrainSoft - Instructor</div>
                     <div className="flx">
                         {tab.length !== 0 ?
-                            tab.map((res, i) => <div className={`class-mode ${selectedTab === res && 'active-tab-class'}`} key={i}>
+                            tab.map((res, i) => <div key={i} className={`class-mode ${selectedTab === res && 'active-tab-class'}`} key={i}>
                                 <div className="" onClick={() => { setSelectedTab(res) }}>{res}</div><div className={`mode-close }`} onClick={() => { setTab(tab.filter(resp => resp !== res)); setFromClose(true);setRemovedTag(res) }}>{ICN_CLOSE}</div>
                             </div>)
                             : <div className="class-mode">New</div>}
@@ -45,7 +46,7 @@ const ClassLab = () => {
                         {tab.length > 0 ? <>
                             {selectedTab === "Whiteboard" && <WhiteBoard className={`${selectedTab === "Whiteboard" ? 'd-block' : 'd-none'}`} />}
                             <div className={`${selectedTab === "Content" ? 'd-block' : 'd-none'} full-h full-w`}><Content {...{fromClose,setFromClose,removedTag}} /> </div>
-                            <div className={`${selectedTab === "Code editor" ? 'column' : 'd-none'} full-h full-w `}><CodeEditor {...{fromClose,setFromClose,removedTag}} /></div>
+                            <div className={`${selectedTab === "Code editor" ? 'column' : 'd-none'} full-h full-w `}><CodeEditor {...{fromClose,setFromClose,removedTag,themesColor:false}} /></div>
                             <div className={`${selectedTab === "Online Media" ? 'd-block' : 'd-none'} full-h full-w`}><OnlineMedia {...{fromClose,setFromClose,removedTag}} /></div>
                             {selectedTab === "Development Env" && <div>
                                 <NoDataFound title="Development Env" subTitle="Work on" />

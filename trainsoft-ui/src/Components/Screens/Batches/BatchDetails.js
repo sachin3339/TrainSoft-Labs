@@ -17,15 +17,6 @@ const dummyData =[
 
 ]
 
-const createBatches = {
-    batchName: '',
-    trainingType: '',
-    endDate:'',
-    startDate: '',
-    course:'',
-    instructor:''
-
-}
 const BatchesDetails = ({location}) => {
     const [configuration, setConfiguration] = useState({
         columns: {

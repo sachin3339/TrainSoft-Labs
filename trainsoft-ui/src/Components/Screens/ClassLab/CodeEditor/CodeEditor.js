@@ -7,23 +7,22 @@ import { CustomToggle } from '../../../../Services/MethodFactory';
 import axios from 'axios';
 import { ICN_ARROW_DOWN, ICN_DOWNLOAD, ICN_FULL_SCREEN, ICN_PLAY, ICN_STAR_HALF } from '../../../Common/Icon';
 import AppContext from '../../../../Store/AppContext';
-const CodeEditor = () => {
+const CodeEditor = ({themesColor=true}) => {
     const {spinner} = useContext(AppContext) 
     const [inputData, setInputData] = useState('')
     const editorRef = useRef(null);
     const [lang, setLang] = useState(Language[0])
-    const [lightTheams, setLightTheams] = useState(false)
+    const [lightTheams, setLightTheams] = useState(themesColor)
     const [output, setOutput] = useState('')
     const [inputTab, setInputTab] = useState(true)
     const [spinners,setSpinners] = useState(false)
-
+    console.log(lang)
     const handleEditorDidMount = (editor, monaco) => {
         editorRef.current = editor;
     }
 
     const runCode = () => {
         setSpinners(true)
-        spinner.show()
         const payload = {
             "stdin": inputData,
             "script": editorRef.current.getValue(),
@@ -34,7 +33,6 @@ const CodeEditor = () => {
                 setOutput(data.output)
                 setInputTab(false)
                 setSpinners(false)
-                spinner.hide()
             })
             
     }
@@ -44,6 +42,8 @@ const CodeEditor = () => {
         setInputTab('')
         setInputTab(true)
     }, [lang])
+
+
 
     return (<>
     <div className="editor-wrapper">
@@ -77,7 +77,7 @@ const CodeEditor = () => {
                 </div>
             </div>
         </div>
-        <Editor
+      <Editor
             height="100%"
             width="100%"
             defaultLanguage={lang.language}
@@ -85,6 +85,7 @@ const CodeEditor = () => {
             theme={lightTheams ? "vs-light" : "vs-dark"}
             onMount={handleEditorDidMount}
         />
+        
         <div className="py-2 column">
             <div className="flx">
                 <div onClick={() => setInputTab(true)} className={`class-mode ${inputTab === true ? 'bg-primary' : ''}`}>Input</div>

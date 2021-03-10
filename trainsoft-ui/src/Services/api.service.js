@@ -34,6 +34,10 @@ const RestService = {
   //participant
   getAllParticipant: () => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.GET_PARTICIPANT),
   UploadParticipant: (payload) => AxiosService.uploadMultiPart(GLOBELCONSTANT.PARTICIPANT.UPLOAD_PARTICIPANT, payload),
+  // training
+  createTraining: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.CREATE_TRAINING,payload),
+  createSession: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.CREATE_SESSION,payload)
+
   
 };
 

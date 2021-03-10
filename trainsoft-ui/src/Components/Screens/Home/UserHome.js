@@ -1,29 +1,10 @@
 import React, { useContext } from 'react'
 import Charts from '../../Charts/Charts'
-import Table from 'react-bootstrap/Table'
-import { ICN_COPY, ICN_COMING_BATCHES } from '../../Common/Icon';
-import { Progress, Card} from '../../Common/BsUtils';
-import {
-    CircularProgressbar,
-    buildStyles
-} from "react-circular-progressbar";
+import {  Card} from '../../Common/BsUtils';
 import "react-circular-progressbar/dist/styles.css";
 import CalenderGraph from '../../Common/CalenderGraph/CalenderGraph';
 import AppContext from '../../../Store/AppContext';
 import './home.css'
-
-const tableData = [
-    { name: "ITU_01", avgScr: 50 },
-    { name: "ITU_02", avgScr: 70 },
-    { name: "ITU_03", avgScr: 100 },
-    { name: "ITU_05", avgScr: 60 },
-    { name: "ITU_01", avgScr: 50 },
-    { name: "ITU_02", avgScr: 70 },
-    { name: "ITU_03", avgScr: 100 },
-    { name: "ITU_05", avgScr: 60 },
-    { name: "ITU_01", avgScr: 90 }
-
-]
 
 const UserHome = () => {
     const {user} = useContext(AppContext)

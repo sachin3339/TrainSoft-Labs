@@ -87,49 +87,50 @@
 .flx {
 	display: flex;
 }
-.elps{
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis
+.elps {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
-.table-bless .table td, .table th{
+.table-bless .table td,
+.table th {
 	padding: 5px 0px;
 }
 .table-bless thead td {
-    padding-bottom: 10px !important;
+	padding-bottom: 10px !important;
 }
-.checkbox-div{
+.checkbox-div {
 	width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.308);
+	height: 15px;
+	border-radius: 50%;
+	border: 1px solid rgba(0, 0, 0, 0.308);
 	cursor: pointer;
 	margin: 0px 5px;
 }
-.tab-btn{
-    width: 100%;
-    background: $secondary;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 2px;
-    cursor: pointer;
+.tab-btn {
+	width: 100%;
+	background: $secondary;
+	color: white;
+	padding: 5px 10px;
+	border-radius: 2px;
+	cursor: pointer;
 	text-align: center;
-    box-shadow: 0px 1px 2px 0px #000000bf;
+	box-shadow: 0px 1px 2px 0px #000000bf;
 }
-.success-checkbox .custom-input input:checked + label:before{
+.success-checkbox .custom-input input:checked + label:before {
 	background-color: $success;
 	border: 1px solid $success;
-  }
-  .tw{
-	  color: white;
-  }
-  .tb{
+}
+.tw {
+	color: white;
+}
+.tb {
 	color: rgb(5, 5, 5);
 }
-.f12{
+.f12 {
 	font-size: 12px;
 }
-.op5{
+.op5 {
 	opacity: 0.5;
 }
 
@@ -141,22 +142,23 @@
 	text-align: center;
 	align-items: center;
 	margin: 0px 10px;
+	cursor: pointer;
 }
-.batch-pri{
+.batch-pri {
 	@include gnBatch;
 	background-color: $primary !important;
 }
-.batch-sec{
+.batch-sec {
 	@include gnBatch;
 	background-color: $secondary !important;
 }
-.btn-active{
+.btn-active {
 	opacity: 1;
 }
-.link{
-	color:#2D62ED;
+.link {
+	color: #2d62ed;
 	cursor: pointer;
 }
-.d-grid{
+.d-grid {
 	display: grid;
 }

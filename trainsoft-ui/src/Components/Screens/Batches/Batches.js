@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Form } from 'react-bootstrap'
 import { Formik } from 'formik';
@@ -10,17 +10,19 @@ import BatchesDetails from "./BatchDetails";
 import { BsModal } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
 import RestService from "../../../Services/api.service";
-import './batches.css'
 import * as Yup from 'yup';
 import moment from 'moment'
 import useToast from "../../../Store/ToastHook";
-import { set } from "lodash";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import useFetch from "../../../Store/useFetch";
+import AppContext from "../../../Store/AppContext";
+import './batches.css'
+
 
 
 
 const Batch = ({location}) => {
+    const {user} = useContext(AppContext)
     const Toast = useToast();
     const [show, setShow] = useState(false);
     const [batchList,setBatchList] = useState([])
@@ -131,7 +133,7 @@ const Batch = ({location}) => {
     </div>
     <div className="table-footer-action">
             <div>
-                <Button onClick={() => setShow(true)}> + Add New </Button>
+               {user.role === 'admin' &&  <Button onClick={() => setShow(true)}> + Add New </Button> }
                 <BsModal {...{ show, setShow, headerTitle: "Add new Batches", size: "lg" }}>
                     <div className="form-container">
                         <Formik
