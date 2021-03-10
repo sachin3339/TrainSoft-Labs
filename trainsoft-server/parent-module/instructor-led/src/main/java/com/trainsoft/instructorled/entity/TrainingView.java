@@ -23,7 +23,7 @@ public class TrainingView extends BaseEntity {
     private int noOfBatches;
 
     @Column(name = "course_name")
-    private String course;
+    private String courseName;
 
     @Column(name = "instructor_name")
     private String instructor;
@@ -37,6 +37,10 @@ public class TrainingView extends BaseEntity {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private InstructorEnum.Status status;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    private Course course;
 
     @ManyToOne
     @JoinColumn(name = "created_by", referencedColumnName = "id")
