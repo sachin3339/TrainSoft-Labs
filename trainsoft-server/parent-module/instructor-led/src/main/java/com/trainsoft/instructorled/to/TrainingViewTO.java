@@ -20,4 +20,5 @@ public class TrainingViewTO extends BaseTO{
     private InstructorEnum.Status status;
     private String createdByVASid;
     private String updatedByVASid;
+    private String courseSid;
 }
