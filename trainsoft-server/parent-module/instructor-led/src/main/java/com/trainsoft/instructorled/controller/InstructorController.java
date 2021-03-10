@@ -9,6 +9,7 @@ import com.trainsoft.instructorled.service.IDepartmentService;
 import com.trainsoft.instructorled.to.CompanyTO;
 import com.trainsoft.instructorled.to.CourseTO;
 import com.trainsoft.instructorled.to.DepartmentTO;
+import com.trainsoft.instructorled.to.UserTO;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,7 @@ public class InstructorController {
 
     ICompanyService companyService;
     IDepartmentService departmentService;
+
 
     @PostMapping("/create")
     @ApiOperation(value = "createCompany", notes = "API to create new Company.")
@@ -105,5 +107,6 @@ public class InstructorController {
         return ResponseEntity.ok(HttpUtils.postJsonUrl(payload,"https://api.jdoodle.com/v1/execute",headers));
 
     }
+
 }
 

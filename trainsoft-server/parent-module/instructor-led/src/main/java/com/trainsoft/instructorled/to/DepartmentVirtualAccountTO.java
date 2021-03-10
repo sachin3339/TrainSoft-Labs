@@ -11,6 +11,6 @@ import lombok.Setter;
 public class DepartmentVirtualAccountTO extends BaseTO{
 
     private InstructorEnum.DepartmentRole departmentRole;
-    private String departmentSid;
+    private DepartmentTO department;
     private String virtualAccountSid;
 }

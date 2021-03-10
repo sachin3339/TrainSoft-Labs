@@ -5,15 +5,15 @@ import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter@Setter
+@Getter @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AppUserTO extends BaseTO{
+public class UserTO extends BaseTO{
 
-    private String name;
-    private String emailId;
-    private String employeeId;
-    private String phoneNumber;
-    private boolean superAdmin;
+    private InstructorEnum.VirtualAccountRole role;
+    private  String companySid;
+    private String designation;
     private InstructorEnum.Status status;
-    private InstructorEnum.AccessType accessType;
+    private AppUserTO appuser;
+    private  DepartmentVirtualAccountTO departmentVA;
+
 }

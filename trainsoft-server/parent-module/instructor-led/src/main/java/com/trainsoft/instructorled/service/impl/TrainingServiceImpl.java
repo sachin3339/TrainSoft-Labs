@@ -6,9 +6,7 @@ import com.trainsoft.instructorled.dozer.DozerUtils;
 import com.trainsoft.instructorled.entity.*;
 import com.trainsoft.instructorled.repository.*;
 import com.trainsoft.instructorled.service.ITrainingService;
-import com.trainsoft.instructorled.to.CourseSessionTO;
-import com.trainsoft.instructorled.to.TrainingSessionTO;
-import com.trainsoft.instructorled.to.TrainingTO;
+import com.trainsoft.instructorled.to.*;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +30,9 @@ public class TrainingServiceImpl implements ITrainingService {
     private ICourseRepository courseRepository;
     private ITrainingRepository trainingRepository;
     private ITrainingSessionRepository trainingSessionRepository;
+    private ITrainingBatchRepository trainingBatchRepository;
+    private ITrainingViewRepository trainingViewRepository;
+    private ICourseSessionRepository courseSessionRepository;
     private DozerUtils mapper;
 
     @Override
@@ -50,7 +53,12 @@ public class TrainingServiceImpl implements ITrainingService {
                 training.setStartDate(new Date(trainingTO.getStartDate()));
                 training.setEndDate(new Date(trainingTO.getEndDate()));
                 training.setCreatedOn(new Date(Instant.now().toEpochMilli()));
-                TrainingTO savedTrainingTO = mapper.convert(trainingRepository.save(training), TrainingTO.class);
+                Training savedTraining=trainingRepository.save(training);
+                if(trainingTO.getTrainingBatchs()!=null && trainingTO.getTrainingBatchs().size()!=0)
+                    saveTrainingBatch(savedTraining, trainingTO.getTrainingBatchs());
+                else
+                    trainingTO.setTrainingBatchs(Collections.EMPTY_LIST);
+                TrainingTO savedTrainingTO = mapper.convert(savedTraining, TrainingTO.class);
                 savedTrainingTO.setCreatedByVASid(virtualAccount.getStringSid());
                 savedTrainingTO.setCourseSid(course.getStringSid());
                 return savedTrainingTO;
@@ -63,14 +71,15 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public List<TrainingTO> getTrainings() {
+    public List<TrainingViewTO> getTrainings() {
         try {
-            List<Training> trainings = trainingRepository.findAll();
-            return trainings.stream().map(training -> {
-                TrainingTO to = mapper.convert(training, TrainingTO.class);
-                to.setCreatedByVASid(training.getCreatedBy() == null ? null : training.getCreatedBy().getStringSid());
-                to.setUpdatedByVASid(training.getUpdatedBy() == null ? null : training.getUpdatedBy().getStringSid());
-                to.setCourseSid(training.getCourse() == null ? null : training.getCourse().getStringSid());
+            List<TrainingView> trainingViews = trainingViewRepository.findAll();
+            return trainingViews.stream().map(trainingView -> {
+                TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
+                to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
+                to.setCourseSid(trainingView.getCourse() == null ? null : trainingView.getCourse().getStringSid());
+                to.setCreatedByVASid(trainingView.getCreatedBy() == null ? null : trainingView.getCreatedBy().getStringSid());
+                to.setUpdatedByVASid(trainingView.getUpdatedBy() == null ? null : trainingView.getUpdatedBy().getStringSid());
                 return to;
             }).collect(Collectors.toList());
         } catch (Exception e) {
@@ -174,5 +183,52 @@ public class TrainingServiceImpl implements ITrainingService {
                 log.info("throwing exception while fetching the all trainingSession details");
                 throw new ApplicationException("Something went wrong while fetching the trainingSession details");
             }
+    }
+
+    private void saveTrainingBatch(Training trd, List<TrainingBatchTO> tbTO) {
+        tbTO.forEach(tBatchTO-> {
+            Batch batch = batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(tBatchTO.getBatchSid()));
+            TrainingBatch  trb = new TrainingBatch();
+            trb.generateUuid();
+            trb.setBatch(batch);
+            trb.setTraining(trd);
+            trainingBatchRepository.save(trb);
+        });
+    }
+
+    @Override
+    public List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid) {
+        List<TrainingSessionTO> sessionTOList= new ArrayList<>();
+        try {
+            Training training = trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
+            Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+            List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourse(course);
+            List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByTraining(training);
+            List<TrainingSessionTO> sessionsTO=mapper.convertList(trainingSessionList,TrainingSessionTO.class);
+            if(sessionsTO!=null && sessionsTO.size()>0){
+                sessionTOList.addAll(sessionsTO);
+            }
+            if(courseSessionList!=null && courseSessionList.size()>0){
+                courseSessionList.forEach(courseSession -> {
+                    TrainingSessionTO trainingSessionTO=new TrainingSessionTO();
+                    trainingSessionTO.setSid(courseSession.getStringSid());
+                    trainingSessionTO.setAgendaDescription(courseSession.getTopicDescription());
+                    trainingSessionTO.setAgendaName(courseSession.getTopicName());
+                    if(courseSession.getCreatedBy()!=null)
+                    trainingSessionTO.setCreatedByVASid(courseSession.getCreatedBy().getStringSid());
+                    trainingSessionTO.setCourseSid(courseSession.getCourse().getStringSid());
+                    trainingSessionTO.setCreatedOn(courseSession.getCreatedOn().getTime());
+                    if(courseSession.getUpdatedOn()!=null)
+                        trainingSessionTO.setUpdatedOn(courseSession.getUpdatedOn().getTime());
+                    if(courseSession.getUpdatedBy()!=null)
+                        trainingSessionTO.setUpdatedByVASid(courseSession.getUpdatedBy().getStringSid());
+                    sessionTOList.add(trainingSessionTO);
+                });
+            }
+        }catch(Exception e){
+            log.info("throwing exception while fetching the all trainingSession details");
+            throw new ApplicationException("Something went wrong while fetching the trainingSession details");
+        }
+        return sessionTOList;
     }
 }
