@@ -13,4 +13,5 @@ public interface ITrainingService {
     TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO);
     TrainingSessionTO getTrainingSessionBySid(String trainingSessionSid);
     List<TrainingSessionTO> getTrainingSessionByTrainingSid(String trainingSid);
+    List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid);
 }

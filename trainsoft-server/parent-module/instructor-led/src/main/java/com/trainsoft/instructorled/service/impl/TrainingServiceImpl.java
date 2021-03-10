@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,7 @@ public class TrainingServiceImpl implements ITrainingService {
     private ITrainingSessionRepository trainingSessionRepository;
     private ITrainingBatchRepository trainingBatchRepository;
     private ITrainingViewRepository trainingViewRepository;
+    private ICourseSessionRepository courseSessionRepository;
     private DozerUtils mapper;
 
     @Override
@@ -181,8 +183,7 @@ public class TrainingServiceImpl implements ITrainingService {
             }
     }
 
-    private void saveTrainingBatch(Training trd, List<TrainingBatchTO> tbTO)
-    {
+    private void saveTrainingBatch(Training trd, List<TrainingBatchTO> tbTO) {
         tbTO.forEach(tBatchTO-> {
             Batch batch = batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(tBatchTO.getBatchSid()));
             TrainingBatch  trb = new TrainingBatch();
@@ -191,5 +192,41 @@ public class TrainingServiceImpl implements ITrainingService {
             trb.setTraining(trd);
             trainingBatchRepository.save(trb);
         });
+    }
+
+    @Override
+    public List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid) {
+        List<TrainingSessionTO> sessionTOList= new ArrayList<>();
+        try {
+            Training training = trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
+            Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+            List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourse(course);
+            List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByTraining(training);
+            List<TrainingSessionTO> sessionsTO=mapper.convertList(trainingSessionList,TrainingSessionTO.class);
+            if(sessionsTO!=null && sessionsTO.size()>0){
+                sessionTOList.addAll(sessionsTO);
+            }
+            if(courseSessionList!=null && courseSessionList.size()>0){
+                courseSessionList.forEach(courseSession -> {
+                    TrainingSessionTO trainingSessionTO=new TrainingSessionTO();
+                    trainingSessionTO.setSid(courseSession.getStringSid());
+                    trainingSessionTO.setAgendaDescription(courseSession.getTopicDescription());
+                    trainingSessionTO.setAgendaName(courseSession.getTopicName());
+                    if(courseSession.getCreatedBy()!=null)
+                    trainingSessionTO.setCreatedByVASid(courseSession.getCreatedBy().getStringSid());
+                    trainingSessionTO.setCourseSid(courseSession.getCourse().getStringSid());
+                    trainingSessionTO.setCreatedOn(courseSession.getCreatedOn().getTime());
+                    if(courseSession.getUpdatedOn()!=null)
+                        trainingSessionTO.setUpdatedOn(courseSession.getUpdatedOn().getTime());
+                    if(courseSession.getUpdatedBy()!=null)
+                        trainingSessionTO.setUpdatedByVASid(courseSession.getUpdatedBy().getStringSid());
+                    sessionTOList.add(trainingSessionTO);
+                });
+            }
+        }catch(Exception e){
+            log.info("throwing exception while fetching the all trainingSession details");
+            throw new ApplicationException("Something went wrong while fetching the trainingSession details");
+        }
+        return sessionTOList;
     }
 }

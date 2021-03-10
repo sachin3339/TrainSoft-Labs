@@ -16,7 +16,6 @@ public class TrainingSessionTO extends BaseTO {
     private String agendaDescription;
     private String assets;
     private String recording;
-  //  private InstructorEnum.TrainingType trainingType;
     private long sessionDate;
     private long startTime;
     private long endTime;
@@ -24,4 +23,6 @@ public class TrainingSessionTO extends BaseTO {
     private String courseSid;
     private String trainingSid;
     private String createdByVASid;
+    private long updatedOn;
+    private String updatedByVASid;
 }
