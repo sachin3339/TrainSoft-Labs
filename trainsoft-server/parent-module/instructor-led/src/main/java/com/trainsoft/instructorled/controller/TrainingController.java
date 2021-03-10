@@ -175,4 +175,26 @@ public class TrainingController {
         log.info(String.format("Request received : User for GET /v1/trainingsession"));
         return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSid(trainingSid));
     }
+
+    @PostMapping("user/create")
+    @ApiOperation(value = "createUser", notes = "API to create new User.")
+    public ResponseEntity<?> createUser(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Create User payload", required = true) @RequestBody UserTO userTO) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        userTO.setCompanySid(jwt.getCompanySid());
+        UserTO createUser = bulkUploadService.createVirtualAccount(userTO);
+        return ResponseEntity.ok(createUser);
+    }
+
+    @GetMapping("/trainingsession/training/{trainingSid}/course/{courseSid}")
+    @ApiOperation(value = "getTrainingSessionByTrainingAndCourseSid ", notes = "Get list of Training session")
+    public ResponseEntity<?> getTrainingSessionByTrainingAndCourseSid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training Sid", required = true) @PathVariable("trainingSid") String trainingSid,
+    @ApiParam(value = "Course Sid", required = true) @PathVariable("courseSid") String courseSid)
+    {
+        log.info(String.format("Request received : User for GET /v1/trainingsession"));
+        return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSidAndCourseSid(trainingSid,courseSid));
+    }
 }

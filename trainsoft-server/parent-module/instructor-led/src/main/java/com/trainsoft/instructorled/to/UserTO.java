@@ -9,9 +9,11 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserTO extends BaseTO{
 
+    private InstructorEnum.VirtualAccountRole role;
+    private  String companySid;
     private String designation;
     private InstructorEnum.Status status;
-    private AppUserTO appUser;
-    private VirtualAccountTO virtualAccount;
-    private DepartmentVirtualAccountTO departmentVirtualAccount;
+    private AppUserTO appuser;
+    private  DepartmentVirtualAccountTO departmentVA;
+
 }

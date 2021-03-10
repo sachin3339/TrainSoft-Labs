@@ -60,9 +60,9 @@ public class ExcelHelper {
                             appUser.setPhoneNumber(currentCell.getCellType()== currentCell.getCellType().NUMERIC?
                                     NumberToTextConverter.toText(currentCell.getNumericCellValue()):currentCell.getStringCellValue());
                             break;
-                        case 4:
+/*                        case 4:
                             appUser.setAccessType(InstructorEnum.AccessType.valueOf(currentCell.getStringCellValue()));
-                            break;
+                            break;*/
 
                         default:
                             break;
