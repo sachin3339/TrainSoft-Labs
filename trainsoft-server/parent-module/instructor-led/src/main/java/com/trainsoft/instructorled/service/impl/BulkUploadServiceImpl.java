@@ -113,7 +113,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
         userTO.getAppuser().setSid(virtualAccount.getAppuser().getStringSid());
         userTO.setSid(virtualAccount.getStringSid());
         userTO.getDepartmentVA().setSid(savedDepartmentVA.getStringSid());
-        userTO.getDepartmentVA().getDepartment().setSid(savedDepartment.getStringSid());
+        userTO.getDepartmentVA().getDepartment().setSid(savedDepartmentVA.getDepartment().getStringSid());
         return userTO;
     }
 

@@ -10,15 +10,15 @@ import com.trainsoft.instructorled.controller.TrainingController;
 import com.trainsoft.instructorled.customexception.ApplicationException;
 import com.trainsoft.instructorled.entity.AppUser;
 import com.trainsoft.instructorled.service.ITrainingService;
+import com.trainsoft.instructorled.service.impl.TrainingServiceImpl;
 import com.trainsoft.instructorled.value.InstructorEnum;
+
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ExcelHelper {
-
-    private static ITrainingService trainingService;
 
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     static String[] HEADERs = {"Name", "EmailId", "EmployeeId", "PhoneNumber","AccessType"};
@@ -75,7 +75,7 @@ public class ExcelHelper {
                     cellIdx++;
                 }
                 appUser.generateUuid();
-               // appUser.setPassword(trainingService.generatePassword());
+                //appUser.setPassword(trainingService.generatePassword());
                 appUser.setStatus(InstructorEnum.Status.ENABLED);
                 appUsers.add(appUser);
             }
