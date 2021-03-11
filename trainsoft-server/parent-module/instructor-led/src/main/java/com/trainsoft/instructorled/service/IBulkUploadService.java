@@ -12,5 +12,6 @@ public interface IBulkUploadService {
      List<AppUserTO> getAllAppUsers();
      UserTO createVirtualAccount(UserTO userTO);
      UserTO getVirtualAccountByVASid(String virtualAccountSid);
+      List<UserTO> getVirtualAccountByCompanySid(String companySid);
 
 }

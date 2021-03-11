@@ -126,4 +126,19 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
        user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
        return user;
     }
+
+    @Override
+    public List<UserTO> getVirtualAccountByCompanySid(String companySid){
+        List<UserTO> list= new ArrayList<>();
+        Company company= companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        List<VirtualAccount> virtualAccounts= virtualAccountRepository.findVirtualAccountByCompany(company);
+        virtualAccounts.forEach(virtualAccount -> {
+            DepartmentVirtualAccount dVA= departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
+            UserTO user=mapper.convert(virtualAccount,UserTO.class);
+            user.getAppuser().setPassword(null);
+            user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+            list.add(user);
+        });
+        return list;
+    }
 }

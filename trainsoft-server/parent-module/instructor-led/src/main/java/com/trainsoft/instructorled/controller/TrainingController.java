@@ -215,4 +215,13 @@ public class TrainingController {
         String password = trainingService.generatePassword();
         return ResponseEntity.ok(password);
     }
+
+    @GetMapping("vaccounts/company/{companySid}")
+    @ApiOperation(value = "getTrainings", notes = "Get list of virtual account")
+    public ResponseEntity<?> getTrainings(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid) {
+        log.info(String.format("Request received : User for GET /v1/vaccounts"));
+        return ResponseEntity.ok(bulkUploadService.getVirtualAccountByCompanySid(companySid));
+    }
 }
