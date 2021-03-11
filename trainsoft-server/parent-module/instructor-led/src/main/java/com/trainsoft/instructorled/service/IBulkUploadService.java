@@ -11,5 +11,6 @@ public interface IBulkUploadService {
      void save(MultipartFile file) ;
      List<AppUserTO> getAllAppUsers();
      UserTO createVirtualAccount(UserTO userTO);
+     UserTO getVirtualAccountByVASid(String virtualAccountSid);
 
 }

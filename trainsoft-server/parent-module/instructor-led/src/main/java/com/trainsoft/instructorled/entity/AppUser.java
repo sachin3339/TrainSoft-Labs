@@ -33,4 +33,7 @@ public class AppUser extends BaseEntity{
 	@Column(name="access_level")
 	@Enumerated(EnumType.STRING)
 	private InstructorEnum.AccessType accessType;
+
+	@Column(name = "password")
+	private String password;
 }

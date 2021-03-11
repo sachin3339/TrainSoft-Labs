@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.trainsoft.instructorled.controller.TrainingController;
 import com.trainsoft.instructorled.customexception.ApplicationException;
 import com.trainsoft.instructorled.entity.AppUser;
+import com.trainsoft.instructorled.service.ITrainingService;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
@@ -15,8 +17,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ExcelHelper {
+
+    private static ITrainingService trainingService;
+
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    static String[] HEADERs = {"Name", "EmailId", "EmployeeId", "PhoneNumber"};
+    static String[] HEADERs = {"Name", "EmailId", "EmployeeId", "PhoneNumber","AccessType"};
     static String SHEET = "Participants";
 
     public static boolean hasExcelFormat(MultipartFile file) {
@@ -60,9 +65,9 @@ public class ExcelHelper {
                             appUser.setPhoneNumber(currentCell.getCellType()== currentCell.getCellType().NUMERIC?
                                     NumberToTextConverter.toText(currentCell.getNumericCellValue()):currentCell.getStringCellValue());
                             break;
-/*                        case 4:
+                        case 4:
                             appUser.setAccessType(InstructorEnum.AccessType.valueOf(currentCell.getStringCellValue()));
-                            break;*/
+                            break;
 
                         default:
                             break;
@@ -70,6 +75,8 @@ public class ExcelHelper {
                     cellIdx++;
                 }
                 appUser.generateUuid();
+               // appUser.setPassword(trainingService.generatePassword());
+                appUser.setStatus(InstructorEnum.Status.ENABLED);
                 appUsers.add(appUser);
             }
             workbook.close();
@@ -79,4 +86,3 @@ public class ExcelHelper {
         }
     }
 }
-
