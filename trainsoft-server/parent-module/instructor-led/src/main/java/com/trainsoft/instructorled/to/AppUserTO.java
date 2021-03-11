@@ -16,4 +16,5 @@ public class AppUserTO extends BaseTO{
     private boolean superAdmin;
     private InstructorEnum.Status status;
     private InstructorEnum.AccessType accessType;
+    private String password;
 }
