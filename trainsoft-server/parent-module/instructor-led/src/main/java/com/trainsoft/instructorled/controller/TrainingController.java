@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -105,11 +106,11 @@ public class TrainingController {
         return ResponseEntity.ok(batchService.getBatches());
     }
 
-    @PostMapping("/upload/list/participants")
+    @PostMapping(value = "/upload/list/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "upload ", notes = "API to upload Participant list through excel file.")
     public ResponseEntity<?> uploadParticipants(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "upload Participants excel file", required = true) @RequestParam MultipartFile file){
+            @ApiParam(value = "upload Participants excel file", required = true) @RequestParam("file") MultipartFile file){
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         bulkUploadService.save(file);
         return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: " + file.getOriginalFilename());
