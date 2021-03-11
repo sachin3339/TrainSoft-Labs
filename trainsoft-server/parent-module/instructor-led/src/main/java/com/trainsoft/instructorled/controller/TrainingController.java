@@ -197,4 +197,22 @@ public class TrainingController {
         log.info(String.format("Request received : User for GET /v1/trainingsession"));
         return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSidAndCourseSid(trainingSid,courseSid));
     }
+
+    @GetMapping("/virtualaccount/{VASid}")
+    @ApiOperation(value = "getUserDetailsByVASid ", notes = "Get user details by VASid")
+    public ResponseEntity<?> getUserDetailsByVASid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "virtualAccount Sid", required = true) @PathVariable("VASid") String VASid) {
+        log.info(String.format("Request received : User for GET /v1/users"));
+        UserTO createUserTO= bulkUploadService.getVirtualAccountByVASid(VASid);
+        return ResponseEntity.ok(createUserTO);
+    }
+
+    @PostMapping("generate/password")
+    @ApiOperation(value = "generatePassword", notes = "API to generate Password")
+    public ResponseEntity<?> generatePassword(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token){
+        String password = trainingService.generatePassword();
+        return ResponseEntity.ok(password);
+    }
 }
