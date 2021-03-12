@@ -54,25 +54,25 @@ export const Language = [
         label: "Java",
         name: "index.java",
         language: "java",
-        value: java
+        value: ''
       },
       {
         label: "C",
         name: "index.c",
         language: "c",
-        value: c
+        value: ''
       },
       {
         label: "C++",
         name: "index.c",
         language: "CPP",
-        value: cPlus2
+        value: ''
       },
       {
         label: "Python",
         name: "index.cpp",
         language: "python2",
-        value: python
+        value: ""
       },
       {
         label: "Sql",

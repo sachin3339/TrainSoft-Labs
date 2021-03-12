@@ -35,7 +35,7 @@ const Courses = ({location}) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'course-details'} state={{title: "COURSE",subTitle: data.name, rowData:data, sid:data.sid}} className="dt-name">{data.name}</Link>
+                render: (data) => <Link to={'course-details'} state={{title: "COURSE",subTitle: data.name,path:"course", rowData:data, sid:data.sid}} className="dt-name">{data.name}</Link>
 
             },
             "description": {

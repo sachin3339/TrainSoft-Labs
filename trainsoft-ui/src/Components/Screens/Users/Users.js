@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Modal, Form } from 'react-bootstrap'
 import { Field, Formik } from 'formik';
@@ -14,27 +14,39 @@ import './../Batches/batches.css'
 import useFetch from "../../../Store/useFetch";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import * as Yup from 'yup';
+import AppContext from "../../../Store/AppContext";
+import useToast from "../../../Store/ToastHook";
+
 
 const User = ({ location }) => {
+    const {department} = useContext(AppContext)
+    const Toast = useToast()
     const [show, setShow] = useState(false);
     const [participant,setParticipant] = useState([])
+    const [genPwd,setGenPwd] = useState('')
     const [file,setFile] = useState(null)
+    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
-    const schema = Yup.object().shape({
-        name: Yup.string()
-        .min(2, 'Too Short!')
-        .required("Required!"),
-        phoneNo:Yup.string()
-        .min(10, 'Too Short!')
-        .max(10,"to Long!")
-        .required("Required!"),
-      });
 
     const {response} = useFetch({
         method: "get",
-        url: GLOBELCONSTANT.PARTICIPANT.GET_PARTICIPANT,
+        url: GLOBELCONSTANT.PARTICIPANT.ALL_USERS + "5D66EAB00B4446C9A7ADB898C43C2C119456C5E6CA4D4499AE237822E3A41CB7",
         errorMsg: 'error occur on get participant'
      });
+
+     //validation
+     const schema = Yup.object().shape({
+        name: Yup.string()
+        .min(2, 'Too Short!')
+        .required("Required!"),
+        emailId: Yup.string()
+        .email("Email is not valid")
+        .required("Required!"),
+        phoneNumber:Yup.string()
+        .matches(phoneRegExp, 'Phone number is not valid')
+        .max(10,"Phone number is not valid")
+        .required("Required!"),
+      });
 
     const [configuration, setConfiguration] = useState({
         columns: {
@@ -117,11 +129,24 @@ const User = ({ location }) => {
     });
 
     // create new session
-    const uploadParticipant = (data) => {
+    // const uploadParticipant = (data) => {
+    //     try {
+    //         RestService.UploadParticipant(data).then(resp => {
+    //             setShow(false)
+    //             console.log(resp)
+    //         }, err => console.log(err)
+    //         );
+    //     }
+    //     catch (err) {
+    //         console.error('error occur on createCourse', err)
+    //     }
+    // }
+
+        // generate pwd
+      const generatePwd = (setFieldValue) => {
         try {
-            RestService.UploadParticipant(data).then(resp => {
-                setShow(false)
-                console.log(resp)
+            RestService.generatePwd().then(resp => {
+                setFieldValue("password",resp.data)
             }, err => console.log(err)
             );
         }
@@ -130,8 +155,57 @@ const User = ({ location }) => {
         }
     }
 
+    // create participant
+     const createParticipant = (data) => {
+        try {
+            let payload = {
+                "appuser": {
+                  "accessType": data.accessType.key,
+                  "emailId": data.emailId,
+                  "employeeId": data.employeeId,
+                  "name": data.name,
+                  "phoneNumber": data.phoneNumber,
+                  "password": data.password
+                },
+                "departmentVA": {
+                  "department": {
+                      "name":data.department.name
+                  },
+                  "departmentRole": data.departmentRole
+                },    
+                "role": "ADMIN"
+              }
+            RestService.createParticipant(payload).then(resp => {
+                setShow(false)
+                Toast.success({ message: `User is Successfully Created`});
+            }, err => console.log(err)
+            );
+        }
+        catch (err) {
+            console.error('error occur on createCourse', err)
+        }
+    }
+
+
     // initialize  component
-    useEffect(() =>  response && setParticipant(response), [response])
+    useEffect(() => { 
+        try{
+        if(response){
+           let val = response.map(res=> {
+                let data = res.appuser
+                data.role= res.role
+                data.department = res.departmentVA ? res.departmentVA.department.name : ''
+                return data
+            })
+            setParticipant(val)
+         }
+        }catch(err){
+            console.error(err)
+        }
+    }
+    , [response])
+
+
 
     return (<><div className="table-shadow">
         <div className="p-3"><CardHeader {...{ location }} /></div>
@@ -146,7 +220,7 @@ const User = ({ location }) => {
             </div>
 
         </div>
-        <DynamicTable {...{ configuration, sourceData: participant }} />
+        <DynamicTable {...{ configuration, sourceData: participant }} />    
     </div>
         <div className="table-footer-action">
             <div>
@@ -156,30 +230,29 @@ const User = ({ location }) => {
                 <BsModal {...{ show, setShow, headerTitle: "Add new User", size: "lg" }}>
                     <div className="form-container">
                         <Formik
-                            onSubmit={(value) => console.log('')}
+                            onSubmit={(value)=>console.log(value)}
                             initialValues={{
                                 name: '',
-                                empId: '',
+                                employeeId: '',
                                 emailId: '',
-                                phoneNo: '',
+                                phoneNumber: '',
                                 department: '',
-                                role: '',
+                                departmentRole: '',
                                 password: '',
-                                level: '',
-                                upload:'',
-                                box:false,
-                                check:[]
+                                accessType: '',
+
+                          
                             }}
                             validationSchema={schema}
                         >
-                            {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
+                            {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
                                 <div>
                                     <Form.Group className="row">
                                         <div className="col-6">
                                             <TextInput label="Name" name="name" />
                                         </div>
                                         <div className="col-6">
-                                            <TextInput label="Emp Id" name="empId" />
+                                            <TextInput label="Emp Id" name="employeeId" />
                                         </div>
                                     </Form.Group>
                                     <Form.Group className="row">
@@ -187,32 +260,37 @@ const User = ({ location }) => {
                                             <TextInput label="Email Id" name="emailId" />
                                         </div>
                                         <div className="col-6">
-                                            <TextInput label="Phone No" name="phoneNo" />
+                                            <TextInput label="Phone No" name="phoneNumber" />
                                         </div>
                                     </Form.Group>
                                     <Form.Group className="row">
                                         <div className="col-6">
-                                            <SelectInput label="Department" name="department" option={['Account', 'It', 'Human Resource']} />
+                                            <SelectInput label="Department" name="department" bindKey="name" option={department} />
                                         </div>
                                         <div className="col-6">
-                                            <SelectInput label="Role" name="role" option={['Admin', 'Learner', 'Instructor']} />
-                                        </div>
-                                    </Form.Group>
-                                    <Form.Group className="row">
-                                        <div className="col-6">
-                                            <TextInput label="Password" name="password" />
-                                        </div>
-                                        <div className="col-6">
-                                            <SelectInput label="Privilege/Access Level" name="level" option={['Batch Mgmt', 'Course Mgmt', 'User Mgmt']} />
+                                            <SelectInput label="Role" name="departmentRole" option={['ADMIN', 'LEARNER', 'INSTRUCTOR']} />
                                         </div>
                                     </Form.Group>
                                     <Form.Group className="row">
                                         <div className="col-6">
+                                            <TextInput label="Password" name="password" disabled={true}/>
+                                        </div>
+                                        <div className="col-6">
+                                            <SelectInput label="Privilege/Access Level" name="accessType" bindKey="name" option={GLOBELCONSTANT.ACCESS_LEVEL} />
+                                        </div>
+                                    </Form.Group>
+                                    <Form.Group className="row">
+                                    <div className="col-6">
+                                        <button type="button" onClick={()=>generatePwd(setFieldValue)} className="btn btn-secondary btn-sm">
+                                            Generate Password
+                                            </button>
+                                     </div>
+                                        {/* <div className="col-6">
                                             <Checkbox name="check" id="check" label="Require this user to change their password when they first sign in" />
-                                        </div>
-                                        <div className="col-6">
+                                        </div> */}
+                                        {/* <div className="col-6">
                                             <div>Upload bulk users</div> <div><Field name="upload"  placeholder="Browse File" onChange={(e)=> {console.log(e.target.files[0]); uploadParticipant(e.target.files[0])}} type="file"/></div>
-                                        </div>
+                                        </div> */}
                                     </Form.Group>
                                 </div>
                                 {/* modal footer which contains action button to save data or cancel current action */}
@@ -220,7 +298,7 @@ const User = ({ location }) => {
                                     <div>
                                     </div>
                                     <div>
-                                        <Button type="submit" >Add</Button>
+                                        <Button type="submit" className="px-4" >Add</Button>
                                     </div>
                                 </footer>
                             </form>

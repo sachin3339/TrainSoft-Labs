@@ -12,7 +12,6 @@ const Session = ()=>{
     const [show, setShow] = useState(false)
     const {user} =  useContext(AppContext)
     const {training} = useContext(TrainingContext)
-    console.log(training)
     const { response } = useFetch({
         method: "get",
         url: GLOBELCONSTANT.TRAINING.GET_TRAINING_SESSION + training.sid + "/course/" + training.courseSid,

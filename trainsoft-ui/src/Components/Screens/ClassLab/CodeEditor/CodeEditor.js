@@ -7,6 +7,7 @@ import { CustomToggle } from '../../../../Services/MethodFactory';
 import axios from 'axios';
 import { ICN_ARROW_DOWN, ICN_DOWNLOAD, ICN_FULL_SCREEN, ICN_PLAY, ICN_STAR_HALF } from '../../../Common/Icon';
 import AppContext from '../../../../Store/AppContext';
+import Editors from './Editor';
 const CodeEditor = ({themesColor=true}) => {
     const {spinner} = useContext(AppContext) 
     const [inputData, setInputData] = useState('')
@@ -16,6 +17,7 @@ const CodeEditor = ({themesColor=true}) => {
     const [output, setOutput] = useState('')
     const [inputTab, setInputTab] = useState(true)
     const [spinners,setSpinners] = useState(false)
+    const [language,setLanguage] =useState()
     console.log(lang)
     const handleEditorDidMount = (editor, monaco) => {
         editorRef.current = editor;
@@ -41,6 +43,7 @@ const CodeEditor = ({themesColor=true}) => {
         setOutput('')
         setInputTab('')
         setInputTab(true)
+        setLanguage(lang.value)
     }, [lang])
 
 
@@ -77,14 +80,15 @@ const CodeEditor = ({themesColor=true}) => {
                 </div>
             </div>
         </div>
-      <Editor
+      {/* <Editor
             height="100%"
             width="100%"
             defaultLanguage={lang.language}
-            defaultValue={lang.value}
+            defaultValue={language}
             theme={lightTheams ? "vs-light" : "vs-dark"}
             onMount={handleEditorDidMount}
-        />
+        /> */}
+       <Editors {...{lang,lightTheams,handleEditorDidMount}}/>
         
         <div className="py-2 column">
             <div className="flx">
