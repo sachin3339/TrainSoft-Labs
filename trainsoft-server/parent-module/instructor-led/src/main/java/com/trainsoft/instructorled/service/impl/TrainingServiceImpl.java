@@ -36,6 +36,10 @@ public class TrainingServiceImpl implements ITrainingService {
     private ITrainingViewRepository trainingViewRepository;
     private ICourseSessionRepository courseSessionRepository;
     private DozerUtils mapper;
+    private ILearnerViewRepository learnerViewRepository;
+    private ICompanyRepository companyRepository;
+    IDepartmentVirtualAccountRepository departmentVARepo;
+    IBatchParticipantRepository participantRepository;
 
     @Override
     public TrainingTO createTraining(TrainingTO trainingTO) {
@@ -239,8 +243,20 @@ public class TrainingServiceImpl implements ITrainingService {
         return CommonUtils.generatePassword();
     }
 
+
     @Override
-    public List<LearnerViewTO> getParticipantsByBatchSid(String batchSid){
-        return  null;
+    public List<UserTO> getParticipantsByBatchSid(String batchSid) {
+        List<UserTO> list= new ArrayList<>();
+        Batch batch=batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(batchSid));
+        List<BatchParticipant> batchParticipants= participantRepository.findBatchParticipantByBatch(batch);
+        batchParticipants.forEach(batchParticipant -> {
+            DepartmentVirtualAccount dVA= departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(batchParticipant.getVirtualAccount());
+            UserTO user=mapper.convert(batchParticipant.getVirtualAccount(),UserTO.class);
+            user.getAppuser().setPassword(null);
+            user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+            if(user.getDepartmentVA().getDepartmentRole()== InstructorEnum.DepartmentRole.LEARNER)
+                list.add(user);
+        });
+        return list;
     }
 }

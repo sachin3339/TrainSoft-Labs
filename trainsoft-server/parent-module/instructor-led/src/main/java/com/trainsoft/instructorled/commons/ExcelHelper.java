@@ -36,60 +36,6 @@ public class ExcelHelper {
         }
         return true;
     }
-    /*public static List<AppUser> excelToAppUsers(InputStream is) {
-        try {
-            Workbook workbook = new XSSFWorkbook(is);
-            Sheet sheet = workbook.getSheetAt(0);
-            Iterator<Row> rows = sheet.iterator();
-            List<AppUser> appUsers = new ArrayList<>();
-
-            int rowNumber = 0;
-            while (rows.hasNext()) {
-                Row currentRow = rows.next();
-                // skip header
-                if (rowNumber == 0) {
-                    rowNumber++;
-                    continue;
-                }
-                Iterator<Cell> cellsInRow = currentRow.iterator();
-                AppUser appUser = new AppUser();
-                int cellIdx = 0;
-                while (cellsInRow.hasNext()) {
-                    Cell currentCell = cellsInRow.next();
-                    switch (cellIdx) {
-                        case 0:
-                            appUser.setName(currentCell.getStringCellValue());
-                            break;
-                        case 1:
-                            appUser.setEmailId(currentCell.getStringCellValue());
-                            break;
-                        case 2:
-                            appUser.setEmployeeId(currentCell.getCellType()== currentCell.getCellType().NUMERIC?
-                                    NumberToTextConverter.toText(currentCell.getNumericCellValue()):currentCell.getStringCellValue());
-                            break;
-                        case 3:
-                            appUser.setPhoneNumber(currentCell.getCellType()== currentCell.getCellType().NUMERIC?
-                                    NumberToTextConverter.toText(currentCell.getNumericCellValue()):currentCell.getStringCellValue());
-                            break;
-                        case 4:
-                            appUser.setAccessType(InstructorEnum.AccessType.valueOf(currentCell.getStringCellValue()));
-                            break;
-
-                        default:
-                            break;
-                    }
-                    cellIdx++;
-                }
-                appUser.generateUuid();
-                appUser.setPassword(CommonUtils.generatePassword());
-                appUsers.add(appUser);
-            }
-            workbook.close();
-            return appUsers;
-        } catch (IOException e) {
-            throw new ApplicationException("fail to parse Excel file: " + e.getMessage());
-        }
-    }*/
 
     public static List<UserTO> excelToUserTO(InputStream is) {
         try {
