@@ -1,10 +1,9 @@
 .selectButtons {
-	width: 228px;
+	width: 100%;
 	color: #000000cf;
 	padding: 4px 7px;
-	box-shadow: 0px 0px 1px 0px #000000de;
+	/* box-shadow: 0px 0px 1px 0px #000000de; */
 	font-weight: 500;
-	font-size: 14px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -22,7 +21,6 @@
 	list-style: none;
 	padding: 5px 0 0 0;
 	border: none !important;
-	border-top: 1px solid #ccc !important;
 }
 .esc-multi-select-list .custom-checkbox:hover {
 	background-color: #eee;
@@ -39,12 +37,14 @@
 	padding-top: 0px !important;
 }
 .multipleDropDown2 {
-	max-height: 380px;
-	overflow-y: auto;
-	width: 100%;
-	display: flex !important;
 	height: auto;
+	max-height: 300px;
+	overflow-y: auto;
+	width: 300px;
+	background-color: #F5FBFF !important;
+	display: flex !important;
 	flex-direction: column !important;
+	box-shadow: 0px 8px 6px #00000029;
 }
 .filterInput {
 	margin: 14px 5%;
@@ -52,7 +52,10 @@
 }
 .dropdown-body {
 	overflow-y: auto;
-	border-top: 1px solid #e9e9e9;
+	/* border-top: 1px solid #e9e9e9; */
+}
+.input-field .dropdown{
+	width: 100%;
 }
 .dropdown-footer {
   display: flex;
@@ -87,7 +90,7 @@
 }
 .input-field{
     border: 0px !important;
-    background: transparent;
+    /* background: transparent; */
 }
 .dropdown-custom-components> .dropdown-toggle::after{
     display: none ;

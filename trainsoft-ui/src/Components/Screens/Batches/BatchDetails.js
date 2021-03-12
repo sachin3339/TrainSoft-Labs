@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import './batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { ICN_TRASH,ICN_EDIT  } from "../../Common/Icon";
 import PaginationOne from "../../Common/Pagination";
 import CardHeader from "../../Common/CardHeader";
+import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
+import useFetch from "../../../Store/useFetch";
 
 
 
@@ -18,6 +20,16 @@ const dummyData =[
 ]
 
 const BatchesDetails = ({location}) => {
+    const [participant, setParticipant]= useState([])
+    let pList = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.BATCHES.GET_BATCH_PARTICIPANT + location.state.sid,
+        errorMsg: 'error occur on get Batch Participant'
+     });
+
+     useEffect(() => {
+         setParticipant(participant)
+     }, [pList])
     const [configuration, setConfiguration] = useState({
         columns: {
             "name": {
@@ -40,7 +52,7 @@ const BatchesDetails = ({location}) => {
                 isSearchEnabled: false
             }
             ,
-            "phoneNo": {
+            "phoneNumber": {
                 "title": "Phone Number",
                 "sortDirection": null,
                 "sortEnabled": false,
@@ -95,31 +107,28 @@ const BatchesDetails = ({location}) => {
                     <div className="row">
                         <div className="col-6">Batch Name</div>
                         <div className="col-6 mb-4">ITU_01</div>
-                        <div className="col-6">Status</div>
-                        <div className="col-6">Active</div>
+                   
                     </div>
                 </div>
-                <div className="col-md-4">
-                    <div className="row">
-                        <div className="col-6">Technology Name</div>
-                        <div className="col-6  mb-4">Angular</div>
-                        <div className="col-6">Start Date</div>
-                        <div className="col-6">20 july 2020</div>
-                    </div>
-                </div>
+              
                 <div className="col-md-4">
                     <div className="row">
                         <div className="col-6">Creation Date </div>
                         <div className="col-6  mb-4">20 july 2020</div>
-                        <div className="col-6">End Date</div>
-                        <div className="col-6">20 july 2020</div>
+                    </div>
+                </div>
+
+                <div className="col-md-4">
+                    <div className="row">
+                       <div className="col-6">Status</div>
+                        <div className="col-6">Active</div>
                     </div>
                 </div>
             </div>
         </div>
         </div>
         </div>
-        <DynamicTable {...{configuration,sourceData: dummyData}}/>
+        <DynamicTable {...{configuration,sourceData: participant}}/>
         <div className="pagination-div">
         <PaginationOne totalCount={30}  onNavigate={(pageNumber) => console.log(pageNumber)}/>
 

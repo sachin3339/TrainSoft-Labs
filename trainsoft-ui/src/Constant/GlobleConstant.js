@@ -17,17 +17,33 @@ const GLOBELCONSTANT = {
         BATCHES: {
             GET_BATCH_SID: 'v1/batch/{batchSid}',
             GET_BATCH_LIST: 'v1/batches',
-            CREATE_BATCHES: 'v1/batch/create'
+            CREATE_BATCHES: 'v1/batch/create',
+            GET_BATCH_PARTICIPANT: '/v1/participants/batch/'
         },
         PARTICIPANT: {
             GET_PARTICIPANT: "v1/list/participant",
-            UPLOAD_PARTICIPANT: "v1/upload/list/participants"
+            UPLOAD_PARTICIPANT: "v1/upload/list/participants",
+            CREATE_PARTICIPANT: "/v1/user/create",
+            ALL_USERS: "/v1/vaccounts/company/",
+            GENERATE_PWD: "/v1/generate/password"
+
         },  
         TRAINING: {
             GET_TRAINING: "v1/trainings",
             CREATE_TRAINING: "v1/training/create",
             GET_TRAINING_SESSION: "/v1/trainingsession/training/",
             CREATE_SESSION: "/v1/trainingSession/create"
-        }
+        },
+        INSTRUCTOR: {
+            GET_INSTRUCTOR: '/v1/depatments'
+        },
+        ACCESS_LEVEL: [
+            {key: "BATCH_MGMT",name: "Batch Mgmt"},
+            {key: "COURSE_MGMT",name: "Batch Mgmt"},
+            {key: "USER_MGMT",name: "User Mgmt"},
+            {key: "INSTRUCTOR_MGMT",name: "Instructor Mgmt"},
+            {key: "TRAINING_MGMT",name: "Training Mgmt"},
+
+        ]
     }
 export default GLOBELCONSTANT;

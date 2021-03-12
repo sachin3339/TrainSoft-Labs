@@ -5,7 +5,7 @@ import { Modal, Form } from 'react-bootstrap'
 import { Formik } from 'formik';
 import { ICN_TRASH, ICN_EDIT, ICN_CLOSE } from '../../Common/Icon';
 import { Button } from "../../Common/Buttons/Buttons";
-import { TextInput, DateInput, SelectInput } from "../../Common/InputField/InputField";
+import { TextInput, DateInput, SelectInput, MultiSelectInput } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import TrainingDetails from "./TrainingDetails";
@@ -29,6 +29,16 @@ const Trainings = ({ location }) => {
         url: GLOBELCONSTANT.TRAINING.GET_TRAINING,
         errorMsg: 'error occur on get training'
     });
+
+    const queueDropdownProps = {
+        selectItems: batches,
+        label: 'name',
+        placeholder: "Batches Select",
+        selectAllLabel: "Select All",
+        filterPlaceholder: "",
+        className: "",
+        dataNotFound: "No result Found",
+    }
 
     // set training list
     useEffect(() => {
@@ -127,12 +137,12 @@ const Trainings = ({ location }) => {
     const createTraining = (data) => {
         try {
             spinner.show()
+            let batcheId= data.trainingBatchs.map(resp=> {
+                return ( { batchSid: resp.sid })
+            })
             let payload = data
                 payload.courseSid = data.courseSid.sid
-                payload.trainingBatchs = [
-                    {
-                      batchSid: data.trainingBatchs.sid
-                    }]
+                payload.trainingBatchs = batcheId
                 payload.status = "ENABLED"
 
             RestService.createTraining(payload).then(res => {
@@ -200,7 +210,21 @@ const Trainings = ({ location }) => {
                                                 <TextInput label="Training Name" name="name" />
                                             </div>
                                             <div className="col-6">
-                                                <SelectInput label="Select Batch(s)" bindKey="name" option={batches} name="trainingBatchs" />
+                                            {/* <Form.Label className="label">{}</Form.Label>
+                                                <div className="input-wrapper">
+                                                    <div className="input-field">
+                                                        <MultiSelect
+                                                        dataSet={queueDropdownProps}
+                                                        onSelect={(data) => setFieldValue(data)}
+                                                            checked={false}
+                                                            selectAllMsg="All Queue"
+                                                            initialData = {[]}
+                                                        />
+                                                    </div>
+                                                    <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
+                                                </div> */}
+
+                                                <MultiSelectInput label="Select Batch(s)" bindKey="name" option={batches} name="trainingBatchs" />
                                             </div>
                                         </Form.Group>
                                         <Form.Group className="row">

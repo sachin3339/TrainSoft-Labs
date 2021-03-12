@@ -187,7 +187,7 @@ const AdminHome = () => {
 }
 
 const Home = () => {
-    const { setCourse,setBatches } = useContext(AppContext)
+    const { setCourse,setBatches,setDepartment } = useContext(AppContext)
 
     // get all courses
     const allCourse = useFetch({
@@ -203,11 +203,18 @@ const Home = () => {
         errorMsg: 'error occur on get Batches'
      });
 
+ // get all batches
+ const  allDepartment= useFetch({
+    method: "get",
+    url: GLOBELCONSTANT.INSTRUCTOR.GET_INSTRUCTOR,
+    errorMsg: 'error occur on get Batches'
+ });
 
     useEffect(() => {
         allCourse.response && setCourse(allCourse.response)
         allBatches.response && setBatches(allBatches.response)
-    }, [allCourse.response,allBatches.response])
+        allBatches.response && setDepartment(allDepartment.response)
+    }, [allCourse.response,allBatches.response,allDepartment.response])
 
     return (<>
     <Router>

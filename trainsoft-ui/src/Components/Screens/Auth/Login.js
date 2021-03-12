@@ -17,7 +17,7 @@ const user = [
 
 ]
 const Login = () => {
-    const appContext = useContext(AppContext)
+    const {setValueBy} = useContext(AppContext)
     const Toast = useToast();
     
     // on login the user
@@ -25,7 +25,7 @@ const Login = () => {
         try {
             let val = user.find(res => res.email === value.email)
             if (val.password === value.password) {
-                appContext.setUser(val)
+                setValueBy("LOGIN",val)
                val.role === "user" ?  navigate('/home', { state: { title: 'HOME'} }): navigate('/dashboard', { state: { title: 'DASHBOARD'} })
             } else {
                 Toast.error({message: 'password is incorrect'})

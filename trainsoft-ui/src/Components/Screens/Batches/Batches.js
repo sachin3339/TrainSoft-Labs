@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Form } from 'react-bootstrap'
-import { Formik } from 'formik';
+import { Formik,Field } from 'formik';
 import { ICN_TRASH, ICN_EDIT, ICN_CLOSE } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
 import { TextInput, DateInput, SelectInput } from "../../Common/InputField/InputField";
@@ -32,6 +32,7 @@ const Batch = ({location}) => {
         errorMsg: 'error occur on get Batches'
      });
 
+
     const schema = Yup.object().shape({
         name: Yup.string()
         .min(2, 'Too Short!')
@@ -45,7 +46,7 @@ const Batch = ({location}) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'batches-details'} state={{path: 'batches-details',title: 'BATCHES',subTitle:"Batch Details"}} className="dt-name">{data.name}</Link>
+                render: (data) => <Link to={'batches-details'} state={{path: 'batches-details',sid:data.sid,title: 'BATCHES',subTitle:"Batch Details"}} className="dt-name">{data.name}</Link>
 
             },
             "learner": {
@@ -102,25 +103,77 @@ const Batch = ({location}) => {
         clearSelection: false
     });
     // create batches
-    const createBatch = (data)=>{
-        try{
-            let payload = {
-                "name": data.name,
-                "status": "ENABLED",
-                "trainingType": "INSTRUCTOR_LED",
-            }
-            RestService.CreateBatch(payload).then(res => {
-                   setBatchList([...batchList,res.data])
-                   Toast.success({ message: `Batch is Successfully Created`});
-                   setShow(false) 
-                }, err => console.log(err)
-            ); 
-        }
-        catch(err){
-            console.error('error occur on getAllCourse',err)
-        }
+        // const createBatch = (data)=>{
+        //     try{
+        //         let payload = {
+        //             "name": data.name,
+        //             "status": "ENABLED",
+        //             "trainingType": "INSTRUCTOR_LED",
+        //         }
+
+        //         let val = {
+        //             batchName: data.name,
+        //             instructorName: data.trainingType
+        //         }
+        //         RestService.CreateBatch(payload).then(res => {
+        //                setBatchList([...batchList,res.data])
+        //                Toast.success({ message: `Batch is Successfully Created`});
+        //                uploadParticipant(data.upload,val)
+        //                setShow(false) 
+        //             }, err => console.log(err)
+        //         ); 
+        //     }
+        //     catch(err){
+        //         console.error('error occur on getAllCourse',err)
+        //     }
+        // }
+
+ const UploadAttachments = async (val) => {
+        return new Promise((resolve, reject) => {
+            let data = new FormData();
+            for (let i = 0, l = val.file.length; i < l; i++)
+                data.append("file", val.file[i])
+            let xhr = new XMLHttpRequest();
+            xhr.addEventListener("readystatechange", function () {
+                let response = null;
+                try {
+                    response = JSON.parse(this.responseText);
+                } catch (err) {
+                    response = this.responseText
+                }
+                if (this.readyState === 4 && this.status >= 200 && this.status <= 299) {
+                    resolve([response, this.status, this.getAllResponseHeaders()]);
+                } else if (this.readyState === 4 && !(this.status >= 200 && this.status <= 299)) {
+                    reject([response, this.status, this.getAllResponseHeaders()]);
+                }
+            });
+            xhr.open("POST",GLOBELCONSTANT.BASE_URL + GLOBELCONSTANT.PARTICIPANT.UPLOAD_PARTICIPANT);
+            xhr.setRequestHeader("batchName", val.name);
+            xhr.setRequestHeader("instructorName", val.trainingType);
+
+            xhr.setRequestHeader("Authorization", "'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMDNEMDhFQjY5MkE0RDg5OEQ1NEUwNkM0NTc1QTA5NUM1MUJBQUEwNjYyQTQ4N0NBQjU2RTNGMUNFOTdGRTg0IiwiaWF0IjoxNjE1Mjc2MDUzLCJzdWIiOiJ7XCJjb21wYW55U2lkXCI6XCI1RDY2RUFCMDBCNDQ0NkM5QTdBREI4OThDNDNDMkMxMTk0NTZDNUU2Q0E0RDQ0OTlBRTIzNzgyMkUzQTQxQ0I3XCIsXCJ2aXJ0dWFsQWNjb3VudFNpZFwiOlwiMDgzREM5NDExQUQ1NEI4OUFBOTRDNEEwQTdBODc0M0YzODNDRERCQTJBQ0M0QTE3QTg0QjJCRDAxMUY1MDEyQlwiLFwidXNlclNpZFwiOlwiMTAzRDA4RUI2OTJBNEQ4OThENTRFMDZDNDU3NUEwOTVDNTFCQUFBMDY2MkE0ODdDQUI1NkUzRjFDRTk3RkU4NFwiLFwiZGVwYXJ0bWVudFNpZFwiOlwiQzIzRkM0MDJGMjdBNEE2ODkwOTJGMUY0Q0E0NDE3QzcyNzc0ODNBRjZFQzc0NkM5QUNFNTFGQTgxOTZDMjA1RFwiLFwiZGVwYXJ0bWVudFJvbGVcIjpcIklOU1RSVUNUT1JcIixcImNvbXBhbnlSb2xlXCI6XCJVU0VSXCIsXCJlbWFpbElkXCI6XCJrdW1hcmthbmhpeWEyMUBnbWFpbC5jb21cIn0iLCJpc3MiOiJrdW1hcmthbmhpeWEyMUBnbWFpbC5jb20iLCJleHAiOjE2MTY3NzYwNTN9.KYfr2QmDcRa8kB8Dz8H5g1h-E3PFld6W6kz-SheEqlk");
+            xhr.send(data);
+        })
     }
     
+    // upload participant
+    // const uploadParticipant = (file,header) => {
+    //     try {
+    //         let data = new FormData();
+    //         for (let i = 0, l = file.length; i < l; i++)
+    //             data.append("file", file[i])
+                
+    //         RestService.UploadParticipant(data,header).then(resp => {
+    //             setShow(false)
+    //             Toast.success({ message: `Participant is Successfully uploaded`});
+    //         }, err => console.log(err)
+    //         );
+    //     }
+    //     catch (err) {
+    //         console.error('error occur on createCourse', err)
+    //     }
+    // }
+
     useEffect(() => {
          setBatchList(response)
     }, [response])
@@ -137,14 +190,15 @@ const Batch = ({location}) => {
                 <BsModal {...{ show, setShow, headerTitle: "Add new Batches", size: "lg" }}>
                     <div className="form-container">
                         <Formik
-                            onSubmit={(value)=>createBatch(value)}
+                            onSubmit={UploadAttachments}
                             initialValues={{
                                 name:'',
-                                trainingType:''
+                                trainingType:'',
+                                file:''
                             }}
                             validationSchema={schema}
                         >
-                            {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
+                            {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
                                 <div>
                                     <Form.Group className="row">
                                         <div className="col-6">
@@ -154,11 +208,13 @@ const Batch = ({location}) => {
                                             <SelectInput label="Training Type" option={['INSTRUCTOR_LED', 'Self', 'Offline']} name="trainingType" />
                                         </div>
                                     </Form.Group>
-                                  
                                 </div>
                                 <footer className="jcb">
                                     <div>
-                                        <span className="title-sm">Upload participants</span>
+                                         <div className="col-6">
+                                            <div><span className="title-sm">Upload participants</span></div> <div><input  placeholder="Browse File" onChange={(e)=> { setFieldValue("file",e.target.files)}} type="file"/></div>
+                                        </div>
+                                        
                                     </div>
                                     <div>
                                         <Button type="submit" >Create Batches</Button>

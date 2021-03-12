@@ -3,7 +3,7 @@
 	border-radius: 30px;
 	box-shadow: 0px 3px 6px #00000029;
 	padding: 5px 15px;
-	background: #f5fbff;
+	background:#F5FBFF !important;
 	margin-bottom: 2px;
 	display: flex;
 	align-items: center;
@@ -112,4 +112,17 @@
 	border-radius: 50%;
 	background-color: #f0f0f0;
 	color: black;
+}
+
+.input-field .form-control:disabled, .form-control[readonly] {
+    background-color: transparent;
+    opacity: 1;
+}
+.react-datepicker__time-container {
+    float: right;
+    border-left: 1px solid #aeaeae;
+    width: 130px;
+}
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box{
+	width: 100%;
 }

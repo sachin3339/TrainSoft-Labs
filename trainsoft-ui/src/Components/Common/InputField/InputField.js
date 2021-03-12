@@ -6,6 +6,7 @@ import { ICN_CALENDER } from '../../Common/Icon'
 import CustomDropdown from '../CustomDropdown/CustomDropdown';
 import "react-datepicker/dist/react-datepicker.css";
 import './inputField.css'
+import MultiSelect from '../MultiSelect/MultiSelect';
 
 // text input field
 export const TextInput = (props) => {
@@ -14,7 +15,7 @@ export const TextInput = (props) => {
         {props.label && <Form.Label className="label">{props.label}</Form.Label>}
         <div className="input-wrapper">
             <div className={`input-field ${meta.touched && meta.error ? 'border border-danger' : ''}`}>
-                <input {...field}  {...props} className="form-control form-control-sm" />
+                <input disabled={props.disabled} {...field}  {...props} className="form-control form-control-sm" />
             </div>
             <ErrorMessage component="div" name={props.name} className="text-danger small-text" />
         </div>
@@ -34,7 +35,36 @@ export const DateInput = (props) => {
                     selected={meta.value}
                     placeholderText={props.placeholder ? props.placeholder : "Select Date"}
                     {...field}
-                    dateFormat="MMMM d, yyyy"
+                    dateFormat="dd/MM/yyyy"
+                    value={meta.value}
+                    onChange={e => setValue(e.getTime())}
+                    className="form-control form-control-sm" />
+                {ICN_CALENDER}
+            </div>
+            <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
+        </div>
+    </>)
+}
+
+// time input field
+export const TimeInput = (props) => {
+    const [field, meta, helpers] = useField(props);
+    const { setValue } = helpers;
+    return (<>
+        <Form.Label className="label">{props.label}</Form.Label>
+        <div className="input-wrapper">
+            <div className="input-field">
+                <DatePicker
+                    name={props.name}
+                    selected={meta.value}
+                    placeholderText={props.placeholder ? props.placeholder : "Select Date"}
+                    {...field}
+                    dateFormat="HH:mm aa"
+                    timeFormat="HH:mm aa"
+                    showTimeSelect
+                    showTimeSelectOnly
+                    use12Hours={true}
+                    timeCaption="Time"
                     value={meta.value}
                     onChange={e => setValue(e.getTime())}
                     className="form-control form-control-sm" />
@@ -75,6 +105,37 @@ export const SelectInput = (props) => {
                     title: 'Select Course',
                     selectedVal: value,
                 }} />
+            </div>
+            <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
+        </div>
+    </>)
+}
+
+// select input field
+export const MultiSelectInput = (props) => {
+    const [field, meta, helpers] = useField(props);
+    const { setValue } = helpers;
+    const { value } = meta;
+    const queueDropdownProps = {
+        selectItems: props.option,
+        label: props.bindKey,
+        placeholder: props.label,
+        selectAllLabel: "Select All",
+        filterPlaceholder: "",
+        className: "dropdown-custom",
+        dataNotFound: "No result Found",
+    }
+    return (<>
+        <Form.Label className="label">{props.label}</Form.Label>
+        <div className="input-wrapper">
+            <div className="input-field">
+                <MultiSelect
+                dataSet={queueDropdownProps}
+                onSelect={(data) => setValue(data)}
+                    checked={false}
+                    selectAllMsg="All Selected"
+                    initialData = {[]}
+                />
             </div>
             <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
         </div>
