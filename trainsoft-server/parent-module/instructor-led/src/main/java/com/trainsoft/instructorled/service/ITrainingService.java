@@ -1,5 +1,6 @@
 package com.trainsoft.instructorled.service;
 
+import com.trainsoft.instructorled.to.LearnerViewTO;
 import com.trainsoft.instructorled.to.TrainingSessionTO;
 import com.trainsoft.instructorled.to.TrainingTO;
 import com.trainsoft.instructorled.to.TrainingViewTO;
@@ -15,4 +16,5 @@ public interface ITrainingService {
     List<TrainingSessionTO> getTrainingSessionByTrainingSid(String trainingSid);
     List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid);
     String generatePassword();
+    List<LearnerViewTO> getParticipantsByBatchSid(String batchSid);
 }

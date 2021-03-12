@@ -110,9 +110,10 @@ public class TrainingController {
     @ApiOperation(value = "upload ", notes = "API to upload Participant list through excel file.")
     public ResponseEntity<?> uploadParticipants(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "upload Participants excel file", required = true) @RequestParam("file") MultipartFile file){
+            @ApiParam(value = "upload Participants excel file", required = true) @RequestParam("file") MultipartFile file,
+            @RequestHeader("batchName")String batchName,@RequestHeader("instructorName")String instructorName){
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        bulkUploadService.save(file);
+        bulkUploadService.uploadParticipants(file,batchName,instructorName,jwt.getCompanySid());
         return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: " + file.getOriginalFilename());
     }
 
@@ -224,5 +225,14 @@ public class TrainingController {
             @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid) {
         log.info(String.format("Request received : User for GET /v1/vaccounts"));
         return ResponseEntity.ok(bulkUploadService.getVirtualAccountByCompanySid(companySid));
+    }
+
+    @GetMapping("participants/batch/{batchSid}")
+    @ApiOperation(value = "getLearnersByBatchSid", notes = "Get list of participants by Batch Sid")
+    public ResponseEntity<?> getLearnersByBatchSid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Batch Sid", required = true) @PathVariable("batchSid") String batchSid) {
+        log.info(String.format("Request received : User for GET /v1/list/participants"));
+        return ResponseEntity.ok(trainingService.getParticipantsByBatchSid(batchSid));
     }
 }
