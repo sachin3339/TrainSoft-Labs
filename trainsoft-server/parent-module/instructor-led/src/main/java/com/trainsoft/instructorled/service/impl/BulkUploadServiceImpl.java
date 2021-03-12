@@ -53,6 +53,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                  String batchSid=batch.getStringSid();
                  userTOList.forEach(userTO -> {
                      userTO.setCompanySid(companySid);
+                   if(StringUtils.isNotEmpty(userTO.getAppuser().getEmailId()))
                      createVirtualAccountByBatch(userTO,batchSid);
                  });
 
@@ -209,7 +210,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                     departmentObj.setName(userTO.getDepartmentVA().getDepartment().getName());
                     departmentObj.setDescription(userTO.getDepartmentVA().getDepartment().getDescription());
                     departmentObj.setStatus(userTO.getDepartmentVA().getDepartment().getStatus());
-                    departmentObj.setEmailId(userTO.getDepartmentVA().getDepartment().getEmailId());
+                    departmentObj.setEmailId(userTO.getDepartmentVA().getDepartment().getEmailId()==null?null:userTO.getDepartmentVA().getDepartment().getEmailId());
                     departmentObj.setLocation(userTO.getDepartmentVA().getDepartment().getLocation());
                     savedDepartment = departmentRepository.save(departmentObj);
                     DepartmentVirtualAccount departmentVirtualAccount= new DepartmentVirtualAccount();
