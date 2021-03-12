@@ -105,7 +105,13 @@ public class InstructorController {
         payload.put("clientSecret","c213b545e4499db5bee098bb5295df38200dca96f52344397e3b1fd61d030e61");
         headers.clear();
         return ResponseEntity.ok(HttpUtils.postJsonUrl(payload,"https://api.jdoodle.com/v1/execute",headers));
+    }
 
+    @GetMapping("/depatments")
+    @ApiOperation(value = "getDepartments", notes = "Get list of Department")
+    public ResponseEntity<?> getDepartments(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token){
+        return ResponseEntity.ok(departmentService.getDepartments());
     }
 
 }

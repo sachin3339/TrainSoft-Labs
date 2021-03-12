@@ -8,13 +8,17 @@ import com.trainsoft.instructorled.entity.*;
 import com.trainsoft.instructorled.repository.*;
 import com.trainsoft.instructorled.service.IBulkUploadService;
 import com.trainsoft.instructorled.to.AppUserTO;
+import com.trainsoft.instructorled.to.DepartmentVirtualAccountTO;
 import com.trainsoft.instructorled.to.UserTO;
+import com.trainsoft.instructorled.to.VirtualAccountTO;
+import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -34,6 +38,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
             try {
                 List<AppUser> appUserList = ExcelHelper.excelToAppUsers(file.getInputStream());
                 appUserRepository.saveAll(appUserList);
+
             } catch (IOException e) {
                 throw new ApplicationException("fail to store excel data: " + e.getMessage());
             }
@@ -51,11 +56,20 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
 
     @Override
     public UserTO createVirtualAccount(UserTO userTO) {
+        DepartmentVirtualAccount savedDepartmentVA=null;
+        Department savedDepartment=null;
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(userTO.getCompanySid()));
         VirtualAccount virtualAccount = mapper.convert(userTO,VirtualAccount.class);
         virtualAccount.generateUuid();
         virtualAccount.setCompany(company);
-        virtualAccount.setDesignation(null);
+        AppUser appUser=virtualAccount.getAppuser();
+        appUser.generateUuid();
+        appUser.setSuperAdmin(false);
+        appUser.setStatus(InstructorEnum.Status.ENABLED);
+        appUser=appUserRepository.save(appUser);
+        virtualAccount.setAppuser(appUser);
+        virtualAccount.setDesignation("Employee");
+        virtualAccount.setStatus(InstructorEnum.Status.ENABLED);
         virtualAccount= virtualAccountRepository.save(virtualAccount);
         if(userTO.getDepartmentVA()!=null){
             if(userTO.getDepartmentVA().getDepartment()!=null && StringUtils.isNotEmpty(userTO.getDepartmentVA().getDepartment().getSid())){
@@ -64,7 +78,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                 departmentVirtualAccount.setVirtualAccount(virtualAccount);
                 departmentVirtualAccount.setDepartment(departmentRepository.findDepartmentBySid(BaseEntity.hexStringToByteArray(userTO.getDepartmentVA().getDepartment().getSid())));
                 departmentVirtualAccount.setDepartmentRole(userTO.getDepartmentVA().getDepartmentRole());
-                DepartmentVirtualAccount savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
+                savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
             }else if(userTO.getDepartmentVA().getDepartment()!=null &&
                     StringUtils.isEmpty(userTO.getDepartmentVA().getDepartment().getSid()) &&
                     StringUtils.isNotEmpty(userTO.getDepartmentVA().getDepartment().getName())){
@@ -75,7 +89,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                     departmentVirtualAccount.setVirtualAccount(virtualAccount);
                     departmentVirtualAccount.setDepartment(department);
                     departmentVirtualAccount.setDepartmentRole(userTO.getDepartmentVA().getDepartmentRole());
-                    DepartmentVirtualAccount savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
+                    savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
                 }else{
                     Department departmentObj=new Department();
                     departmentObj.generateUuid();
@@ -85,18 +99,31 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                     departmentObj.setStatus(userTO.getDepartmentVA().getDepartment().getStatus());
                     departmentObj.setEmailId(userTO.getDepartmentVA().getDepartment().getEmailId());
                     departmentObj.setLocation(userTO.getDepartmentVA().getDepartment().getLocation());
-                    Department savedDepartment = departmentRepository.save(departmentObj);
+                    savedDepartment = departmentRepository.save(departmentObj);
                     DepartmentVirtualAccount departmentVirtualAccount= new DepartmentVirtualAccount();
                     departmentVirtualAccount.generateUuid();
                     departmentVirtualAccount.setVirtualAccount(virtualAccount);
                     departmentVirtualAccount.setDepartment(savedDepartment);
                     departmentVirtualAccount.setDepartmentRole(userTO.getDepartmentVA().getDepartmentRole());
-                    DepartmentVirtualAccount savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
+                    savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
                 }
-            }else {
-                // Throw the exception
-            }
+            }else
+                throw new ApplicationException("throwing error while creating user");
         }
-        return null;
+        userTO.getAppuser().setSid(virtualAccount.getAppuser().getStringSid());
+        userTO.setSid(virtualAccount.getStringSid());
+        userTO.getDepartmentVA().setSid(savedDepartmentVA.getStringSid());
+        userTO.getDepartmentVA().getDepartment().setSid(savedDepartmentVA.getDepartment().getStringSid());
+        return userTO;
+    }
+
+    @Override
+    public UserTO getVirtualAccountByVASid(String virtualAccountSid){
+       VirtualAccount account= virtualAccountRepository.findVirtualAccountBySid(
+               BaseEntity.hexStringToByteArray(virtualAccountSid));
+       UserTO user=mapper.convert(account,UserTO.class);
+       DepartmentVirtualAccount dVA= departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(account);
+       user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+       return user;
     }
 }
