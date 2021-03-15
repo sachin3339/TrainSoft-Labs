@@ -6,7 +6,6 @@ import SearchBox from "./SearchBox/SearchBox"
 
 const CardHeader = ({ location }) => {
     return (<>
-        {console.log(location)}
         <div className="jcb aic py-2">
             {location && location.state && <Breadcrumb>
                 <Breadcrumb.Item className=""><Link to=''>{location.state.title}</Link></Breadcrumb.Item>

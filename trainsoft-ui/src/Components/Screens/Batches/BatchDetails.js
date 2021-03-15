@@ -6,30 +6,38 @@ import PaginationOne from "../../Common/Pagination";
 import CardHeader from "../../Common/CardHeader";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import useFetch from "../../../Store/useFetch";
+import moment from 'moment'
 
 
-
-
-const dummyData =[
-    {name: 'Jessie Buchanan',empId: '10290',emailId:'benits@msn.com',phoneNo:'(659) 768-1869',department:'Information Technology'},
-    {name: 'Lisa Palmer',empId: '10290',emailId:'drewf@optonline.net',phoneNo:'(659) 768-1869',department:'Information Technology'},
-    {name: 'Donna Higgins',empId: '10290',emailId:'devphil@sbcglobal.net',phoneNo:'(659) 768-1869',department:'Information Technology'},
-    {name: 'Bob Norris',empId: '10290',emailId:'cliffski@me.com',phoneNo:'(659) 768-1869',department:'Information Technology'},
-    {name: 'Tonya Walters',empId: '10290',emailId:'22 june 2020',phoneNo:'(659) 768-1869',department:'Information Technology'},
-
-]
 
 const BatchesDetails = ({location}) => {
     const [participant, setParticipant]= useState([])
-    let pList = useFetch({
+    let {response} = useFetch({
         method: "get",
         url: GLOBELCONSTANT.BATCHES.GET_BATCH_PARTICIPANT + location.state.sid,
         errorMsg: 'error occur on get Batch Participant'
      });
 
-     useEffect(() => {
-         setParticipant(participant)
-     }, [pList])
+
+       // initialize  component
+    useEffect(() => { 
+        try{
+        if(response){
+           let val = response.map(res=> {
+                let data = res.appuser
+                data.role= res.role
+                data.department = res.departmentVA ? res.departmentVA.department.name : ''
+                return data
+            })
+            setParticipant(val)
+         }
+        }catch(err){
+            console.error(err)
+        }
+    }
+    , [response])
+
+
     const [configuration, setConfiguration] = useState({
         columns: {
             "name": {
@@ -38,7 +46,7 @@ const BatchesDetails = ({location}) => {
                 "sortEnabled": false,
                 isSearchEnabled: false,
             },
-            "empId": {
+            "employeeId": {
                 "title": "Emp Id",
                 "sortDirection": null,
                 "sortEnabled": false,
@@ -106,7 +114,7 @@ const BatchesDetails = ({location}) => {
                 <div className="col-md-4">
                     <div className="row">
                         <div className="col-6">Batch Name</div>
-                        <div className="col-6 mb-4">ITU_01</div>
+                        <div className="col-6 mb-4">{location.state.row.name}</div>
                    
                     </div>
                 </div>
@@ -114,14 +122,14 @@ const BatchesDetails = ({location}) => {
                 <div className="col-md-4">
                     <div className="row">
                         <div className="col-6">Creation Date </div>
-                        <div className="col-6  mb-4">20 july 2020</div>
+                        <div className="col-6  mb-4">{moment(location.state.row.createdOn).format('Do MMMM YYYY') }</div>
                     </div>
                 </div>
 
                 <div className="col-md-4">
                     <div className="row">
                        <div className="col-6">Status</div>
-                        <div className="col-6">Active</div>
+                        <div className="col-6">{location.state.row.status}</div>
                     </div>
                 </div>
             </div>

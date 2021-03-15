@@ -13,6 +13,7 @@ import CodeEditor from './CodeEditor/CodeEditor';
 import WhiteBoard from './WhiteBoard/WhiteBoard';
 import NoDataFound from '../../Common/NoDataFound/NoDataFound';
 import { navigate } from '../../Common/Router';
+import DevelopmentEnv from './DevelopmentEnv/DevelopmentEnv';
 
 
 const ClassLab = () => {
@@ -49,7 +50,7 @@ const ClassLab = () => {
                             <div className={`${selectedTab === "Code editor" ? 'column' : 'd-none'} full-h full-w `}><CodeEditor {...{fromClose,setFromClose,removedTag,themesColor:false}} /></div>
                             <div className={`${selectedTab === "Online Media" ? 'd-block' : 'd-none'} full-h full-w`}><OnlineMedia {...{fromClose,setFromClose,removedTag}} /></div>
                             {selectedTab === "Development Env" && <div>
-                                <NoDataFound title="Development Env" subTitle="Work on" />
+                                <DevelopmentEnv/>
                             </div>}
                         </> : <div className="">
                                 <div className="title-md mb-3">You are currently not sharing anything </div>
