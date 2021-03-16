@@ -26,16 +26,16 @@ const TrainingInfo = () => {
 
             <div className="box-shadow flx1 p-2 mr-3">
                 {/* <div className="user-profile-container">
-    <div className="jcb">
-        <div className="user-pf">Us</div>
-    </div>
+                <div className="jcb">
+                    <div className="user-pf">Us</div>
+                </div>
 
-    <div className="jcb mt-2">
-        <Button>{ICN_EMAIL_W} <span className="pl-3">Email</span></Button>
-        <Button>{ICN_TEXT_W} <span className="pl-3">Text</span></Button>
+                <div className="jcb mt-2">
+                    <Button>{ICN_EMAIL_W} <span className="pl-3">Email</span></Button>
+                    <Button>{ICN_TEXT_W} <span className="pl-3">Text</span></Button>
 
-    </div>
-</div> */}
+                </div>
+            </div> */}
                 <div className="jcc my-4">
                     <Button>{ICN_PROGRESS} Announcement</Button>
                 </div>
