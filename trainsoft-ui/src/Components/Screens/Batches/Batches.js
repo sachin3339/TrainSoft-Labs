@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Form } from 'react-bootstrap'
-import { Formik,Field } from 'formik';
+import { Formik, Field } from 'formik';
 import { ICN_TRASH, ICN_EDIT, ICN_CLOSE } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
 import { TextInput, DateInput, SelectInput } from "../../Common/InputField/InputField";
@@ -21,23 +21,23 @@ import './batches.css'
 
 
 
-const Batch = ({location}) => {
-    const {user} = useContext(AppContext)
+const Batch = ({ location }) => {
+    const { user, spinner } = useContext(AppContext)
     const Toast = useToast();
     const [show, setShow] = useState(false);
-    const [batchList,setBatchList] = useState([])
-    let {response} = useFetch({
-        method: "get",
-        url: GLOBELCONSTANT.BATCHES.GET_BATCH_LIST,
-        errorMsg: 'error occur on get Batches'
-     });
+    const [batchList, setBatchList] = useState([])
+    // let {response} = useFetch({
+    //     method: "get",
+    //     url: GLOBELCONSTANT.BATCHES.GET_BATCH_LIST,
+    //     errorMsg: 'error occur on get Batches'
+    //  });
 
 
     const schema = Yup.object().shape({
         name: Yup.string()
-        .min(2, 'Too Short!')
-        .required("Required!"),
-      });
+            .min(2, 'Too Short!')
+            .required("Required!"),
+    });
 
     const [configuration, setConfiguration] = useState({
         columns: {
@@ -46,7 +46,7 @@ const Batch = ({location}) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'batches-details'} state={{path: 'batches-details',sid:data.sid,title: 'BATCHES',subTitle:"Batch Details"}} className="dt-name">{data.name}</Link>
+                render: (data) => <Link to={'batches-details'} state={{ path: 'batches-details', sid: data.sid, row:data, title: 'BATCHES', subTitle: "Batch Details" }} className="dt-name">{data.name}</Link>
 
             },
             "learner": {
@@ -102,33 +102,34 @@ const Batch = ({location}) => {
         showCheckbox: true,
         clearSelection: false
     });
+
     // create batches
-        // const createBatch = (data)=>{
-        //     try{
-        //         let payload = {
-        //             "name": data.name,
-        //             "status": "ENABLED",
-        //             "trainingType": "INSTRUCTOR_LED",
-        //         }
+    // const createBatch = (data)=> {
+    //     try{
+    //         let payload = {
+    //             "name": data.name,
+    //             "status": "ENABLED",
+    //             "trainingType": "INSTRUCTOR_LED",
+    //         }
 
-        //         let val = {
-        //             batchName: data.name,
-        //             instructorName: data.trainingType
-        //         }
-        //         RestService.CreateBatch(payload).then(res => {
-        //                setBatchList([...batchList,res.data])
-        //                Toast.success({ message: `Batch is Successfully Created`});
-        //                uploadParticipant(data.upload,val)
-        //                setShow(false) 
-        //             }, err => console.log(err)
-        //         ); 
-        //     }
-        //     catch(err){
-        //         console.error('error occur on getAllCourse',err)
-        //     }
-        // }
+    //         let val = {
+    //             batchName: data.name,
+    //             instructorName: data.trainingType
+    //         }
+    //         RestService.CreateBatch(payload).then(res => {
+    //                setBatchList([...batchList,res.data])
+    //                Toast.success({ message: `Batch is Successfully Created`});
+    //                uploadParticipant(data.upload,val)
+    //                setShow(false) 
+    //             }, err => console.log(err)
+    //         ); 
+    //     }
+    //     catch(err){
+    //         console.error('error occur on getAllCourse',err)
+    //     }
+    // }
 
- const UploadAttachments = async (val) => {
+    const UploadAttachmentsAPI = async (val) => {
         return new Promise((resolve, reject) => {
             let data = new FormData();
             for (let i = 0, l = val.file.length; i < l; i++)
@@ -147,22 +148,46 @@ const Batch = ({location}) => {
                     reject([response, this.status, this.getAllResponseHeaders()]);
                 }
             });
-            xhr.open("POST",GLOBELCONSTANT.BASE_URL + GLOBELCONSTANT.PARTICIPANT.UPLOAD_PARTICIPANT);
+            xhr.open("POST", GLOBELCONSTANT.BASE_URL + GLOBELCONSTANT.PARTICIPANT.UPLOAD_PARTICIPANT);
             xhr.setRequestHeader("batchName", val.name);
             xhr.setRequestHeader("instructorName", val.trainingType);
 
-            xhr.setRequestHeader("Authorization", "'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMDNEMDhFQjY5MkE0RDg5OEQ1NEUwNkM0NTc1QTA5NUM1MUJBQUEwNjYyQTQ4N0NBQjU2RTNGMUNFOTdGRTg0IiwiaWF0IjoxNjE1Mjc2MDUzLCJzdWIiOiJ7XCJjb21wYW55U2lkXCI6XCI1RDY2RUFCMDBCNDQ0NkM5QTdBREI4OThDNDNDMkMxMTk0NTZDNUU2Q0E0RDQ0OTlBRTIzNzgyMkUzQTQxQ0I3XCIsXCJ2aXJ0dWFsQWNjb3VudFNpZFwiOlwiMDgzREM5NDExQUQ1NEI4OUFBOTRDNEEwQTdBODc0M0YzODNDRERCQTJBQ0M0QTE3QTg0QjJCRDAxMUY1MDEyQlwiLFwidXNlclNpZFwiOlwiMTAzRDA4RUI2OTJBNEQ4OThENTRFMDZDNDU3NUEwOTVDNTFCQUFBMDY2MkE0ODdDQUI1NkUzRjFDRTk3RkU4NFwiLFwiZGVwYXJ0bWVudFNpZFwiOlwiQzIzRkM0MDJGMjdBNEE2ODkwOTJGMUY0Q0E0NDE3QzcyNzc0ODNBRjZFQzc0NkM5QUNFNTFGQTgxOTZDMjA1RFwiLFwiZGVwYXJ0bWVudFJvbGVcIjpcIklOU1RSVUNUT1JcIixcImNvbXBhbnlSb2xlXCI6XCJVU0VSXCIsXCJlbWFpbElkXCI6XCJrdW1hcmthbmhpeWEyMUBnbWFpbC5jb21cIn0iLCJpc3MiOiJrdW1hcmthbmhpeWEyMUBnbWFpbC5jb20iLCJleHAiOjE2MTY3NzYwNTN9.KYfr2QmDcRa8kB8Dz8H5g1h-E3PFld6W6kz-SheEqlk");
+            xhr.setRequestHeader("Authorization", "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMDNEMDhFQjY5MkE0RDg5OEQ1NEUwNkM0NTc1QTA5NUM1MUJBQUEwNjYyQTQ4N0NBQjU2RTNGMUNFOTdGRTg0IiwiaWF0IjoxNjE1Mjc2MDUzLCJzdWIiOiJ7XCJjb21wYW55U2lkXCI6XCI1RDY2RUFCMDBCNDQ0NkM5QTdBREI4OThDNDNDMkMxMTk0NTZDNUU2Q0E0RDQ0OTlBRTIzNzgyMkUzQTQxQ0I3XCIsXCJ2aXJ0dWFsQWNjb3VudFNpZFwiOlwiMDgzREM5NDExQUQ1NEI4OUFBOTRDNEEwQTdBODc0M0YzODNDRERCQTJBQ0M0QTE3QTg0QjJCRDAxMUY1MDEyQlwiLFwidXNlclNpZFwiOlwiMTAzRDA4RUI2OTJBNEQ4OThENTRFMDZDNDU3NUEwOTVDNTFCQUFBMDY2MkE0ODdDQUI1NkUzRjFDRTk3RkU4NFwiLFwiZGVwYXJ0bWVudFNpZFwiOlwiQzIzRkM0MDJGMjdBNEE2ODkwOTJGMUY0Q0E0NDE3QzcyNzc0ODNBRjZFQzc0NkM5QUNFNTFGQTgxOTZDMjA1RFwiLFwiZGVwYXJ0bWVudFJvbGVcIjpcIklOU1RSVUNUT1JcIixcImNvbXBhbnlSb2xlXCI6XCJVU0VSXCIsXCJlbWFpbElkXCI6XCJrdW1hcmthbmhpeWEyMUBnbWFpbC5jb21cIn0iLCJpc3MiOiJrdW1hcmthbmhpeWEyMUBnbWFpbC5jb20iLCJleHAiOjE2MTY3NzYwNTN9.KYfr2QmDcRa8kB8Dz8H5g1h-E3PFld6W6kz-SheEqlk");
             xhr.send(data);
         })
     }
-    
+
+    /** upload attachments file
+*   @param {Object} file = selected files
+*   @param {string} token = user auth token 
+*   @param {string} bucketName = bucket name 
+*/
+    const uploadAttachments = async (
+        val
+    ) => {
+        try {
+            spinner.show();
+            let [res] = await UploadAttachmentsAPI(val);
+            spinner.hide();
+            getAllBatch()
+            setShow(false)
+            Toast.success({ message: `Batch is Successfully Created` });
+        } catch (err) {
+            spinner.hide();
+            Toast.error({ message: `Something Went Wrong` });
+            setShow(false)
+
+            console.error("Exception occurred in uploadAttachments -- ", err);
+        }
+    }
+
     // upload participant
     // const uploadParticipant = (file,header) => {
     //     try {
     //         let data = new FormData();
     //         for (let i = 0, l = file.length; i < l; i++)
     //             data.append("file", file[i])
-                
+
     //         RestService.UploadParticipant(data,header).then(resp => {
     //             setShow(false)
     //             Toast.success({ message: `Participant is Successfully uploaded`});
@@ -174,27 +199,44 @@ const Batch = ({location}) => {
     //     }
     // }
 
-    useEffect(() => {
-         setBatchList(response)
-    }, [response])
+    // get all batches
+    const getAllBatch = async () => {
+        try {
+            spinner.show();
+            RestService.getAllBatches().then(
+                response => {
+                    setBatchList(response.data);
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
+        }
 
+    }
+
+    useEffect(() => getAllBatch(), [])
 
 
     return (<><div className="table-shadow">
-           <div className="p-3"><CardHeader {...{location}}/></div> 
-       {batchList && batchList.length > 0 &&  <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse() }} />}
+        <div className="p-3"><CardHeader {...{ location }} /></div>
+        {batchList && batchList.length > 0 && <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse() }} />}
     </div>
-    <div className="table-footer-action">
+        <div className="table-footer-action">
             <div>
-               {user.role === 'admin' &&  <Button onClick={() => setShow(true)}> + Add New </Button> }
+                {user.role === 'admin' && <Button onClick={() => setShow(true)}> + Add New </Button>}
                 <BsModal {...{ show, setShow, headerTitle: "Add new Batches", size: "lg" }}>
                     <div className="form-container">
                         <Formik
-                            onSubmit={UploadAttachments}
+                            onSubmit={uploadAttachments}
                             initialValues={{
-                                name:'',
-                                trainingType:'',
-                                file:''
+                                name: '',
+                                trainingType: '',
+                                file: ''
                             }}
                             validationSchema={schema}
                         >
@@ -211,10 +253,10 @@ const Batch = ({location}) => {
                                 </div>
                                 <footer className="jcb">
                                     <div>
-                                         <div className="col-6">
-                                            <div><span className="title-sm">Upload participants</span></div> <div><input  placeholder="Browse File" onChange={(e)=> { setFieldValue("file",e.target.files)}} type="file"/></div>
+                                        <div className="col-6">
+                                            <div><span className="title-sm">Upload participants</span></div> <div><input placeholder="Browse File" onChange={(e) => { setFieldValue("file", e.target.files) }} type="file" /></div>
                                         </div>
-                                        
+
                                     </div>
                                     <div>
                                         <Button type="submit" >Create Batches</Button>
@@ -234,7 +276,7 @@ const Batch = ({location}) => {
 const Batches = () => {
     return (
         <Router>
-            <Batch path="/"/>
+            <Batch path="/" />
             <BatchesDetails path="batches-details" />
         </Router>
     )

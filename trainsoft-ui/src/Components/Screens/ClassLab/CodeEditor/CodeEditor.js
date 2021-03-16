@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useContext } from 'react'
-import Editor from "@monaco-editor/react";
 import './codeEditor.css'
 import { Language } from './Language';
 import { Dropdown, Spinner } from 'react-bootstrap';

@@ -16,6 +16,7 @@ import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import * as Yup from 'yup';
 import AppContext from "../../../Store/AppContext";
 import useToast from "../../../Store/ToastHook";
+import NoDataFound from "../../Common/NoDataFound/NoDataFound";
 
 
 const User = ({ location }) => {
@@ -207,7 +208,8 @@ const User = ({ location }) => {
 
 
 
-    return (<><div className="table-shadow">
+    return (<>
+    <div className="table-shadow">
         <div className="p-3"><CardHeader {...{ location }} /></div>
         <div className="flx px-3 mb-2">
             <div className="mr-4">
@@ -314,9 +316,13 @@ const User = ({ location }) => {
 
 const Users = () => {
     return (
-        <Router>
-            <User path="/" />
-        </Router>
+
+        <div className="table-shadow">
+            <NoDataFound title="Work on Progress"/>
+        </div>
+        // <Router>
+        //     <User path="/" />
+        // </Router>
     )
 }
 export default Users

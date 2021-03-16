@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Button } from '../../../Common/Buttons/Buttons'
 import SessionList from '../../../Common/SessionList/SessionList'
 import AddAssessment from './AddAssessment'
+import "./assessment.css";
+
 
 const Assessment = () =>{
     const [show, setShow] = useState(false)

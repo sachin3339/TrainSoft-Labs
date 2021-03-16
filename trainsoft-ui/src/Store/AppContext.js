@@ -4,18 +4,26 @@ const AppContext = React.createContext({});
 export default AppContext;
 export const AppConsumer = AppContext.Consumer;
 
+let user = localStorage.getItem('user')
+	? JSON.parse(localStorage.getItem('user'))
+	: '';
+
+
+
 const initialState = {
-    user:''
+    user: user
 }
 
 export const authReducer = (state, action) => {
     switch (action.type) {
         case "LOGIN":
+            localStorage.setItem('user', JSON.stringify(action.value));
             return {
                 ...state,
                 user: {...action.value}
             };
         case "LOGOUT":
+            localStorage.removeItem('user');
             return {
                 ...state,
                 user: ''

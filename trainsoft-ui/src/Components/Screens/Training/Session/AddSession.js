@@ -79,7 +79,7 @@ const AddSession = ({ show, setShow }) => {
                                     </div>
                                 </div>
                                 <div>
-                                    <Button className="btn-block py-2" type="submit">Conform</Button>
+                                    <Button className="btn-block py-2" type="submit">Confirm</Button>
                                 </div>
                             </form>
                         )}
