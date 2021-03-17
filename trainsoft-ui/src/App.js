@@ -13,7 +13,7 @@ function App() {
    const appContext = useContext(AppContext)
   return (<>
       <Spinner value={appContext.spinner}/>
-      <Router basepath="/">
+      <Router>
          <Login path="/"/>
          <Dashboard path="/*"/>
          <ClassLab path="class/*"/>
