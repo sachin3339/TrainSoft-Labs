@@ -14,6 +14,7 @@ import WhiteBoard from './WhiteBoard/WhiteBoard';
 import NoDataFound from '../../Common/NoDataFound/NoDataFound';
 import { navigate } from '../../Common/Router';
 import DevelopmentEnv from './DevelopmentEnv/DevelopmentEnv';
+import Zoom from '../../Zoom/Zoom';
 
 
 const ClassLab = () => {
@@ -24,6 +25,8 @@ const ClassLab = () => {
     const [fromClose, setFromClose] = useState(false)
     const classTab = ['Online Media', 'Whiteboard', 'Content', 'Code editor', 'Development Env']
     return (<>
+
+        <Zoom/>
         <div className="p-4 full-w full-h">
             <div className="flx full-w full-h ">
                 <div className="full-w full-h flx3 column">

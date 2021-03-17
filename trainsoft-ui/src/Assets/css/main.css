@@ -852,4 +852,8 @@ p {
       -ms-flex-pack: end;
           justify-content: flex-end;
 }
+
+#zmmtg-root {
+  display: none;
+}
 /*# sourceMappingURL=main.css.map */
