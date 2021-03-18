@@ -37,7 +37,6 @@
     "react-sketch": "^0.5.1",
     "redux": "^4.0.5",
     "web-vitals": "^0.2.4",
-    "whatwg-url": "^8.4.0",
     "yup": "^0.32.9"
   },
   "scripts": {
