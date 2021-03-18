@@ -7,9 +7,8 @@ import { Router } from "./Components/Common/Router";
 import ClassLab from "./Components/Screens/ClassLab/ClassLab";
 import Spinner from "./Components/Common/Spinner/Spinner";
 import AxiosService from './Services/axios.service';
-import GLOBELCONSTANT from './Constant/GlobleConstant';
 import AppContext from "./Store/AppContext";
-AxiosService.init(GLOBELCONSTANT.BASE_URL);
+AxiosService.init();
 
 
 

@@ -8,34 +8,34 @@ export const API_PATH = HOSTNAME;
 const GLOBELCONSTANT = {
         BASE_URL: HOSTNAME,
         COURSE: {
-            GET_COURSE: "v1/courses",
-            CREATE_COURSE: "v1/course/create",
-            GET_COURSE_SID : 'v1/course/',
-            CREATE_SESSION : 'v1/create/coursesession',
-            GET_COURSE_SESSION: '/v1/coursesession/course/',
+            GET_COURSE: BASE_URL + "v1/courses",
+            CREATE_COURSE: BASE_URL + "v1/course/create",
+            GET_COURSE_SID :  BASE_URL +  'v1/course/',
+            CREATE_SESSION : BASE_URL +  'v1/create/coursesession',
+            GET_COURSE_SESSION:  BASE_URL + '/v1/coursesession/course/',
         },  
         BATCHES: {
-            GET_BATCH_SID: 'v1/batch/{batchSid}',
-            GET_BATCH_LIST: 'v1/batches',
-            CREATE_BATCHES: 'v1/batch/create',
-            GET_BATCH_PARTICIPANT: '/v1/participants/batch/'
+            GET_BATCH_SID: BASE_URL +  'v1/batch/{batchSid}',
+            GET_BATCH_LIST: BASE_URL +  'v1/batches',
+            CREATE_BATCHES: BASE_URL +  'v1/batch/create',
+            GET_BATCH_PARTICIPANT: BASE_URL +  '/v1/participants/batch/'
         },
         PARTICIPANT: {
-            GET_PARTICIPANT: "v1/list/participant",
-            UPLOAD_PARTICIPANT: "v1/upload/list/participants",
-            CREATE_PARTICIPANT: "/v1/user/create",
-            ALL_USERS: "/v1/vaccounts/company/",
-            GENERATE_PWD: "/v1/generate/password"
+            GET_PARTICIPANT: BASE_URL +  "v1/list/participant",
+            UPLOAD_PARTICIPANT: BASE_URL +  "v1/upload/list/participants",
+            CREATE_PARTICIPANT: BASE_URL +  "/v1/user/create",
+            ALL_USERS: BASE_URL +  "/v1/vaccounts/company/",
+            GENERATE_PWD: BASE_URL +  "/v1/generate/password"
 
         },  
         TRAINING: {
-            GET_TRAINING: "v1/trainings",
-            CREATE_TRAINING: "v1/training/create",
-            GET_TRAINING_SESSION: "/v1/trainingsession/training/",
-            CREATE_SESSION: "/v1/trainingSession/create"
+            GET_TRAINING: BASE_URL +  "v1/trainings",
+            CREATE_TRAINING: BASE_URL +  "v1/training/create",
+            GET_TRAINING_SESSION: BASE_URL +  "/v1/trainingsession/training/",
+            CREATE_SESSION: BASE_URL +  "/v1/trainingSession/create"
         },
         INSTRUCTOR: {
-            GET_INSTRUCTOR: '/v1/depatments'
+            GET_INSTRUCTOR: BASE_URL +  '/v1/depatments'
         },
         ACCESS_LEVEL: [
             {key: "BATCH_MGMT",name: "Batch Mgmt"},
