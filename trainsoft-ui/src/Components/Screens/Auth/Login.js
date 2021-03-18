@@ -11,9 +11,9 @@ import useToast from "../../../Store/ToastHook";
 
 
 const user = [
-    { name: 'Amit', role: 'admin', email: 'admin', password: '1234' },
-    { name: 'Vikash', role: 'user', email: 'user', password: '1234' },
-    { name: 'Rohit', role: 'trainer', email: 'trainer', password: '1234' }
+    { name: 'Amit Kumar', role: 'admin', email: 'admin', password: '1234' },
+    { name: 'Vikash Panday', role: 'user', email: 'user', password: '1234' },
+    { name: 'Rohit Sharma', role: 'trainer', email: 'trainer', password: '1234' }
 
 ]
 const Login = () => {

@@ -85,10 +85,10 @@
   content: '';
   -webkit-appearance: none;
   background-color: #ffffff;
-  border: 1px solid #272d3b71;
+  border: 2px solid #272d3b3b;
   padding: 7px;
   display: inline-block;
-  border-radius: 50%;
+  border-radius: 1px;
   position: relative;
   vertical-align: middle;
   cursor: pointer;
@@ -99,11 +99,11 @@
   content: '';
   display: block;
   position: absolute;
-  top: 8px;
-  left: 6px;
+  top: 7px;
+  left: 7px;
   width: 4px;
   height: 8px;
-  border: solid #ffffff;
+  border: solid #c2c2c2;
   border-width: 0 2px 2px 0;
   transform: rotate( 
 45deg
@@ -111,7 +111,7 @@
 }
 
 .custom-input input:checked + label:before{
-  background-color: #00CCF2;
-  border: 1px solid #00CCF2;
+  /* background-color: #00CCF2;
+  border: 1px solid #00CCF2; */
 }
 

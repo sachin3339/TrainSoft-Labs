@@ -6,7 +6,7 @@ import { ICN_TRASH, ICN_EDIT, ICN_DOWNLOAD } from "../../Common/Icon";
 import { BtnPrimary, Button } from "../../Common/Buttons/Buttons";
 import { TextInput, DateInput,CheckboxGroup, SelectInput, TextArea, RadioBox, Checkbox } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
-import { BsModal } from "../../Common/BsUtils";
+import { BsModal, Toggle } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
 import RestService from "../../../Services/api.service";
 import './style.css'
@@ -91,11 +91,12 @@ const User = ({ location }) => {
             }
             ,
             "status": {
-                "title": "Status",
+                "title": "",
                 "sortDirection": null,
                 "sortEnabled": true,
-                isSearchEnabled: false
-            }
+                isSearchEnabled: false,
+                render: (data) => <Toggle id={data.sid} checked={data.status === 'ENABLED' ? true : false}/>
+            },
         },
         headerTextColor: '#454E50', // user can change table header text color
         sortBy: null,  // by default sort table by name key
@@ -194,7 +195,7 @@ const User = ({ location }) => {
         if(response){
            let val = response.map(res=> {
                 let data = res.appuser
-                data.role= res.role
+                data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
                 data.department = res.departmentVA ? res.departmentVA.department.name : ''
                 return data
             })
@@ -317,12 +318,10 @@ const User = ({ location }) => {
 const Users = () => {
     return (
 
-        <div className="table-shadow">
-            <NoDataFound title="Work on Progress"/>
-        </div>
-        // <Router>
-        //     <User path="/" />
-        // </Router>
+  
+        <Router>
+            <User path="/" />
+        </Router>
     )
 }
 export default Users

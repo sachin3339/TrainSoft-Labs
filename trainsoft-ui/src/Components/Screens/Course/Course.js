@@ -7,7 +7,7 @@ import { ICN_TRASH, ICN_EDIT } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
 import { TextInput, DateInput, SelectInput, TextArea } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
-import { BsModal } from "../../Common/BsUtils";
+import { BsModal, Toggle } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
 import CourseDetails from "./CourseDetails";
 import RestService from "../../../Services/api.service";
@@ -30,6 +30,7 @@ const Courses = ({location}) => {
      
     const [configuration, setConfiguration] = useState({
         columns: {
+          
             "name": {
                 "title": "Course Name",
                 "sortDirection": null,

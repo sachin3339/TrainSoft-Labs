@@ -21,6 +21,7 @@
 */
 import GLOBELCONSTANT from "../Constant/GlobleConstant.js";
 import AxiosService from "./axios.service.js";
+const  zoomAuth = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6InRHY3VUTmpkUVVTM2prVHdfZWF6OWciLCJleHAiOjE2MTY1NzM4OTMsImlhdCI6MTYxNTk2OTA3OX0.2Aqdh7qmOJvNUx3JijVb5XqMwdiZS0ggvNbJTPljtgA"
 
 const RestService = {
   //  course
@@ -40,7 +41,10 @@ const RestService = {
 
   // training
   createTraining: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.CREATE_TRAINING,payload),
-  CreateTrainingSession: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.CREATE_SESSION,payload)
+  CreateTrainingSession: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.CREATE_SESSION,payload),
+
+  zoomParticipant: ()=> AxiosService.get('https://api.zoom.us/v2/users/kumarkanhiya21@gmail.com/meetings?page_size=30&type=live',zoomAuth)
+
 
   // instructor
 

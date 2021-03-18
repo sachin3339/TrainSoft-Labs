@@ -1,12 +1,28 @@
+import { useContext } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { ICN_NOTIFICATION, ICN_SEARCH } from '../../Common/Icon';
 import { CustomToggle } from '../../../Services/MethodFactory';
-import './header.css'
 import { ProfileImg } from '../../Common/BsUtils';
 import { navigate } from '../../Common/Router';
+import AppContext from '../../../Store/AppContext';
+import './header.css'
+
 
 
 const Header = ({location}) => {
+    const {user} = useContext(AppContext)
+
+    // get user name
+    const getUserName = (name) =>{
+        let a = ''
+        try{
+         let b = name.split(' ')
+          a = `${b[0].charAt()}${b[1] ? b[1].charAt() : ''}`
+        }catch(err){
+            console.error("Error occur on getUserName()",err)
+        }
+        return a
+    }
     return (<>
     { location.state.title !== "COMPILER" &&
     <div className="header">
@@ -46,7 +62,7 @@ const Header = ({location}) => {
             
             <Dropdown className="">
                     <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                         <div><ProfileImg name="JD" size="md"/></div>
+                         <div><ProfileImg name={getUserName(user.name)} size="md"/></div>
                     </Dropdown.Toggle>
                 <Dropdown.Menu as="div" align="left">
                   <Dropdown.Item onClick={()=>navigate('/')}>Logout</Dropdown.Item>

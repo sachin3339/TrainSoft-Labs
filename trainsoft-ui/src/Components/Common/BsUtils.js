@@ -70,27 +70,35 @@ export const Breadcrumbs = () => <Breadcrumb>
 
 // profile
 // Assets/Images/vid.jpg
-export const ProfileImg = ({url= null,name="",size="sm", onClick }) =>{
+export const ProfileImg = ({ url = null, name = "", size = "sm", onClick }) => {
     return (<>
         <div className={`user-profile profile-${size}`} onClick={onClick}>
-            {url === null ? <div className="">{name}</div> : <img src={url}/> }
-           
+            {url === null ? <div className="">{name}</div> : <img src={url} />}
+
         </div>
     </>)
 }
 
-export const BsCheckbox = ({label="",checked=false,id,onChange, className=""})=>{
-        return( <div className={`custom-input ${className}`}>
-                  <input type="checkbox" id={id} checked={checked} onChange={onChange} />
-              <label htmlFor={id}><span className="pl-2">{label}</span></label>
-        </div>)
+export const BsCheckbox = ({ label = "", checked = false, id, onChange, className = "" }) => {
+    return (<div className={`custom-input ${className}`}>
+        <input type="checkbox" id={id} checked={checked} onChange={onChange} />
+        <label htmlFor={id}><span className="pl-2">{label}</span></label>
+    </div>)
 }
 
-export const ActiveBox = ({label="",className="",bgColor=''})=>{
-    return( <div className={`aic ${className} ${bgColor}`}>
-                <div className="activeBox-div">
+export const ActiveBox = ({ label = "", className = "", bgColor = '' }) => {
+    return (<div className={`aic ${className} ${bgColor}`}>
+        <div className="activeBox-div">
 
-                </div>
-                <div className="mx-2 mr-4">{label}</div>
+        </div>
+        <div className="mx-2 mr-4">{label}</div>
     </div>)
+}
+
+// toggle the checkbox
+export const Toggle = ({ id = '', checked = false, onChange }) => {
+    return (<> <label class="gen-switch ibvm">
+        <input type="checkbox" onChange={onChange} checked={checked} id={id} />
+        <div class="gen-slider round">
+        </div></label></>)
 }
