@@ -8,34 +8,34 @@ export const API_PATH = HOSTNAME;
 const GLOBELCONSTANT = {
         BASE_URL: HOSTNAME,
         COURSE: {
-            GET_COURSE: BASE_URL + "v1/courses",
-            CREATE_COURSE: BASE_URL + "v1/course/create",
-            GET_COURSE_SID :  BASE_URL +  'v1/course/',
-            CREATE_SESSION : BASE_URL +  'v1/create/coursesession',
-            GET_COURSE_SESSION:  BASE_URL + '/v1/coursesession/course/',
+            GET_COURSE: API_PATH + "v1/courses",
+            CREATE_COURSE: API_PATH + "v1/course/create",
+            GET_COURSE_SID :  API_PATH +  'v1/course/',
+            CREATE_SESSION : API_PATH +  'v1/create/coursesession',
+            GET_COURSE_SESSION:  API_PATH + '/v1/coursesession/course/',
         },  
         BATCHES: {
-            GET_BATCH_SID: BASE_URL +  'v1/batch/{batchSid}',
-            GET_BATCH_LIST: BASE_URL +  'v1/batches',
-            CREATE_BATCHES: BASE_URL +  'v1/batch/create',
-            GET_BATCH_PARTICIPANT: BASE_URL +  '/v1/participants/batch/'
+            GET_BATCH_SID: API_PATH +  'v1/batch/{batchSid}',
+            GET_BATCH_LIST: API_PATH +  'v1/batches',
+            CREATE_BATCHES: API_PATH +  'v1/batch/create',
+            GET_BATCH_PARTICIPANT: API_PATH +  '/v1/participants/batch/'
         },
         PARTICIPANT: {
-            GET_PARTICIPANT: BASE_URL +  "v1/list/participant",
-            UPLOAD_PARTICIPANT: BASE_URL +  "v1/upload/list/participants",
-            CREATE_PARTICIPANT: BASE_URL +  "/v1/user/create",
-            ALL_USERS: BASE_URL +  "/v1/vaccounts/company/",
-            GENERATE_PWD: BASE_URL +  "/v1/generate/password"
+            GET_PARTICIPANT: API_PATH +  "v1/list/participant",
+            UPLOAD_PARTICIPANT: API_PATH +  "v1/upload/list/participants",
+            CREATE_PARTICIPANT: API_PATH +  "/v1/user/create",
+            ALL_USERS: API_PATH +  "/v1/vaccounts/company/",
+            GENERATE_PWD: API_PATH +  "/v1/generate/password"
 
         },  
         TRAINING: {
-            GET_TRAINING: BASE_URL +  "v1/trainings",
-            CREATE_TRAINING: BASE_URL +  "v1/training/create",
-            GET_TRAINING_SESSION: BASE_URL +  "/v1/trainingsession/training/",
-            CREATE_SESSION: BASE_URL +  "/v1/trainingSession/create"
+            GET_TRAINING: API_PATH +  "v1/trainings",
+            CREATE_TRAINING: API_PATH +  "v1/training/create",
+            GET_TRAINING_SESSION: API_PATH +  "/v1/trainingsession/training/",
+            CREATE_SESSION: API_PATH +  "/v1/trainingSession/create"
         },
         INSTRUCTOR: {
-            GET_INSTRUCTOR: BASE_URL +  '/v1/depatments'
+            GET_INSTRUCTOR: API_PATH +  '/v1/depatments'
         },
         ACCESS_LEVEL: [
             {key: "BATCH_MGMT",name: "Batch Mgmt"},
