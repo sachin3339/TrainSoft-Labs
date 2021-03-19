@@ -1,25 +1,25 @@
 import { useState,useEffect } from 'react';
-// import { SketchField, Tools } from 'react-sketch';
+import { SketchField, Tools } from 'react-sketch';
 import { ICN_CIRCLE, ICN_PAINT, ICN_PEN, ICN_SELECT, ICN_STOP, ICN_TEXT_FIELD , ICN_CALL_MADE, ICN_EDIT, ICN_DELETE} from '../../../Common/Icon';
 import './boardStyle.css'
 const WhiteBoard = ({className}) => {
-    // const [toolType, setToolType] = useState(Tools.Select)
+    const [toolType, setToolType] = useState(Tools.Select)
     const [color,setColor] = useState("black")
     const [canUndo,setCanUndo] = useState(false)
     const [canRedo,setCanRedo] = useState(false)
     const [drawing,setDrawing] = useState([])
     const [sketch,setSketch] = useState(null)
 
-    // const _addText = () => sketch.addText('Text');
-    // const _removeSelected = () => sketch.removeSelected()
+    const _addText = () => sketch.addText('Text');
+    const _removeSelected = () => sketch.removeSelected()
 
-//    const _onSketchChange = () => {
-//         let prev = canUndo;
-//         let now = sketch.canUndo();
-//         if (prev !== now) {
-//             setCanUndo(now)
-//         }
-//       };
+   const _onSketchChange = () => {
+        let prev = canUndo;
+        let now = sketch.canUndo();
+        if (prev !== now) {
+            setCanUndo(now)
+        }
+      };
 
     //  const  _removeMe = index => {
     //     let drawings = drawing;
@@ -44,7 +44,7 @@ const WhiteBoard = ({className}) => {
         <div className={` whiteboard ${className}`}>
             <div className="aic">
                 <div className="board-menu bg-secondary">
-                    {/* <div  onClick={()=> setToolType(Tools.Select)} className={`board-btn ${toolType === Tools.Select ? 'board-btn-active' : ''}`}>
+                    <div  onClick={()=> setToolType(Tools.Select)} className={`board-btn ${toolType === Tools.Select ? 'board-btn-active' : ''}`}>
                         {ICN_SELECT}
                     </div>
                     <div className={`board-btn ${toolType === Tools.Pencil ? 'board-btn-active' : ''}`} onClick={()=> setToolType(Tools.Pencil)}>
@@ -64,7 +64,7 @@ const WhiteBoard = ({className}) => {
                     </div>
                     <div className={`board-btn wb-color`} onClick={()=> setToolType(Tools.Circle)}>
                       <input type="color" id="favcolor" onChange={(e)=> setColor(e.target.value)} name="favcolor" value={color}/>
-                    </div> */}
+                    </div>
                    
                    
                     {/* <div className={`board-btn ${toolType === Tools.Select ? 'board-btn-active' : ''}`}>
@@ -78,7 +78,7 @@ const WhiteBoard = ({className}) => {
                     </div> */}
                 </div>
                 <div className="full-w">
-                {/* <SketchField
+                <SketchField
                     width='920px'
                     className="board-style"
                     height='570px'
@@ -87,7 +87,7 @@ const WhiteBoard = ({className}) => {
                     fillColor={color}
                     ref={c => setSketch(c)}
                     onChange={_onSketchChange}
-                    lineWidth={3} /> */}
+                    lineWidth={3} />
                     </div>
             </div>
         </div>)
