@@ -3,23 +3,23 @@ import { useState,useEffect } from 'react';
 import { ICN_CIRCLE, ICN_PAINT, ICN_PEN, ICN_SELECT, ICN_STOP, ICN_TEXT_FIELD , ICN_CALL_MADE, ICN_EDIT, ICN_DELETE} from '../../../Common/Icon';
 import './boardStyle.css'
 const WhiteBoard = ({className}) => {
-    const [toolType, setToolType] = useState(Tools.Select)
+    // const [toolType, setToolType] = useState(Tools.Select)
     const [color,setColor] = useState("black")
     const [canUndo,setCanUndo] = useState(false)
     const [canRedo,setCanRedo] = useState(false)
     const [drawing,setDrawing] = useState([])
     const [sketch,setSketch] = useState(null)
 
-    const _addText = () => sketch.addText('Text');
-    const _removeSelected = () => sketch.removeSelected()
+    // const _addText = () => sketch.addText('Text');
+    // const _removeSelected = () => sketch.removeSelected()
 
-   const _onSketchChange = () => {
-        let prev = canUndo;
-        let now = sketch.canUndo();
-        if (prev !== now) {
-            setCanUndo(now)
-        }
-      };
+//    const _onSketchChange = () => {
+//         let prev = canUndo;
+//         let now = sketch.canUndo();
+//         if (prev !== now) {
+//             setCanUndo(now)
+//         }
+//       };
 
     //  const  _removeMe = index => {
     //     let drawings = drawing;
