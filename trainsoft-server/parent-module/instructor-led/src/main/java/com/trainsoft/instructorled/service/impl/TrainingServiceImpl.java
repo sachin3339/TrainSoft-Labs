@@ -79,7 +79,27 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public List<TrainingViewTO> getTrainings(int pageNo, int pageSize) {
+    public List<TrainingViewTO> getTrainings() {
+        try {
+
+            List<TrainingView> trainingViews =  trainingViewRepository.findAll().stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+                    .collect(Collectors.toList());
+            return trainingViews.stream().map(trainingView -> {
+                TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
+                to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
+                to.setCourseSid(trainingView.getCourse() == null ? null : trainingView.getCourse().getStringSid());
+                to.setCreatedByVASid(trainingView.getCreatedBy() == null ? null : trainingView.getCreatedBy().getStringSid());
+                to.setUpdatedByVASid(trainingView.getUpdatedBy() == null ? null : trainingView.getUpdatedBy().getStringSid());
+                return to;
+            }).collect(Collectors.toList());
+        } catch (Exception e) {
+            log.info("throwing exception while fetching the all training details");
+            throw new ApplicationException("Something went wrong while fetching the training details");
+        }
+    }
+
+    @Override
+    public List<TrainingViewTO> getTrainingsWithPagination(int pageNo, int pageSize) {
         try {
             Pageable paging = PageRequest.of(pageNo, pageSize);
             Page<TrainingView> pagedResult = trainingViewRepository.findAll(paging);

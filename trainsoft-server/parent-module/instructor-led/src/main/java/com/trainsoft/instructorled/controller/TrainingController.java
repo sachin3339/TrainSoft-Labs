@@ -76,7 +76,15 @@ public class TrainingController {
             @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
             @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
         log.info(String.format("Request received : User for GET /v1/trainings"));
-        return ResponseEntity.ok(trainingService.getTrainings(pageNo-1,pageSize));
+        return ResponseEntity.ok(trainingService.getTrainingsWithPagination(pageNo-1,pageSize));
+    }
+
+    @GetMapping("/trainings")
+    @ApiOperation(value = "getTrainings", notes = "Get list of training")
+    public ResponseEntity<?> getTrainings(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token) {
+        log.info(String.format("Request received : User for GET /v1/trainings"));
+        return ResponseEntity.ok(trainingService.getTrainings());
     }
 
     @PostMapping("trainingSession/create")

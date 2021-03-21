@@ -51,7 +51,7 @@ public class BatchController {
             @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize)
     {
         log.info(String.format("Request received : User for GET /v1/batches"));
-        return ResponseEntity.ok(batchService.getBatchesWithParticipants(pageNo-1, pageSize));
+        return ResponseEntity.ok(batchService.getBatchesWithPagination(pageNo-1, pageSize));
     }
 
     @GetMapping("batches/{name}")

@@ -103,7 +103,9 @@ public class BatchServiceImpl implements IBatchService {
     @Override
     public List<BatchTO> getBatches() {
         try {
-            List<Batch> batches = batchRepository.findAll();
+            List<Batch> batches = batchRepository.findAll()
+                    .stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+                    .collect(Collectors.toList());
             return batches.stream().map(batch->{
                 BatchTO to= mapper.convert(batch, BatchTO.class);
                 to.setCreatedByVASid(batch.getCreatedBy()==null?null:batch.getCreatedBy().getStringSid());
@@ -150,7 +152,7 @@ public class BatchServiceImpl implements IBatchService {
     }
 
     @Override
-    public List<BatchViewTO> getBatchesWithParticipants(int pageNo, int pageSize) {
+    public List<BatchViewTO> getBatchesWithPagination(int pageNo, int pageSize) {
         try {
             Pageable paging = PageRequest.of(pageNo, pageSize);
             Page<BatchView> pagedResult = batchViewRepository.findAll(paging);
