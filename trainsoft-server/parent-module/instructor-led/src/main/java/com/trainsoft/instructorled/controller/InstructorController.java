@@ -96,10 +96,8 @@ public class InstructorController {
 
     @PostMapping(value = "/jdoodle/execute",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity findAndRunCode(
-           // @ApiParam(value = "Authorization", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Headers", required = true) @RequestHeader Map headers,
             @ApiParam(value = "Post request Body", required = true) @RequestBody Map payload){
-       // JWTTokenTO jwt = JWTDecode.parseJWT(token);
         payload.put("versionIndex","0");
         payload.put("clientId","acba85d9bc7360b9774caaec155f59d4");
         payload.put("clientSecret","c213b545e4499db5bee098bb5295df38200dca96f52344397e3b1fd61d030e61");
@@ -112,6 +110,15 @@ public class InstructorController {
     public ResponseEntity<?> getDepartments(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token){
         return ResponseEntity.ok(departmentService.getDepartments());
+    }
+
+    @PostMapping(value = "/create/meeting/userId",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity ScheduleMeeting(
+            @ApiParam(value = "Headers", required = true) @RequestHeader Map headers,
+            @ApiParam(value = "Post request Body", required = true) @RequestBody Map payload){
+        payload.put("id",123);
+        headers.clear();
+        return ResponseEntity.ok(HttpUtils.postJsonUrl(payload,"https://api.zoom.us/v2/users/{userId}/meetings",headers));
     }
 
 }

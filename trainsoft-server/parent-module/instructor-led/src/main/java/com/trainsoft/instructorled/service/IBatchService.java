@@ -1,6 +1,7 @@
 package com.trainsoft.instructorled.service;
 
 import com.trainsoft.instructorled.to.BatchTO;
+import com.trainsoft.instructorled.to.BatchViewTO;
 
 import java.util.List;
 
@@ -9,5 +10,7 @@ public interface IBatchService {
     BatchTO updateBatch(BatchTO batchTO);
     BatchTO getBatchBySid(String batchSid);
     List<BatchTO> getBatches();
-    boolean deleteBatchBySid(String courseSid,String deletedBySid);
+    boolean deleteBatchBySid(String batchSid,String deletedBySid);
+    List<BatchTO> getBatchesByName(String name);
+    List<BatchViewTO> getBatchesWithParticipants(int pageNo, int pageSize);
 }

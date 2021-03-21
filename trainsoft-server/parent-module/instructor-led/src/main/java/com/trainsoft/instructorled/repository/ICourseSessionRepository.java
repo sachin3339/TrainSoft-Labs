@@ -10,4 +10,5 @@ import java.util.List;
 public interface ICourseSessionRepository extends JpaRepository<CourseSession, Integer>{
 	CourseSession findCourseSessionBySid(byte[] sid);
 	List<CourseSession> findCourseSessionByCourse(Course course);
+	List<CourseSession> findCourseSessionByTopicNameContaining(String name);
 }

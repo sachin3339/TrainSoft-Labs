@@ -7,7 +7,7 @@ import java.util.List;
 public interface ITrainingService {
     TrainingTO createTraining(TrainingTO trainingTO);
     TrainingTO getTrainingBySid(String trainingSid);
-    List<TrainingViewTO> getTrainings();
+    List<TrainingViewTO> getTrainings(int pageNo, int pageSize);
     TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO);
     TrainingSessionTO getTrainingSessionBySid(String trainingSessionSid);
     List<TrainingSessionTO> getTrainingSessionByTrainingSid(String trainingSid);

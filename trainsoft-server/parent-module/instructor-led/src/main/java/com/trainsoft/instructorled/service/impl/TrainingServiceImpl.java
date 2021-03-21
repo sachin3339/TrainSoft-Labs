@@ -13,6 +13,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -36,7 +39,6 @@ public class TrainingServiceImpl implements ITrainingService {
     private ITrainingViewRepository trainingViewRepository;
     private ICourseSessionRepository courseSessionRepository;
     private DozerUtils mapper;
-    private ILearnerViewRepository learnerViewRepository;
     private ICompanyRepository companyRepository;
     IDepartmentVirtualAccountRepository departmentVARepo;
     IBatchParticipantRepository participantRepository;
@@ -77,9 +79,12 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public List<TrainingViewTO> getTrainings() {
+    public List<TrainingViewTO> getTrainings(int pageNo, int pageSize) {
         try {
-            List<TrainingView> trainingViews = trainingViewRepository.findAll();
+            Pageable paging = PageRequest.of(pageNo, pageSize);
+            Page<TrainingView> pagedResult = trainingViewRepository.findAll(paging);
+            List<TrainingView> trainingViews=pagedResult.stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+                    .collect(Collectors.toList());
             return trainingViews.stream().map(trainingView -> {
                 TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
                 to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
