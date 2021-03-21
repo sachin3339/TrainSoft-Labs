@@ -44,8 +44,8 @@ public class BatchController {
     }
 
     @GetMapping("/batches/{pageNo}/{pageSize}")
-    @ApiOperation(value = "getBatches", notes = "Get list of batch")
-    public ResponseEntity<?> getBatches(
+    @ApiOperation(value = "getBatchesWithPagination", notes = "Get list of batch")
+    public ResponseEntity<?> getBatchesWithPagination(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
             @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize)
@@ -53,6 +53,15 @@ public class BatchController {
         log.info(String.format("Request received : User for GET /v1/batches"));
         return ResponseEntity.ok(batchService.getBatchesWithPagination(pageNo-1, pageSize));
     }
+
+    @GetMapping("/batches")
+    @ApiOperation(value = "getBatches", notes = "Get list of batch")
+    public ResponseEntity<?> getBatches(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token){
+        log.info(String.format("Request received : User for GET /v1/batches"));
+        return ResponseEntity.ok(batchService.getBatches());
+    }
+
 
     @GetMapping("batches/{name}")
     @ApiOperation(value = "getBatchesByName", notes = "Get list of batch by Batch name")
