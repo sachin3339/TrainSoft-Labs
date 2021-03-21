@@ -26,7 +26,7 @@ const ClassLab = () => {
     const classTab = ['Online Media', 'Whiteboard', 'Content', 'Code editor', 'Development Env']
     return (<>
 
-        {/* <Zoom/> */}
+        <Zoom/>
         <div className="p-4 full-w full-h">
             <div className="flx full-w full-h ">
                 <div className="full-w full-h flx3 column">
@@ -79,7 +79,7 @@ const ClassLab = () => {
                     <div>
                         <div className="video-container">
                             <div className="video-action">
-                                <img src={vid} />
+                                    <img src={vid}/>
                                 <div></div>
                             </div>
                             <div className="footer-video-action">
