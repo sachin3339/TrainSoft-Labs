@@ -1,12 +1,14 @@
 import React, { useState, useContext } from 'react'
-import { Collapse } from 'react-bootstrap'
+import { Collapse , Dropdown} from 'react-bootstrap'
 import NoDataFound from "../NoDataFound/NoDataFound";
 import moment from 'moment'
 import './style.css'
 import AppContext from '../../../Store/AppContext';
 import { navigate } from '../Router';
+import { CustomToggle } from '../../../Services/MethodFactory';
+import { ICN_DELETE, ICN_EDIT, ICN_MORE } from '../Icon';
 
-const SessionList = ({ sessionList = [], role = "admin", sessionType = 'course' }) => {
+const SessionList = ({ sessionList = [], role = "admin", sessionType = 'course', onDelete=()=>{},onEdit=()=>{} }) => {
     const { user } = useContext(AppContext)
     const [open, setOpen] = useState(null);
 
@@ -30,11 +32,19 @@ const SessionList = ({ sessionList = [], role = "admin", sessionType = 'course' 
                         {sessionType === 'training' && user.role === "admin" && <>
                             {res.active ? <div className="batch-pri"> Scheduled</div> : <div className="batch-sec">Not Scheduled</div>}
                         </>}
-
                         {sessionType === 'training' && user.role !== "admin" && <div onClick={() => navigate('/class')} className="batch-sec">{user.role === 'trainer' ? 'Start Now' : 'Join Now'} </div>}
-
                         <div>{moment(res.createdOn).format("MMM Do YY")}</div>
-                        <div></div>
+                        <div className="ml-3">
+                        <Dropdown alignRight={true}>
+                            <Dropdown.Toggle as={CustomToggle} >
+                                {ICN_MORE}
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu size="sm" >
+                                  <Dropdown.Item key={i} onClick={()=>onEdit(res)}>{ICN_EDIT} Edit</Dropdown.Item>
+                                  <Dropdown.Item onClick={()=> onDelete(res.sid)} key={i}>{ICN_DELETE} DELETE</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        </div>
                     </div>
                 </div>
                 <Collapse in={sessionType === 'training' ? open === i : true}>

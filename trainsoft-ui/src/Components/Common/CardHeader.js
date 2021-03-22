@@ -1,10 +1,10 @@
 import { Breadcrumb } from "react-bootstrap";
 import { Link, navigate } from "./Router";
-
+import { SearchInputBox } from "react-bs-search";
 import SearchBox from "./SearchBox/SearchBox"
 
 
-const CardHeader = ({ location }) => {
+const CardHeader = ({ location, onChange=()=>{},onEnter,clearField = false }) => {
     return (<>
         <div className="jcb aic py-2">
             {location && location.state && <Breadcrumb>
@@ -14,7 +14,7 @@ const CardHeader = ({ location }) => {
                 </Breadcrumb.Item>}
                 {/* <Breadcrumb.Item active>Data</Breadcrumb.Item> */}
             </Breadcrumb>}
-            <SearchBox />
+            <SearchBox {...{onChange,onEnter,clearField}} />
         </div>
     </>)
 }

@@ -7,6 +7,7 @@ import CustomDropdown from '../CustomDropdown/CustomDropdown';
 import "react-datepicker/dist/react-datepicker.css";
 import './inputField.css'
 import MultiSelect from '../MultiSelect/MultiSelect';
+import { requirePropFactory } from '@material-ui/core';
 
 // text input field
 export const TextInput = (props) => {
@@ -134,7 +135,7 @@ export const MultiSelectInput = (props) => {
                 onSelect={(data) => setValue(data)}
                     checked={false}
                     selectAllMsg="All Selected"
-                    initialData = {[]}
+                    initialData = {props.initialData ? props.initialData : []}
                 />
             </div>
             <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />

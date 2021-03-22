@@ -844,7 +844,7 @@ p {
 }
 
 .table-footer-action {
-  margin: 20px 0px;
+  padding: 0px 10px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;

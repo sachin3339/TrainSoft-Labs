@@ -16,19 +16,25 @@ import useToast from "../../../Store/ToastHook";
 import moment from 'moment'
 import AppContext from "../../../Store/AppContext";
 import TrainingContext, { TrainingProvider } from "../../../Store/TrainingContext";
+import { Toggle } from "../../Common/BsUtils";
+import AddEditTraining from "./AddEditTraining";
+const initialVal = {
+    name: '',
+    instructorName: '',
+    courseSid: '',
+    startDate: '',
+    endDate: '',
+    trainingBatchs: ''
+}
 
 const Trainings = ({ location }) => {
     const { setTraining } = useContext(TrainingContext)
     const Toast = useToast()
-    const { course, batches,spinner, user } = useContext(AppContext)
+    const { batches, spinner, user } = useContext(AppContext)
     const [show, setShow] = useState(false);
     const [trainingList, setTrainingList] = useState([])
-
-    const { response } = useFetch({
-        method: "get",
-        url: GLOBELCONSTANT.TRAINING.GET_TRAINING,
-        errorMsg: 'error occur on get training'
-    });
+    const [isEdit,setIsEdit] = useState(false);
+    const [initialValues,setInitialValue] = useState(initialVal)
 
     const queueDropdownProps = {
         selectItems: batches,
@@ -40,10 +46,7 @@ const Trainings = ({ location }) => {
         dataNotFound: "No result Found",
     }
 
-    // set training list
-    useEffect(() => {
-        setTrainingList(response)
-    }, [response])
+
     const [configuration, setConfiguration] = useState({
         columns: {
             "name": {
@@ -51,7 +54,7 @@ const Trainings = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link onClick={()=>setTraining(data)} to={`training-details`} state={{ title: 'TRAINING', rowData:data, subTitle: "Training Info", subPath: '/' }} className="dt-name">{data.name}</Link>
+                render: (data) => <Link onClick={() => setTraining(data)} to={`training-details`} state={{ title: 'TRAINING', rowData: data, subTitle: "Training Info", subPath: '/' }} className="dt-name">{data.name}</Link>
 
             },
             "noOfBatches": {
@@ -97,8 +100,8 @@ const Trainings = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => data.status === "ENABLED" ? 'Active' : 'Not Activate'
-            }
+                render: (data) => <Toggle id={data.sid} checked={data.status === 'ENABLED' ? true : false} />
+            },
 
         },
         headerTextColor: '#454E50', // user can change table header text color
@@ -115,11 +118,12 @@ const Trainings = ({ location }) => {
                 "title": "Edit",
                 "icon": ICN_EDIT,
                 "onClick": (data, i) => console.log(data)
+                // {setIsEdit(true); setShow(true); setInitialValue(data)
             },
             {
                 "title": "Delete",
                 "icon": ICN_TRASH,
-                "onClick": (data, i) => console.log(data)
+                "onClick": (data) => deleteTraining(data.sid)
             }
         ],
         actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
@@ -133,145 +137,98 @@ const Trainings = ({ location }) => {
         clearSelection: false
     });
 
-    // get all course list
-    const createTraining = (data) => {
-        try {
-            spinner.show()
-            let batcheId= data.trainingBatchs.map(resp=> {
-                return ( { batchSid: resp.sid })
-            })
-            let payload = data
-                payload.courseSid = data.courseSid.sid
-                payload.trainingBatchs = batcheId
-                payload.status = "ENABLED"
 
-            RestService.createTraining(payload).then(res => {
-                setTrainingList([...trainingList, res.data])
-                spinner.hide()
-                Toast.success({ message: `Course is Successfully Created` });
-                setShow(false)
+
+    // get all training
+    const getTrainings = async (pagination = "1") => {
+        try {
+            let pageSize = 10;
+            spinner.show();
+            RestService.getAllTrainingByPage(pagination, pageSize).then(
+                response => {
+                    setTrainingList(response.data);
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("error occur on getTrainings()", err)
+        }
+    }
+    // search batches
+    const searchTraining = (name) => {
+        try {
+            spinner.show();
+            RestService.searchTraining(name).then(res => {
+                setTrainingList(res.data)
+                spinner.hide();
             }, err => {
-                spinner.hide()
-                console.error(err)
+                spinner.hide();
             }
             );
         }
         catch (err) {
-            spinner.hide()
+            console.error('error occur on searchTraining()', err)
+            spinner.hide();
+        }
+    }
 
-            console.error('error occur on createTraining', err)
+    // delete course
+    const deleteTraining = (trainingId) => {
+        try {
+            spinner.show();
+            RestService.deleteTraining(trainingId).then(res => {
+                spinner.hide();
+                getTrainings()
+                Toast.success({ message: `Training is Deleted Successfully ` });
+            }, err => { spinner.hide(); }
+            )
+        }
+        catch (err) {
+            spinner.hide();
+            console.error('error occur on deleteTraining', err)
             Toast.error({ message: `Something wrong!!` });
         }
     }
 
+    // get all trainings
+    useEffect(() => getTrainings(), [])
+
+
     return (<>
-
         <div className="table-shadow">
-            <div className="p-3"><CardHeader {...{ location }} /></div>
-            <DynamicTable {...{ configuration, sourceData: trainingList && trainingList.slice().reverse() }} />
-        </div>
-        <div className="table-footer-action ">
-            <div>
-                {user.role === 'admin' &&<>
-                <Button> Report </Button>
-                <Button onClick={() => setShow(true)} className="ml-4" > + Add New </Button>
-                </>}
-                <Modal
-                    size="lg"
-                    show={show}
-                    onHide={() => setShow(false)}
-                    dialogClassName="modal-90w"
-                    aria-labelledby="example-custom-modal-styling-title"
-                >
-                    <Modal.Body className="px-5 py-4">
-                        <div className="jcb mb-3">
-                            <div className="title-md ">Add Training</div>
-                            <div><div className="circle-md" onClick={() => setShow(false)}>
-                                {ICN_CLOSE}
-                            </div>
-                            </div>
-                        </div>
-                        <div className="form-container">
-                            <Formik
-                                onSubmit={createTraining}
-                                initialValues={{
-                                    name: '',
-                                    instructorName: '',
-                                    courseSid: '',
-                                    startDate: '',
-                                    endDate: '',
-                                    trainingBatchs:''
-                                }}
-                            >
-                                {({ handleSubmit, isSubmitting, dirty, setFieldValue, values }) => <form onSubmit={handleSubmit} className="create-batch" >
-                                    <div className="edit-shipping">
-                                        <Form.Group className="row">
-                                            <div className="col-6">
-                                                <TextInput label="Training Name" name="name" />
-                                            </div>
-                                            <div className="col-6">
-                                            {/* <Form.Label className="label">{}</Form.Label>
-                                                <div className="input-wrapper">
-                                                    <div className="input-field">
-                                                        <MultiSelect
-                                                        dataSet={queueDropdownProps}
-                                                        onSelect={(data) => setFieldValue(data)}
-                                                            checked={false}
-                                                            selectAllMsg="All Queue"
-                                                            initialData = {[]}
-                                                        />
-                                                    </div>
-                                                    <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
-                                                </div> */}
-
-                                                <MultiSelectInput label="Select Batch(s)" bindKey="name" option={batches} name="trainingBatchs" />
-                                            </div>
-                                        </Form.Group>
-                                        <Form.Group className="row">
-                                            <div className="col-6">
-                                                <DateInput label="Start Date" name="startDate" setFieldValue={setFieldValue} values={values} />
-                                            </div>
-                                            <div className="col-6">
-                                                <DateInput label="End date" name="endDate" setFieldValue={setFieldValue} values={values} />
-                                            </div>
-                                        </Form.Group>
-                                        <Form.Group className="row">
-                                            <div className="col-6">
-                                                <SelectInput label="Course" bindKey="name" payloadKey="sid"   name="courseSid" option={course} />
-                                            </div>
-                                            <div className="col-6">
-                                                <TextInput label="Instructor" name="instructorName" />
-                                            </div>
-                                        </Form.Group>
-                                    </div>
-                                    {/* modal footer which contains action button to save data or cancel current action */}
-                                    <footer className="jcb">
-                                        <div>
-                                        </div>
-                                        <div>
-                                            <Button type="submit" >Create</Button>
-                                        </div>
-                                    </footer>
-                                </form>
-                                }
-                            </Formik>
-                        </div>
-
-                    </Modal.Body>
-                </Modal>
+            <div className="p-3">
+                <CardHeader {...{
+                    location,
+                    onChange: (e) => e.length === 0 && getTrainings(),
+                    onEnter: (e) => searchTraining(e)
+                }} />
             </div>
+            <div className="table-footer-action ">
+                <div>
+                    {user.role === 'admin' && <>
+                        <Button onClick={() => {setShow(true);setInitialValue(initialVal)}} className="ml-4" > + Add New </Button>
+                    </>}
+                    <AddEditTraining {...{getTrainings, show, setShow,initialValues,isEdit }}/>
+                      
+                </div>
+            </div>
+            <DynamicTable {...{ configuration, sourceData: trainingList && trainingList.slice().reverse(), onPageChange: (e) => getTrainings(e) }} />
         </div>
     </>)
 }
 
 const Training = () => {
     return (
-       <TrainingProvider>
-        <Router>
-            <Trainings path="/" />
-            <TrainingDetails path="training-details/*" />
-        </Router>
-     </TrainingProvider>
+        <TrainingProvider>
+            <Router>
+                <Trainings path="/" />
+                <TrainingDetails path="training-details/*" />
+            </Router>
+        </TrainingProvider>
     )
 
 }

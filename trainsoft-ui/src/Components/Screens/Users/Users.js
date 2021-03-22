@@ -91,7 +91,7 @@ const User = ({ location }) => {
             }
             ,
             "status": {
-                "title": "",
+                "title": "Status",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
@@ -233,7 +233,7 @@ const User = ({ location }) => {
                 <BsModal {...{ show, setShow, headerTitle: "Add new User", size: "lg" }}>
                     <div className="form-container">
                         <Formik
-                            onSubmit={(value)=>console.log(value)}
+                            onSubmit={(value)=>createParticipant(value)}
                             initialValues={{
                                 name: '',
                                 employeeId: '',

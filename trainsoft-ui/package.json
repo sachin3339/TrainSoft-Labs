@@ -20,6 +20,7 @@
     "rct-bs-alert": "0.0.4",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
+    "react-bs-search": "0.0.7",
     "react-calendar": "^3.3.1",
     "react-chartjs-2": "^2.11.1",
     "react-circular-progressbar": "^2.0.3",
@@ -42,9 +43,8 @@
     "extends": "react-app"
   },
   "devDependencies": {
-    "node-sass": "^4.14.1",
-    "css-loader": "^5.0.1",
-    "babel-loader": "8.1.0"
+    "babel-loader": "8.1.0",
+    "css-loader": "^5.0.1"
   },
   "browserslist": {
     "production": [
