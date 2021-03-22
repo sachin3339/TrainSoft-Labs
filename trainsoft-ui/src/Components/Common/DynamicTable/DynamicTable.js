@@ -3,6 +3,7 @@ import { Table, OverlayTrigger, Dropdown, Tooltip } from 'react-bootstrap';
 import { ICN_ARROW_DOWN,ICN_MORE } from '../Icon';
 import { CustomToggle } from '../../../Services/MethodFactory';
 import './dynamicTable.css';
+import PaginationOne from '../Pagination';
 const htmlParser = require('html-react-parser');
 const NO_ARROW_HIGHLIGHTED = ICN_ARROW_DOWN
 const HIGHLIGHT_UP_ARROW = ICN_ARROW_DOWN;
@@ -192,7 +193,7 @@ export const DynamicTable = (props) => {
         setSourceData(sortByKey(applyFilter(sourceData, props.configuration, props.configuration.searchQuery), props.configuration.sortBy, props.configuration.sortDirection));
     }, [props.configuration.sortBy, props.configuration.sortDirection])
 
-    return <Table className={props.configuration.tableCustomClass ? props.configuration.tableCustomClass : "ng-table"}>
+    return<> <Table className={props.configuration.tableCustomClass ? props.configuration.tableCustomClass : "ng-table"}>
         <thead>
             <TableHeader {...{ ...props.configuration, isSelectedAll, onSelectAll }} />
         </thead>
@@ -207,5 +208,8 @@ export const DynamicTable = (props) => {
             }
         </tbody>
     </Table>
-}
+    <div className="pagination-div">
+        {props.onPageChange && <PaginationOne totalCount={70}  onNavigate={props.onPageChange}/> }
+    </div>
+</>}
 export default DynamicTable;

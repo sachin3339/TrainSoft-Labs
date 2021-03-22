@@ -30,7 +30,7 @@ const tableData = [
 ]
 
 const AdminHome = () => {
-    const { user } = useContext(AppContext)
+    const { user, batches, course } = useContext(AppContext)
 
     return (<div>
         <div className="row">
@@ -130,11 +130,11 @@ const AdminHome = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {tableData.map((res, i) =>
+                                        {batches.slice(0, 10).map((res, i) =>
                                             <tr>
                                                 <td>{res.name}</td>
-                                                <td><Progress className="mb-2" className="progress-sh" variant={i % 2 === 0 ? 'secondary' : 'danger'} value={res.avgScr} /></td>
-                                                <td className="text-right">{res.avgScr}</td>
+                                                <td><Progress className="mb-2" className="progress-sh" variant={i % 2 === 0 ? 'secondary' : 'danger'} value={50} /></td>
+                                                <td className="text-right">{50}</td>
                                             </tr>
                                         )}
                                     </tbody>
@@ -150,7 +150,7 @@ const AdminHome = () => {
                     <div className="grid-batch">
                         <div>{ICN_COPY}</div>
                         <div>
-                            <div className="title-lg mb-0 text-white">28</div>
+                            <div className="title-lg mb-0 text-white">{batches.length}</div>
                                          On-going batches
                                     </div>
                         <div className="jce">
@@ -163,8 +163,8 @@ const AdminHome = () => {
                     <div className="grid-batch bg-purple">
                         <div>{ICN_COMING_BATCHES}</div>
                         <div>
-                            <div className="title-lg mb-0 text-white">28</div>
-                                         On-going batches
+                            <div className="title-lg mb-0 text-white">{course.length}</div>
+                                         Total Course
                                     </div>
                         <div className="jce">
                             <div className="grid-batch-icon">
@@ -209,6 +209,8 @@ const Home = () => {
     url: GLOBELCONSTANT.INSTRUCTOR.GET_INSTRUCTOR,
     errorMsg: 'error occur on get Batches'
  });
+
+
 
     useEffect(() => {
         allCourse.response && setCourse(allCourse.response)

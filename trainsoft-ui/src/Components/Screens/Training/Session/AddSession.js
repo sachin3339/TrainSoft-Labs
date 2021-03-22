@@ -8,7 +8,7 @@ import useToast from "../../../../Store/ToastHook"
 import useFetch from "../../../../Store/useFetch"
 import TrainingContext from "../../../../Store/TrainingContext"
 
-const AddSession = ({ show, setShow }) => {
+const AddSession = ({ show, setShow,getSessionByPage }) => {
     const { training } = useContext(TrainingContext)
     const Toast = useToast()
     const [title, setTitle] = useState('')
@@ -30,6 +30,7 @@ const AddSession = ({ show, setShow }) => {
             payload.status = "ENABLED"
             RestService.CreateTrainingSession(payload).then(res => {
                 Toast.success({ message: `Agenda is Successfully Created` });
+                getSessionByPage()
                 setShow(false)
             }, err => console.log(err)
             );

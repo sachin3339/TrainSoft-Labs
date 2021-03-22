@@ -137,10 +137,6 @@ const BatchesDetails = ({location}) => {
         </div>
         </div>
         <DynamicTable {...{configuration,sourceData: participant}}/>
-        <div className="pagination-div">
-        <PaginationOne totalCount={30}  onNavigate={(pageNumber) => console.log(pageNumber)}/>
-
-        </div>
     </div>)
 }
 export default BatchesDetails

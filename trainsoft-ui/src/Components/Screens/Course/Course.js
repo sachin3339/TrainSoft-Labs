@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext} from "react";
+import { useState, useEffect, useContext } from "react";
 import './../Batches/batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Modal, Form } from 'react-bootstrap'
@@ -7,7 +7,7 @@ import { ICN_TRASH, ICN_EDIT } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
 import { TextInput, DateInput, SelectInput, TextArea } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
-import { BsModal } from "../../Common/BsUtils";
+import { BsModal, Toggle } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
 import CourseDetails from "./CourseDetails";
 import RestService from "../../../Services/api.service";
@@ -17,25 +17,26 @@ import useToast from "../../../Store/ToastHook";
 import moment from 'moment'
 import AppContext from "../../../Store/AppContext";
 
-const Courses = ({location}) => {
-    const {user} = useContext(AppContext)
+const Courses = ({ location }) => {
+    const { user, spinner } = useContext(AppContext)
     const Toast = useToast();
     const [show, setShow] = useState(false);
-    const [courseList,setCourseList] = useState([])
-    const {response} = useFetch({
-        method: "get",
-        url: GLOBELCONSTANT.COURSE.GET_COURSE,
-        errorMsg: 'error occur on get course'
-     });
-     
+    const [courseList, setCourseList] = useState([])
+    const [initialValues, setInitialValues] = useState({
+        name: '',
+        description: ''
+    })
+    const [isEdit, setIsEdit] = useState(false)
+
     const [configuration, setConfiguration] = useState({
         columns: {
+
             "name": {
                 "title": "Course Name",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'course-details'} state={{title: "COURSE",subTitle: data.name,path:"course", rowData:data, sid:data.sid}} className="dt-name">{data.name}</Link>
+                render: (data) => <Link to={'course-details'} state={{ title: "COURSE", subTitle: data.name, path: "course", rowData: data, sid: data.sid }} className="dt-name">{data.name}</Link>
 
             },
             "description": {
@@ -73,12 +74,12 @@ const Courses = ({location}) => {
             {
                 "title": "Edit",
                 "icon": ICN_EDIT,
-                "onClick": (data, i) => console.log(data)
+                "onClick": (data, i) => { setIsEdit(true); setShow(true); setInitialValues({ name: data.name, description: data.description, sid: data.sid }) }
             },
             {
                 "title": "Delete",
                 "icon": ICN_TRASH,
-                "onClick": (data, i) => console.log(data)
+                "onClick": (data) => deleteCourse(data.sid)
             }
         ],
         actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
@@ -93,46 +94,116 @@ const Courses = ({location}) => {
     });
 
     // get all course list
-    const createCourse = (data)=>{
-        try{
+    const createCourse = (data) => {
+        try {
             let payload = {
-            "description": data.description,
-            "name": data.name,
-            "status": "ENABLED",
+                "description": data.description,
+                "name": data.name,
+                "status": "ENABLED",
             }
             RestService.CreateCourse(payload).then(res => {
-                  setCourseList([...courseList, res.data])
-                  Toast.success({ message: `Course is Successfully Created`});
-                   setShow(false) 
-                }, err => console.log(err)
-            ); 
+                setCourseList([...courseList, res.data])
+                Toast.success({ message: `Course is Successfully Created` });
+                setShow(false)
+            }, err => console.log(err)
+            );
         }
-        catch(err){
-            console.error('error occur on createCourse',err)
-            Toast.error({ message: `Something wrong!!`});
+        catch (err) {
+            console.error('error occur on createCourse', err)
+            Toast.error({ message: `Something wrong!!` });
         }
     }
 
+    //edit course list
+    const editCourse = (data) => {
+        try {
+            let payload = {
+                "sid": data.sid,
+                "description": data.description,
+                "name": data.name,
+                "status": 'ENABLED',
+            }
+            RestService.editCourse(payload).then(res => {
+                Toast.success({ message: `Course is Successfully updated` });
+                getCourse()
+                setShow(false)
+            }, err => console.log(err)
+            );
+        }
+        catch (err) {
+            console.error('error occur on editCourse', err)
+            Toast.error({ message: `Something wrong!!` });
+        }
+    }
 
-    useEffect(() => {
-        response && setCourseList(response)
-    }, [response])
+    // get all course list
+    const deleteCourse = (courseId) => {
+        try {
+            RestService.deleteCourse(courseId).then(res => {
+                Toast.success({ message: `Course is Deleted Successfully ` });
+            }, err => console.log(err)
+            )
+        }
+        catch (err) {
+            console.error('error occur on deleteCourse', err)
+            Toast.error({ message: `Something wrong!!` });
+        }
+    }
+    
+    // get all course
+    const getCourse = async (pagination = "1") => {
+        try {
+            spinner.show();
+            RestService.getAllCourse().then(
+                response => {
+                    setCourseList(response.data);
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
+        }
+    }
+       // search searchCourse
+       const searchCourse = (name)=> {
+        try{
+            spinner.show();
+            RestService.searchCourse(name).then(res => {
+                    setCourseList(res.data)
+                    spinner.hide();
+                }, err => {
+                    spinner.hide();
+                }
+            ); 
+        }
+        catch(err){
+            console.error('error occur on searchCourse()',err)
+            spinner.hide();
+        }
+    }
+
+    useEffect(() => getCourse(), [])
+
 
     return (<><div className="table-shadow">
-        <div className="p-3"><CardHeader {...{location}}/></div> 
-        <DynamicTable {...{ configuration, sourceData: courseList.slice().reverse() }} />
-    </div>
+        <div className="p-3">
+         <CardHeader {...{ location, 
+               onChange: (e) => e.length === 0 && getCourse(),
+               onEnter:(e)=> searchCourse(e)
+         }} />
+        </div>
         <div className="table-footer-action">
             <div>
                 <Button onClick={() => setShow(true)}> + Add New </Button>
                 <BsModal {...{ show, setShow, headerTitle: "Add new Course", size: "lg" }}>
                     <div className="form-container">
                         <Formik
-                            onSubmit={(value) => createCourse(value)}
-                            initialValues={{
-                                name:'',
-                                description:''
-                            }}
+                            onSubmit={(value) => { !isEdit ? createCourse(value) : editCourse(value) }}
+                            initialValues={initialValues}
                         >
                             {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
                                 <div>
@@ -141,7 +212,7 @@ const Courses = ({location}) => {
                                             <TextInput label="Course Name" name="name" />
                                         </div>
                                         <div className="col-12">
-                                            <TextArea name="description" label="Description"/>
+                                            <TextArea name="description" label="Description" />
                                         </div>
                                     </Form.Group>
                                 </div>
@@ -150,7 +221,7 @@ const Courses = ({location}) => {
                                     <div>
                                     </div>
                                     <div>
-                                       {user.role === "admin" && <Button type="submit" >Create Course</Button>} 
+                                        {user.role === "admin" && <Button type="submit" > {isEdit ? 'Update Course' : 'Create Course'}</Button>}
                                     </div>
                                 </footer>
                             </form>
@@ -160,6 +231,9 @@ const Courses = ({location}) => {
                 </BsModal>
             </div>
         </div>
+        <DynamicTable {...{ configuration, sourceData: courseList.slice().reverse() }} />
+    </div>
+
     </>)
 }
 
@@ -168,7 +242,7 @@ const Course = () => {
     return (
         <Router>
             <Courses path="/" />
-            <CourseDetails path="course-details"/>
+            <CourseDetails path="course-details" />
         </Router>
     )
 }

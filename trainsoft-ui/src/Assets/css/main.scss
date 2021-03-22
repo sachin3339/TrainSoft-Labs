@@ -261,7 +261,10 @@ p {
 	color: white;
 }
 .table-footer-action {
-	margin: 20px 0px;
+	padding: 0px 10px;
 	display: flex;
 	justify-content: flex-end;
 }
+#zmmtg-root {
+	display: none;
+  }

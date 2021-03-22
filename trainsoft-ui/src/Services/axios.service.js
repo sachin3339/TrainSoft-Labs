@@ -8,7 +8,10 @@ const AxiosService = {
     },
     // setHeader:()=> axios.defaults.headers.common["Authorization"] = `Bearer ${TokenService.getToken()}`,
     removeHeader:()=> axios.defaults.headers.common = {},
-    get:(resource)=>  axios.get(resource),
+    get:(resource,authKey= null)=>  axios.get(resource,{
+        headers: {
+          authorization: authKey
+        }}),
     post:(resource, data, params, headers)=> {
         const config = {
             headers: headers

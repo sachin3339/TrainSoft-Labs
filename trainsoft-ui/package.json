@@ -3,54 +3,48 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.2",
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
     "@monaco-editor/react": "^4.0.9",
     "@reach/router": "^1.3.4",
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.3",
-    "@testing-library/user-event": "^12.6.0",
+    "@zoomus/websdk": "^1.9.1",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "chart.js": "^2.9.4",
+    "crypto": "^1.0.1",
     "dev-react-attachment-viewer": "0.0.8",
     "formik": "^2.2.6",
     "html-react-parser": "^1.2.1",
-    "lodash": "^4.17.20",
     "moment": "^2.29.1",
-    "monaco-editor": "^0.22.3",
     "prop-types": "^15.7.2",
     "rct-bs-alert": "0.0.4",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.3",
+    "react-bs-search": "0.0.7",
     "react-calendar": "^3.3.1",
     "react-chartjs-2": "^2.11.1",
     "react-circular-progressbar": "^2.0.3",
     "react-datepicker": "^3.6.0",
     "react-dom": "^17.0.1",
-    "react-drawing-board": "^0.3.6",
-    "react-monaco-editor": "^0.41.2",
+    "react-helmet-async": "^1.0.9",
     "react-pdf": "^5.2.0",
     "react-player": "^2.8.2",
     "react-scripts": "4.0.1",
-    "react-sketch": "^0.5.1",
-    "react-sketch-whiteboard": "^3.9.3",
-    "redux": "^4.0.5",
     "web-vitals": "^0.2.4",
     "yup": "^0.32.9"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "extends": "react-app"
+  },
+  "devDependencies": {
+    "babel-loader": "8.1.0",
+    "css-loader": "^5.0.1"
   },
   "browserslist": {
     "production": [
@@ -63,6 +57,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "homepage": "http://ec2-65-1-14-123.ap-south-1.compute.amazonaws.com/trainsoft/"
+  }
 }

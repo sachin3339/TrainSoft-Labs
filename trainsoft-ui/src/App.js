@@ -6,14 +6,17 @@ import Dashboard from "./Components/Layout/Dashboard/Dashboard";
 import { Router } from "./Components/Common/Router";
 import ClassLab from "./Components/Screens/ClassLab/ClassLab";
 import Spinner from "./Components/Common/Spinner/Spinner";
+import AxiosService from './Services/axios.service';
 import AppContext from "./Store/AppContext";
+AxiosService.init();
+
 
 
 function App() {
    const appContext = useContext(AppContext)
   return (<>
       <Spinner value={appContext.spinner}/>
-      <Router basepath="/">
+      <Router>
          <Login path="/"/>
          <Dashboard path="/*"/>
          <ClassLab path="class/*"/>
