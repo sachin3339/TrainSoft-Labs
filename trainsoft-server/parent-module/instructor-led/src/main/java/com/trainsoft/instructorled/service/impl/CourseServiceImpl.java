@@ -68,9 +68,12 @@ public class CourseServiceImpl implements ICourseService {
             if(StringUtils.isNotEmpty(courseTO.getSid())){
                 Course course= courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseTO.getSid()));
                 VirtualAccount virtualAccount= virtualAccountRepository.findVirtualAccountBySid(
-                        BaseEntity.hexStringToByteArray(courseTO.getCreatedByVASid()));
+                        BaseEntity.hexStringToByteArray(courseTO.getUpdatedByVASid()));
                 course.setUpdatedBy(virtualAccount);
                 course.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                course.setStatus(courseTO.getStatus());
+                course.setName(courseTO.getName());
+                course.setDescription(courseTO.getDescription());
                 CourseTO savedCourse=mapper.convert(courseRepository.save(course),CourseTO.class);
                 savedCourse.setUpdatedByVASid(virtualAccount.getStringSid());
                 return savedCourse;
@@ -166,7 +169,10 @@ public class CourseServiceImpl implements ICourseService {
                 CourseSession courseSession= courseSessionRepository.findCourseSessionBySid(
                         BaseEntity.hexStringToByteArray(courseSessionTO.getSid()));
                 VirtualAccount virtualAccount= virtualAccountRepository.findVirtualAccountBySid(
-                        BaseEntity.hexStringToByteArray(courseSessionTO.getCreatedByVASid()));
+                        BaseEntity.hexStringToByteArray(courseSessionTO.getUpdatedByVASid()));
+                courseSession.setStatus(courseSessionTO.getStatus());
+                courseSession.setTopicName(courseSessionTO.getTopicName());
+                courseSessionTO.setTopicDescription(courseSessionTO.getTopicDescription());
                 courseSession.setUpdatedBy(virtualAccount);
                 courseSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 CourseSessionTO savedSession=mapper.convert(courseSessionRepository.save(courseSession),CourseSessionTO.class);

@@ -64,7 +64,7 @@ public class BatchServiceImpl implements IBatchService {
             if(StringUtils.isNotEmpty(batchTO.getSid())){
                 Batch batch= batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(batchTO.getSid()));
                 VirtualAccount virtualAccount= virtualAccountRepository.findVirtualAccountBySid(
-                        BaseEntity.hexStringToByteArray(batchTO.getCreatedByVASid()));
+                        BaseEntity.hexStringToByteArray(batchTO.getUpdatedByVASid()));
                 batch.setName(batchTO.getName());
                 batch.setTrainingType(batchTO.getTrainingType());
                 batch.setUpdatedBy(virtualAccount);
