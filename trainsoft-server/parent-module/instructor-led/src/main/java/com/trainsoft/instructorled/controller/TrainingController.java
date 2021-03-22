@@ -172,4 +172,49 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getParticipantsByBatchSid(batchSid));
     }
 
+    @GetMapping("trainings/{name}")
+    @ApiOperation(value = "getTrainingsByName", notes = "Get list of trainings by training name")
+    public ResponseEntity<?> getTrainingsByName(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training name", required = true) @PathVariable("name") String name) {
+        log.info(String.format("Request received : User for GET /v1/list/training"));
+        return ResponseEntity.ok(trainingService.getTrainingsByName(name));
+    }
+
+    @GetMapping("trainingsessions/{name}")
+    @ApiOperation(value = "getTrainingSessionsByName", notes = "Get list of training sessions by trainingSession name")
+    public ResponseEntity<?> getTrainingSessionsByName(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training Session name", required = true) @PathVariable("name") String name) {
+        log.info(String.format("Request received : User for GET /v1/list/trainingSession"));
+        return ResponseEntity.ok(trainingService.getTrainingSessionsByName(name));
+    }
+
+    @DeleteMapping("delete/training/{trainingSid}")
+    @ApiOperation(value = "deleteTrainingBySid", notes = "API to delete Training")
+    public ResponseEntity<?> deleteTrainingBySid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training sid", required = true) @PathVariable("trainingSid") String trainingSid) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(trainingService.deleteTrainingBySid(trainingSid, jwt.getVirtualAccountSid()));
+    }
+
+    @DeleteMapping("delete/trainingsession/{trainingSesssionSid}")
+    @ApiOperation(value = "deleteTrainingSessionBySid", notes = "API to delete Training Session")
+    public ResponseEntity<?> deleteTrainingSessionBySid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training Session sid", required = true) @PathVariable("trainingSesssionSid") String trainingSesssionSid) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(trainingService.deleteTrainingSessionBySid(trainingSesssionSid, jwt.getVirtualAccountSid()));
+    }
+
+    @GetMapping("user/{str}")
+    @ApiOperation(value = "getUsersByNameOrEmailOrPhoneNumber", notes = "Get list of users by name,email and phone number")
+    public ResponseEntity<?> getUsersByNameOrEmailOrPhoneNumber(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Users by name,email and phone number", required = true) @PathVariable("str") String str) {
+        log.info(String.format("Request received : User for GET /v1/list/user"));
+        return ResponseEntity.ok(trainingService.getUsersByNameOrEmailOrPhoneNumber(str));
+    }
+
 }

@@ -129,7 +129,7 @@ public class BatchServiceImpl implements IBatchService {
                 batch.setUpdatedBy(virtualAccount);
                 batch.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 batchRepository.save(batch);
-                log.info(String.format("Batch %s is deleted successfully by %s", deletedBySid));
+                log.info(String.format("Batch %s is deleted successfully by %s",batchSid, deletedBySid));
                 return true;
             } else
                 throw new RecordNotFoundException();

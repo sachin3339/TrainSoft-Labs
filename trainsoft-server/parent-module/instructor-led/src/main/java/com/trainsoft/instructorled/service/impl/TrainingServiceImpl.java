@@ -42,6 +42,8 @@ public class TrainingServiceImpl implements ITrainingService {
     private ICompanyRepository companyRepository;
     IDepartmentVirtualAccountRepository departmentVARepo;
     IBatchParticipantRepository participantRepository;
+    IAppUserRepository appUserRepository;
+    private ITrainingCourseRepository trainingCourseRepository;
 
     @Override
     public TrainingTO createTraining(TrainingTO trainingTO) {
@@ -55,7 +57,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 training.generateUuid();
                 training.setCreatedBy(virtualAccount);
                 training.setUpdatedOn(null);
-                training.setCourse(course);
+                training.setCourse(null);
                 training.setTrainingBatches(null);
                 training.setStatus(InstructorEnum.Status.ENABLED);
                 training.setStartDate(new Date(trainingTO.getStartDate()));
@@ -66,6 +68,11 @@ public class TrainingServiceImpl implements ITrainingService {
                     saveTrainingBatch(savedTraining, trainingTO.getTrainingBatchs());
                 else
                     trainingTO.setTrainingBatchs(Collections.EMPTY_LIST);
+
+                if(trainingTO.getCourseSid()!=null)
+                    saveTrainingCourse(savedTraining, trainingTO.getCourseSid());
+                else
+                    trainingTO.setCourseSid(null);
                 TrainingTO savedTrainingTO = mapper.convert(savedTraining, TrainingTO.class);
                 savedTrainingTO.setCreatedByVASid(virtualAccount.getStringSid());
                 savedTrainingTO.setCourseSid(course.getStringSid());
@@ -227,6 +234,15 @@ public class TrainingServiceImpl implements ITrainingService {
         });
     }
 
+    private void saveTrainingCourse(Training trd, String  courseSid) {
+            Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+            TrainingCourse  trc = new TrainingCourse();
+            trc.generateUuid();
+            trc.setCourse(course);
+            trc.setTraining(trd);
+            trainingCourseRepository.save(trc);
+    }
+
     @Override
     public List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid) {
         List<TrainingSessionTO> sessionTOList= new ArrayList<>();
@@ -283,5 +299,86 @@ public class TrainingServiceImpl implements ITrainingService {
                 list.add(user);
         });
         return list;
+    }
+
+    @Override
+    public List<TrainingViewTO> getTrainingsByName(String name) {
+        try {
+            List<TrainingView> trainingViewList= trainingViewRepository.findTrainingViewsByNameContaining(name);
+            return mapper.convertList(trainingViewList,TrainingViewTO.class);
+        }catch (Exception e)
+        {
+            log.info("throwing exception while fetching the trainings details by name");
+            throw new ApplicationException("Something went wrong while fetching the trainings details by name ");
+        }
+    }
+
+    @Override
+    public List<TrainingSessionTO> getTrainingSessionsByName(String name) {
+        try {
+            List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByAgendaNameContaining(name);
+            return mapper.convertList(trainingSessionList,TrainingSessionTO.class);
+        }catch (Exception e)
+        {
+            log.info("throwing exception while fetching the training sessions details by name");
+            throw new ApplicationException("Something went wrong while fetching the training sessions details by name ");
+        }
+    }
+
+    @Override
+    public boolean deleteTrainingBySid(String trainingSid, String deletedBySid) {
+        Training training = trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
+                (BaseEntity.hexStringToByteArray(deletedBySid));
+        try {
+            if (!StringUtils.isEmpty(trainingSid) && training != null) {
+                training.setStatus(InstructorEnum.Status.DELETED);
+                training.setUpdatedBy(virtualAccount);
+                training.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                trainingRepository.save(training);
+                log.info(String.format("Training %s is deleted successfully by %s",trainingSid, deletedBySid));
+                return true;
+            } else
+                throw new RecordNotFoundException();
+        } catch (Exception e) {
+            log.info("throwing exception while deleting the Training details by sid");
+            throw new ApplicationException("Something went wrong while deleting the Training details by sid");
+        }
+    }
+
+    @Override
+    public boolean deleteTrainingSessionBySid(String trainingSessionSid, String deletedBySid) {
+        TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(trainingSessionSid));
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
+                (BaseEntity.hexStringToByteArray(deletedBySid));
+        try {
+            if (!StringUtils.isEmpty(trainingSessionSid) && trainingSession != null) {
+                trainingSession.setStatus(InstructorEnum.Status.DELETED);
+                trainingSession.setUpdatedBy(virtualAccount);
+                trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                trainingSessionRepository.save(trainingSession);
+                log.info(String.format("Training session %s is deleted successfully by %s",trainingSessionSid, deletedBySid));
+                return true;
+            } else
+                throw new RecordNotFoundException();
+        } catch (Exception e) {
+            log.info("throwing exception while deleting the Training Session details by sid");
+            throw new ApplicationException("Something went wrong while deleting the Training Session details by sid");
+        }
+    }
+
+    @Override
+    public List<AppUserTO> getUsersByNameOrEmailOrPhoneNumber(String str) {
+        try {
+            List<AppUser> appUserTOList= appUserRepository.findAppUsersByNameContainingOrEmailIdContainingOrPhoneNumberContaining(str);
+            appUserTOList.forEach(appUser -> {
+                appUser.setPassword(null);
+            });
+            return mapper.convertList(appUserTOList,AppUserTO.class);
+        }catch (Exception e)
+        {
+            log.info("throwing exception while fetching the appUser details by name,email and phone number");
+            throw new ApplicationException("Something went wrong while fetching the appUser details by name,email and phone number ");
+        }
     }
 }

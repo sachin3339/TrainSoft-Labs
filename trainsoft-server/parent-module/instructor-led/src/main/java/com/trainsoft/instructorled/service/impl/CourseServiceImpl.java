@@ -16,6 +16,9 @@ import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -121,7 +124,7 @@ public class CourseServiceImpl implements ICourseService {
                 course.setUpdatedBy(virtualAccount);
                 course.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 courseRepository.save(course);
-                log.info(String.format("Course %s is deleted successfully by %s", deletedBySid));
+                log.info(String.format("Course %s is deleted successfully by %s",courseSid, deletedBySid));
                 return true;
             } else
                throw new RecordNotFoundException();
@@ -189,7 +192,7 @@ public class CourseServiceImpl implements ICourseService {
                 courseSession.setUpdatedBy(virtualAccount);
                 courseSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 courseSessionRepository.save(courseSession);
-                log.info(String.format("Course Session %s is deleted successfully by %s", deletedBySid));
+                log.info(String.format("Course Session %s is deleted successfully by %s",courseSessionSid, deletedBySid));
                 return true;
             } else
                 throw new RecordNotFoundException();
@@ -241,6 +244,30 @@ public class CourseServiceImpl implements ICourseService {
         {
             log.info("throwing exception while fetching the list courseSession details by name");
             throw new ApplicationException("Something went wrong while fetching the list courseSession details by name ");
+        }
+    }
+
+    @Override
+    public List<CourseSessionTO> findCourseSessionByCourseSidWithPagination(String courseSid,int pageNo, int pageSize) {
+        Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+        try {
+            if (StringUtils.isNotEmpty(course.getStringSid())) {
+                Pageable paging = PageRequest.of(pageNo, pageSize);
+                Page<CourseSession> pagedResult = courseSessionRepository.findCourseSessionByCourse(course, paging);
+                List<CourseSession> courseSessions = pagedResult.stream().filter(c -> c.getStatus() != InstructorEnum.Status.DELETED)
+                        .collect(Collectors.toList());
+                return courseSessions.stream().map(courseSession -> {
+                    CourseSessionTO to = mapper.convert(courseSession, CourseSessionTO.class);
+                    to.setCreatedByVASid(courseSession.getCreatedBy() == null ? null : courseSession.getCreatedBy().getStringSid());
+                    to.setUpdatedByVASid(courseSession.getUpdatedBy() == null ? null : courseSession.getUpdatedBy().getStringSid());
+                    to.setCourseSid(courseSession.getCourse() == null ? null : courseSession.getCourse().getStringSid());
+                    return to;
+                }).collect(Collectors.toList());
+            } else
+                throw new RecordNotFoundException();
+        } catch (Exception e) {
+            log.info("throwing exception while fetching the Course session details");
+            throw new ApplicationException("throwing exception while fetching the all course session details based on courseSid");
         }
     }
 }

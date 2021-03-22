@@ -29,14 +29,14 @@ public class CompanyServiceImpl implements ICompanyService {
 
     @Override
     public CompanyTO createCompany(CompanyTO companyTO) {
-        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(companyTO.getCreatedByVASid()));
+        //VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(companyTO.getCreatedByVASid()));
         long epochMilli = Instant.now().toEpochMilli();
         Company company = mapper.convert(companyTO, Company.class);
         company.generateUuid();
-        company.setCreatedBy(virtualAccount);
+        //company.setCreatedBy(virtualAccount);
         company.setCreatedOn(new Date(epochMilli));
         CompanyTO savedCompanyTO = mapper.convert(repository.save(company), CompanyTO.class);
-        savedCompanyTO.setCreatedByVASid(virtualAccount.getStringSid());
+        //savedCompanyTO.setCreatedByVASid(virtualAccount.getStringSid());
         return savedCompanyTO;
     }
 

@@ -126,4 +126,15 @@ public class CourseController {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         return ResponseEntity.ok(courseService.deleteCourseSessionBySid(coursesessionSid, jwt.getVirtualAccountSid()));
     }
+
+    @GetMapping("/coursesession/course/{courseSid}/{pageNo}/{pageSize}")
+    @ApiOperation(value = "getCourseSessionWithPagination", notes = "Get list of Course Session")
+    public ResponseEntity<?> getCourseSessionWithPagination(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Course session sid", required = true) @PathVariable("courseSid") String courseSid,
+            @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
+            @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
+        log.info(String.format("Request received : User for GET /v1/courseSession"));
+        return ResponseEntity.ok(courseService.findCourseSessionByCourseSidWithPagination(courseSid,pageNo-1,pageSize));
+    }
 }

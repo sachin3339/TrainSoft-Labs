@@ -18,4 +18,5 @@ public interface ICourseService {
     List<CourseSessionTO> findCourseSessionByCourseSid(String courseSid);
     List<CourseTO> getCoursesByName(String name);
     List<CourseSessionTO> getCourseSessionsByName(String name);
+    List<CourseSessionTO> findCourseSessionByCourseSidWithPagination(String courseSid,int pageNo, int pageSize);
 }

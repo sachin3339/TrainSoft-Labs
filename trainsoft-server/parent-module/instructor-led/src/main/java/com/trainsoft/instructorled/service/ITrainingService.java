@@ -14,5 +14,10 @@ public interface ITrainingService {
     List<TrainingSessionTO> getTrainingSessionByTrainingSid(String trainingSid);
     List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid);
     String generatePassword();
-    public List<UserTO> getParticipantsByBatchSid(String batchSid);
+    List<UserTO> getParticipantsByBatchSid(String batchSid);
+    List<TrainingViewTO> getTrainingsByName(String name);
+    List<TrainingSessionTO> getTrainingSessionsByName(String name);
+    boolean deleteTrainingBySid(String trainingSid, String deletedBySid);
+    boolean deleteTrainingSessionBySid(String trainingSessionSid, String deletedBySid);
+    List<AppUserTO> getUsersByNameOrEmailOrPhoneNumber(String str);
 }
