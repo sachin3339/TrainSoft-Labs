@@ -112,13 +112,21 @@ public class InstructorController {
         return ResponseEntity.ok(departmentService.getDepartments());
     }
 
-    @PostMapping(value = "/create/meeting/userId",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity ScheduleMeeting(
-            @ApiParam(value = "Headers", required = true) @RequestHeader Map headers,
-            @ApiParam(value = "Post request Body", required = true) @RequestBody Map payload){
-        payload.put("id",123);
-        headers.clear();
-        return ResponseEntity.ok(HttpUtils.postJsonUrl(payload,"https://api.zoom.us/v2/users/{userId}/meetings",headers));
+    @PostMapping("create/company")
+    @ApiOperation(value = "create Company with AppUsers", notes = "API to create new Company with appusers.")
+    public ResponseEntity<?> createCompanyWithAppUsers(
+            @ApiParam(value = "Create Company with appusers payload", required = true) @RequestBody CompanyTO companyTO) {
+        CompanyTO createCompany = companyService.createCompanyWithAppUser(companyTO);
+        return ResponseEntity.ok(createCompany);
+    }
+
+    @PostMapping("/login")
+    @ApiOperation(value = "login user", notes = "API to login existing user through email and password.")
+    public ResponseEntity<?> login(
+            @ApiParam(value = "Email Id", required = true) @RequestHeader("email") String email,
+            @ApiParam(value = "Password", required = true) @RequestHeader("password") String password) {
+        UserTO user=companyService.login(email, password);
+        return ResponseEntity.ok(user);
     }
 
 }

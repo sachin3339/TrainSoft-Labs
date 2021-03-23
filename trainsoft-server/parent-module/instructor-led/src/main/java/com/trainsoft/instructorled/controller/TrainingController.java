@@ -33,13 +33,13 @@ public class TrainingController {
 
 
     @PostMapping(value = "/upload/list/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ApiOperation(value = "upload ", notes = "API to upload Participant list through excel file.")
-    public ResponseEntity<?> uploadParticipants(
+    @ApiOperation(value = "upload Participants excel file with Batch details. ", notes = "API to upload Participant list through excel file with Batch details.")
+    public ResponseEntity<?> uploadParticipantsWithBatch(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "upload Participants excel file", required = true) @RequestParam("file") MultipartFile file,
             @RequestHeader("batchName")String batchName,@RequestHeader("instructorName")String instructorName){
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        bulkUploadService.uploadParticipants(file,batchName,instructorName,jwt.getCompanySid());
+        bulkUploadService.uploadParticipantsWithBatch(file,batchName,instructorName,jwt.getCompanySid());
         return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: " + file.getOriginalFilename());
     }
 
@@ -154,13 +154,13 @@ public class TrainingController {
         return ResponseEntity.ok(password);
     }
 
-    @GetMapping("vaccounts/company/{companySid}")
-    @ApiOperation(value = "getTrainings", notes = "Get list of virtual account")
-    public ResponseEntity<?> getTrainings(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid) {
+    @GetMapping("vaccounts")
+    @ApiOperation(value = "getVirtualAccounts", notes = "Get list of virtual account")
+    public ResponseEntity<?> getVirtualAccounts(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token) {
         log.info(String.format("Request received : User for GET /v1/vaccounts"));
-        return ResponseEntity.ok(bulkUploadService.getVirtualAccountByCompanySid(companySid));
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(bulkUploadService.getVirtualAccountByCompanySid(jwt.getCompanySid()));
     }
 
     @GetMapping("participants/batch/{batchSid}")
@@ -224,6 +224,27 @@ public class TrainingController {
             @ApiParam(value = "Given classZ", required = true) @PathVariable("classz") String classz) {
         log.info(String.format("Request received : User for GET /v1/count/classz"));
         return ResponseEntity.ok(trainingService.getCountByClass(classz));
+    }
+
+    @PostMapping(value = "upload/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiOperation(value = "upload participants", notes = "API to upload Participant list through excel file.")
+    public ResponseEntity<?> uploadParticipants(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "upload Participants excel file", required = true) @RequestParam("file") MultipartFile file){
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        bulkUploadService.uploadParticipants(file,jwt.getCompanySid());
+        return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: " + file.getOriginalFilename());
+    }
+
+    @PostMapping("update/user")
+    @ApiOperation(value = "updateUser", notes = "API to update existing User.")
+    public ResponseEntity<?> updateUser(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Update User payload", required = true) @RequestBody UserTO userTO) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        userTO.setCompanySid(jwt.getCompanySid());
+        UserTO updateUser = bulkUploadService.updateUserDetails(userTO);
+        return ResponseEntity.ok(updateUser);
     }
 
 }

@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-@Builder
 @Setter @Getter
 @AllArgsConstructor @NoArgsConstructor
 public class InstructorException {

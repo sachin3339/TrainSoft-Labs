@@ -32,6 +32,4 @@ public class CustomRepositoyImpl implements ITrainsoftCustomRepository {
         Query query = entitymangager.createNativeQuery(customQuery);
         return (BigInteger)query.getSingleResult();
     }
-
-
 }

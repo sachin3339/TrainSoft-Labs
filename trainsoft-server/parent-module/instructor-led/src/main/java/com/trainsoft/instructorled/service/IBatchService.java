@@ -13,4 +13,6 @@ public interface IBatchService {
     boolean deleteBatchBySid(String batchSid,String deletedBySid);
     List<BatchTO> getBatchesByName(String name);
     List<BatchViewTO> getBatchesWithPagination(int pageNo, int pageSize);
+    boolean deleteParticipantsByBatchSid(String batchSid, String  vASid);
+
 }
