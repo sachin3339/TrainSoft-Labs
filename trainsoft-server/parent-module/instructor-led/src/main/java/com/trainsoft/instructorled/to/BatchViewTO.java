@@ -1,27 +1,25 @@
 package com.trainsoft.instructorled.to;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.trainsoft.instructorled.entity.BaseEntity;
 import com.trainsoft.instructorled.entity.VirtualAccount;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
+import javax.persistence.*;
+import java.util.Date;
 
-@Getter@Setter
+@Getter @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CompanyTO extends BaseTO{
-
+public class BatchViewTO extends BaseTO {
     private String name;
-    private String emailId;
-    private String phoneNumber;
+    private int noOfLearners;
     private InstructorEnum.Status status;
-    private String domain;
-    private long createdOn;
-    private long updatedOn;
+    private Date createdOn;
+    private Date updatedOn;
     private String createdByVASid;
     private String updatedByVASid;
-    private AppUserTO appuser;
-    private DepartmentVirtualAccountTO departmentVA;
-    private VirtualAccountTO virtualAccount;
+
 }

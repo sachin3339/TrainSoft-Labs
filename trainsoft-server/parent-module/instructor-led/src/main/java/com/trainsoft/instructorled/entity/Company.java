@@ -2,6 +2,7 @@ package com.trainsoft.instructorled.entity;
 
 import javax.persistence.*;
 
+import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,13 @@ public class Company extends BaseEntity {
 
 	@Column(name = "phone_number")
 	private String phoneNumber;
+
+	@Column(name="status")
+	@Enumerated(EnumType.STRING)
+	private InstructorEnum.Status status;
+
+	@Column(name = "domain")
+	private String domain;
 
 	@Column(name="created_on")
 	private Date createdOn;

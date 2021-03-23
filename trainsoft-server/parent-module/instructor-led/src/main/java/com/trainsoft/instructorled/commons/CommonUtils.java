@@ -1,10 +1,12 @@
 package com.trainsoft.instructorled.commons;
 
 import com.google.gson.Gson;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -12,6 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class CommonUtils {
 	private static final String REGEX = "^\\+(?:[0-9] ?){6,14}[0-9]$";
@@ -58,5 +61,25 @@ public class CommonUtils {
 
 	public static BiFunction<String,String,String> getProjectAttrName =
 			(prefix,attributeName)->prefix.concat("-").concat(attributeName);
+
+	public static String generatePassword() {
+		String upperCaseLetters = RandomStringUtils.random(2, 65, 90, true, true);
+		String lowerCaseLetters = RandomStringUtils.random(2, 97, 122, true, true);
+		String numbers = RandomStringUtils.randomNumeric(2);
+		String specialChar = RandomStringUtils.random(2, 33, 47, false, false);
+		String totalChars = RandomStringUtils.randomAlphanumeric(2);
+		String combinedChars = upperCaseLetters.concat(lowerCaseLetters)
+				.concat(numbers)
+				.concat(specialChar)
+				.concat(totalChars);
+		List<Character> pwdChars = combinedChars.chars()
+				.mapToObj(c -> (char) c)
+				.collect(Collectors.toList());
+		Collections.shuffle(pwdChars);
+		String password = pwdChars.stream()
+				.collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+				.toString();
+		return password;
+	}
 
 }

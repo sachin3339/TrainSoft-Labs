@@ -9,12 +9,16 @@ import com.trainsoft.instructorled.repository.ICourseRepository;
 import com.trainsoft.instructorled.repository.ICourseSessionRepository;
 import com.trainsoft.instructorled.repository.IVirtualAccountRepository;
 import com.trainsoft.instructorled.service.ICourseService;
+import com.trainsoft.instructorled.to.BatchTO;
 import com.trainsoft.instructorled.to.CourseSessionTO;
 import com.trainsoft.instructorled.to.CourseTO;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +64,26 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public CourseTO updateCourse(CourseTO courseTO) {
-        return null;
+        try {
+            if(StringUtils.isNotEmpty(courseTO.getSid())){
+                Course course= courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseTO.getSid()));
+                VirtualAccount virtualAccount= virtualAccountRepository.findVirtualAccountBySid(
+                        BaseEntity.hexStringToByteArray(courseTO.getUpdatedByVASid()));
+                course.setUpdatedBy(virtualAccount);
+                course.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                course.setStatus(courseTO.getStatus());
+                course.setName(courseTO.getName());
+                course.setDescription(courseTO.getDescription());
+                CourseTO savedCourse=mapper.convert(courseRepository.save(course),CourseTO.class);
+                savedCourse.setUpdatedByVASid(virtualAccount.getStringSid());
+                return savedCourse;
+            }else
+                throw new RecordNotFoundException();
+        } catch (Exception e)
+        {
+            log.info("throwing exception while updating the course");
+            throw new ApplicationException("Something went wrong while updating the course");
+        }
     }
 
     @Override
@@ -104,7 +127,7 @@ public class CourseServiceImpl implements ICourseService {
                 course.setUpdatedBy(virtualAccount);
                 course.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 courseRepository.save(course);
-                log.info(String.format("Course %s is deleted successfully by %s", deletedBySid));
+                log.info(String.format("Course %s is deleted successfully by %s",courseSid, deletedBySid));
                 return true;
             } else
                throw new RecordNotFoundException();
@@ -123,6 +146,7 @@ public class CourseServiceImpl implements ICourseService {
             if (StringUtils.isNotEmpty(course.getStringSid())) {
                 CourseSession courseSession = mapper.convert(courseSessionTO, CourseSession.class);
                 courseSession.generateUuid();
+                courseSession.setStatus(InstructorEnum.Status.ENABLED);
                 courseSession.setCourse(course);
                 courseSession.setCreatedBy(virtualAccount);
                 courseSession.setCreatedOn(new Date(Instant.now().toEpochMilli()));
@@ -139,12 +163,107 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
+    public CourseSessionTO updateCourseSession(CourseSessionTO courseSessionTO) {
+        try {
+            if(StringUtils.isNotEmpty(courseSessionTO.getSid())){
+                CourseSession courseSession= courseSessionRepository.findCourseSessionBySid(
+                        BaseEntity.hexStringToByteArray(courseSessionTO.getSid()));
+                VirtualAccount virtualAccount= virtualAccountRepository.findVirtualAccountBySid(
+                        BaseEntity.hexStringToByteArray(courseSessionTO.getUpdatedByVASid()));
+                courseSession.setStatus(courseSessionTO.getStatus());
+                courseSession.setTopicName(courseSessionTO.getTopicName());
+                courseSessionTO.setTopicDescription(courseSessionTO.getTopicDescription());
+                courseSession.setUpdatedBy(virtualAccount);
+                courseSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                CourseSessionTO savedSession=mapper.convert(courseSessionRepository.save(courseSession),CourseSessionTO.class);
+                savedSession.setUpdatedByVASid(virtualAccount.getStringSid());
+                return savedSession;
+            }else
+                throw new RecordNotFoundException();
+        } catch (Exception e)
+        {
+            log.info("throwing exception while updating the course Session");
+            throw new ApplicationException("Something went wrong while updating the course Session");
+        }
+    }
+
+    @Override
+    public boolean deleteCourseSessionBySid(String courseSessionSid, String deletedBySid) {
+        CourseSession courseSession = courseSessionRepository.findCourseSessionBySid(BaseEntity.hexStringToByteArray(courseSessionSid));
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
+                (BaseEntity.hexStringToByteArray(deletedBySid));
+        try {
+            if (!StringUtils.isEmpty(courseSessionSid) && courseSession != null) {
+                courseSession.setStatus(InstructorEnum.Status.DELETED);
+                courseSession.setUpdatedBy(virtualAccount);
+                courseSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                courseSessionRepository.save(courseSession);
+                log.info(String.format("Course Session %s is deleted successfully by %s",courseSessionSid, deletedBySid));
+                return true;
+            } else
+                throw new RecordNotFoundException();
+        } catch (Exception e) {
+            log.info("throwing exception while deleting the Course Session details by sid");
+            throw new ApplicationException("Something went wrong while deleting the Course Session details by sid");
+        }
+    }
+
+    @Override
     public List<CourseSessionTO> findCourseSessionByCourseSid(String courseSid) {
         Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
         try {
             if (StringUtils.isNotEmpty(course.getStringSid())) {
-                List<CourseSession> courseSessions = courseSessionRepository.findCourseSessionByCourse(course);
+                List<CourseSession> courseSessions = courseSessionRepository.findCourseSessionByCourse(course).
+                        stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+                        .collect(Collectors.toList());;
                return courseSessions.stream().map(courseSession -> {
+                    CourseSessionTO to = mapper.convert(courseSession, CourseSessionTO.class);
+                    to.setCreatedByVASid(courseSession.getCreatedBy() == null ? null : courseSession.getCreatedBy().getStringSid());
+                    to.setUpdatedByVASid(courseSession.getUpdatedBy() == null ? null : courseSession.getUpdatedBy().getStringSid());
+                    to.setCourseSid(courseSession.getCourse() == null ? null : courseSession.getCourse().getStringSid());
+                    return to;
+                }).collect(Collectors.toList());
+            } else
+                throw new RecordNotFoundException();
+        } catch (Exception e) {
+            log.info("throwing exception while fetching the Course session details");
+            throw new ApplicationException("throwing exception while fetching the all course session details based on courseSid");
+        }
+    }
+
+    @Override
+    public List<CourseTO> getCoursesByName(String name) {
+        try {
+            List<Course> courseList= courseRepository.findCourseByNameContaining(name);
+            return mapper.convertList(courseList, CourseTO.class);
+        }catch (Exception e)
+        {
+            log.info("throwing exception while fetching the Courses details by name");
+            throw new ApplicationException("Something went wrong while fetching the Courses details by name ");
+        }
+    }
+
+    @Override
+    public List<CourseSessionTO> getCourseSessionsByName(String name) {
+        try {
+            List<CourseSession> courseSessionList= courseSessionRepository.findCourseSessionByTopicNameContaining(name);
+            return mapper.convertList(courseSessionList, CourseSessionTO.class);
+        }catch (Exception e)
+        {
+            log.info("throwing exception while fetching the list courseSession details by name");
+            throw new ApplicationException("Something went wrong while fetching the list courseSession details by name ");
+        }
+    }
+
+    @Override
+    public List<CourseSessionTO> findCourseSessionByCourseSidWithPagination(String courseSid,int pageNo, int pageSize) {
+        Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+        try {
+            if (StringUtils.isNotEmpty(course.getStringSid())) {
+                Pageable paging = PageRequest.of(pageNo, pageSize);
+                Page<CourseSession> pagedResult = courseSessionRepository.findCourseSessionByCourseAndStatusNot(course,InstructorEnum.Status.DELETED,paging);
+                List<CourseSession> courseSessions = pagedResult.toList();
+                return courseSessions.stream().map(courseSession -> {
                     CourseSessionTO to = mapper.convert(courseSession, CourseSessionTO.class);
                     to.setCreatedByVASid(courseSession.getCreatedBy() == null ? null : courseSession.getCreatedBy().getStringSid());
                     to.setUpdatedByVASid(courseSession.getUpdatedBy() == null ? null : courseSession.getUpdatedBy().getStringSid());
