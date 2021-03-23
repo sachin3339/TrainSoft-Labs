@@ -1,9 +1,9 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Dropdown, Form, FormControl } from 'react-bootstrap';
+import useOnClickOutside from '../../../Store/useOnClickOutside';
 import './MultipleSelect.css'
 const downIcon = <svg xmlns="http://www.w3.org/2000/svg" width="9.887" height="6" viewBox="0 0 9.887 6"><path fill="#888" className="a" d="M4.957,14.524l-4.4-4.4a.543.543,0,0,1,0-.768l.513-.513a.543.543,0,0,1,.768,0l3.5,3.487,3.5-3.487a.543.543,0,0,1,.768,0l.513.513a.543.543,0,0,1,0,.768l-4.4,4.4A.543.543,0,0,1,4.957,14.524Z" transform="translate(-0.398 -8.683)"></path></svg>
-
 
 /*  ------ Multiple Select ----
 Initially All checkbox is Unselected
@@ -21,6 +21,10 @@ const MultiSelect = ({ dataSet, className = null,footerClick, selectAllMsg = "",
   const [mapItem, setMapItem] = useState(null)
   const [viewData, setViewData] = useState([])
   const [searchValue, setSearchValue] = useState('')
+  const [show,setShow] = useState(false)
+  const wrapperRef = useRef(null);
+
+  
 
   /*
     * Filter attribute
@@ -128,6 +132,14 @@ const MultiSelect = ({ dataSet, className = null,footerClick, selectAllMsg = "",
       setMapItem([])
     }
   }
+     // check to see if the user clicked outside of this component
+     useOnClickOutside(wrapperRef, () => {
+      try {
+          setShow(false)
+      } catch (err) {
+          console.error("error occur on useOnClickOutside()")
+      }
+  });
 
   // show the content of dropdown field
   const showLabel = () => {
@@ -148,18 +160,18 @@ const MultiSelect = ({ dataSet, className = null,footerClick, selectAllMsg = "",
   }
 
   return (<>
-    {dataSet.selectItems && mapItem && <Dropdown>
-      <Dropdown.Toggle togglestyle={dataSet.toggleStyle} toggleClass={dataSet.toggleClass} as={CustomToggle} id="dropdown-custom-components">
+    {dataSet.selectItems && mapItem && <div className="dropdown-container">
+      <div onClick={()=>setShow(!show)} className="pointer">
         {isShowMore ? renderData() : showLabel()}
-      </Dropdown.Toggle>
-      <Dropdown.Menu alignRight notfoundmsg={dataSet.dataNotFound} filterplaceholder={dataSet.filterPlaceholder} className={`multipleDropDown2 esc-multi-select-list `}>
-        {dataSet.topMenu && <div className="dropDown-header"><span className="text-muted pl-3">{dataSet.topMenu}</span></div>}
-        {showFilter && <div className="dropDown-search">
+      </div>
+     { show && <div ref={wrapperRef} className={`multipleDropDown2 esc-multi-select-list `}  style={{"position": "absolute", "inset": "0px auto auto 0px", "margin": "0px", "transform": "translate(30px, 36px)"}}>
+        {/* {dataSet.topMenu && <div className="dropDown-header"><span className="text-muted pl-3">{dataSet.topMenu}</span></div>} */}
+        {/* {showFilter && <div className="dropDown-search">
           <FormControl autoFocus placeholder={dataSet.filterPlaceholder ? dataSet.filterPlaceholder : "Type to filter..."} onChange={e => setSearchValue(e.target.value)} size="sm" />
-        </div>}
+        </div>} */}
         <div className="dropdown-body">
           {searchValue.length === 0 && <Form.Check
-            style={dataSet.SelectListStyle}
+            // style={dataSet.SelectListStyle}
             className={dataSet.SelectListClass}
             onChange={(e) => selectAll(e.target.checked)}
             custom
@@ -173,7 +185,8 @@ const MultiSelect = ({ dataSet, className = null,footerClick, selectAllMsg = "",
           {filterArray(dataSet.selectItems).map((items, index) => {
             return (
               <Form.Check key={index}
-                style={dataSet.SelectListStyle}
+                // style={dataSet.SelectListStyle}
+               
                 className={dataSet.SelectListClass}
                 onChange={(e) => handleChange(e.target.checked, items)}
                 custom
@@ -195,8 +208,8 @@ const MultiSelect = ({ dataSet, className = null,footerClick, selectAllMsg = "",
           </div>
         </div>
         }
-      </Dropdown.Menu>
-    </Dropdown>
+      </div>}
+    </div>
     }</>
   );
 }

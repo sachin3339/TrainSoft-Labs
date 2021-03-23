@@ -193,12 +193,12 @@ const Courses = ({ location }) => {
         <div className="p-3">
          <CardHeader {...{ location, 
                onChange: (e) => e.length === 0 && getCourse(),
-               onEnter:(e)=> searchCourse(e)
+               onEnter:(e)=> searchCourse(e),
+               actionClick: ()=> setShow(true),
+               showAction: user.role === 'admin' ? true : false
          }} />
         </div>
-        <div className="table-footer-action">
-            <div>
-                <Button onClick={() => setShow(true)}> + Add New </Button>
+      
                 <BsModal {...{ show, setShow, headerTitle: isEdit ? "Update Course" :"Add new Course", size: "lg" }}>
                     <div className="form-container">
                         <Formik
@@ -229,8 +229,7 @@ const Courses = ({ location }) => {
                         </Formik>
                     </div>
                 </BsModal>
-            </div>
-        </div>
+        
         <DynamicTable {...{ configuration, sourceData: courseList.slice().reverse() }} />
     </div>
 

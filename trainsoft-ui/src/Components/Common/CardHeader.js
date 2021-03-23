@@ -2,9 +2,10 @@ import { Breadcrumb } from "react-bootstrap";
 import { Link, navigate } from "./Router";
 import { SearchInputBox } from "react-bs-search";
 import SearchBox from "./SearchBox/SearchBox"
+import { Button } from "./Buttons/Buttons";
 
 
-const CardHeader = ({ location, onChange=()=>{},onEnter,clearField = false }) => {
+const CardHeader = ({ location, onChange=()=>{},onEnter,clearField = false,actionClick ,showAction}) => {
     return (<>
         <div className="jcb aic py-2">
             <div className="flx1">
@@ -16,9 +17,10 @@ const CardHeader = ({ location, onChange=()=>{},onEnter,clearField = false }) =>
                 {/* <Breadcrumb.Item active>Data</Breadcrumb.Item> */}
             </Breadcrumb>}
             </div>
-            <div>
+            <div className="aic ">
             <SearchBox {...{onChange,onEnter,clearField}} />
-            </div>
+            <div>{showAction && <Button className="ml-2" onClick={actionClick}>+ Add New</Button> }</div>
+         </div>
         </div>
     </>)
 }
