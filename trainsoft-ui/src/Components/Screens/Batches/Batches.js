@@ -21,7 +21,7 @@ import './batches.css'
 
 
 
-const initialVal= {
+const initialVal = {
 
 }
 
@@ -30,8 +30,9 @@ const Batch = ({ location }) => {
     const Toast = useToast();
     const [show, setShow] = useState(false);
     const [batchList, setBatchList] = useState([])
-    const [initialValue,setInitialValue] =  useState(initialVal)
-    const [isEdit,setIsEdit] = useState(false)
+    const [initialValue, setInitialValue] = useState(initialVal)
+    const [isEdit, setIsEdit] = useState(false)
+    const [count, setCount] = useState(0)
 
 
     const schema = Yup.object().shape({
@@ -47,7 +48,7 @@ const Batch = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'batches-details'} state={{ path: 'batches-details', sid: data.sid, row:data, title: 'BATCHES', subTitle: "Batch Details" }} className="dt-name">{data.name}</Link>
+                render: (data) => <Link to={'batches-details'} state={{ path: 'batches-details', sid: data.sid, row: data, title: 'BATCHES', subTitle: "Batch Details" }} className="dt-name">{data.name}</Link>
 
             },
             "noOfLearners": {
@@ -57,7 +58,7 @@ const Batch = ({ location }) => {
                 isSearchEnabled: false
             }
             ,
-         
+
             "createdOn": {
                 "title": "Created Date",
                 "sortDirection": null,
@@ -70,7 +71,7 @@ const Batch = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Toggle id={data.sid} checked={data.status === 'ENABLED' ? true : false}/>
+                render: (data) => <Toggle id={data.sid} onChange={() => { getBatchBySid(data.sid, true); setIsEdit(false) }} checked={data.status === 'ENABLED' ? true : false} />
             }
         },
         headerTextColor: '#454E50', // user can change table header text color
@@ -86,7 +87,7 @@ const Batch = ({ location }) => {
             {
                 "title": "Edit",
                 "icon": ICN_EDIT,
-                "onClick": (data) => {setInitialValue(data);setIsEdit(true);setShow(true)}
+                "onClick": (data) => { getBatchBySid(data.sid); setIsEdit(true); }
             },
             {
                 "title": "Delete",
@@ -131,7 +132,7 @@ const Batch = ({ location }) => {
     //     }
     // }
 
-    
+
     const UploadAttachmentsAPI = async (val) => {
         return new Promise((resolve, reject) => {
             let data = new FormData();
@@ -202,63 +203,65 @@ const Batch = ({ location }) => {
     //     }
     // }
 
-// get all batches
-const deleteBatches = async (batchId) => {
-    try {
-        spinner.show();
-        RestService.deleteBatches(batchId).then(
-            response => {
-                Toast.success({ message: `Delete batches successfully`});
-                getAllBatch()
-            },
-            err => {
+    // get all batches
+    const deleteBatches = async (batchId) => {
+        try {
+            spinner.show();
+            RestService.deleteBatches(batchId).then(
+                response => {
+                    Toast.success({ message: `Delete batches successfully` });
+                    getAllBatch()
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
                 spinner.hide();
-            }
-        ).finally(() => {
-            spinner.hide();
-        });
-    } catch (err) {
-        console.error("error occur on deleteBatches()", err)
-    }
-}
-
-// edit batches
-const editBatches = async (data) => {
-    try {
-        let payload = {
-            "sid": data.sid,
-            "status":data.status,
-            "name":data.name,
-            "trainingType":data.trainingType
+            });
+        } catch (err) {
+            console.error("error occur on deleteBatches()", err)
         }
-        spinner.show();
-        RestService.editBatches(payload).then(
-            response => {
-                Toast.success({ message: `Batch update successfully`});
-                spinner.hide();
-                getAllBatch()
-                setShow(false)
-            },
-            err => {
-                spinner.hide();
+    }
+
+
+
+    // edit batches
+    const editBatches = async (data, changeStatus = false) => {
+        try {
+            let payload = {
+                "sid": data.sid,
+                "status": changeStatus ? (data.status === "ENABLED" ? 'DISABLED' : 'ENABLED') : data.status,
+                "name": data.name,
+                "trainingType": data.trainingType ? data.trainingType : 'INSTRUCTOR_LED'
             }
-        ).finally(() => {
+            spinner.show();
+            RestService.editBatches(payload).then(
+                response => {
+                    Toast.success({ message: `${changeStatus ? "Status" : 'Batch'} update successfully` });
+                    spinner.hide();
+                    getAllBatch()
+                    setShow(false)
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+                setShow(false)
+            });
+        } catch (err) {
             spinner.hide();
             setShow(false)
-        });
-    } catch (err) {
-        spinner.hide();
-        setShow(false)
-        console.error("error occur on editBatches()", err)
+            console.error("error occur on editBatches()", err)
+        }
     }
-}
 
     // get all batches
-    const getAllBatch = async (pagination="1") => {
+    const getAllBatch = async (pagination = "1") => {
         try {
             let pageSize = 10;
             spinner.show();
-            RestService.getAllBatchesByPage(pagination,pageSize).then(
+            RestService.getAllBatchesByPage(pagination, pageSize).then(
                 response => {
                     setBatchList(response.data);
                 },
@@ -273,39 +276,81 @@ const editBatches = async (data) => {
         }
     }
 
-    // search batches
-    const searchBatch = (name)=> {
-        try{
-            spinner.show();
-            RestService.searchBatches(name).then(res => {
-                    setBatchList(res.data)
-                    spinner.hide();
-                }, err => {
+    // get batches by sid
+    const getBatchBySid = async (sid, state = false) => {
+        try {
+            RestService.getBatchesBySid(sid).then(
+                response => {
+                    state ? editBatches(response.data, true) : setInitialValue(response.data);
+                    !state && setShow(true)
+                },
+                err => {
                     spinner.hide();
                 }
-            ); 
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
         }
-        catch(err){
-            console.error('error occur on searchBatch()',err)
+    }
+
+    // get batches by sid
+    const getBatchCount = async () => {
+        try {
+            RestService.getCount("batch").then(
+                response => {
+                    setCount(response.data);
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
+        }
+    }
+
+
+    // search batches
+    const searchBatch = (name) => {
+        try {
+            spinner.show();
+            RestService.searchBatches(name).then(res => {
+                setBatchList(res.data)
+                spinner.hide();
+            }, err => {
+                spinner.hide();
+            }
+            );
+        }
+        catch (err) {
+            console.error('error occur on searchBatch()', err)
             spinner.hide();
         }
     }
-    
+
     //initialize component
-    useEffect(() => getAllBatch(), [])
+    useEffect(() => {
+        getBatchCount();
+        getAllBatch()
+    }, [])
 
 
     return (<><div className="table-shadow">
         <div className="p-3">
-            <CardHeader {...{ location, 
-               onChange: (e) => e.length === 0 && getAllBatch(),
-               onEnter:(e)=> searchBatch(e)
+            <CardHeader {...{
+                location,
+                onChange: (e) => e.length === 0 && getAllBatch(),
+                onEnter: (e) => searchBatch(e)
             }} />
-         </div>
+        </div>
         <div className="table-footer-action">
             <div>
                 {user.role === 'admin' && <Button onClick={() => setShow(true)}> + Add New </Button>}
-                <BsModal {...{ show, setShow, headerTitle: !isEdit ? "Add new Batches": "Update Batches", size: "lg" }}>
+                <BsModal {...{ show, setShow, headerTitle: !isEdit ? "Add new Batch" : "Update Batch", size: "lg" }}>
                     <div className="form-container">
                         <Formik
                             onSubmit={(value) => !isEdit ? uploadAttachments(value) : editBatches(value)}
@@ -313,7 +358,7 @@ const editBatches = async (data) => {
                                 name: '',
                                 trainingType: '',
                                 file: ''
-                            }: initialValue}
+                            } : initialValue}
                             validationSchema={schema}
                         >
                             {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
@@ -323,20 +368,20 @@ const editBatches = async (data) => {
                                             <TextInput label="Batch Name" name="name" />
                                         </div>
                                         <div className="col-6">
-                                            <SelectInput label="Training Type" option={['INSTRUCTOR_LED', 'Self', 'Offline']} name="trainingType" />
+                                            <SelectInput label="Training Type" option={['INSTRUCTOR_LED', 'SELF', 'OFFLINE']} name="trainingType" />
                                         </div>
                                     </Form.Group>
                                 </div>
                                 <footer className="jcb">
                                     <div>
-                                      { !isEdit && <div className="col-6">
+                                        {!isEdit && <div className="col-6">
                                             <div><span className="title-sm">Upload participants</span></div> <div><input placeholder="Browse File" onChange={(e) => { setFieldValue("file", e.target.files) }} type="file" /></div>
                                         </div>
                                         }
 
                                     </div>
                                     <div>
-                                        <Button type="submit" > {isEdit ? 'Update Batches' :'Create Batches' }</Button>
+                                        <Button type="submit" > {isEdit ? 'Update Batch' : 'Create Batch'}</Button>
                                     </div>
                                 </footer>
                             </form>
@@ -346,10 +391,10 @@ const editBatches = async (data) => {
                 </BsModal>
             </div>
         </div>
-        {batchList && <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse(),onPageChange:(e)=> getAllBatch(e) }} />}
+        {batchList && <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse(), onPageChange: (e) => getAllBatch(e), count }} />}
 
     </div>
-      
+
     </>)
 }
 

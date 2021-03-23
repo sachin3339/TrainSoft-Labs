@@ -17,7 +17,7 @@ Props:
  className -customize list of dropdown by class name 
  showFilter - true/false  default-true
  */
-const MultiSelect = ({ dataSet, className = null, selectAllMsg = "", isShowMore = false, showFilter = false, checked = false, style = null, sortDirection, onSelect, initialData = [], footerAction = false }) => {
+const MultiSelect = ({ dataSet, className = null,footerClick, selectAllMsg = "", isShowMore = false, showFilter = false, checked = false, style = null, sortDirection, onSelect, initialData = [], footerAction = false }) => {
   const [mapItem, setMapItem] = useState(null)
   const [viewData, setViewData] = useState([])
   const [searchValue, setSearchValue] = useState('')
@@ -189,8 +189,9 @@ const MultiSelect = ({ dataSet, className = null, selectAllMsg = "", isShowMore 
         {filterArray(dataSet.selectItems).length === 0 && showFilter && <div className="px-3 pt-2">{dataSet.dataNotFound}</div>}
         {footerAction && <div className="dropdown-footer">
           <div className="flx">
-            <Dropdown.Item eventKey="1" className="btn btn-sm btn-light btn-outlined mr-2" onClick={() => onCancel()}>Cancel</Dropdown.Item>
-            <Dropdown.Item eventKey="1" className="btn btn-sm btn-primary text-white" onClick={() => { onSelect(mapItem); setViewData(mapItem); }}> Apply </Dropdown.Item>
+            <div className="text-center" onClick={footerClick}>Add New Batch</div>
+            {/* <Dropdown.Item eventKey="1" className="btn btn-sm btn-light btn-outlined mr-2" onClick={() => onCancel()}>Cancel</Dropdown.Item> */}
+            {/* <Dropdown.Item eventKey="1" className="btn btn-sm btn-primary text-white" onClick={() => { onSelect(mapItem); setViewData(mapItem); }}> Apply </Dropdown.Item> */}
           </div>
         </div>
         }

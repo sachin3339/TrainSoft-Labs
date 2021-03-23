@@ -103,7 +103,7 @@ export const SelectInput = (props) => {
                     data: props.option,
                     searchKeywords: "",
                     onSelect: setValue,
-                    title: 'Select Course',
+                    title:  `Select ${props.label}`,
                     selectedVal: value,
                 }} />
             </div>

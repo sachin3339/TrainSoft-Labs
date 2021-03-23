@@ -81,7 +81,7 @@ const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) =
                                                     <TextInput label="Training Name" name="name" />
                                                 </div>
                                                 <div className="col-6">
-                                                    <MultiSelectInput label="Select Batch(s)"  bindKey="name" option={batches} name="trainingBatchs" />
+                                                    <MultiSelectInput label="Select Batch(s)" footerAction={true}  bindKey="name" option={batches} name="trainingBatchs" />
                                                 </div>
                                             </Form.Group>
                                             <Form.Group className="row">
@@ -106,7 +106,7 @@ const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) =
                                             <div>
                                             </div>
                                             <div>
-                                                <Button type="submit" >Create</Button>
+                                                <Button type="submit">Create</Button>
                                             </div>
                                         </footer>
                                     </form>

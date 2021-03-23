@@ -199,7 +199,7 @@ const Courses = ({ location }) => {
         <div className="table-footer-action">
             <div>
                 <Button onClick={() => setShow(true)}> + Add New </Button>
-                <BsModal {...{ show, setShow, headerTitle: "Add new Course", size: "lg" }}>
+                <BsModal {...{ show, setShow, headerTitle: isEdit ? "Update Course" :"Add new Course", size: "lg" }}>
                     <div className="form-container">
                         <Formik
                             onSubmit={(value) => { !isEdit ? createCourse(value) : editCourse(value) }}

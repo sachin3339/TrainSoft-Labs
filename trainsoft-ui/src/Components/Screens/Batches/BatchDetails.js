@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState,useEffect, useContext } from "react";
 import './batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { ICN_TRASH,ICN_EDIT  } from "../../Common/Icon";
@@ -7,35 +7,31 @@ import CardHeader from "../../Common/CardHeader";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import useFetch from "../../../Store/useFetch";
 import moment from 'moment'
-
+import AppContext from "../../../Store/AppContext";
+import RestService from "../../../Services/api.service";
 
 
 const BatchesDetails = ({location}) => {
+    const {spinner} = useContext(AppContext)
     const [participant, setParticipant]= useState([])
-    let {response} = useFetch({
-        method: "get",
-        url: GLOBELCONSTANT.BATCHES.GET_BATCH_PARTICIPANT + location.state.sid,
-        errorMsg: 'error occur on get Batch Participant'
-     });
-
 
        // initialize  component
-    useEffect(() => { 
-        try{
-        if(response){
-           let val = response.map(res=> {
-                let data = res.appuser
-                data.role= res.role
-                data.department = res.departmentVA ? res.departmentVA.department.name : ''
-                return data
-            })
-            setParticipant(val)
-         }
-        }catch(err){
-            console.error(err)
-        }
-    }
-    , [response])
+    // useEffect(() => { 
+    //     try{
+    //     if(response){
+    //        let val = response.map(res=> {
+    //             let data = res.appuser
+    //             data.role= res.role
+    //             data.department = res.departmentVA ? res.departmentVA.department.name : ''
+    //             return data
+    //         })
+    //         setParticipant(val)
+    //      }
+    //     }catch(err){
+    //         console.error(err)
+    //     }
+    // }
+    // , [response])
 
 
     const [configuration, setConfiguration] = useState({
@@ -105,8 +101,66 @@ const BatchesDetails = ({location}) => {
         showCheckbox: false,
         clearSelection: false
     });
+
+       // get all batches
+    //    const getAllParticipant = async (pagination="1") => {
+    //     try {
+    //         let pageSize = 10;
+    //         spinner.show();
+    //         RestService.getAllParticipant(pagination,pageSize).then(
+    //             response => {
+    //                 let val = response.map(res=> {
+    //                     let data = res.appuser
+    //                     data.role= res.role
+    //                     data.department = res.departmentVA ? res.departmentVA.department.name : ''
+    //                     return data
+    //                 })
+    //                 setParticipant(val)
+    //             },
+    //             err => {
+    //                 spinner.hide();
+    //             }
+    //         ).finally(() => {
+    //             spinner.hide();
+    //         });
+    //     } catch (err) {
+    //         console.error("error occur on getAllBatch()", err)
+    //     }
+    // }
+
+     // search batches
+     const searchParticipate = (name)=> {
+        try{
+            spinner.show();
+            RestService.searchUser(name).then(response => {
+                // let val = response.data.map(res=> {
+                //             let data = res.appuser
+                //             data.role= res.role
+                //             data.department = res.departmentVA ? res.departmentVA.department.name : ''
+                //             return data
+                //           })
+                         setParticipant(response.data)
+                       spinner.hide();
+                }, err => {
+                    spinner.hide();
+                }
+            ); 
+        }
+        catch(err){
+            console.error('error occur on searchParticipate()',err)
+            spinner.hide();
+        }
+    }
+
+    useEffect(()=>{
+        // getAllParticipant()
+    },[])
+
     return (<div className="table-shadow p-3">
-        <CardHeader {...{location}}/>
+              <CardHeader {...{ location, 
+               onChange: (e) => e.length === 0 && console.log(''),
+               onEnter:(e)=> searchParticipate(e)
+            }} />
         <div className="bDetail-action">
             <div className="full-w ">
             <div className="batch-info">
