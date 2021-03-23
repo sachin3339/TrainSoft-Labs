@@ -19,6 +19,10 @@ public class TrainingSession extends BaseEntity {
 	@Column(name = "agenda_description")
 	private String agendaDescription;
 
+	@Column(name="status")
+	@Enumerated(EnumType.STRING)
+	private InstructorEnum.Status status;
+
 	@Column(name = "assets")
 	private String assets;
 

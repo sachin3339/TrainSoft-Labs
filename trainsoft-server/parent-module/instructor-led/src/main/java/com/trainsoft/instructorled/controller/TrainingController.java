@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,92 +27,19 @@ import java.util.List;
 @RequestMapping("/v1")
 public class TrainingController {
 
-    ICourseService courseService;
     IBatchService batchService;
     ITrainingService trainingService;
     IBulkUploadService bulkUploadService;
 
-    @PostMapping("course/create")
-    @ApiOperation(value = "createCourse", notes = "API to create new Course.")
-    public ResponseEntity<?> createCourse(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Create Course payload", required = true) @RequestBody CourseTO courseTO) {
-        JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        courseTO.setCreatedByVASid(jwt.getVirtualAccountSid());
-        CourseTO createCourse = courseService.createCourse(courseTO);
-        return ResponseEntity.ok(createCourse);
-    }
 
-    @GetMapping("/course/{courseSid}")
-    @ApiOperation(value = "getCourseBySid", notes = "Get Course by Sid")
-    public ResponseEntity<?> getCourseBySid(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Course Sid", required = true) @PathVariable("courseSid") String courseSid) {
-        return ResponseEntity.ok(courseService.getCourseBySid(courseSid));
-    }
-
-    @GetMapping("/courses")
-    @ApiOperation(value = "getCourses", notes = "Get list of Course")
-    public ResponseEntity<?> getCourses(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token) {
-        log.info(String.format("Request received : User for GET /v1/courses"));
-        return ResponseEntity.ok(courseService.getCourses());
-    }
-
-    @PostMapping("/create/coursesession")
-    @ApiOperation(value = "createCourSession", notes = "API to add new session in course.")
-    public ResponseEntity<?> createCourSession(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Create Course Session payload", required = true) @RequestBody CourseSessionTO courseSessionTO) {
-        JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        courseSessionTO.setCreatedByVASid(jwt.getVirtualAccountSid());
-        CourseSessionTO createSession = courseService.createSession(courseSessionTO);
-        return ResponseEntity.ok(createSession);
-    }
-
-    @GetMapping("/coursesession/course/{courseSid}")
-    @ApiOperation(value = "getCourseSessionByCourseSid ", notes = "Get list of Course session")
-    public ResponseEntity<?> getCourseSessionByCourseSid(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Course Sid", required = true) @PathVariable("courseSid") String courseSid) {
-        log.info(String.format("Request received : User for GET /v1/courses"));
-        return ResponseEntity.ok(courseService.findCourseSessionByCourseSid(courseSid));
-    }
-
-    @PostMapping("batch/create")
-    @ApiOperation(value = "createBatch", notes = "API to create new Batch.")
-    public ResponseEntity<?> createBatch(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Create Batch payload", required = true) @RequestBody BatchTO batchTO) {
-        JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        batchTO.setCreatedByVASid(jwt.getVirtualAccountSid());
-        BatchTO createBatch = batchService.createBatch(batchTO);
-        return ResponseEntity.ok(createBatch);
-    }
-
-    @GetMapping("/batch/{batchSid}")
-    @ApiOperation(value = "getBatchBySid", notes = "Get Batch by Sid")
-    public ResponseEntity<?> getBatchBySid(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Batch Sid", required = true) @PathVariable("batchSid") String batchSid) {
-        return ResponseEntity.ok(batchService.getBatchBySid(batchSid));
-    }
-
-    @GetMapping("/batches")
-    @ApiOperation(value = "getBatches", notes = "Get list of batch")
-    public ResponseEntity<?> getBatches(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token) {
-        log.info(String.format("Request received : User for GET /v1/batches"));
-        return ResponseEntity.ok(batchService.getBatches());
-    }
-
-    @PostMapping("/upload/list/participants")
+    @PostMapping(value = "/upload/list/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "upload ", notes = "API to upload Participant list through excel file.")
     public ResponseEntity<?> uploadParticipants(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "upload Participants excel file", required = true) @RequestParam MultipartFile file){
+            @ApiParam(value = "upload Participants excel file", required = true) @RequestParam("file") MultipartFile file,
+            @RequestHeader("batchName")String batchName,@RequestHeader("instructorName")String instructorName){
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        bulkUploadService.save(file);
+        bulkUploadService.uploadParticipants(file,batchName,instructorName,jwt.getCompanySid());
         return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: " + file.getOriginalFilename());
     }
 
@@ -139,6 +67,16 @@ public class TrainingController {
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Training Sid", required = true) @PathVariable("trainingSid") String trainingSid) {
         return ResponseEntity.ok(trainingService.getTrainingBySid(trainingSid));
+    }
+
+    @GetMapping("/trainings/{pageNo}/{pageSize}")
+    @ApiOperation(value = "getTrainings", notes = "Get list of training")
+    public ResponseEntity<?> getTrainings(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
+            @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
+        log.info(String.format("Request received : User for GET /v1/trainings"));
+        return ResponseEntity.ok(trainingService.getTrainingsWithPagination(pageNo-1,pageSize));
     }
 
     @GetMapping("/trainings")
@@ -176,17 +114,6 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSid(trainingSid));
     }
 
-    @PostMapping("user/create")
-    @ApiOperation(value = "createUser", notes = "API to create new User.")
-    public ResponseEntity<?> createUser(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Create User payload", required = true) @RequestBody UserTO userTO) {
-        JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        userTO.setCompanySid(jwt.getCompanySid());
-        UserTO createUser = bulkUploadService.createVirtualAccount(userTO);
-        return ResponseEntity.ok(createUser);
-    }
-
     @GetMapping("/trainingsession/training/{trainingSid}/course/{courseSid}")
     @ApiOperation(value = "getTrainingSessionByTrainingAndCourseSid ", notes = "Get list of Training session")
     public ResponseEntity<?> getTrainingSessionByTrainingAndCourseSid(
@@ -196,6 +123,17 @@ public class TrainingController {
     {
         log.info(String.format("Request received : User for GET /v1/trainingsession"));
         return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSidAndCourseSid(trainingSid,courseSid));
+    }
+
+    @PostMapping("user/create")
+    @ApiOperation(value = "createUser", notes = "API to create new User.")
+    public ResponseEntity<?> createUser(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Create User payload", required = true) @RequestBody UserTO userTO) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        userTO.setCompanySid(jwt.getCompanySid());
+        UserTO createUser = bulkUploadService.createVirtualAccount(userTO);
+        return ResponseEntity.ok(createUser);
     }
 
     @GetMapping("/virtualaccount/{VASid}")
@@ -215,4 +153,77 @@ public class TrainingController {
         String password = trainingService.generatePassword();
         return ResponseEntity.ok(password);
     }
+
+    @GetMapping("vaccounts/company/{companySid}")
+    @ApiOperation(value = "getTrainings", notes = "Get list of virtual account")
+    public ResponseEntity<?> getTrainings(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid) {
+        log.info(String.format("Request received : User for GET /v1/vaccounts"));
+        return ResponseEntity.ok(bulkUploadService.getVirtualAccountByCompanySid(companySid));
+    }
+
+    @GetMapping("participants/batch/{batchSid}")
+    @ApiOperation(value = "getLearnersByBatchSid", notes = "Get list of participants by Batch Sid")
+    public ResponseEntity<?> getLearnersByBatchSid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Batch Sid", required = true) @PathVariable("batchSid") String batchSid) {
+        log.info(String.format("Request received : User for GET /v1/list/participants"));
+        return ResponseEntity.ok(trainingService.getParticipantsByBatchSid(batchSid));
+    }
+
+    @GetMapping("trainings/{name}")
+    @ApiOperation(value = "getTrainingsByName", notes = "Get list of trainings by training name")
+    public ResponseEntity<?> getTrainingsByName(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training name", required = true) @PathVariable("name") String name) {
+        log.info(String.format("Request received : User for GET /v1/list/training"));
+        return ResponseEntity.ok(trainingService.getTrainingsByName(name));
+    }
+
+    @GetMapping("trainingsessions/{name}")
+    @ApiOperation(value = "getTrainingSessionsByName", notes = "Get list of training sessions by trainingSession name")
+    public ResponseEntity<?> getTrainingSessionsByName(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training Session name", required = true) @PathVariable("name") String name) {
+        log.info(String.format("Request received : User for GET /v1/list/trainingSession"));
+        return ResponseEntity.ok(trainingService.getTrainingSessionsByName(name));
+    }
+
+    @DeleteMapping("delete/training/{trainingSid}")
+    @ApiOperation(value = "deleteTrainingBySid", notes = "API to delete Training")
+    public ResponseEntity<?> deleteTrainingBySid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training sid", required = true) @PathVariable("trainingSid") String trainingSid) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(trainingService.deleteTrainingBySid(trainingSid, jwt.getVirtualAccountSid()));
+    }
+
+    @DeleteMapping("delete/trainingsession/{trainingSesssionSid}")
+    @ApiOperation(value = "deleteTrainingSessionBySid", notes = "API to delete Training Session")
+    public ResponseEntity<?> deleteTrainingSessionBySid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training Session sid", required = true) @PathVariable("trainingSesssionSid") String trainingSesssionSid) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(trainingService.deleteTrainingSessionBySid(trainingSesssionSid, jwt.getVirtualAccountSid()));
+    }
+
+    @GetMapping("user/{str}")
+    @ApiOperation(value = "getUsersByNameOrEmailOrPhoneNumber", notes = "Get list of users by name,email and phone number")
+    public ResponseEntity<?> getUsersByNameOrEmailOrPhoneNumber(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Users by name,email and phone number", required = true) @PathVariable("str") String str) {
+        log.info(String.format("Request received : User for GET /v1/list/user"));
+        return ResponseEntity.ok(trainingService.getUsersByNameOrEmailOrPhoneNumber(str));
+    }
+
+    @GetMapping("get/{classz}")
+    @ApiOperation(value = "getCount", notes = "Get count of given records in given class")
+    public ResponseEntity<?> getCountByClass(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Given classZ", required = true) @PathVariable("classz") String classz) {
+        log.info(String.format("Request received : User for GET /v1/count/classz"));
+        return ResponseEntity.ok(trainingService.getCountByClass(classz));
+    }
+
 }

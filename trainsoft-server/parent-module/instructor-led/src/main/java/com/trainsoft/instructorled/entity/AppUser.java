@@ -1,6 +1,7 @@
 package com.trainsoft.instructorled.entity;
 
 import com.trainsoft.instructorled.value.InstructorEnum;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "appusers")
 @Getter @Setter @NoArgsConstructor
+@AllArgsConstructor
 public class AppUser extends BaseEntity{
 	@Column(name = "name")
 	private String name;

@@ -232,14 +232,13 @@ as
 select tr.id,tr.sid,tr.name,count(trbh.sid) as no_of_batches,cr.name as course_name,tr.instructor_name,tr.start_date,tr.end_date,tr.status,tr.created_by,tr.updated_by
 from training tr inner join training_has_batch trbh on tr.id=trbh.training_id inner join course cr on tr.course_id=cr.id group by tr.id
 
-#--================= vw_training ==================--
+#--================= vw_batch ==================--
 
-DROP VIEW IF EXISTS vw_learners;
-create view vw_learners
+DROP VIEW IF EXISTS vw_batch;
+create view vw_batch
 as
-select au.name,au.emp_id,au.email,au.phone_number,dp.name as department_name from appusers au
-inner join virtual_account vr on au.id=vr.appuser_id
-inner join department_has_virtual_account dvr on  vr.id=dvr.virtual_acoount_id
-inner join department dp on dvr.department_id=dp.id where dvr.department_role ='LEARNER';
+select bt.id,bt.sid, bt.name,count(bhp.virtual_account_id) as no_of_learners,bt.status,bt.created_on,
+       bt.created_by,bt.updated_by,bt.updated_on from batch bt left  join batch_has_participants bhp on bt.id=bhp.batch_id
+group by bt.id order by no_of_learners desc
 
  #--================= vw_training ==================--

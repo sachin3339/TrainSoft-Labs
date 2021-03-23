@@ -1,5 +1,7 @@
 package com.trainsoft.instructorled.service.impl;
 
+import com.trainsoft.instructorled.commons.CommonUtils;
+import com.trainsoft.instructorled.commons.CustomRepositoyImpl;
 import com.trainsoft.instructorled.customexception.ApplicationException;
 import com.trainsoft.instructorled.customexception.RecordNotFoundException;
 import com.trainsoft.instructorled.dozer.DozerUtils;
@@ -12,8 +14,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +41,12 @@ public class TrainingServiceImpl implements ITrainingService {
     private ITrainingViewRepository trainingViewRepository;
     private ICourseSessionRepository courseSessionRepository;
     private DozerUtils mapper;
+    private ICompanyRepository companyRepository;
+    IDepartmentVirtualAccountRepository departmentVARepo;
+    IBatchParticipantRepository participantRepository;
+    IAppUserRepository appUserRepository;
+    ITrainingCourseRepository trainingCourseRepository;
+    CustomRepositoyImpl customRepositoy;
 
     @Override
     public TrainingTO createTraining(TrainingTO trainingTO) {
@@ -48,7 +60,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 training.generateUuid();
                 training.setCreatedBy(virtualAccount);
                 training.setUpdatedOn(null);
-                training.setCourse(course);
+                training.setCourse(null);
                 training.setTrainingBatches(null);
                 training.setStatus(InstructorEnum.Status.ENABLED);
                 training.setStartDate(new Date(trainingTO.getStartDate()));
@@ -59,6 +71,11 @@ public class TrainingServiceImpl implements ITrainingService {
                     saveTrainingBatch(savedTraining, trainingTO.getTrainingBatchs());
                 else
                     trainingTO.setTrainingBatchs(Collections.EMPTY_LIST);
+
+                if(trainingTO.getCourseSid()!=null)
+                    saveTrainingCourse(savedTraining, trainingTO.getCourseSid());
+                else
+                    trainingTO.setCourseSid(null);
                 TrainingTO savedTrainingTO = mapper.convert(savedTraining, TrainingTO.class);
                 savedTrainingTO.setCreatedByVASid(virtualAccount.getStringSid());
                 savedTrainingTO.setCourseSid(course.getStringSid());
@@ -72,9 +89,34 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public List<TrainingViewTO> getTrainings() {
+    public List<TrainingTO> getTrainings() {
         try {
-            List<TrainingView> trainingViews = trainingViewRepository.findAll();
+            List<String> batchSid=null;
+            List<Training> trainings =  trainingRepository.findAll().stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+                    .collect(Collectors.toList());
+            return trainings.stream().map(training-> {
+                TrainingTO to = mapper.convert(training, TrainingTO.class);
+/*                List<TrainingBatch> batches=trainingBatchRepository.findTrainingBatchByTraining(training);
+                batches.forEach(batch -> {
+                    batchSid.add(batch.getBatch().getStringSid());
+                });*/
+                to.setCourseSid(training.getCourse() == null ? null : training.getCourse().getStringSid());
+                to.setCreatedByVASid(training.getCreatedBy() == null ? null : training.getCreatedBy().getStringSid());
+                to.setUpdatedByVASid(training.getUpdatedBy() == null ? null : training.getUpdatedBy().getStringSid());
+                return to;
+            }).collect(Collectors.toList());
+        } catch (Exception e) {
+            log.info("throwing exception while fetching the all training details");
+            throw new ApplicationException("Something went wrong while fetching the training details");
+        }
+    }
+
+    @Override
+    public List<TrainingViewTO> getTrainingsWithPagination(int pageNo, int pageSize) {
+        try {
+            Pageable paging = PageRequest.of(pageNo, pageSize);
+            Page<TrainingView> pagedResult = trainingViewRepository.findAllByStatusNot(InstructorEnum.Status.DELETED,paging);
+            List<TrainingView> trainingViews = pagedResult.toList();
             return trainingViews.stream().map(trainingView -> {
                 TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
                 to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
@@ -169,7 +211,9 @@ public class TrainingServiceImpl implements ITrainingService {
         Training training = trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
         try {
             if (StringUtils.isNotEmpty(training.getStringSid())) {
-                List<TrainingSession> trainingSessions = trainingSessionRepository.findTrainingSessionByTraining(training);
+                List<TrainingSession> trainingSessions = trainingSessionRepository.findTrainingSessionByTraining(training).
+                        stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+                        .collect(Collectors.toList());;
                 return trainingSessions.stream().map(trainingSession -> {
                     TrainingSessionTO to = mapper.convert(trainingSession, TrainingSessionTO.class);
                     to.setCreatedByVASid(trainingSession.getCreatedBy() == null ? null : trainingSession.getCreatedBy().getStringSid());
@@ -197,14 +241,27 @@ public class TrainingServiceImpl implements ITrainingService {
         });
     }
 
+    private void saveTrainingCourse(Training trd, String  courseSid) {
+            Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+            TrainingCourse  trc = new TrainingCourse();
+            trc.generateUuid();
+            trc.setCourse(course);
+            trc.setTraining(trd);
+            trainingCourseRepository.save(trc);
+    }
+
     @Override
     public List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid) {
         List<TrainingSessionTO> sessionTOList= new ArrayList<>();
         try {
             Training training = trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
             Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
-            List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourse(course);
-            List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByTraining(training);
+            List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourse(course)
+                    .stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+                    .collect(Collectors.toList());;
+            List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByTraining(training)
+                    .stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+                    .collect(Collectors.toList());;
             List<TrainingSessionTO> sessionsTO=mapper.convertList(trainingSessionList,TrainingSessionTO.class);
             if(sessionsTO!=null && sessionsTO.size()>0){
                 sessionTOList.addAll(sessionsTO);
@@ -235,22 +292,110 @@ public class TrainingServiceImpl implements ITrainingService {
 
     @Override
     public String generatePassword() {
-        String upperCaseLetters = RandomStringUtils.random(2, 65, 90, true, true);
-        String lowerCaseLetters = RandomStringUtils.random(2, 97, 122, true, true);
-        String numbers = RandomStringUtils.randomNumeric(2);
-        String specialChar = RandomStringUtils.random(2, 33, 47, false, false);
-        String totalChars = RandomStringUtils.randomAlphanumeric(2);
-        String combinedChars = upperCaseLetters.concat(lowerCaseLetters)
-                .concat(numbers)
-                .concat(specialChar)
-                .concat(totalChars);
-        List<Character> pwdChars = combinedChars.chars()
-                .mapToObj(c -> (char) c)
-                .collect(Collectors.toList());
-        Collections.shuffle(pwdChars);
-        String password = pwdChars.stream()
-                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
-                .toString();
-        return password;
+        return CommonUtils.generatePassword();
     }
+
+
+    @Override
+    public List<UserTO> getParticipantsByBatchSid(String batchSid) {
+        List<UserTO> list= new ArrayList<>();
+        Batch batch=batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(batchSid));
+        List<BatchParticipant> batchParticipants= participantRepository.findBatchParticipantByBatch(batch);
+        batchParticipants.forEach(batchParticipant -> {
+            DepartmentVirtualAccount dVA= departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(batchParticipant.getVirtualAccount());
+            UserTO user=mapper.convert(batchParticipant.getVirtualAccount(),UserTO.class);
+            user.getAppuser().setPassword(null);
+            user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+            if(user.getDepartmentVA().getDepartmentRole()== InstructorEnum.DepartmentRole.LEARNER)
+                list.add(user);
+        });
+        return list;
+    }
+
+    @Override
+    public List<TrainingViewTO> getTrainingsByName(String name) {
+        try {
+            List<TrainingView> trainingViewList= trainingViewRepository.findTrainingViewsByNameContaining(name);
+            return mapper.convertList(trainingViewList,TrainingViewTO.class);
+        }catch (Exception e)
+        {
+            log.info("throwing exception while fetching the trainings details by name");
+            throw new ApplicationException("Something went wrong while fetching the trainings details by name ");
+        }
+    }
+
+    @Override
+    public List<TrainingSessionTO> getTrainingSessionsByName(String name) {
+        try {
+            List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByAgendaNameContaining(name);
+            return mapper.convertList(trainingSessionList,TrainingSessionTO.class);
+        }catch (Exception e)
+        {
+            log.info("throwing exception while fetching the training sessions details by name");
+            throw new ApplicationException("Something went wrong while fetching the training sessions details by name ");
+        }
+    }
+
+    @Override
+    public boolean deleteTrainingBySid(String trainingSid, String deletedBySid) {
+        Training training = trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
+                (BaseEntity.hexStringToByteArray(deletedBySid));
+        try {
+            if (!StringUtils.isEmpty(trainingSid) && training != null) {
+                training.setStatus(InstructorEnum.Status.DELETED);
+                training.setUpdatedBy(virtualAccount);
+                training.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                trainingRepository.save(training);
+                log.info(String.format("Training %s is deleted successfully by %s",trainingSid, deletedBySid));
+                return true;
+            } else
+                throw new RecordNotFoundException();
+        } catch (Exception e) {
+            log.info("throwing exception while deleting the Training details by sid");
+            throw new ApplicationException("Something went wrong while deleting the Training details by sid");
+        }
+    }
+
+    @Override
+    public boolean deleteTrainingSessionBySid(String trainingSessionSid, String deletedBySid) {
+        TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(trainingSessionSid));
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
+                (BaseEntity.hexStringToByteArray(deletedBySid));
+        try {
+            if (!StringUtils.isEmpty(trainingSessionSid) && trainingSession != null) {
+                trainingSession.setStatus(InstructorEnum.Status.DELETED);
+                trainingSession.setUpdatedBy(virtualAccount);
+                trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                trainingSessionRepository.save(trainingSession);
+                log.info(String.format("Training session %s is deleted successfully by %s",trainingSessionSid, deletedBySid));
+                return true;
+            } else
+                throw new RecordNotFoundException();
+        } catch (Exception e) {
+            log.info("throwing exception while deleting the Training Session details by sid");
+            throw new ApplicationException("Something went wrong while deleting the Training Session details by sid");
+        }
+    }
+
+    @Override
+    public List<AppUserTO> getUsersByNameOrEmailOrPhoneNumber(String str) {
+        try {
+            List<AppUser> appUserTOList= appUserRepository.findAppUsersByNameContainingOrEmailIdContainingOrPhoneNumberContaining(str);
+            appUserTOList.forEach(appUser -> {
+                appUser.setPassword(null);
+            });
+            return mapper.convertList(appUserTOList,AppUserTO.class);
+        }catch (Exception e)
+        {
+            log.info("throwing exception while fetching the appUser details by name,email and phone number");
+            throw new ApplicationException("Something went wrong while fetching the appUser details by name,email and phone number ");
+        }
+    }
+
+    @Override
+    public BigInteger getCountByClass(String classz) {
+        return customRepositoy.noOfCountByClass(classz);
+    }
+
 }
