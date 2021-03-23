@@ -154,13 +154,13 @@ public class TrainingController {
         return ResponseEntity.ok(password);
     }
 
-    @GetMapping("vaccounts/company/{companySid}")
-    @ApiOperation(value = "getTrainings", notes = "Get list of virtual account")
-    public ResponseEntity<?> getTrainings(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid) {
+    @GetMapping("vaccounts")
+    @ApiOperation(value = "getVirtualAccounts", notes = "Get list of virtual account")
+    public ResponseEntity<?> getVirtualAccounts(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token) {
         log.info(String.format("Request received : User for GET /v1/vaccounts"));
-        return ResponseEntity.ok(bulkUploadService.getVirtualAccountByCompanySid(companySid));
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(bulkUploadService.getVirtualAccountByCompanySid(jwt.getCompanySid()));
     }
 
     @GetMapping("participants/batch/{batchSid}")
@@ -226,14 +226,13 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getCountByClass(classz));
     }
 
-    @PostMapping(value = "/upload/participants/{companySid}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "upload/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "upload participants", notes = "API to upload Participant list through excel file.")
     public ResponseEntity<?> uploadParticipants(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "upload Participants excel file", required = true) @RequestParam("file") MultipartFile file,
-            @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid){
+            @ApiParam(value = "upload Participants excel file", required = true) @RequestParam("file") MultipartFile file){
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        bulkUploadService.uploadParticipants(file,companySid);
+        bulkUploadService.uploadParticipants(file,jwt.getCompanySid());
         return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: " + file.getOriginalFilename());
     }
 
