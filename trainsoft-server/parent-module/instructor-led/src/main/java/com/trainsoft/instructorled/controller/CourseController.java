@@ -137,4 +137,14 @@ public class CourseController {
         log.info(String.format("Request received : User for GET /v1/courseSession"));
         return ResponseEntity.ok(courseService.findCourseSessionByCourseSidWithPagination(courseSid,pageNo-1,pageSize));
     }
+
+    @GetMapping("/course/{pageNo}/{pageSize}")
+    @ApiOperation(value = "getCourseWithPagination", notes = "Get list of Course")
+    public ResponseEntity<?> getCourseWithPagination(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
+            @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
+        log.info(String.format("Request received : User for GET /v1/course"));
+        return ResponseEntity.ok(courseService.getCoursesWithPagination(pageNo-1,pageSize));
+    }
 }

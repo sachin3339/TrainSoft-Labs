@@ -241,4 +241,16 @@ select bt.id,bt.sid, bt.name,count(bhp.virtual_account_id) as no_of_learners,bt.
        bt.created_by,bt.updated_by,bt.updated_on from batch bt left  join batch_has_participants bhp on bt.id=bhp.batch_id
 group by bt.id order by no_of_learners desc
 
- #--================= vw_training ==================--
+ #--================= vw_course ==================--
+
+DROP VIEW IF EXISTS vw_course ;
+create view vw_course
+as
+select cr.id,cr.sid,cr.name,cr.status,cr.created_on,
+       cr.created_by,cr.updated_by,cr.updated_on,count(tr.id) as no_of_trainings,
+       count(bhp.virtual_account_id) as learners from course cr
+                                                          inner join training_has_course thc on cr.id=thc.course_id
+                                                          inner join training tr on tr.id=thc.training_id
+                                                          inner join training_has_batch thb on thb.training_id=tr.id
+                                                          inner join batch bt on thb.batch_id=bt.id
+                                                          inner join batch_has_participants bhp on bt.id=bhp.batch_id group by cr.id;

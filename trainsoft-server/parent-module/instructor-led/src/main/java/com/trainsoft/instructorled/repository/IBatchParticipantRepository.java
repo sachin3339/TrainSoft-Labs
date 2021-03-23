@@ -11,4 +11,5 @@ import java.util.List;
 public interface IBatchParticipantRepository extends JpaRepository<BatchParticipant, Integer>{
 	BatchParticipant findBatchParticipantBySid(byte[] sid);
 	List<BatchParticipant> findBatchParticipantByBatch(Batch batch);
+	BatchParticipant findBatchParticipantByBatchAndVirtualAccount(Batch batch,VirtualAccount virtualAccount);
 }

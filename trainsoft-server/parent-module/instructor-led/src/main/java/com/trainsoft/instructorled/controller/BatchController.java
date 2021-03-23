@@ -83,6 +83,16 @@ public class BatchController {
         return ResponseEntity.ok(updateBatch);
     }
 
+    @DeleteMapping("delete/batchparticipant/{batchSid}/{vASid}")
+    @ApiOperation(value = "deleteBatchParticipant", notes = "API to delete batch participant")
+    public ResponseEntity<?> deleteBatch(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Batch sid", required = true) @PathVariable("batchSid") String batchSid,
+            @ApiParam(value = "Virtual Account sid", required = true) @PathVariable("vASid") String vASid) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(batchService.deleteParticipantsByBatchSid(batchSid, vASid));
+    }
+
     @DeleteMapping("delete/batch/{batchSid}")
     @ApiOperation(value = "deleteBatch", notes = "API to delete batch")
     public ResponseEntity<?> deleteBatch(

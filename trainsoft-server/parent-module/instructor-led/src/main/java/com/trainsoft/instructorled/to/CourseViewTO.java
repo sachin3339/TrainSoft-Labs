@@ -1,20 +1,19 @@
 package com.trainsoft.instructorled.to;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserTO extends BaseTO{
+public class CourseViewTO extends BaseTO{
 
-    private InstructorEnum.VirtualAccountRole role;
-    private  String companySid;
-    private String designation;
+    private String name;
+    private int noOfLearners;
+    private int noOfTrainings;
     private InstructorEnum.Status status;
-    private AppUserTO appuser;
-    private  DepartmentVirtualAccountTO departmentVA;
-    private  String jwtToken;
-
+    private long createdOn;
+    private long updatedOn;
+    private String createdBy;
+    private String updatedBy;
 }
