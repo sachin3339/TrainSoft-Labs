@@ -193,7 +193,7 @@ export const DynamicTable = (props) => {
         setSourceData(sortByKey(applyFilter(sourceData, props.configuration, props.configuration.searchQuery), props.configuration.sortBy, props.configuration.sortDirection));
     }, [props.configuration.sortBy, props.configuration.sortDirection])
 
-    return<> <Table className={props.configuration.tableCustomClass ? props.configuration.tableCustomClass : "ng-table"}>
+    return<> <div className="dynamic-table-wrapper"><Table className={props.configuration.tableCustomClass ? props.configuration.tableCustomClass : "ng-table"}>
         <thead>
             <TableHeader {...{ ...props.configuration, isSelectedAll, onSelectAll }} />
         </thead>
@@ -207,7 +207,7 @@ export const DynamicTable = (props) => {
                 </tr>
             }
         </tbody>
-    </Table>
+    </Table></div>
     <div className="pagination-div">
         {props.onPageChange && <PaginationOne totalCount={70}  onNavigate={props.onPageChange}/> }
     </div>

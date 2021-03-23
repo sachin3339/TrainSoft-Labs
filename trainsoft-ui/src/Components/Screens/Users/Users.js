@@ -228,7 +228,7 @@ const User = ({ location }) => {
         <div className="table-footer-action">
             <div>
                 <Button className="mr-3" onClick={() => setShow(true)}><span className="mr-1">{ICN_DOWNLOAD}</span>  Report </Button>
-                <Button onClick={() => setShow(true)}> + Add New </Button>
+                <Button className="btn-primary" onClick={() => setShow(true)}> + Add New </Button>
 
                 <BsModal {...{ show, setShow, headerTitle: "Add new User", size: "lg" }}>
                     <div className="form-container">

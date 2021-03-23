@@ -198,7 +198,7 @@ const Courses = ({ location }) => {
         </div>
         <div className="table-footer-action">
             <div>
-                <Button onClick={() => setShow(true)}> + Add New </Button>
+                <Button className="btn-primary" onClick={() => setShow(true)}> + Add New </Button>
                 <BsModal {...{ show, setShow, headerTitle: "Add new Course", size: "lg" }}>
                     <div className="form-container">
                         <Formik

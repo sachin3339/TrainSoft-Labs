@@ -18,7 +18,7 @@ const TrainingDetails = ({ location }) => {
     return (<>
         <div className="table-shadow p-3">
             <CardHeader {...{location}}/>
-            <div className="flx my-2">
+            <div className="flx my-2 mb-4 tab-btn-group">
                 <TabBtn active={location.state.subPath === "/"} onClick={() => navigate("/training/training-details", { state: { path:'training', title: 'TRAINING',subTitle:"Training Info", subPath:"/" } })}>Training Info</TabBtn>
                 <TabBtn active={location.state.subPath === "session"} onClick={() => navigate("/training/training-details/session", { state: {path:'training',sid:location.state.rowData, title: 'TRAINING',subTitle:"Sessions",subPath:"session" } })}>Sessions</TabBtn>
                 <TabBtn active={location.state.subPath === "assessment"} onClick={() => navigate("/training/training-details/assessment", {path:'training', state: {sid:location.state.rowData, title: 'TRAINING',subTitle:"Assessments",subPath:"assessment" } })}>Assessments</TabBtn>

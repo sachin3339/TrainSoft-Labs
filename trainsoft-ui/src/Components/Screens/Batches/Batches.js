@@ -304,7 +304,7 @@ const editBatches = async (data) => {
          </div>
         <div className="table-footer-action">
             <div>
-                {user.role === 'admin' && <Button onClick={() => setShow(true)}> + Add New </Button>}
+                {user.role === 'admin' && <Button className="btn-primary" onClick={() => setShow(true)}> + Add New </Button>}
                 <BsModal {...{ show, setShow, headerTitle: !isEdit ? "Add new Batches": "Update Batches", size: "lg" }}>
                     <div className="form-container">
                         <Formik

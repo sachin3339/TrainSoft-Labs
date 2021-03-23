@@ -1,8 +1,8 @@
 .loginScreen {
   height: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
+  overflow: auto;
+  padding: 20px 20px;
+  background-color: #f9f9fb;
 }
 
 .loginLeftScreen {
@@ -63,6 +63,7 @@
 
 .login-container {
   width: 450px;
+  margin: 30px auto;
 }
 
 .login-form {

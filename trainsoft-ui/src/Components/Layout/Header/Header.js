@@ -33,7 +33,7 @@ const Header = ({location}) => {
             <div className="aic">
             <Dropdown className="notification">
                     <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                       <div className="mx-2">{ICN_NOTIFICATION}</div>
+                       <div className="mx-3">{ICN_NOTIFICATION}</div>
                     </Dropdown.Toggle>
                 <Dropdown.Menu as="div" align="left">
                     <div className="my-2">
