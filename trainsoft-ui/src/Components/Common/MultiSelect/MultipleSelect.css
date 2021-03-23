@@ -37,6 +37,7 @@
 	padding-top: 0px !important;
 }
 .multipleDropDown2 {
+	z-index: 5;
 	height: auto;
 	max-height: 300px;
 	overflow-y: auto;
@@ -131,5 +132,11 @@
 	width: 100px;
 }
 .for-tag  .dropdown-menu{
+	width: 100%;
+}
+.dropdown-container{
+	display: flex;
+    height: 30px;
+    align-items: center;
 	width: 100%;
 }

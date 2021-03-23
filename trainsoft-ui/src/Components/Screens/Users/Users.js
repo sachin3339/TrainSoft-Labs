@@ -20,7 +20,7 @@ import NoDataFound from "../../Common/NoDataFound/NoDataFound";
 
 
 const User = ({ location }) => {
-    const {department,spinner} = useContext(AppContext)
+    const {department,spinner,user} = useContext(AppContext)
     const Toast = useToast()
     const [show, setShow] = useState(false);
     const [participant,setParticipant] = useState([])
@@ -249,15 +249,12 @@ const User = ({ location }) => {
             <CardHeader {...{
                 location,
                 onChange: (e) => e.length === 0 && getUsers(),
-                onEnter: (e) => searchUser(e)
+                onEnter: (e) => searchUser(e),
+                actionClick : () => {setShow(true);},
+                showAction: user.role === 'admin' ? true: false
             }} />
         </div>
-        <div className="table-footer-action">
-            <div>
-                {/* <Button className="mr-3" onClick={() => setShow(true)}><span className="mr-1">{ICN_DOWNLOAD}</span>  Report </Button> */}
-                <Button onClick={() => setShow(true)}> + Add New </Button>
-
-                <BsModal {...{ show, setShow, headerTitle: "Add new User", size: "lg" }}>
+        <BsModal {...{ show, setShow, headerTitle: "Add new User", size: "lg" }}>
                     <div className="form-container">
                         <Formik
                             onSubmit={(value)=>createParticipant(value)}
@@ -336,8 +333,6 @@ const User = ({ location }) => {
                         </Formik>
                     </div>
                 </BsModal>
-            </div>
-        </div>
         <DynamicTable {...{ configuration, sourceData: participant }} />    
     </div>
     

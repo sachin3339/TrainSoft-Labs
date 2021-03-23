@@ -344,12 +344,13 @@ const Batch = ({ location }) => {
             <CardHeader {...{
                 location,
                 onChange: (e) => e.length === 0 && getAllBatch(),
-                onEnter: (e) => searchBatch(e)
+                onEnter: (e) => searchBatch(e),
+                actionClick: ()=> setShow(true),
+                showAction: user.role === 'admin' ? true : false
             }} />
         </div>
-        <div className="table-footer-action">
             <div>
-                {user.role === 'admin' && <Button onClick={() => setShow(true)}> + Add New </Button>}
+                {/* {user.role === 'admin' && <Button onClick={() => setShow(true)}> + Add New </Button>} */}
                 <BsModal {...{ show, setShow, headerTitle: !isEdit ? "Add new Batch" : "Update Batch", size: "lg" }}>
                     <div className="form-container">
                         <Formik
@@ -390,10 +391,8 @@ const Batch = ({ location }) => {
                     </div>
                 </BsModal>
             </div>
-        </div>
         {batchList && <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse(), onPageChange: (e) => getAllBatch(e), count }} />}
-
-    </div>
+        </div>
 
     </>)
 }
