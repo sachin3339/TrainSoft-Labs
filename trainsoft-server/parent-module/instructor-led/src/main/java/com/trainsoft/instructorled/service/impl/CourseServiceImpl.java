@@ -277,4 +277,23 @@ public class CourseServiceImpl implements ICourseService {
             throw new ApplicationException("throwing exception while fetching the all course session details based on courseSid");
         }
     }
+
+    @Override
+    public List<CourseTO> getCoursesWithPagination(int pageNo, int pageSize) {
+        try {
+            Pageable paging = PageRequest.of(pageNo, pageSize);
+            Page<Course> pagedResult = courseRepository.findAllByStatusNot(InstructorEnum.Status.DELETED,paging);
+            List<Course> courses = pagedResult.toList();
+            return courses.stream().map(course->{
+                CourseTO to= mapper.convert(course, CourseTO.class);
+                to.setCreatedByVASid(course.getCreatedBy()==null?null:course.getCreatedBy().getStringSid());
+                to.setUpdatedByVASid(course.getUpdatedBy()==null?null:course.getUpdatedBy().getStringSid());
+                return to;
+            }).collect(Collectors.toList());
+        }catch (Exception e) {
+            log.info("throwing exception while fetching the all course details");
+            throw new ApplicationException("Something went wrong while fetching the course details");
+        }
+    }
+
 }

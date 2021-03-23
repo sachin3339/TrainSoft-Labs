@@ -33,6 +33,8 @@ public class BatchServiceImpl implements IBatchService {
     private IVirtualAccountRepository virtualAccountRepository;
     private IBatchRepository batchRepository;
     private IBatchViewRepository batchViewRepository;
+    private ITrainsoftCustomRepository customRepository;
+    private  IBatchParticipantRepository participantRepository;
     private DozerUtils mapper;
 
     @Override
@@ -167,6 +169,23 @@ public class BatchServiceImpl implements IBatchService {
         }catch (Exception e) {
             log.info("throwing exception while fetching the all batch details with learners");
             throw new ApplicationException("Something went wrong while fetching the batch details with learners");
+        }
+    }
+
+    @Override
+    public boolean deleteParticipantsByBatchSid(String batchSid, String vASid) {
+        try {
+            if (!StringUtils.isEmpty(batchSid) && !StringUtils.isEmpty(vASid)) {
+                Batch batch = batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(batchSid));
+                VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(vASid));
+                BatchParticipant participant= participantRepository.findBatchParticipantByBatchAndVirtualAccount(batch, virtualAccount);
+                participantRepository.delete(participant);
+                return true;
+            } else
+                throw new RecordNotFoundException();
+        } catch (Exception exception) {
+            log.info("throwing exception while deleting the BatchParticipants details by batch and VASid");
+            throw new ApplicationException("Something went wrong while deleting the BatchParticipants details by batch and VASid");
         }
     }
 }
