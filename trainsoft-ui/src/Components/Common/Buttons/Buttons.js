@@ -22,7 +22,7 @@ export const Cancel = ({ children, className, onClick, name = "Cancel" }) => {
 */
 export const Button = ({ children, className='', onClick, type = "button", disabled = false, name = "Submit" }) => {
     return (<>
-        <button type={type} onClick={onClick} disabled={disabled} className={"btn btn-sm btn-secondary px-3 " + className}>{!children && name} {children}</button>
+        <button type={type} onClick={onClick} disabled={disabled} className={"btn btn-sm btn-primary px-3 " + className}>{!children && name} {children}</button>
     </>)
 }
 

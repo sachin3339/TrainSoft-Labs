@@ -37,6 +37,10 @@
           box-shadow: 0 0 0 0.2rem #2D62ED4d;
 }
 
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+  background-color: #214ec3 !important;
+}
+
 .btn-primary:not(:disabled):not(.disabled).active,
 .btn-primary:not(:disabled):not(.disabled):active,
 .show > .btn-primary.dropdown-toggle {
@@ -192,7 +196,8 @@
 }
 
 .breadcrumb-item a {
-  color: #272D3B;
+  color: #2c62ed;
+  font-weight: 600;
 }
 
 .border-danger {
@@ -216,23 +221,41 @@
   height: 1.5rem;
 }
 
+.tab-btn-group .tab-btn:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.tab-btn-group .tab-btn:last-child {
+  border-radius: 0 8px 8px 0;
+  border-right: none;
+}
+
 .label {
   color: #272D3B;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 }
 
+.tnc-label {
+  font-size: 13px;
+}
+
+.tnc-label .custom-control-label {
+  line-height: 22px;
+  color: #555;
+}
+
 .title-lg {
-  font-size: 22px;
+  font-size: 16px;
   color: #272D3B;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 10px;
   line-height: 30px;
 }
 
 .title-md {
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   color: #272D3B;
   margin-bottom: 10px;
   line-height: 22px;
@@ -242,6 +265,23 @@
   font-size: 13px;
   font-weight: 600;
   color: #272D3B;
+}
+
+.cat-title-md {
+  font-weight: 600;
+  font-size: 16px;
+  color: #111;
+  margin-bottom: 3px;
+}
+
+.cat-title-sm {
+  font-size: 12px;
+  line-height: 18px;
+  color: #555;
+}
+
+.table-bless {
+  font-size: 12px;
 }
 
 .full-w {
@@ -402,14 +442,18 @@
 
 .tab-btn {
   width: 100%;
-  background: #00CCF2;
-  color: white;
-  padding: 5px 10px;
+  background: #ececec;
+  color: #333;
+  padding: 7px 10px;
   border-radius: 2px;
   cursor: pointer;
   text-align: center;
-  -webkit-box-shadow: 0px 1px 2px 0px #000000bf;
-          box-shadow: 0px 1px 2px 0px #000000bf;
+  font-size: 13px;
+  border-right: 1px solid #ddd;
+}
+
+.tab-btn.bg-primary {
+  color: #fff;
 }
 
 .success-checkbox .custom-input input:checked + label:before {
@@ -427,6 +471,10 @@
 
 .f12 {
   font-size: 12px;
+}
+
+.f13 {
+  font-size: 13px;
 }
 
 .op5 {
@@ -478,12 +526,37 @@
 @font-face {
   font-family: "Montserrat";
   src: local("Montserrat"), url("../Fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
-  font-weight: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: local("Montserrat"), url("../Fonts/Montserrat/Montserrat-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: local("Montserrat"), url("../Fonts/Montserrat/Montserrat-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+}
+
+.btn-am {
+  background-color: #2D62ED;
+  border: none;
+  padding: 12px 10px !important;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btn-am:hover, .btn-am:active, .btn-am:focus {
+  background-color: #214dbf !important;
 }
 
 body {
-  font-size: 14px;
-  font-family: Montserrat !important;
+  font-size: 14px !important;
+  font-family: 'Montserrat', sans-serif !important;
 }
 
 p {
@@ -516,15 +589,17 @@ p {
 .box-shadow {
   width: 100%;
   min-height: 180px;
-  -webkit-box-shadow: 0px 3px 6px #00000029;
-          box-shadow: 0px 3px 6px #00000029;
+  -webkit-box-shadow: 0px 1px 6px #0000001c;
+          box-shadow: 0px 1px 6px #0000001c;
   border-radius: 20px;
-  padding: 10px 20px;
+  padding: 14px 20px;
+  border: 1px solid #eee;
+  background-color: #fff;
 }
 
 .table-shadow {
-  -webkit-box-shadow: 0px 3px 6px #00000029;
-          box-shadow: 0px 3px 6px #00000029;
+  -webkit-box-shadow: 0px 1px 6px #0000001c;
+          box-shadow: 0px 1px 6px #0000001c;
   border-radius: 20px;
   overflow: hidden;
   width: 100%;
@@ -535,13 +610,21 @@ p {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
+  border: 1px solid #eee;
+  background-color: #fff;
+}
+
+.card-action-icon {
+  margin-top: -12px;
+  margin-right: -12px;
 }
 
 .dashboard-container {
   width: 100%;
   height: 100%;
   overflow: auto;
-  padding: 15px 40px;
+  padding: 25px;
+  background-color: #fff;
 }
 
 .check-box {
@@ -549,14 +632,11 @@ p {
   height: 25px;
   -webkit-box-shadow: 0px 3px 6px #00000029;
           box-shadow: 0px 3px 6px #00000029;
-  background: #f5fbff;
-  border-radius: 2px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  background: #ffffff;
+  padding: 15px;
+  margin-bottom: 10px;
+  color: #111;
+  border: 1px solid #ddd;
 }
 
 .square-btn {
@@ -838,8 +918,8 @@ p {
   height: 130px;
   border-radius: 10px;
   background: #00CCF2;
-  padding: 10px;
-  margin-bottom: 15px;
+  padding: 15px;
+  margin-bottom: 10px;
   color: white;
 }
 
@@ -851,6 +931,7 @@ p {
   -webkit-box-pack: end;
       -ms-flex-pack: end;
           justify-content: flex-end;
+  margin: 0px 0;
 }
 
 #zmmtg-root {

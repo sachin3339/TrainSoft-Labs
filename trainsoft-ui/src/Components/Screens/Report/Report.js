@@ -15,7 +15,7 @@ const Report = ({ location }) => {
     return (
         <div className="table-shadow p-3">
             <CardHeader {...{ location }} />
-            <div className="flx storeTab-shadow mb-3">
+            <div className="flx tab-btn-group mb-3">
                 <TabBtn active={location.state.subPath === "batch"} onClick={() => navigate("/report", { state: { title: 'REPORT', subTitle: "Batch", subPath: "batch" } })}>Batch</TabBtn>
                 <TabBtn active={location.state.subPath === "course"} onClick={() => navigate("/report/course", { state: { title: 'REPORT', subTitle: "Course", subPath: "course" } })}>Course</TabBtn>
                {user.role !== "user" &&  <TabBtn active={location.state.subPath === "participants"} onClick={() => navigate("/report/participants", { state: { title: 'REPORT', subTitle: "Participants", subPath: "participants" } })}>Participants</TabBtn>}

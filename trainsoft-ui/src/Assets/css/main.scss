@@ -3,11 +3,32 @@
 @font-face {
 	font-family: "Montserrat";
 	src: local("Montserrat"), url("../Fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
-	font-weight: normal;
+	font-weight: 400;
 }
+@font-face {
+	font-family: "Montserrat";
+	src: local("Montserrat"), url("../Fonts/Montserrat/Montserrat-Bold.ttf") format("truetype");
+	font-weight: 700;
+  }
+  @font-face {
+	font-family: "Montserrat";
+	src: local("Montserrat"), url("../Fonts/Montserrat/Montserrat-SemiBold.ttf") format("truetype");
+	font-weight: 600;
+  }
+  .btn-am{
+	background-color: #2D62ED;
+	border: none;
+	padding: 12px 10px !important;
+	border-radius: 25px;
+	font-size: 16px;
+	font-weight: 600;
+  }
+  .btn-am:hover, .btn-am:active, .btn-am:focus{
+	background-color: #214dbf !important; 
+  }
 body {
-	font-size: 14px;
-	font-family: Montserrat !important;
+	font-size: 14px !important;
+	font-family: 'Montserrat', sans-serif !important;
 }
 p {
 	margin-top: 0;
@@ -32,7 +53,9 @@ p {
 	min-height: 180px;
 	box-shadow: $boxShadow;
 	border-radius: 20px;
-	padding: 10px 20px;
+	padding: 14px 20px;
+	border: 1px solid #eee;
+  	background-color: #fff;
 }
 .table-shadow {
 	box-shadow: $boxShadow;
@@ -41,22 +64,30 @@ p {
 	width: 100%;
 	display: flex;
 	flex-direction: column;
+	border: 1px solid #eee;
+  background-color: #fff;
 }
+.card-action-icon {
+	margin-top: -12px;
+	margin-right: -12px;
+  }
 .dashboard-container {
 	width: 100%;
 	height: 100%;
 	overflow: auto;
-	padding: 15px 40px;
+	padding: 25px;
+    background-color: #fff;
 }
 
 .check-box {
 	width: 25px;
 	height: 25px;
 	box-shadow: 0px 3px 6px #00000029;
-	background: #f5fbff;
-	border-radius: 2px;
-	display: flex;
-	align-items: center;
+	background: #ffffff;
+	padding: 15px;
+	margin-bottom: 10px;
+	color:#111;
+	border: 1px solid #ddd;
 }
 .square-btn {
 	padding: 3px 5px;
@@ -256,14 +287,15 @@ p {
 	height: 130px;
 	border-radius: 10px;
 	background: $secondary;
-	padding: 10px;
-	margin-bottom: 15px;
+	padding: 15px;
+	margin-bottom: 10px;
 	color: white;
 }
 .table-footer-action {
 	padding: 0px 10px;
 	display: flex;
 	justify-content: flex-end;
+	margin: 0px 0;
 }
 #zmmtg-root {
 	display: none;
