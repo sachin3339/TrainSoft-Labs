@@ -67,6 +67,7 @@ public class BatchServiceImpl implements IBatchService {
                         BaseEntity.hexStringToByteArray(batchTO.getUpdatedByVASid()));
                 batch.setName(batchTO.getName());
                 batch.setTrainingType(batchTO.getTrainingType());
+                batch.setStatus(batchTO.getStatus());
                 batch.setUpdatedBy(virtualAccount);
                 batch.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 BatchTO savedBatch=mapper.convert(batchRepository.save(batch),BatchTO.class);
@@ -155,9 +156,8 @@ public class BatchServiceImpl implements IBatchService {
     public List<BatchViewTO> getBatchesWithPagination(int pageNo, int pageSize) {
         try {
             Pageable paging = PageRequest.of(pageNo, pageSize);
-            Page<BatchView> pagedResult = batchViewRepository.findAll(paging);
-            List<BatchView> batchViewList = pagedResult.stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
-                                             .collect(Collectors.toList());
+            Page<BatchView> pagedResult = batchViewRepository.findAllByStatusNot(InstructorEnum.Status.DELETED,paging);
+            List<BatchView> batchViewList = pagedResult.toList();
             return batchViewList.stream().map(batch->{
                 BatchViewTO to= mapper.convert(batch, BatchViewTO.class);
                 to.setCreatedByVASid(batch.getCreatedBy()==null?null:batch.getCreatedBy().getStringSid());

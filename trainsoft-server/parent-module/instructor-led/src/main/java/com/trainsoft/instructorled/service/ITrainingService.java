@@ -2,12 +2,13 @@ package com.trainsoft.instructorled.service;
 
 import com.trainsoft.instructorled.to.*;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public interface ITrainingService {
     TrainingTO createTraining(TrainingTO trainingTO);
     TrainingTO getTrainingBySid(String trainingSid);
-    List<TrainingViewTO> getTrainings();
+    List<TrainingTO> getTrainings();
     List<TrainingViewTO> getTrainingsWithPagination(int pageNo, int pageSize);
     TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO);
     TrainingSessionTO getTrainingSessionBySid(String trainingSessionSid);
@@ -20,4 +21,5 @@ public interface ITrainingService {
     boolean deleteTrainingBySid(String trainingSid, String deletedBySid);
     boolean deleteTrainingSessionBySid(String trainingSessionSid, String deletedBySid);
     List<AppUserTO> getUsersByNameOrEmailOrPhoneNumber(String str);
+    BigInteger getCountByClass(String classz);
 }

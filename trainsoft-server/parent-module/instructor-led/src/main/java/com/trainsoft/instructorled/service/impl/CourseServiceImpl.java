@@ -213,7 +213,9 @@ public class CourseServiceImpl implements ICourseService {
         Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
         try {
             if (StringUtils.isNotEmpty(course.getStringSid())) {
-                List<CourseSession> courseSessions = courseSessionRepository.findCourseSessionByCourse(course);
+                List<CourseSession> courseSessions = courseSessionRepository.findCourseSessionByCourse(course).
+                        stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+                        .collect(Collectors.toList());;
                return courseSessions.stream().map(courseSession -> {
                     CourseSessionTO to = mapper.convert(courseSession, CourseSessionTO.class);
                     to.setCreatedByVASid(courseSession.getCreatedBy() == null ? null : courseSession.getCreatedBy().getStringSid());
@@ -259,9 +261,8 @@ public class CourseServiceImpl implements ICourseService {
         try {
             if (StringUtils.isNotEmpty(course.getStringSid())) {
                 Pageable paging = PageRequest.of(pageNo, pageSize);
-                Page<CourseSession> pagedResult = courseSessionRepository.findCourseSessionByCourse(course, paging);
-                List<CourseSession> courseSessions = pagedResult.stream().filter(c -> c.getStatus() != InstructorEnum.Status.DELETED)
-                        .collect(Collectors.toList());
+                Page<CourseSession> pagedResult = courseSessionRepository.findCourseSessionByCourseAndStatusNot(course,InstructorEnum.Status.DELETED,paging);
+                List<CourseSession> courseSessions = pagedResult.toList();
                 return courseSessions.stream().map(courseSession -> {
                     CourseSessionTO to = mapper.convert(courseSession, CourseSessionTO.class);
                     to.setCreatedByVASid(courseSession.getCreatedBy() == null ? null : courseSession.getCreatedBy().getStringSid());

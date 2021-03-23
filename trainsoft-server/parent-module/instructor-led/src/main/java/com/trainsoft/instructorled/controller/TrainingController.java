@@ -217,4 +217,13 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getUsersByNameOrEmailOrPhoneNumber(str));
     }
 
+    @GetMapping("get/{classz}")
+    @ApiOperation(value = "getCount", notes = "Get count of given records in given class")
+    public ResponseEntity<?> getCountByClass(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Given classZ", required = true) @PathVariable("classz") String classz) {
+        log.info(String.format("Request received : User for GET /v1/count/classz"));
+        return ResponseEntity.ok(trainingService.getCountByClass(classz));
+    }
+
 }

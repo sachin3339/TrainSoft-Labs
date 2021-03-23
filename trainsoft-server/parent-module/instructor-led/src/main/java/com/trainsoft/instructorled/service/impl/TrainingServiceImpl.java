@@ -1,6 +1,7 @@
 package com.trainsoft.instructorled.service.impl;
 
 import com.trainsoft.instructorled.commons.CommonUtils;
+import com.trainsoft.instructorled.commons.CustomRepositoyImpl;
 import com.trainsoft.instructorled.customexception.ApplicationException;
 import com.trainsoft.instructorled.customexception.RecordNotFoundException;
 import com.trainsoft.instructorled.dozer.DozerUtils;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +45,8 @@ public class TrainingServiceImpl implements ITrainingService {
     IDepartmentVirtualAccountRepository departmentVARepo;
     IBatchParticipantRepository participantRepository;
     IAppUserRepository appUserRepository;
-    private ITrainingCourseRepository trainingCourseRepository;
+    ITrainingCourseRepository trainingCourseRepository;
+    CustomRepositoyImpl customRepositoy;
 
     @Override
     public TrainingTO createTraining(TrainingTO trainingTO) {
@@ -86,17 +89,20 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public List<TrainingViewTO> getTrainings() {
+    public List<TrainingTO> getTrainings() {
         try {
-
-            List<TrainingView> trainingViews =  trainingViewRepository.findAll().stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+            List<String> batchSid=null;
+            List<Training> trainings =  trainingRepository.findAll().stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
                     .collect(Collectors.toList());
-            return trainingViews.stream().map(trainingView -> {
-                TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
-                to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
-                to.setCourseSid(trainingView.getCourse() == null ? null : trainingView.getCourse().getStringSid());
-                to.setCreatedByVASid(trainingView.getCreatedBy() == null ? null : trainingView.getCreatedBy().getStringSid());
-                to.setUpdatedByVASid(trainingView.getUpdatedBy() == null ? null : trainingView.getUpdatedBy().getStringSid());
+            return trainings.stream().map(training-> {
+                TrainingTO to = mapper.convert(training, TrainingTO.class);
+/*                List<TrainingBatch> batches=trainingBatchRepository.findTrainingBatchByTraining(training);
+                batches.forEach(batch -> {
+                    batchSid.add(batch.getBatch().getStringSid());
+                });*/
+                to.setCourseSid(training.getCourse() == null ? null : training.getCourse().getStringSid());
+                to.setCreatedByVASid(training.getCreatedBy() == null ? null : training.getCreatedBy().getStringSid());
+                to.setUpdatedByVASid(training.getUpdatedBy() == null ? null : training.getUpdatedBy().getStringSid());
                 return to;
             }).collect(Collectors.toList());
         } catch (Exception e) {
@@ -109,9 +115,8 @@ public class TrainingServiceImpl implements ITrainingService {
     public List<TrainingViewTO> getTrainingsWithPagination(int pageNo, int pageSize) {
         try {
             Pageable paging = PageRequest.of(pageNo, pageSize);
-            Page<TrainingView> pagedResult = trainingViewRepository.findAll(paging);
-            List<TrainingView> trainingViews=pagedResult.stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
-                    .collect(Collectors.toList());
+            Page<TrainingView> pagedResult = trainingViewRepository.findAllByStatusNot(InstructorEnum.Status.DELETED,paging);
+            List<TrainingView> trainingViews = pagedResult.toList();
             return trainingViews.stream().map(trainingView -> {
                 TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
                 to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
@@ -206,7 +211,9 @@ public class TrainingServiceImpl implements ITrainingService {
         Training training = trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
         try {
             if (StringUtils.isNotEmpty(training.getStringSid())) {
-                List<TrainingSession> trainingSessions = trainingSessionRepository.findTrainingSessionByTraining(training);
+                List<TrainingSession> trainingSessions = trainingSessionRepository.findTrainingSessionByTraining(training).
+                        stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+                        .collect(Collectors.toList());;
                 return trainingSessions.stream().map(trainingSession -> {
                     TrainingSessionTO to = mapper.convert(trainingSession, TrainingSessionTO.class);
                     to.setCreatedByVASid(trainingSession.getCreatedBy() == null ? null : trainingSession.getCreatedBy().getStringSid());
@@ -249,8 +256,12 @@ public class TrainingServiceImpl implements ITrainingService {
         try {
             Training training = trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
             Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
-            List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourse(course);
-            List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByTraining(training);
+            List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourse(course)
+                    .stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+                    .collect(Collectors.toList());;
+            List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByTraining(training)
+                    .stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
+                    .collect(Collectors.toList());;
             List<TrainingSessionTO> sessionsTO=mapper.convertList(trainingSessionList,TrainingSessionTO.class);
             if(sessionsTO!=null && sessionsTO.size()>0){
                 sessionTOList.addAll(sessionsTO);
@@ -381,4 +392,10 @@ public class TrainingServiceImpl implements ITrainingService {
             throw new ApplicationException("Something went wrong while fetching the appUser details by name,email and phone number ");
         }
     }
+
+    @Override
+    public BigInteger getCountByClass(String classz) {
+        return customRepositoy.noOfCountByClass(classz);
+    }
+
 }

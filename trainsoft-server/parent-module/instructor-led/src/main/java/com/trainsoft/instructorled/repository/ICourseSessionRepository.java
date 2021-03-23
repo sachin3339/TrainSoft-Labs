@@ -1,8 +1,10 @@
 package com.trainsoft.instructorled.repository;
 
 
+import com.trainsoft.instructorled.entity.BatchView;
 import com.trainsoft.instructorled.entity.Course;
 import com.trainsoft.instructorled.entity.CourseSession;
+import com.trainsoft.instructorled.value.InstructorEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +15,5 @@ public interface ICourseSessionRepository extends JpaRepository<CourseSession, I
 	CourseSession findCourseSessionBySid(byte[] sid);
 	List<CourseSession> findCourseSessionByCourse(Course course);
 	List<CourseSession> findCourseSessionByTopicNameContaining(String name);
-	Page<CourseSession> findCourseSessionByCourse(Course course, Pageable paging);
+	Page<CourseSession> findCourseSessionByCourseAndStatusNot(Course course,InstructorEnum.Status status, Pageable paging);
 }
