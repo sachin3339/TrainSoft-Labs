@@ -1,12 +1,12 @@
 .sideBarNav{
-    width: 240px;
+    width: 205px;
     height: 100%;
     background: #2D62ED;
     overflow-y: auto;
 }
 .navMenu{
     cursor: pointer;
-    font-size: 15px;
+    font-size: 13px;
     align-items: center;
     font-weight: 600;
 
@@ -20,6 +20,8 @@
     padding: 5px 28px;
     margin: 20px 0px;
     transition: 500ms;
+    border-left: 3px solid transparent;
+    min-height: 42px;
 
 }
 .navMenu a:hover {
@@ -31,15 +33,16 @@
     
 }
 .nav-title{
-    font-size: 35px;
+    font-size: 20px;
     text-align: center;
     font-weight: bold;
-    color: white;
-    padding: 20px 10px;
+    color: #ffffff;
+    padding: 15px;
+    letter-spacing: 0.2px;
 }
 .navMenu svg{
     opacity: .5;
-    width: 22px;
+    width: 18px;
 }
 .navMenu:hover svg{
     opacity: 1;
@@ -50,6 +53,7 @@
     background-color: transparent;
     border-left: 3px solid;
     transition: 500ms;
+    background-color: #1748c5;
 }
 .sideBarNav .active svg{
     opacity: 1;

@@ -29,11 +29,10 @@ const dummyData2 = [
 const LabContainer = ({location})=>{
     return (<div className="catalog-container">
     {dummyData.map(res=> <div className="catalogBox">
-        <div className="aic flx1 jcc">{res.icon}</div>
         <div className="catalogBox-info">
             <div>
-                <div className="title-md text-white">{res.label}</div>
-                <div className="title-sm text-white">{res.desc}</div>
+                <div className="cat-title-md">{res.label}</div>
+                <div className="cat-title-sm">{res.desc}</div>
             </div>
             <div className="text-right">
             <BtnPrimary onClick={()=> navigate('labstore/lab-list',{state: { title: 'LAB STORE', subTitle:"Catalog", subPath:"labstore" }})}>Show All 50 Labs</BtnPrimary>
@@ -49,7 +48,7 @@ const LabStore = ({location})=>{
     return(
         <div className="table-shadow p-3">
         <CardHeader {...{location}}/>
-          <div className="flx storeTab-shadow mb-3">
+          <div className="flx tab-btn-group mb-3">
               <TabBtn active={location.state.subPath === "labstore"} onClick={()=>navigate("/labstore",{state: { title: 'LAB STORE',subTitle:"Catalog", subPath:"labstore" }})}>Catalog</TabBtn>
               <TabBtn  active={location.state.subPath === "mylab"} onClick={()=>navigate("/labstore/mylab",{state: { title: 'LAB STORE',subTitle:"My Lab", subPath:"mylab"  }})}>My Labs</TabBtn> 
           </div>

@@ -24,14 +24,13 @@ const LabList = ({ list = [], myLab = false }) => {
     return (<>
         <div className="catalog-container">
             {list.map(res => <div className="labList">
-                <div className="aic flx1 jcc">{res.icon}</div>
                 <div className="labList-info flx5">
                     <div>
-                        <div className="title-md text-white">{res.label}</div>
-                        <div className=" text-white">{myLab ? wordShort(res.desc, 80) : res.desc}</div>
+                        <div className="cat-title-md">{res.label}</div>
+                        <div className="cat-title-sm">{myLab ? wordShort(res.desc, 80) : res.desc}</div>
                     </div>
-                    <div className="text-md text-white">
-                        <div className="flx">
+                    <div className="text-md">
+                        <div className="flx f12">
                             <div className="mr-3">
                                 2 hours
                                 </div>
@@ -50,11 +49,11 @@ const LabList = ({ list = [], myLab = false }) => {
                 <div className="text-center jcb-c">
                     <div>
                         {myLab ? <div>
-                            <BtnPrimary className="">Select Training</BtnPrimary>
-                        </div> : <BtnPrimary onClick={() => setShow(true)}>+ Import Now</BtnPrimary>}
+                            <BtnPrimary className="btn-block">Select Training</BtnPrimary>
+                        </div> : <BtnPrimary className="btn-block" onClick={() => setShow(true)}>+ Import Now</BtnPrimary>}
                     </div>
                     <div className="">
-                        {myLab ? <BtnPrimary className="my-2">Assign Now</BtnPrimary> : <div className="title-sm text-white">500 + active imports</div>}
+                        {myLab ? <BtnPrimary className="btn-block my-2">Assign Now</BtnPrimary> : <div className="title-sm text-white">500 + active imports</div>}
 
 
                         <div className="star-icon">

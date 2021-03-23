@@ -5,6 +5,9 @@
     /* table-layout: fixed; */
     margin-bottom: 0 !important;
   }
+  .dynamic-table-wrapper{
+    overflow-x: auto;
+  }
   .ng-container {
     padding: 10;
     background: white;
@@ -19,11 +22,13 @@
     vertical-align: middle;
     padding: 5px 20px;
     font-weight: 600;
+    font-size: 13px;
   }
   .ng-table > tbody > tr > td {
     vertical-align: middle;
     padding: 10px 20px;
     max-width: 230px;
+    border-top: 1px solid #eceff1 !important;
   }
 
   .table thead th {
@@ -99,11 +104,11 @@
   content: '';
   display: block;
   position: absolute;
-  top: 7px;
-  left: 7px;
+  top: 5px;
+  left: 6px;
   width: 4px;
   height: 8px;
-  border: solid #c2c2c2;
+  border: solid #504848;
   border-width: 0 2px 2px 0;
   transform: rotate( 
 45deg

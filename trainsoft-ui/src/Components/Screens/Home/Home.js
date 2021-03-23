@@ -40,7 +40,7 @@ const AdminHome = () => {
                     <div className="user-info">
                         <div className="title-lg">Welcome back {user.name}!</div>
                         <div>
-                            Since your last login on the system, there were:
+                            <p className="mb-2">Since your last login on the system, there were:</p>
                                <div>
                                 <div className="aic"><div className="red-circle"></div> <div>21 new enrollment</div></div>
                                 <div className="aic"><div className="red-circle"></div> <div>15 courses completed </div></div>
@@ -121,7 +121,7 @@ const AdminHome = () => {
                         {/* ..........Batches......... */}
                         <Card className="full-h" title="Batches Stats" action={true}>
                             <div className="table-bless">
-                                <Table className="table-borderless ">
+                                <Table className="table-borderless">
                                     <thead>
                                         <tr>
                                             <td>Name</td>
@@ -146,32 +146,40 @@ const AdminHome = () => {
                 </div>
             </div>
             <div className="col-md-4 column">
-                <div className="jcb pb-2">
-                    <div className="grid-batch">
-                        <div>{ICN_COPY}</div>
-                        <div>
-                            <div className="title-lg mb-0 text-white">{batches.length}</div>
-                                         On-going batches
+                <div className="mb-3">
+                    <div className="row">
+                            <div className="col-6">
+                                <div className="grid-batch">
+                                    <div className="mb10">{ICN_COPY}</div>
+                                    <div>
+                                        <div className="batch-title">{batches.length}</div>
+                                        <div className="batch-label">On-going batches</div>
                                     </div>
-                        <div className="jce">
-                            <div className="grid-batch-icon">
-                                <i className="bi bi-arrows-angle-expand"></i>
+                                    <div className="jce">
+                                        <div className="grid-batch-icon">
+                                            <i className="bi bi-arrows-angle-expand"></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                            <div className="col-6">
+                                <div className="grid-batch bg-purple">
+                                    <div className="mb10">{ICN_COMING_BATCHES}</div>
+                                    <div>
+                                        <div className="batch-title">{course.length}</div>
+                                        <div className="batch-label">Total Course</div>
+                                                </div>
+                                    <div className="jce">
+                                        <div className="grid-batch-icon">
+                                            <i className="bi bi-arrows-angle-expand"></i>
+                                        </div>
+                                    </div>
+                                </div>  
+                            </div> 
                     </div>
+                    
 
-                    <div className="grid-batch bg-purple">
-                        <div>{ICN_COMING_BATCHES}</div>
-                        <div>
-                            <div className="title-lg mb-0 text-white">{course.length}</div>
-                                         Total Course
-                                    </div>
-                        <div className="jce">
-                            <div className="grid-batch-icon">
-                                <i className="bi bi-arrows-angle-expand"></i>
-                            </div>
-                        </div>
-                    </div>
+                    
 
                 </div>
 

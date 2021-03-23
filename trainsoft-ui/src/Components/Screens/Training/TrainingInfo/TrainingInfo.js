@@ -24,7 +24,7 @@ const TrainingInfo = () => {
     return (<>
         <div className="flx full-h">
 
-            <div className="box-shadow flx1 p-2 mr-3">
+            <div className="left-details">
                 {/* <div className="user-profile-container">
                 <div className="jcb">
                     <div className="user-pf">Us</div>
@@ -36,17 +36,17 @@ const TrainingInfo = () => {
 
                 </div>
             </div> */}
-                <div className="jcc my-4">
+                <div className="jcc my-2">
                     <Button>{ICN_PROGRESS} Announcement</Button>
                 </div>
-                <div className="my-5 title-sm">
+                <div className="my-3 mb-4">
                     <div className="row my-2">
-                        <div className="col-6">Training Name</div>
-                        <div className="col-6">{training.name}</div>
+                        <div className="col-12 form-lbl1">Training Name</div>
+                        <div className="col-12 form-cont1">{training.name}</div>
                     </div>
                     <div className="row my-2">
-                        <div className="col-6">Instructor </div>
-                        <div className="col-6">{training.instructor}</div>
+                        <div className="col-12 form-lbl1">Instructor </div>
+                        <div className="col-12 form-cont1">{training.instructor}</div>
                     </div>
                     {/* <div className="row my-2">
                         <div className="col-6">Created by</div>
@@ -61,16 +61,16 @@ const TrainingInfo = () => {
                         <div className="col-6">(231) 983 9872</div>
                     </div> */}
                     <div className="row my-2">
-                        <div className="col-6">Start Date</div>
-                        <div className="col-6">{moment(training.startDate).format('Do MMMM YYYY')}</div>
+                        <div className="col-12 form-lbl1">Start Date</div>
+                        <div className="col-12 form-cont1">{moment(training.startDate).format('Do MMMM YYYY')}</div>
                     </div>
                     <div className="row my-2">
-                        <div className="col-6">End Date</div>
-                        <div className="col-6">{moment(training.endDate).format('Do MMMM YYYY')}</div>
+                        <div className="col-12 form-lbl1">End Date</div>
+                        <div className="col-12 form-cont1">{moment(training.endDate).format('Do MMMM YYYY')}</div>
                     </div>
                     <div className="row my-2">
-                        <div className="col-6">Course</div>
-                        <div className="col-6">{training.course}</div>
+                        <div className="col-12 form-lbl1">Course</div>
+                        <div className="col-12 form-cont1">{training.course}</div>
                     </div>
                 </div>
                 <div className="jcc mt-2">
@@ -91,15 +91,17 @@ const TrainingInfo = () => {
                 </div>
             </div>
             <div className="flx3">
-                <div className="jcb">
+                <div className="jcb mb-3">
                     {activityData.map((p, i) => <div key={i} className="user-activity">
-                        <div className="activities-btn">
-                            {p.icon}
+                        <div className="flx mb-2">
+                            <div className="activities-btn">
+                                {p.icon}
+                            </div>
+                            <div className="jcb-c text-right flx1">
+                                <div className="title-lg">{p.data}</div>
+                            </div>
                         </div>
-                        <div className="jcb-c text-right">
-                            <div className="title-lg">{p.data}</div>
-                            <div className="title-sm">{p.name}</div>
-                        </div>
+                        <div className="title-sm">{p.name}</div>
                     </div>)}
 
                 </div>
@@ -108,7 +110,7 @@ const TrainingInfo = () => {
                     <div className="box-shadow">
                         <div className="jcb">
                             <div className="aic title-lg">Activities</div>
-                            <div className="aic  title-md">
+                            <div className="aic  title-md f13">
                                 <div className="mr-4">Customized view</div>
                                 <div className="flx"><div className="aic">
                                     <div>From</div> <div className="checkbox-div"></div>
@@ -116,8 +118,8 @@ const TrainingInfo = () => {
                             </div>
                         </div>
                         {activityCard.map(res => <div className="activity-card">
-                            <div className="title-md text-white">{res.name}</div>
-                            <div className="text-sm text-white">{res.time}</div>
+                            <div className="cat-title-md">{res.name}</div>
+                            <div className="cat-title-sm">{res.time}</div>
                             <div className="mt-3">{res.label}</div>
                         </div>)}
 

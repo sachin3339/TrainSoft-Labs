@@ -19,10 +19,11 @@
     font-weight: 600;
 }
 .profile-md{
-    width: 45px;
-    height: 45px;
-    font-size: 15px;
-    font-weight: 600;
+    width: 36px;
+    height: 36px;
+    font-size: 12px;
+    font-weight: 400;
+    background-color: #e8e8e8;
 }
 .profile-sm{
     width: 35px;

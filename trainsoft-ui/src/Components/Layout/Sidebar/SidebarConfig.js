@@ -3,35 +3,35 @@ import {ICN_HOME,ICN_CALENDER,ICN_SETTING,ICN_ORG_MGT, ICN_SUPPORT, ICN_REPORT, 
 export const AdminConfig = [
     {
         icon: ICN_HOME,
-        title: "HOME",
+        title: "Home",
         pathname: "home",
         disabled: false,
         role:['user']
     },
     {
         icon: ICN_DASHBOARD,
-        title: "DASHBOARD",
+        title: "Dashboard",
         pathname: "dashboard",
         disabled: false,
         role:['admin','trainer']
     },
     {
         icon: ICN_ORG_MGT,
-        title: "ORG MGMT",
+        title: "Org. Mgmt",
         pathname: "org-mgmt",
         disabled: true,
         role:['admin']
     },
     {
         icon: ICN_PARTICIPANT,
-        title: "TRAINING",
+        title: "Training",
         pathname: "training",
         disabled: false,
         role:['admin','user','trainer']
     },
     {
         icon: ICN_BATCHES,
-        title: "BATCHES",
+        title: "Batches",
         pathname: "batches",
         disabled: false,
         role:['admin','trainer']
@@ -39,7 +39,7 @@ export const AdminConfig = [
     },
     {
         icon: ICN_BATCHES,
-        title: "USER",
+        title: "User",
         pathname: "user",
         disabled: false,
         role:['admin']
@@ -47,7 +47,7 @@ export const AdminConfig = [
     },
     {
         icon: ICN_COURSE,
-        title: "COURSE",
+        title: "Course",
         pathname: "course",
         disabled: true,
         role:['admin']
@@ -55,7 +55,7 @@ export const AdminConfig = [
 
     {
         icon: ICN_LAB_STORE,
-        title: "LAB STORE",
+        title: "Lab Store",
         pathname: "labstore",
         subPath:'labstore',
         disabled: false,
@@ -75,14 +75,14 @@ export const AdminConfig = [
     },
     {
         icon: ICN_REPORT,
-        title: "REPORT",
+        title: "Report",
         pathname: "report",
         disabled: true,
         role:['admin','trainer','user']
     },
     {
         icon: ICN_CALENDER,
-        title: "CALENDER",
+        title: "Calendar",
         pathname: "calender",
         disabled: true,
         role:['admin','trainer','user']
@@ -90,7 +90,7 @@ export const AdminConfig = [
 
     {
         icon: ICN_COMPILER,
-        title: "COMPILER",
+        title: "Compiler",
         pathname: "compiler",
         disabled: true,
         role: ['user', 'trainer']
@@ -98,7 +98,7 @@ export const AdminConfig = [
     },
     {
         icon: ICN_VSCODE,
-        title: "VS CODE",
+        title: "VS Code",
         pathname: "vscode",
         disabled: true,
         role: ['user', 'trainer']
@@ -107,7 +107,7 @@ export const AdminConfig = [
 
     {
         icon: ICN_SUPPORT_HOME,
-        title: "SUPPORT",
+        title: "Support",
         pathname: "support",
         disabled: true,
         role: ['user', 'trainer', 'admin']
