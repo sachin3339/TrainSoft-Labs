@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState,useEffect, useContext } from "react";
 import './batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { ICN_TRASH,ICN_EDIT  } from "../../Common/Icon";
@@ -7,10 +7,12 @@ import CardHeader from "../../Common/CardHeader";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import useFetch from "../../../Store/useFetch";
 import moment from 'moment'
-
+import AppContext from "../../../Store/AppContext";
+import RestService from "../../../Services/api.service";
 
 
 const BatchesDetails = ({location}) => {
+    const {spinner} = useContext(AppContext)
     const [participant, setParticipant]= useState([])
 
        // initialize  component
@@ -101,11 +103,11 @@ const BatchesDetails = ({location}) => {
     });
 
        // get all batches
-    //    const getAllBatch = async (pagination="1") => {
+    //    const getAllParticipant = async (pagination="1") => {
     //     try {
     //         let pageSize = 10;
     //         spinner.show();
-    //         RestService.getAllBatchesByPage(pagination,pageSize).then(
+    //         RestService.getAllParticipant(pagination,pageSize).then(
     //             response => {
     //                 let val = response.map(res=> {
     //                     let data = res.appuser
@@ -125,29 +127,40 @@ const BatchesDetails = ({location}) => {
     //         console.error("error occur on getAllBatch()", err)
     //     }
     // }
+
      // search batches
-    //  const searchParticipate = (name)=> {
-    //     try{
-    //         spinner.show();
-    //         RestService.searchParticipatees(name).then(res => {
-    //                 setBatchList(res.data)
-    //                 spinner.hide();
-    //             }, err => {
-    //                 spinner.hide();
-    //             }
-    //         ); 
-    //     }
-    //     catch(err){
-    //         console.error('error occur on searchParticipate()',err)
-    //         spinner.hide();
-    //     }
-    // }
+     const searchParticipate = (name)=> {
+        try{
+            spinner.show();
+            RestService.searchUser(name).then(response => {
+                // let val = response.data.map(res=> {
+                //             let data = res.appuser
+                //             data.role= res.role
+                //             data.department = res.departmentVA ? res.departmentVA.department.name : ''
+                //             return data
+                //           })
+                         setParticipant(response.data)
+                       spinner.hide();
+                }, err => {
+                    spinner.hide();
+                }
+            ); 
+        }
+        catch(err){
+            console.error('error occur on searchParticipate()',err)
+            spinner.hide();
+        }
+    }
+
+    useEffect(()=>{
+        // getAllParticipant()
+    },[])
 
     return (<div className="table-shadow p-3">
-              {/* <CardHeader {...{ location, 
-               onChange: (e) => e.length === 0 && getAllBatch(),
+              <CardHeader {...{ location, 
+               onChange: (e) => e.length === 0 && console.log(''),
                onEnter:(e)=> searchParticipate(e)
-            }} /> */}
+            }} />
         <div className="bDetail-action">
             <div className="full-w ">
             <div className="batch-info">

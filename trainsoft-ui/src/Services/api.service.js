@@ -24,6 +24,7 @@ import AxiosService from "./axios.service.js";
 const  zoomAuth = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6InRHY3VUTmpkUVVTM2prVHdfZWF6OWciLCJleHAiOjE2MTY1NzM4OTMsImlhdCI6MTYxNTk2OTA3OX0.2Aqdh7qmOJvNUx3JijVb5XqMwdiZS0ggvNbJTPljtgA"
 
 const RestService = {
+  getCount:(name)=> AxiosService.get(GLOBELCONSTANT.GET_COUNT.replace("{classz}",name)),
   //  course
   getAllCourse: () => AxiosService.get(GLOBELCONSTANT.COURSE.GET_COURSE),
   CreateCourse: (payload) => AxiosService.post(GLOBELCONSTANT.COURSE.CREATE_COURSE, payload),

@@ -35,6 +35,7 @@ const Trainings = ({ location }) => {
     const [trainingList, setTrainingList] = useState([])
     const [isEdit,setIsEdit] = useState(false);
     const [initialValues,setInitialValue] = useState(initialVal)
+    const [count,setCount] =  useState(0)
 
     const queueDropdownProps = {
         selectItems: batches,
@@ -158,6 +159,7 @@ const Trainings = ({ location }) => {
             console.error("error occur on getTrainings()", err)
         }
     }
+
     // search batches
     const searchTraining = (name) => {
         try {
@@ -194,10 +196,28 @@ const Trainings = ({ location }) => {
         }
     }
 
-    // get all trainings
-    useEffect(() => getTrainings(), [])
+       // get training count
+       const getTrainingCount = async () => {
+        try {
+            RestService.getCount("training").then(
+                response => {
+                 setCount(response.data);
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
+        }
+    }
 
-
+    // initialize component
+    useEffect(() => {
+        getTrainingCount()
+        getTrainings()}, [])
     return (<>
         <div className="table-shadow">
             <div className="p-3">
@@ -216,7 +236,7 @@ const Trainings = ({ location }) => {
                       
                 </div>
             </div>
-            <DynamicTable {...{ configuration, sourceData: trainingList && trainingList.slice().reverse(), onPageChange: (e) => getTrainings(e) }} />
+            <DynamicTable {...{count, configuration, sourceData: trainingList && trainingList.slice().reverse(), onPageChange: (e) => getTrainings(e) }} />
         </div>
     </>)
 }

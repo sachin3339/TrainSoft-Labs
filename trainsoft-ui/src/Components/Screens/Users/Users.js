@@ -194,7 +194,7 @@ const User = ({ location }) => {
             spinner.show();
             RestService.getAllUser("5D66EAB00B4446C9A7ADB898C43C2C119456C5E6CA4D4499AE237822E3A41CB7").then(
                 response => {
-                    let val = response.map(res=> {
+                    let val = response.data.map(res=> {
                         let data = res.appuser
                         data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
                         data.department = res.departmentVA ? res.departmentVA.department.name : ''
@@ -218,7 +218,6 @@ const User = ({ location }) => {
         try {
             spinner.show();
             RestService.searchUser(name).then(resp => {
-                console.log(resp)
                 // let val = resp.map(res=> {
                 //     let data = res.appuser
                 //     data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
@@ -253,22 +252,9 @@ const User = ({ location }) => {
                 onEnter: (e) => searchUser(e)
             }} />
         </div>
-        <div className="flx px-3 mb-2">
-            <div className="mr-4">
-                <Button>Bulk Action</Button>
-                <BtnPrimary className="btn-primary ml-2">Apply</BtnPrimary>
-            </div>
-            <div>
-                <Button>Change role to</Button>
-                <BtnPrimary className="btn-primary ml-2">Apply</BtnPrimary>
-            </div>
-
-        </div>
-        <DynamicTable {...{ configuration, sourceData: participant }} />    
-    </div>
         <div className="table-footer-action">
             <div>
-                <Button className="mr-3" onClick={() => setShow(true)}><span className="mr-1">{ICN_DOWNLOAD}</span>  Report </Button>
+                {/* <Button className="mr-3" onClick={() => setShow(true)}><span className="mr-1">{ICN_DOWNLOAD}</span>  Report </Button> */}
                 <Button onClick={() => setShow(true)}> + Add New </Button>
 
                 <BsModal {...{ show, setShow, headerTitle: "Add new User", size: "lg" }}>
@@ -352,6 +338,9 @@ const User = ({ location }) => {
                 </BsModal>
             </div>
         </div>
+        <DynamicTable {...{ configuration, sourceData: participant }} />    
+    </div>
+    
     </>)
 }
 
