@@ -30,6 +30,9 @@
 	border-color: $primary;
 	box-shadow: 0 0 0 0.2rem #2D62ED4d;
 }
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus{
+	background-color: #214ec3 !important; 
+  }
 .btn-primary:not(:disabled):not(.disabled).active,
 .btn-primary:not(:disabled):not(.disabled):active,
 .show > .btn-primary.dropdown-toggle {
@@ -159,8 +162,9 @@
 	font-weight: bold;
 }
 .breadcrumb-item a {
-	color: $fontColor;
-}
+	color: #2c62ed;
+	font-weight: 600;
+  }
 .border-danger {
 	border-color: #ff637fa3 !important;
 }
@@ -177,3 +181,10 @@
     width: 1.5rem;
     height: 1.5rem;
 }
+.tab-btn-group .tab-btn:first-child {
+	border-radius: 8px 0 0 8px;
+  }
+  .tab-btn-group .tab-btn:last-child {
+	border-radius: 0 8px 8px 0;
+	border-right: none;
+  }
