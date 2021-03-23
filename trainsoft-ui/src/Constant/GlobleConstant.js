@@ -36,7 +36,8 @@ const GLOBELCONSTANT = {
             UPLOAD_PARTICIPANT: API_PATH +  "v1/upload/list/participants",
             CREATE_PARTICIPANT: API_PATH +  "v1/user/create",
             ALL_USERS: API_PATH +  "v1/vaccounts/company/",
-            GENERATE_PWD: API_PATH +  "v1/generate/password"
+            GENERATE_PWD: API_PATH +  "v1/generate/password",
+            SEARCH_USER: API_PATH + "v1/user/{str}"
 
         },  
         TRAINING: {

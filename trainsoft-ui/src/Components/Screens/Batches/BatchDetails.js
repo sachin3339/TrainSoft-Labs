@@ -14,22 +14,22 @@ const BatchesDetails = ({location}) => {
     const [participant, setParticipant]= useState([])
 
        // initialize  component
-    useEffect(() => { 
-        try{
-        if(response){
-           let val = response.map(res=> {
-                let data = res.appuser
-                data.role= res.role
-                data.department = res.departmentVA ? res.departmentVA.department.name : ''
-                return data
-            })
-            setParticipant(val)
-         }
-        }catch(err){
-            console.error(err)
-        }
-    }
-    , [response])
+    // useEffect(() => { 
+    //     try{
+    //     if(response){
+    //        let val = response.map(res=> {
+    //             let data = res.appuser
+    //             data.role= res.role
+    //             data.department = res.departmentVA ? res.departmentVA.department.name : ''
+    //             return data
+    //         })
+    //         setParticipant(val)
+    //      }
+    //     }catch(err){
+    //         console.error(err)
+    //     }
+    // }
+    // , [response])
 
 
     const [configuration, setConfiguration] = useState({
@@ -101,53 +101,53 @@ const BatchesDetails = ({location}) => {
     });
 
        // get all batches
-       const getAllBatch = async (pagination="1") => {
-        try {
-            let pageSize = 10;
-            spinner.show();
-            RestService.getAllBatchesByPage(pagination,pageSize).then(
-                response => {
-                    let val = response.map(res=> {
-                        let data = res.appuser
-                        data.role= res.role
-                        data.department = res.departmentVA ? res.departmentVA.department.name : ''
-                        return data
-                    })
-                    setParticipant(val)
-                },
-                err => {
-                    spinner.hide();
-                }
-            ).finally(() => {
-                spinner.hide();
-            });
-        } catch (err) {
-            console.error("error occur on getAllBatch()", err)
-        }
-    }
+    //    const getAllBatch = async (pagination="1") => {
+    //     try {
+    //         let pageSize = 10;
+    //         spinner.show();
+    //         RestService.getAllBatchesByPage(pagination,pageSize).then(
+    //             response => {
+    //                 let val = response.map(res=> {
+    //                     let data = res.appuser
+    //                     data.role= res.role
+    //                     data.department = res.departmentVA ? res.departmentVA.department.name : ''
+    //                     return data
+    //                 })
+    //                 setParticipant(val)
+    //             },
+    //             err => {
+    //                 spinner.hide();
+    //             }
+    //         ).finally(() => {
+    //             spinner.hide();
+    //         });
+    //     } catch (err) {
+    //         console.error("error occur on getAllBatch()", err)
+    //     }
+    // }
      // search batches
-     const searchParticipate = (name)=> {
-        try{
-            spinner.show();
-            RestService.searchParticipatees(name).then(res => {
-                    setBatchList(res.data)
-                    spinner.hide();
-                }, err => {
-                    spinner.hide();
-                }
-            ); 
-        }
-        catch(err){
-            console.error('error occur on searchParticipate()',err)
-            spinner.hide();
-        }
-    }
+    //  const searchParticipate = (name)=> {
+    //     try{
+    //         spinner.show();
+    //         RestService.searchParticipatees(name).then(res => {
+    //                 setBatchList(res.data)
+    //                 spinner.hide();
+    //             }, err => {
+    //                 spinner.hide();
+    //             }
+    //         ); 
+    //     }
+    //     catch(err){
+    //         console.error('error occur on searchParticipate()',err)
+    //         spinner.hide();
+    //     }
+    // }
 
     return (<div className="table-shadow p-3">
-              <CardHeader {...{ location, 
+              {/* <CardHeader {...{ location, 
                onChange: (e) => e.length === 0 && getAllBatch(),
                onEnter:(e)=> searchParticipate(e)
-            }} />
+            }} /> */}
         <div className="bDetail-action">
             <div className="full-w ">
             <div className="batch-info">

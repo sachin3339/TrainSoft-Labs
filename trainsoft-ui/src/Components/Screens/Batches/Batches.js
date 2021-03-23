@@ -70,7 +70,7 @@ const Batch = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Toggle id={data.sid} checked={data.status === 'ENABLED' ? true : false}/>
+                render: (data) => <Toggle id={data.sid} onChange={()=> {getBatchBySid(data.sid);setIsEdit(false)}}  checked={data.status === 'ENABLED' ? true : false}/>
             }
         },
         headerTextColor: '#454E50', // user can change table header text color
@@ -86,7 +86,7 @@ const Batch = ({ location }) => {
             {
                 "title": "Edit",
                 "icon": ICN_EDIT,
-                "onClick": (data) => {setInitialValue(data);setIsEdit(true);setShow(true)}
+                "onClick": (data) => {getBatchBySid(data.sid);setIsEdit(true);setShow(true)}
             },
             {
                 "title": "Delete",
@@ -222,19 +222,21 @@ const deleteBatches = async (batchId) => {
     }
 }
 
+
+
 // edit batches
-const editBatches = async (data) => {
+const editBatches = async (data,changeStatus=false) => {
     try {
         let payload = {
             "sid": data.sid,
-            "status":data.status,
+            "status": changeStatus ? (data.status === "ENABLED" ? 'DISABLED': 'ENABLED') : data.status,
             "name":data.name,
-            "trainingType":data.trainingType
+            "trainingType":data.trainingType ? data.trainingType: 'INSTRUCTOR_LED'
         }
         spinner.show();
         RestService.editBatches(payload).then(
             response => {
-                Toast.success({ message: `Batch update successfully`});
+                Toast.success({ message: `${changeStatus ? "Status" : 'Batch'} update successfully`});
                 spinner.hide();
                 getAllBatch()
                 setShow(false)
@@ -261,6 +263,25 @@ const editBatches = async (data) => {
             RestService.getAllBatchesByPage(pagination,pageSize).then(
                 response => {
                     setBatchList(response.data);
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
+        }
+    }
+
+       // get batches by sid
+       const getBatchBySid = async (sid) => {
+        try {
+            RestService.getBatchesBySid(sid).then(
+                response => {
+                    !isEdit && editBatches(response.data,true);
+                    setInitialValue(response.data);
                 },
                 err => {
                     spinner.hide();

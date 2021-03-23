@@ -20,7 +20,7 @@ import NoDataFound from "../../Common/NoDataFound/NoDataFound";
 
 
 const User = ({ location }) => {
-    const {department} = useContext(AppContext)
+    const {department,spinner} = useContext(AppContext)
     const Toast = useToast()
     const [show, setShow] = useState(false);
     const [participant,setParticipant] = useState([])
@@ -29,11 +29,11 @@ const User = ({ location }) => {
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
 
-    const {response} = useFetch({
-        method: "get",
-        url: GLOBELCONSTANT.PARTICIPANT.ALL_USERS + "5D66EAB00B4446C9A7ADB898C43C2C119456C5E6CA4D4499AE237822E3A41CB7",
-        errorMsg: 'error occur on get participant'
-     });
+    // const {response} = useFetch({
+    //     method: "get",
+    //     url: GLOBELCONSTANT.PARTICIPANT.ALL_USERS + "5D66EAB00B4446C9A7ADB898C43C2C119456C5E6CA4D4499AE237822E3A41CB7",
+    //     errorMsg: 'error occur on get participant'
+    //  });
 
      //validation
      const schema = Yup.object().shape({
@@ -188,30 +188,71 @@ const User = ({ location }) => {
         }
     }
 
-
-    // initialize  component
-    useEffect(() => { 
-        try{
-        if(response){
-           let val = response.map(res=> {
-                let data = res.appuser
-                data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
-                data.department = res.departmentVA ? res.departmentVA.department.name : ''
-                return data
-            })
-            setParticipant(val)
-         }
-        }catch(err){
-            console.error(err)
+    // get all training
+    const getUsers = async () => {
+        try {
+            spinner.show();
+            RestService.getAllUser("5D66EAB00B4446C9A7ADB898C43C2C119456C5E6CA4D4499AE237822E3A41CB7").then(
+                response => {
+                    let val = response.map(res=> {
+                        let data = res.appuser
+                        data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
+                        data.department = res.departmentVA ? res.departmentVA.department.name : ''
+                        return data
+                    })
+                    setParticipant(val)
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("error occur on getUsers()", err)
         }
     }
-    , [response])
+
+    // search batches by name 
+    const searchUser = (name) => {
+        try {
+            spinner.show();
+            RestService.searchUser(name).then(resp => {
+                console.log(resp)
+                // let val = resp.map(res=> {
+                //     let data = res.appuser
+                //     data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
+                //     data.department = res.departmentVA ? res.departmentVA.department.name : ''
+                //     return data
+                // })
+                setParticipant(resp.data)
+                spinner.hide();
+              }, err => {
+                spinner.hide();
+              }
+            );
+        }
+        catch (err) {
+            console.error('error occur on searchUser()', err)
+            spinner.hide();
+        }
+    }    
+
+    // initialize  component
+    useEffect(() => getUsers(), [])
+
 
 
 
     return (<>
     <div className="table-shadow">
-        <div className="p-3"><CardHeader {...{ location }} /></div>
+        <div className="p-3">
+            <CardHeader {...{
+                location,
+                onChange: (e) => e.length === 0 && getUsers(),
+                onEnter: (e) => searchUser(e)
+            }} />
+        </div>
         <div className="flx px-3 mb-2">
             <div className="mr-4">
                 <Button>Bulk Action</Button>
