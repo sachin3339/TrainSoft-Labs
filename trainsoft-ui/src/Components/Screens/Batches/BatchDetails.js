@@ -159,7 +159,7 @@ const BatchesDetails = ({location}) => {
     return (<div className="table-shadow p-3">
               <CardHeader {...{ location, 
                onChange: (e) => e.length === 0 && console.log(''),
-               onEnter:(e)=> searchParticipate(e)
+               onEnter:(e)=> console.log(e)
             }} />
         <div className="bDetail-action">
             <div className="full-w ">
