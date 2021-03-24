@@ -453,20 +453,25 @@ public class TrainingServiceImpl implements ITrainingService {
         }
     }
 
-    public void updateVirtualAccountStatus(String virtualAccountSid, String status,String unPublishedBy) {
+    @Override
+    public void updateVirtualAccountStatus(String virtualAccountSid, String status) {
         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
         boolean update = false;
         if (status.equals("ENABLED")) {
-            virtualAccount.setStatus(virtualAccount.getStatus().ENABLED);
+            virtualAccount.setStatus(InstructorEnum.Status.ENABLED);
             update = true;
         }
         if (status.equals("DISABLED")) {
-            virtualAccount.setStatus(virtualAccount.getStatus().DISABLED);
+            virtualAccount.setStatus(InstructorEnum.Status.DISABLED);
+            update = true;
+        }
+        if (status.equals("DELETED")) {
+            virtualAccount.setStatus(InstructorEnum.Status.DELETED);
+            update = true;
         }
         if (update == true) {
             virtualAccountRepository.save(virtualAccount);
         }
     }
-
 
 }
