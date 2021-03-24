@@ -122,7 +122,6 @@ public class TrainingServiceImpl implements ITrainingService {
             return trainingViews.stream().map(trainingView -> {
                 TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
                 to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
-                to.setCourseSid(trainingView.getCourse() == null ? null : trainingView.getCourse().getStringSid());
                 to.setCreatedByVASid(trainingView.getCreatedBy() == null ? null : trainingView.getCreatedBy().getStringSid());
                 to.setUpdatedByVASid(trainingView.getUpdatedBy() == null ? null : trainingView.getUpdatedBy().getStringSid());
                 return to;

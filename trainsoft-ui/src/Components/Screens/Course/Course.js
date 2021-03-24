@@ -22,6 +22,7 @@ const Courses = ({ location }) => {
     const Toast = useToast();
     const [show, setShow] = useState(false);
     const [courseList, setCourseList] = useState([])
+    const [count,setCount] = useState(0)
     const [initialValues, setInitialValues] = useState({
         name: '',
         description: ''
@@ -36,7 +37,7 @@ const Courses = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'course-details'} state={{ title: "COURSE", subTitle: data.name, path: "course", rowData: data, sid: data.sid }} className="dt-name">{data.name}</Link>
+                render: (data) => <Link to={'course-details'} state={{ title: "Course", subTitle: data.name, path: "course", rowData: data, sid: data.sid }} className="dt-name">{data.name}</Link>
 
             },
             "description": {
@@ -153,8 +154,9 @@ const Courses = ({ location }) => {
     // get all course
     const getCourse = async (pagination = "1") => {
         try {
-            spinner.show();
-            RestService.getAllCourse().then(
+            let pageNo= 10
+            spinner.show()
+            RestService.getCourseByPage(pageNo,pagination).then(
                 response => {
                     setCourseList(response.data);
                 },
@@ -185,17 +187,36 @@ const Courses = ({ location }) => {
             spinner.hide();
         }
     }
+    // get course count
+    const getBatchCount = async () => {
+        try {
+            RestService.getCount("course").then(
+                response => {
+                    setCount(response.data);
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
+        }
+    }
 
-    useEffect(() => getCourse(), [])
+    useEffect(() => {
+        getCourse();
+        getBatchCount()}, [])
 
 
     return (<><div className="table-shadow">
         <div className="p-3">
          <CardHeader {...{ location, 
-               onChange: (e) => e.length === 0 && getCourse(),
+               onChange: (e) => e.length === 0 && getCourse(e),
                onEnter:(e)=> searchCourse(e),
                actionClick: ()=> setShow(true),
-               showAction: user.role === 'admin' ? true : false
+               showAction: user.role === 'ADMIN' ? true : false
          }} />
         </div>
       
@@ -221,7 +242,7 @@ const Courses = ({ location }) => {
                                     <div>
                                     </div>
                                     <div>
-                                        {user.role === "admin" && <Button type="submit" > {isEdit ? 'Update Course' : 'Create Course'}</Button>}
+                                         <Button type="submit" > {isEdit ? 'Update Course' : 'Create Course'}</Button>
                                     </div>
                                 </footer>
                             </form>
@@ -230,7 +251,7 @@ const Courses = ({ location }) => {
                     </div>
                 </BsModal>
         
-        <DynamicTable {...{ configuration, sourceData: courseList.slice().reverse() }} />
+        <DynamicTable {...{ configuration, sourceData: courseList.slice().reverse(),onPageChange: (e) => getCourse(e) ,count}} />
     </div>
 
     </>)

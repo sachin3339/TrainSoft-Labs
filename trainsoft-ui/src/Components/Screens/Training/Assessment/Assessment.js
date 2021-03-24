@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button } from '../../../Common/Buttons/Buttons'
+import NoDataFound from '../../../Common/NoDataFound/NoDataFound';
 import SessionList from '../../../Common/SessionList/SessionList'
 import AddAssessment from './AddAssessment'
 import "./assessment.css";
@@ -13,11 +14,12 @@ const Assessment = () =>{
         { topicName:"Assessment 3",date:"07/06/2019",active:false },
     ]
     return(<>
-            <div className="session-container">
+     <NoDataFound title="Coming Soon..."/>
+            {/* <div className="session-container">
             <SessionList {...{sessionList:listValue }}/>
         </div>
         <div className="full-w mt-2"><Button className="btn-block" onClick={()=> setShow(true)}>+ Add Session</Button></div>
-        <AddAssessment {...{show, setShow}}/>
+        <AddAssessment {...{show, setShow}}/> */}
     </>)
 }
 

@@ -8,8 +8,11 @@ export const API_PATH = HOSTNAME ;
 let API_HOST = HOSTNAME +"/insled/v1/"
 
 const GLOBELCONSTANT = {
-        BASE_URL: HOSTNAME,
+        BASE_URL: API_HOST,
         GET_COUNT: API_HOST + "get/{classz}",
+        AUTH: {
+            LOGIN: API_HOST + "login",
+        },
         COURSE: {
             GET_COURSE: API_HOST + "courses",
             CREATE_COURSE: API_HOST + "course/create",
@@ -22,7 +25,8 @@ const GLOBELCONSTANT = {
             UPDATE_COURSE_SESSION:  API_HOST + "update/coursesession",
             DELETE_COURSE_SESSION:  API_HOST + "delete/coursesession/",
             SEARCH_SESSION:  API_HOST + "coursesessions/",
-            COURSE_SESSION_PAGE: API_HOST + "coursesession/course/{courseSid}/{pageNo}/{pageSize}"
+            COURSE_SESSION_PAGE: API_HOST + "coursesession/course/{courseSid}/{pageNo}/{pageSize}",
+            COURSE_BY_PAGE:  API_HOST + "course/{pageNo}/{pageSize}",
 
         },  
         BATCHES: {
@@ -38,7 +42,7 @@ const GLOBELCONSTANT = {
             GET_PARTICIPANT: API_HOST +  "list/participant",
             UPLOAD_PARTICIPANT: API_HOST +  "upload/list/participants",
             CREATE_PARTICIPANT: API_HOST +  "user/create",
-            ALL_USERS: API_HOST +  "vaccounts/company/",
+            ALL_USERS: API_HOST +  "vaccounts",
             GENERATE_PWD: API_HOST +  "generate/password",
             SEARCH_USER: API_HOST + "user/{str}"
 
@@ -56,12 +60,16 @@ const GLOBELCONSTANT = {
             GET_INSTRUCTOR: API_PATH +  'depatments'
         },
         ACCESS_LEVEL: [
+            {key: "ALL",name: "All"},
             {key: "BATCH_MGMT",name: "Batch Mgmt"},
-            {key: "COURSE_MGMT",name: "Batch Mgmt"},
+            {key: "COURSE_MGMT",name: "Course Mgmt"},
             {key: "USER_MGMT",name: "User Mgmt"},
             {key: "INSTRUCTOR_MGMT",name: "Instructor Mgmt"},
             {key: "TRAINING_MGMT",name: "Training Mgmt"},
-
+        ],
+        DEPARTMENT_ROLE: [
+            {key: "LEARNER",name: "Learner"},
+            {key: "INSTRUCTOR",name: "Instructor"},
         ]
     }
 export default GLOBELCONSTANT;

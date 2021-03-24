@@ -55,11 +55,11 @@ const AdminHome = () => {
             </div>
             <div className="col-md-4 ">
                 {/* ..........Lms insight......... */}
-                <Card title={`${user.role === 'admin' ? 'Lms insight' : 'Attendance Rate'} `} action={true}>
+                <Card title={`${user.role === 'ADMIN' ? 'Lms insight' : 'Attendance Rate'} `} action={true}>
                     <div className="">
-                        <div className="lms-card"><div className="lms-card-g">AWS Solution Architect</div><div>45 Enrolled <span>a</span></div></div>
-                        <div className="lms-card"><div className="lms-card-p">Machine Learning</div><div>40 Enrolled</div> <span>a</span></div>
-                        <div className="lms-card"><div className="lms-card-g">Splunk</div><div>40 Enrolled</div> <span>a</span></div>
+                        <div className="lms-card"><div className="lms-card-g">AWS Solution Architect</div><div>45 Enrolled <span></span></div></div>
+                        <div className="lms-card"><div className="lms-card-p">Machine Learning</div><div>40 Enrolled</div> <span></span></div>
+                        <div className="lms-card"><div className="lms-card-g">Splunk</div><div>40 Enrolled</div> <span></span></div>
                     </div>
                 </Card>
                 {/* ..........End Lms insight......... */}
@@ -223,7 +223,7 @@ const Home = () => {
     useEffect(() => {
         allCourse.response && setCourse(allCourse.response)
         allBatches.response && setBatches(allBatches.response)
-        allBatches.response && setDepartment(allDepartment.response)
+        allDepartment.response && setDepartment(allDepartment.response)
     }, [allCourse.response,allBatches.response,allDepartment.response])
 
     return (<>
