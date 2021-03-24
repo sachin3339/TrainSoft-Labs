@@ -103,30 +103,30 @@ const BatchesDetails = ({location}) => {
     });
 
        // get all batches
-    //    const getAllParticipant = async (pagination="1") => {
-    //     try {
-    //         let pageSize = 10;
-    //         spinner.show();
-    //         RestService.getAllParticipant(pagination,pageSize).then(
-    //             response => {
-    //                 let val = response.map(res=> {
-    //                     let data = res.appuser
-    //                     data.role= res.role
-    //                     data.department = res.departmentVA ? res.departmentVA.department.name : ''
-    //                     return data
-    //                 })
-    //                 setParticipant(val)
-    //             },
-    //             err => {
-    //                 spinner.hide();
-    //             }
-    //         ).finally(() => {
-    //             spinner.hide();
-    //         });
-    //     } catch (err) {
-    //         console.error("error occur on getAllBatch()", err)
-    //     }
-    // }
+       const getParticipant = async (pagination="1") => {
+        try {
+            let pageSize = 10;
+            spinner.show();
+            RestService.getBatchParticipant(location.state.sid).then(
+                response => {
+                    let val = response.data.map(res=> {
+                        let data = res.appuser
+                        data.role= res.role
+                        data.department = res.departmentVA ? res.departmentVA.department.name : ''
+                        return data
+                    })
+                    setParticipant(val)
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
+        }
+    }
 
      // search batches
      const searchParticipate = (name)=> {
@@ -153,7 +153,7 @@ const BatchesDetails = ({location}) => {
     }
 
     useEffect(()=>{
-        // getAllParticipant()
+        location.state.sid && getParticipant()
     },[])
 
     return (<div className="table-shadow p-3">
