@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IBulkUploadService {
 
-     List<AppUserTO> getAllAppUsers();
+     List<AppUserTO> getAllAppUsers(String companySid);
      UserTO createVirtualAccount(UserTO userTO);
      UserTO getVirtualAccountByVASid(String virtualAccountSid);
      List<UserTO> getVirtualAccountByCompanySid(String companySid,String type);

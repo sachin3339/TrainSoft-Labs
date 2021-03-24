@@ -31,6 +31,7 @@ public class BatchController {
             @ApiParam(value = "Create Batch payload", required = true) @RequestBody BatchTO batchTO) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         batchTO.setCreatedByVASid(jwt.getVirtualAccountSid());
+        batchTO.setCompanySid(jwt.getCompanySid());
         BatchTO createBatch = batchService.createBatch(batchTO);
         return ResponseEntity.ok(createBatch);
     }
@@ -48,18 +49,17 @@ public class BatchController {
     public ResponseEntity<?> getBatchesWithPagination(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
-            @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize)
-    {
-        log.info(String.format("Request received : User for GET /v1/batches"));
-        return ResponseEntity.ok(batchService.getBatchesWithPagination(pageNo-1, pageSize));
+            @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(batchService.getBatchesWithPagination(pageNo-1, pageSize,jwt.getCompanySid()));
     }
 
     @GetMapping("/batches")
     @ApiOperation(value = "getBatches", notes = "Get list of batch")
     public ResponseEntity<?> getBatches(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token){
-        log.info(String.format("Request received : User for GET /v1/batches"));
-        return ResponseEntity.ok(batchService.getBatches());
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(batchService.getBatches(jwt.getCompanySid()));
     }
 
 
@@ -68,8 +68,8 @@ public class BatchController {
     public ResponseEntity<?> getBatchesByName(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Batch name", required = true) @PathVariable("name") String name) {
-        log.info(String.format("Request received : User for GET /v1/list/batch"));
-        return ResponseEntity.ok(batchService.getBatchesByName(name));
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(batchService.getBatchesByName(name,jwt.getCompanySid()));
     }
 
     @PutMapping("update/batch")

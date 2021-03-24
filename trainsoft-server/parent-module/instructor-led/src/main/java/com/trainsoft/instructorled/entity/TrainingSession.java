@@ -59,4 +59,8 @@ public class TrainingSession extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "updated_by", referencedColumnName = "id")
 	private VirtualAccount updatedBy;
+
+	@ManyToOne
+	@JoinColumn(name = "company_id", referencedColumnName = "id")
+	private Company company;
 }
