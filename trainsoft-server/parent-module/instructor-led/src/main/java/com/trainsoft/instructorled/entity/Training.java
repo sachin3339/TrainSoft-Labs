@@ -36,8 +36,9 @@ public class Training extends BaseEntity{
     @Column(name="updated_on")
     private Date updatedOn;
 
-    @Column(name = "instructor_name")
-    private String instructorName;
+    @ManyToOne
+    @JoinColumn(name = "instructor", referencedColumnName = "id")
+    private VirtualAccount instructor;
 
     @OneToMany(mappedBy = "batch", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<TrainingBatch> trainingBatches = new ArrayList<>();
