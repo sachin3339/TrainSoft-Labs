@@ -53,7 +53,7 @@ const SessionList = ({ sessionList = [], role = "ADMIN", sessionType = 'course',
                         {sessionType === 'training' && <div>
                             <div className="row mt-2">
                                 <div className="col-md-3">
-                                    <div><span className="title-sm">Session Date: </span><span>07/07/2021</span></div>
+                                    <div><span className="title-sm">Start Date: </span><span>07/07/2021</span></div>
                                 </div>
                                 <div className="col-md-3">
                                     <div><span className="title-sm">Start Time: </span><span>10:02 PM</span></div>
