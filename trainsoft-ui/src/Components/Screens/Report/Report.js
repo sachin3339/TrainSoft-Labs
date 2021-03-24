@@ -16,10 +16,10 @@ const Report = ({ location }) => {
         <div className="table-shadow p-3">
             <CardHeader {...{ location }} />
             <div className="flx tab-btn-group mb-3">
-                <TabBtn active={location.state.subPath === "batch"} onClick={() => navigate("/report", { state: { title: 'REPORT', subTitle: "Batch", subPath: "batch" } })}>Batch</TabBtn>
-                <TabBtn active={location.state.subPath === "course"} onClick={() => navigate("/report/course", { state: { title: 'REPORT', subTitle: "Course", subPath: "course" } })}>Course</TabBtn>
-               {user.role !== "user" &&  <TabBtn active={location.state.subPath === "participants"} onClick={() => navigate("/report/participants", { state: { title: 'REPORT', subTitle: "Participants", subPath: "participants" } })}>Participants</TabBtn>}
-               {user.role !== "user" &&  <TabBtn active={location.state.subPath === "download"} onClick={() => navigate("/report/download", { state: { title: 'REPORT', subTitle: "Download", subPath: "download" } })}>Download</TabBtn>}
+                <TabBtn active={location.state.subPath === "batch"} onClick={() => navigate("/report", { state: { title: 'Report', subTitle: "Batch", subPath: "batch" } })}>Batch</TabBtn>
+                <TabBtn active={location.state.subPath === "course"} onClick={() => navigate("/report/course", { state: { title: 'Report', subTitle: "Course", subPath: "course" } })}>Course</TabBtn>
+               {user.role !== "user" &&  <TabBtn active={location.state.subPath === "participants"} onClick={() => navigate("/report/participants", { state: { title: 'Report', subTitle: "Participants", subPath: "participants" } })}>Participants</TabBtn>}
+               {user.role !== "user" &&  <TabBtn active={location.state.subPath === "download"} onClick={() => navigate("/report/download", { state: { title: 'Report', subTitle: "Download", subPath: "download" } })}>Download</TabBtn>}
 
             </div>
             <Router>

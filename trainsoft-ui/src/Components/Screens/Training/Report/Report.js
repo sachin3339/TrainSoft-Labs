@@ -1,8 +1,11 @@
+import NoDataFound from "../../../Common/NoDataFound/NoDataFound"
 import Session from "../Session/Session"
 
 const Report = () =>{
     return(<>
-       Report
+       {/* <div className="table-shadow"> */}
+            <NoDataFound title="Coming Soon..."/>
+    {/* </div> */}
     </>)
 }
 

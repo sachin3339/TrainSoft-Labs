@@ -107,7 +107,7 @@ const TrainingInfo = () => {
                 </div>
                 <div>
                     {/* ..........Analytic......... */}
-                    <div className="box-shadow">
+                    <div className="">
                         <div className="jcb">
                             <div className="aic title-lg">Activities</div>
                             <div className="aic  title-md f13">

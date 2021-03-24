@@ -49,8 +49,8 @@ const LabStore = ({location})=>{
         <div className="table-shadow p-3">
         <CardHeader {...{location}}/>
           <div className="flx tab-btn-group mb-3">
-              <TabBtn active={location.state.subPath === "labstore"} onClick={()=>navigate("/labstore",{state: { title: 'LAB STORE',subTitle:"Catalog", subPath:"labstore" }})}>Catalog</TabBtn>
-              <TabBtn  active={location.state.subPath === "mylab"} onClick={()=>navigate("/labstore/mylab",{state: { title: 'LAB STORE',subTitle:"My Lab", subPath:"mylab"  }})}>My Labs</TabBtn> 
+              <TabBtn active={location.state.subPath === "labstore"} onClick={()=>navigate("/labstore",{state: { title: 'Lab Store',subTitle:"Catalog", subPath:"labstore" }})}>Catalog</TabBtn>
+              <TabBtn  active={location.state.subPath === "mylab"} onClick={()=>navigate("/labstore/mylab",{state: { title: 'Lab Store',subTitle:"My Lab", subPath:"mylab"  }})}>My Labs</TabBtn> 
           </div>
           <Router>
                 <LabContainer path="/"/>

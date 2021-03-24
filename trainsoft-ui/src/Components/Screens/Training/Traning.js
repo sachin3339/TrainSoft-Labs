@@ -55,7 +55,7 @@ const Trainings = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link onClick={() => setTraining(data)} to={`training-details`} state={{ title: 'TRAINING', rowData: data, subTitle: "Training Info", subPath: '/' }} className="dt-name">{data.name}</Link>
+                render: (data) => <Link onClick={() => setTraining(data)} to={`training-details`} state={{ title: 'Training', rowData: data, subTitle: "Training Info", subPath: '/' }} className="dt-name">{data.name}</Link>
 
             },
             "noOfBatches": {
@@ -199,7 +199,7 @@ const Trainings = ({ location }) => {
        // get training count
        const getTrainingCount = async () => {
         try {
-            RestService.getCount("training").then(
+            RestService.getCount("vw_training").then(
                 response => {
                  setCount(response.data);
                 },
@@ -226,7 +226,7 @@ const Trainings = ({ location }) => {
                     onChange: (e) => e.length === 0 && getTrainings(),
                     onEnter: (e) => searchTraining(e),
                     actionClick : () => {setShow(true);setInitialValue(initialVal)},
-                    showAction: user.role === 'admin' ? true: false
+                    showAction: user.role === 'ADMIN' ? true: false
                 }} />
             </div>
           
@@ -282,9 +282,6 @@ const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) =
             }
         }
     return (<>
-    {
-        console.log(initialValues)
-    }
                     <Modal
                         size="lg"
                         show={show}
