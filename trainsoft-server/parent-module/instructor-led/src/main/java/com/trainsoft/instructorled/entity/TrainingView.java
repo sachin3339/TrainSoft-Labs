@@ -25,6 +25,9 @@ public class TrainingView extends BaseEntity {
     @Column(name = "course_name")
     private String courseName;
 
+    @Column(name = "course_sid")
+    private String courseSid;
+
     @Column(name = "instructor_name")
     private String instructor;
 
