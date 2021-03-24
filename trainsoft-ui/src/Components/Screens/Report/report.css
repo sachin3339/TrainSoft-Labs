@@ -1,0 +1,33 @@
+.report-container{
+    width: 100%;
+    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.116);
+    display: flex;
+}
+.chart-report{
+    padding: 20px 10px;
+    width: 100%;
+}
+.report-action{
+    width: 370px;
+    background: #f9f9f9;
+    border: 1px solid #ececec;
+    padding: 10px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.action-list{
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    padding: 20px 15px;
+    justify-content: space-between;
+}
+.action-list path{
+    fill: #00CCF2;
+}
+.action-list .title-lg{
+    color: #00CCF2;
+}
+.action-list-top{
+    /* border-bottom: 0px solid !important; */
+}

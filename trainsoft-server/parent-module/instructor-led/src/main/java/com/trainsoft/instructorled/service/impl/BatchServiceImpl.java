@@ -129,6 +129,7 @@ public class BatchServiceImpl implements IBatchService {
         try {
             if (!StringUtils.isEmpty(batchSid) && batch != null) {
                 batch.setStatus(InstructorEnum.Status.DELETED);
+                // it should be having different column to update deleted by
                 batch.setUpdatedBy(virtualAccount);
                 batch.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 batchRepository.save(batch);

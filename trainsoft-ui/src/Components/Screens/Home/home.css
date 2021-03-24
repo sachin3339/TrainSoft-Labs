@@ -1,0 +1,67 @@
+.user-info{
+    padding: 15px 10px;
+}
+
+.lms-card-g{
+    background: #00CCF2;
+    padding: 5px 10px;
+    color: white;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+.lms-card-p{
+    background: #FF007C;
+    padding: 5px 10px;
+    color: white;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+.lms-card{
+    padding: 5px 0px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+.grid-batch{
+    width: 150px;
+    height: 180px;
+    border-radius: 20px;
+    background-color: #2D62ED;
+    padding: 15px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.grid-batch-icon{
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    display: grid;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.288);
+    border-radius: 50%;
+}
+.batch-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+.batch-label {
+    font-size: 12px;
+}
+.avgScore-w{
+    width: 30px;
+    text-align: right;
+}
+.progress-w{
+    width: 128px;
+}
+.feed-list{
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    background: #2D62ED;
+    color: white;
+}

@@ -1,0 +1,120 @@
+
+.catalogBox{
+    padding: 20px;
+    display: flex;
+    background-color: #fff;
+    /* color: white; */
+    width: 32%;
+    min-width: 280px;
+    height: 200px;
+    margin-bottom: 20px;
+    justify-content: space-between;
+    /* box-shadow: 0px 3px 6px #272d3b33; */
+    border-radius: 20px;
+    border: 1px solid #ddd;
+}
+.catalogBox svg{
+    width: 77px;
+    height: 90px;
+}
+
+.catalog-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+.catalogBox-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.secondary-color {
+    background: #00ccf2;
+  }
+  .labList{
+      width: 100%;
+      padding: 15px;
+      display: flex;
+      background-color: #ffffff;
+      height: 135px;
+      margin-bottom: 20px;
+      justify-content: space-between;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+  }
+  .labList-info{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .labList svg{
+    width: 60px;
+    height: 90px;
+}
+.star-icon{
+    display: flex;
+}
+.star-icon svg{
+    fill: #E3C52F;
+    width: 30px;
+    height: 25px;
+}
+.carousel-item img{
+    width: 269px;
+}
+.carousel-control-next, .carousel-control-prev{
+    opacity: 1;
+}
+.carousel-control-prev-icon, .carousel-control-next-icon{
+    background: #00ccf2;
+    opacity: 1;
+    height: 40px;
+    display: flex;
+    border-radius: 50%;
+    width: 40px;
+    align-items: center;
+    justify-content: center;
+    
+}
+.carousel-control-next, .carousel-control-prev{
+    width: 8%;
+}
+.carousel-control-prev-icon::after{
+    content: '<';
+    font-weight: 600;
+    color: white;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    top: 10px;
+    font-family: monospace;
+    font-size: 24px;
+}
+.carousel-control-next-icon::after{
+    content: '>';
+    font-weight: 600;
+    color: white;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    top: 10px;
+    font-family: monospace;
+    font-size: 24px;
+}
+.carousel-div{
+    padding: 0px 10px;
+}
+
+.carousel{
+    padding: 0px 88px;
+    background: #F1F1F1;
+}
+.storeTab-shadow {
+    border-bottom: 1px solid #ddd;
+    margin-top: 20px;
+}
+.storeTab-shadow .tab-btn {
+    max-width: 180px;
+  }

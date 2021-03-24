@@ -1,0 +1,98 @@
+/* Generic search enabled dropdown */
+.ddsearch {
+    /* min-height: 33px; */
+    border-bottom: 1.2px solid #e9e8e8b2;;
+    padding:0px
+}
+.searchInputType3 {
+    float: left;
+    font-size: 12px;
+    /* height: 41px; */
+    padding: 10px 10px;
+    /* width: 360px; */
+    /* background-color: #FFFFFF; */
+}
+.fa-magnif {
+    padding: 0px 6px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    color: #999;
+}
+.searchInputType3_input {
+    height: 22px !important;
+    padding: 0 0 0 5px !important;
+    outline: none;
+    border: none;
+    font-size: 15px;
+    width: 100%;
+}
+.no-chev.dropdown-toggle::after{
+  display: none;
+}
+.select-type-dropdown.dropdown-toggle::after{
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  margin-top: -3px;
+}
+.select-type-dropdown {
+    text-align: left;
+    padding-right: 25px;
+}
+.maxh200{
+    overflow: auto;
+    /* max-height: 275px; */
+    /* background-color: white; */
+    padding: 8px 0px;
+}
+.dropdown-custom {
+    border: 1px solid rgb(214, 214, 214);
+    padding-right: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+
+}
+.dropdown-custom .dropdown-menu {
+    min-width: 230px !important;
+    padding: 0px;
+    background: #F5FBFF;
+}
+.dropdown-custom .form-control{
+    border: 0px;
+    background: transparent;
+}
+.dropdown-custom > .dropdown-toggle::after{
+    display: none ;
+}
+.dropdown-custom .form-control:focus{
+    box-shadow: 0 0 0 0px rgba(0, 123, 255, .25) !important;
+}
+.dropdown-container-box{
+    display: flex;
+    max-height: 300px;
+    flex-direction: column;
+    overflow-x: auto;
+}
+
+.dropdown-custom  .dropdown-item {
+    display: block;
+    width: 100%;
+    padding: .4rem 1.5rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-transform: capitalize;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+}
+.dropdown-custom .dropdown-menu {
+    box-shadow: 0px 8px 6px #00000029;
+    border: 0px solid rgb(0 0 0 / 0%);
+    border-bottom-left-radius: 4px !important;
+    border-radius: 1px;
+    border-bottom-right-radius: 4px !important;
+    width: 100%;
+}

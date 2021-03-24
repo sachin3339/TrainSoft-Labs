@@ -1,0 +1,52 @@
+// login screen
+.loginScreen{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.loginLeftScreen{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: justify;
+    padding: 0px 30px !important;
+    background-image: url('../../../Assets/Images/screen.jpg');
+    position: relative;
+}
+.loginLeftScreen:before {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(to bottom, #22ccff, #1177b2);
+    opacity: .8;
+}
+.loginLeftScreen h1{
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+.loginRightScreen{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.login-container{
+    width: 450px;
+}
+.login-form{
+    background: white;
+    padding: 28px;
+    box-shadow: 0px 0px 15px 0px #00000021;
+    border-radius: 20px;
+}

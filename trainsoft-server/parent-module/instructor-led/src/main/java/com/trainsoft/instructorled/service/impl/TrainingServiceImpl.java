@@ -56,6 +56,7 @@ public class TrainingServiceImpl implements ITrainingService {
             if (trainingTO != null) {
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
                         (BaseEntity.hexStringToByteArray(trainingTO.getCreatedByVASid()));
+                VirtualAccount virtualAccount1=virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(trainingTO.getInstructor().getSid()));
                 Course course = courseRepository.findCourseBySid
                         (BaseEntity.hexStringToByteArray(trainingTO.getCourseSid()));
                 Training training = mapper.convert(trainingTO, Training.class);
@@ -63,6 +64,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 training.setCreatedBy(virtualAccount);
                 training.setUpdatedOn(null);
                 training.setCourse(null);
+                training.setInstructor(virtualAccount1);
                 training.setTrainingBatches(null);
                 training.setStatus(InstructorEnum.Status.ENABLED);
                 training.setStartDate(new Date(trainingTO.getStartDate()));
@@ -416,11 +418,12 @@ public class TrainingServiceImpl implements ITrainingService {
             if (trainingTO != null) {
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
                         (BaseEntity.hexStringToByteArray(trainingTO.getUpdatedByVASid()));
+                VirtualAccount virtualAccount1=virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(trainingTO.getInstructor().getSid()));
                 Training training = trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingTO.getSid()));
                 Course course = courseRepository.findCourseBySid
                         (BaseEntity.hexStringToByteArray(trainingTO.getCourseSid()));
                 training.setName(trainingTO.getName());
-                training.setInstructorName(trainingTO.getInstructorName());
+                training.setInstructor(virtualAccount1);
                 training.setCourse(null);
                 training.setTrainingBatches(null);
                 training.setStatus(trainingTO.getStatus());
