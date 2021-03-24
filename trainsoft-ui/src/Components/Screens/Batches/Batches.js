@@ -26,7 +26,7 @@ const initialVal = {
 }
 
 const Batch = ({ location }) => {
-    const { user, spinner } = useContext(AppContext)
+    const { user, spinner,setBatches,batches } = useContext(AppContext)
     const Toast = useToast();
     const [show, setShow] = useState(false);
     const [batchList, setBatchList] = useState([])
