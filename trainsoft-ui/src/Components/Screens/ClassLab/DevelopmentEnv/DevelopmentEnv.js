@@ -20,7 +20,7 @@ const DevelopmentEnv =()=>{
     // get development link
     const getDevelopmentLink = (id) =>{
         try{
-            axios.get(`http://65.1.185.38/run/lab?id=`+ id)
+            axios.get(`https://www.trainsoft.io/devclass`)
             .then(({ data }) => {
                 window.open(createPortal(data))
             })
