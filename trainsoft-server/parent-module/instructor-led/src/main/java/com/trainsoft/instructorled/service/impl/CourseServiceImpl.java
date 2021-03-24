@@ -170,7 +170,6 @@ public class CourseServiceImpl implements ICourseService {
                         BaseEntity.hexStringToByteArray(courseSessionTO.getSid()));
                 VirtualAccount virtualAccount= virtualAccountRepository.findVirtualAccountBySid(
                         BaseEntity.hexStringToByteArray(courseSessionTO.getUpdatedByVASid()));
-                courseSession.setStatus(courseSessionTO.getStatus());
                 courseSession.setTopicName(courseSessionTO.getTopicName());
                 courseSessionTO.setTopicDescription(courseSessionTO.getTopicDescription());
                 courseSession.setUpdatedBy(virtualAccount);

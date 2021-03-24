@@ -22,4 +22,5 @@ public interface ITrainingService {
     boolean deleteTrainingSessionBySid(String trainingSessionSid, String deletedBySid);
     List<AppUserTO> getUsersByNameOrEmailOrPhoneNumber(String str);
     BigInteger getCountByClass(String classz);
+    TrainingTO updateTraining(TrainingTO trainingTO);
 }
