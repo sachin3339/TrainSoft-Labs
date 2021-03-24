@@ -248,4 +248,15 @@ public class TrainingController {
         return ResponseEntity.ok(updateUser);
     }
 
+    @PostMapping("training/update")
+    @ApiOperation(value = "updateTraining", notes = "API to update existing Training.")
+    public ResponseEntity<?> updateTraining(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "update Training payload", required = true) @RequestBody TrainingTO trainingTO) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        trainingTO.setUpdatedByVASid(jwt.getVirtualAccountSid());
+        TrainingTO createTraining = trainingService.updateTraining(trainingTO);
+        return ResponseEntity.ok(createTraining);
+    }
+
 }

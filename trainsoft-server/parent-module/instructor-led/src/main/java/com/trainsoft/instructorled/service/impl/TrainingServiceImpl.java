@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +48,7 @@ public class TrainingServiceImpl implements ITrainingService {
     IAppUserRepository appUserRepository;
     ITrainingCourseRepository trainingCourseRepository;
     CustomRepositoyImpl customRepositoy;
+
 
     @Override
     public TrainingTO createTraining(TrainingTO trainingTO) {
@@ -139,9 +141,20 @@ public class TrainingServiceImpl implements ITrainingService {
         try {
             if (StringUtils.isNotEmpty(trainingSid) && training != null) {
                 savedTrainingTO = mapper.convert(training, TrainingTO.class);
+                List<TrainingBatch> trainingBatchs =  trainingBatchRepository.findTrainingBatchByTraining(training);
+                TrainingCourse trainingCourse=trainingCourseRepository.findTrainingCourseByTraining(training);
+                List<TrainingBatchTO> batchTOS=new ArrayList<>();
+                trainingBatchs.forEach(b->{
+                    TrainingBatchTO bto=new TrainingBatchTO();
+                    bto.setTrainingSid(b.getTraining().getStringSid());
+                    bto.setBatchSid(b.getBatch().getStringSid());
+                    bto.setSid(b.getStringSid());
+                    batchTOS.add(bto);
+                });
+                savedTrainingTO.setTrainingBatchs(batchTOS);
                 savedTrainingTO.setCreatedByVASid(training.getCreatedBy() == null ? null : training.getCreatedBy().getStringSid());
                 savedTrainingTO.setUpdatedByVASid(training.getUpdatedBy() == null ? null : training.getUpdatedBy().getStringSid());
-                savedTrainingTO.setCourseSid(training.getCourse() == null ? null : training.getCourse().getStringSid());
+                savedTrainingTO.setCourseSid(trainingCourse.getStringSid());
                 return savedTrainingTO;
             }
             else
@@ -398,5 +411,64 @@ public class TrainingServiceImpl implements ITrainingService {
     public BigInteger getCountByClass(String classz) {
         return customRepositoy.noOfCountByClass(classz);
     }
+
+    @Override
+    public TrainingTO updateTraining(TrainingTO trainingTO) {
+        try {
+            if (trainingTO != null) {
+                VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
+                        (BaseEntity.hexStringToByteArray(trainingTO.getUpdatedByVASid()));
+                Training training = trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingTO.getSid()));
+                Course course = courseRepository.findCourseBySid
+                        (BaseEntity.hexStringToByteArray(trainingTO.getCourseSid()));
+                training.setName(trainingTO.getName());
+                training.setInstructorName(trainingTO.getInstructorName());
+                training.setCourse(null);
+                training.setTrainingBatches(null);
+                training.setStatus(trainingTO.getStatus());
+                training.setStartDate(new Date(trainingTO.getStartDate()));
+                training.setEndDate(new Date(trainingTO.getEndDate()));
+                training.setUpdatedBy(virtualAccount);
+                training.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                Training savedTraining=trainingRepository.save(training);
+                Integer flag= trainingCourseRepository.deleteAllByTraining(savedTraining);
+                Integer flag2= trainingBatchRepository.deleteAllByTraining(savedTraining);
+                if(trainingTO.getTrainingBatchs()!=null && trainingTO.getTrainingBatchs().size()!=0)
+                    saveTrainingBatch(savedTraining, trainingTO.getTrainingBatchs());
+                else
+                    trainingTO.setTrainingBatchs(Collections.EMPTY_LIST);
+
+                if(trainingTO.getCourseSid()!=null)
+                    saveTrainingCourse(savedTraining, trainingTO.getCourseSid());
+                else
+                    trainingTO.setCourseSid(null);
+                TrainingTO savedTrainingTO = mapper.convert(savedTraining, TrainingTO.class);
+                savedTrainingTO.setCreatedByVASid(virtualAccount.getStringSid());
+                savedTrainingTO.setCourseSid(course.getStringSid());
+                savedTrainingTO.setTrainingBatchs(trainingTO.getTrainingBatchs());
+                return savedTrainingTO;
+            } else
+                throw new RecordNotFoundException();
+        } catch (Exception e) {
+            log.info("throwing exception while updating the training");
+            throw new ApplicationException("Something went wrong while updating the training");
+        }
+    }
+
+    public void updateVirtualAccountStatus(String virtualAccountSid, String status,String unPublishedBy) {
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
+        boolean update = false;
+        if (status.equals("ENABLED")) {
+            virtualAccount.setStatus(virtualAccount.getStatus().ENABLED);
+            update = true;
+        }
+        if (status.equals("DISABLED")) {
+            virtualAccount.setStatus(virtualAccount.getStatus().DISABLED);
+        }
+        if (update == true) {
+            virtualAccountRepository.save(virtualAccount);
+        }
+    }
+
 
 }
