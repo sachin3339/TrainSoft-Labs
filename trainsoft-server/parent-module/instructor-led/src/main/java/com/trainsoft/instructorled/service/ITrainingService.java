@@ -23,4 +23,5 @@ public interface ITrainingService {
     List<AppUserTO> getUsersByNameOrEmailOrPhoneNumber(String str);
     BigInteger getCountByClass(String classz);
     TrainingTO updateTraining(TrainingTO trainingTO);
+    void updateVirtualAccountStatus(String virtualAccountSid, String status);
 }
