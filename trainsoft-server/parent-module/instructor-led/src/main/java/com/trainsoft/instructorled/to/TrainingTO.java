@@ -5,6 +5,7 @@ import com.trainsoft.instructorled.entity.Batch;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.catalina.User;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class TrainingTO extends BaseTO{
     private long startDate;
     private long endDate;
     private InstructorEnum.Status status;
-    private String instructorName;
+    private UserTO instructor;
     private long createdOn;
     private String createdByVASid;
     private long updatedOn;
