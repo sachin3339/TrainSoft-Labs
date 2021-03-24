@@ -151,7 +151,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
     public List<UserTO> getVirtualAccountByCompanySid(String companySid,String type){
         List<UserTO> list= new ArrayList<>();
         Company company= companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
-        List<VirtualAccount> virtualAccounts=virtualAccountRepository.findVirtualAccountByCompany(company);;
+        List<VirtualAccount> virtualAccounts=virtualAccountRepository.findVirtualAccountByCompanyAndStatusNot(company,InstructorEnum.Status.DELETED);;
         virtualAccounts.forEach(virtualAccount -> {
             if(type.equalsIgnoreCase("ALL")) {
                 DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
