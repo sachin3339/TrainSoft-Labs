@@ -148,16 +148,34 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
     }
 
     @Override
-    public List<UserTO> getVirtualAccountByCompanySid(String companySid){
+    public List<UserTO> getVirtualAccountByCompanySid(String companySid,String type){
         List<UserTO> list= new ArrayList<>();
         Company company= companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
-        List<VirtualAccount> virtualAccounts= virtualAccountRepository.findVirtualAccountByCompany(company);
+        List<VirtualAccount> virtualAccounts=virtualAccountRepository.findVirtualAccountByCompany(company);;
         virtualAccounts.forEach(virtualAccount -> {
-            DepartmentVirtualAccount dVA= departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
-            UserTO user=mapper.convert(virtualAccount,UserTO.class);
-            user.getAppuser().setPassword(null);
-            user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
-            list.add(user);
+            if(type.equalsIgnoreCase("ALL")) {
+                DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
+                UserTO user = mapper.convert(virtualAccount, UserTO.class);
+                user.getAppuser().setPassword(null);
+                user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+                list.add(user);
+            }else if(type.equalsIgnoreCase("INSTRUCTOR")){
+                DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
+                if(dVA.getDepartmentRole().name().equalsIgnoreCase("INSTRUCTOR")) {
+                    UserTO user = mapper.convert(virtualAccount, UserTO.class);
+                    user.getAppuser().setPassword(null);
+                    user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+                    list.add(user);
+                }
+            }else if(type.equalsIgnoreCase("LEARNER")){
+                DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
+                if(dVA.getDepartmentRole().name().equalsIgnoreCase("LEARNER")) {
+                    UserTO user = mapper.convert(virtualAccount, UserTO.class);
+                    user.getAppuser().setPassword(null);
+                    user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+                    list.add(user);
+                }
+            }
         });
         return list;
     }
