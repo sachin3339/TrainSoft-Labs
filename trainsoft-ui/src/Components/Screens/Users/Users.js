@@ -173,9 +173,8 @@ const User = ({ location }) => {
                   "department": {
                       "name":data.department.name
                   },
-                  "departmentRole": data.departmentRole
+                  "departmentRole": data.departmentRole.key
                 },    
-                "role": "ADMIN"
               }
             RestService.createParticipant(payload).then(resp => {
                 setShow(false)
@@ -192,7 +191,7 @@ const User = ({ location }) => {
     const getUsers = async () => {
         try {
             spinner.show();
-            RestService.getAllUser("5D66EAB00B4446C9A7ADB898C43C2C119456C5E6CA4D4499AE237822E3A41CB7").then(
+            RestService.getAllUser().then(
                 response => {
                     let val = response.data.map(res=> {
                         let data = res.appuser
@@ -251,7 +250,7 @@ const User = ({ location }) => {
                 onChange: (e) => e.length === 0 && getUsers(),
                 onEnter: (e) => searchUser(e),
                 actionClick : () => {setShow(true);},
-                showAction: user.role === 'admin' ? true: false
+                showAction: user.role === 'ADMIN' ? true: false
             }} />
         </div>
         <BsModal {...{ show, setShow, headerTitle: "Add new User", size: "lg" }}>
@@ -295,12 +294,12 @@ const User = ({ location }) => {
                                             <SelectInput label="Department" name="department" bindKey="name" option={department} />
                                         </div>
                                         <div className="col-6">
-                                            <SelectInput label="Role" name="departmentRole" option={['ADMIN', 'LEARNER', 'INSTRUCTOR']} />
+                                            <SelectInput label="Role" name="departmentRole"  bindKey="name" option={GLOBELCONSTANT.DEPARTMENT_ROLE} />
                                         </div>
                                     </Form.Group>
                                     <Form.Group className="row">
                                         <div className="col-6">
-                                            <TextInput label="Password" name="password" disabled={true}/>
+                                            <TextInput label="Password" name="password" />
                                         </div>
                                         <div className="col-6">
                                             <SelectInput label="Privilege/Access Level" name="accessType" bindKey="name" option={GLOBELCONSTANT.ACCESS_LEVEL} />

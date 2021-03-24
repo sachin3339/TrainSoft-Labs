@@ -6,43 +6,43 @@ export const AdminConfig = [
         title: "Home",
         pathname: "home",
         disabled: false,
-        role:['user']
+        role:['USER']
     },
     {
         icon: ICN_DASHBOARD,
         title: "Dashboard",
         pathname: "dashboard",
         disabled: false,
-        role:['admin','trainer']
+        role:['ADMIN','TRAINER']
     },
     {
         icon: ICN_ORG_MGT,
         title: "Org. Mgmt",
         pathname: "org-mgmt",
         disabled: true,
-        role:['admin']
+        role:['ADMIN']
     },
     {
         icon: ICN_PARTICIPANT,
         title: "Training",
         pathname: "training",
         disabled: false,
-        role:['admin','user','trainer']
+        role:['ADMIN','USER','TRAINER']
     },
     {
         icon: ICN_BATCHES,
         title: "Batches",
         pathname: "batches",
         disabled: false,
-        role:['admin','trainer']
+        role:['ADMIN','TRAINER']
 
     },
     {
         icon: ICN_BATCHES,
-        title: "User",
+        title: "USER",
         pathname: "user",
         disabled: false,
-        role:['admin']
+        role:['ADMIN']
 
     },
     {
@@ -50,7 +50,7 @@ export const AdminConfig = [
         title: "Course",
         pathname: "course",
         disabled: true,
-        role:['admin']
+        role:['ADMIN']
     },
 
     {
@@ -59,7 +59,7 @@ export const AdminConfig = [
         pathname: "labstore",
         subPath:'labstore',
         disabled: false,
-        role:['admin','trainer','user'],
+        role:['ADMIN','TRAINER','USER'],
         Children: [
             {
                 title: "Catalog",
@@ -78,14 +78,14 @@ export const AdminConfig = [
         title: "Report",
         pathname: "report",
         disabled: true,
-        role:['admin','trainer','user']
+        role:['ADMIN','TRAINER','USER']
     },
     {
         icon: ICN_CALENDER,
         title: "Calendar",
         pathname: "calender",
         disabled: true,
-        role:['admin','trainer','user']
+        role:['ADMIN','TRAINER','USER']
     },
 
     {
@@ -93,7 +93,7 @@ export const AdminConfig = [
         title: "Compiler",
         pathname: "compiler",
         disabled: true,
-        role: ['user', 'trainer']
+        role: ['USER', 'TRAINER']
 
     },
     {
@@ -101,7 +101,7 @@ export const AdminConfig = [
         title: "VS Code",
         pathname: "vscode",
         disabled: true,
-        role: ['user', 'trainer']
+        role: ['USER', 'TRAINER']
 
     },
 
@@ -110,7 +110,14 @@ export const AdminConfig = [
         title: "Support",
         pathname: "support",
         disabled: true,
-        role: ['user', 'trainer', 'admin']
+        role: ['USER', 'TRAINER', 'ADMIN']
+    },
+    {
+        icon: ICN_VSCODE,
+        title: "Class",
+        pathname: "class",
+        disabled: true,
+        role: ['USER', 'TRAINER', 'ADMIN']
     },
 
  

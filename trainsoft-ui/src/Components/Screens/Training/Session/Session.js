@@ -86,7 +86,7 @@ const Session = ()=>{
              onEdit:()=> console.log("")
              }}/>
         </div>
-        {user.role === 'admin' &&<div className="full-w mt-2"><Button className="btn-block" onClick={()=> setShow(true)}>+ Add Session</Button></div>}
+        {user.role === 'ADMIN' &&<div className="full-w mt-2"><Button className="btn-block" onClick={()=> setShow(true)}>+ Add Session</Button></div>}
         <AddSession {...{show, setShow,getSessionByPage}}/>
     </>)
 }

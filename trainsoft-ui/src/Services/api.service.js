@@ -25,6 +25,8 @@ const  zoomAuth = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsI
 
 const RestService = {
   getCount:(name)=> AxiosService.get(GLOBELCONSTANT.GET_COUNT.replace("{classz}",name)),
+  login:(payload)=> AxiosService.post(GLOBELCONSTANT.AUTH.LOGIN,{},{},payload),
+
   //  course
   getAllCourse: () => AxiosService.get(GLOBELCONSTANT.COURSE.GET_COURSE),
   CreateCourse: (payload) => AxiosService.post(GLOBELCONSTANT.COURSE.CREATE_COURSE, payload),
@@ -37,6 +39,7 @@ const RestService = {
   searchSession : (name) => AxiosService.get(GLOBELCONSTANT.COURSE.SEARCH_SESSION + name),
   deleteSession : (sessionId) => AxiosService.delete(GLOBELCONSTANT.COURSE.DELETE_COURSE_SESSION + sessionId),
   getCourseSessionByPage: (courseSid,pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.COURSE.COURSE_SESSION_PAGE.replace("{courseSid}", courseSid).replace("{pageNo}", pageNo).replace("{pageSize}", pageSize)),
+  getCourseByPage: (pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.COURSE.COURSE_BY_PAGE.replace("{pageNo}", pageNo).replace("{pageSize}", pageSize)),
 
   //batches
   getAllBatches: () => AxiosService.get(GLOBELCONSTANT.BATCHES.GET_BATCH_LIST),
@@ -50,7 +53,7 @@ const RestService = {
   CreateBatch: (payload) => AxiosService.post(GLOBELCONSTANT.BATCHES.CREATE_BATCHES, payload),
   //participant
   getAllParticipant: (sid) => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.GET_PARTICIPANT),
-  getAllUser: (companySid) => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.ALL_USERS + companySid),
+  getAllUser: () => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.ALL_USERS),
   searchUser: (str) => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.SEARCH_USER.replace("{str}",str)),
   UploadParticipant: (payload,header) => AxiosService.uploadMultiPart(GLOBELCONSTANT.PARTICIPANT.UPLOAD_PARTICIPANT, payload, header),
   createParticipant: (payload) => AxiosService.post(GLOBELCONSTANT.PARTICIPANT.CREATE_PARTICIPANT,payload),
