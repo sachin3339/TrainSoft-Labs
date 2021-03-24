@@ -8,13 +8,15 @@ import ClassLab from "./Components/Screens/ClassLab/ClassLab";
 import Spinner from "./Components/Common/Spinner/Spinner";
 import AxiosService from './Services/axios.service';
 import AppContext from "./Store/AppContext";
-AxiosService.init();
+
 
 
 
 function App() {
-   const {spinner} = useContext(AppContext)
-
+   const {spinner,user} = useContext(AppContext)
+   useEffect(() => {
+      AxiosService.init('',user.jwtToken);
+   }, [])
   return (<>
       <Spinner value={spinner}/>
       <Router>
