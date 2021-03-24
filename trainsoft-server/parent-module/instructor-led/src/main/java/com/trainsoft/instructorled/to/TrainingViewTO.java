@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.persistence.Column;
 import java.util.Date;
 
 @Getter
@@ -15,9 +17,11 @@ public class TrainingViewTO extends BaseTO{
     private int noOfBatches;
     private String course;
     private String instructor;
-    private Date startDate;
-    private Date endDate;
+    private long startDate;
+    private long endDate;
     private InstructorEnum.Status status;
     private String createdByVASid;
     private String updatedByVASid;
+    private long createdOn;
+    private long updatedOn;
 }

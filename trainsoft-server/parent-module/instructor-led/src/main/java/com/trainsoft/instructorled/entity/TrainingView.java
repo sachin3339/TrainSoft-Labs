@@ -38,6 +38,12 @@ public class TrainingView extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private InstructorEnum.Status status;
 
+    @Column(name="created_on")
+    private Date createdOn;
+
+    @Column(name="updated_on")
+    private Date updatedOn;
+
     @ManyToOne
     @JoinColumn(name = "created_by", referencedColumnName = "id")
     private VirtualAccount createdBy;
