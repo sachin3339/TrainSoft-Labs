@@ -256,8 +256,18 @@ public class TrainingController {
             @ApiParam(value = "update Training payload", required = true) @RequestBody TrainingTO trainingTO) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         trainingTO.setUpdatedByVASid(jwt.getVirtualAccountSid());
-        TrainingTO createTraining = trainingService.updateTraining(trainingTO);
-        return ResponseEntity.ok(createTraining);
+        TrainingTO updateTraining = trainingService.updateTraining(trainingTO);
+        return ResponseEntity.ok(updateTraining);
+    }
+
+    @PutMapping("/update/status/{status}/virtualAccount/{vASid}")
+    @ApiOperation(value = "updateVirtualAccountStatusBySid", notes = "API to update  VirtualAccount status")
+    public void updateVirtualAccountStatusBySid(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Status", required = true) @PathVariable("status") String status,
+            @ApiParam(value = "Virtual sid", required = true) @PathVariable("vASid") String vASid){
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        trainingService.updateVirtualAccountStatus(vASid, status);
     }
 
     @PutMapping("update/v/role/{role}/{virtualAccountSid}")

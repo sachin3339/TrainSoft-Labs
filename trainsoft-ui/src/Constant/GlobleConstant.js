@@ -33,7 +33,7 @@ const GLOBELCONSTANT = {
             GET_BATCH_SID: API_HOST +  'batch/{batchSid}',
             GET_BATCH_LIST: API_HOST +  'batches/',
             CREATE_BATCHES: API_HOST +  'batch/create',
-            GET_BATCH_PARTICIPANT: API_HOST +  'participants/batch/',
+            GET_BATCH_PARTICIPANT: API_HOST +  'participants/batch/{batchSid}',
             DELETE_BATCHES: API_HOST +  'delete/batch/',
             EDIT_BATCHES: API_HOST +  'update/batch',
             SEARCH_BATCHES: API_HOST + "batches/"
@@ -42,14 +42,16 @@ const GLOBELCONSTANT = {
             GET_PARTICIPANT: API_HOST +  "list/participant",
             UPLOAD_PARTICIPANT: API_HOST +  "upload/list/participants",
             CREATE_PARTICIPANT: API_HOST +  "user/create",
-            ALL_USERS: API_HOST +  "vaccounts",
+            ALL_USERS: API_HOST +  "vaccounts/",
             GENERATE_PWD: API_HOST +  "generate/password",
-            SEARCH_USER: API_HOST + "user/{str}"
+            SEARCH_USER: API_HOST + "user/{str}",
+            STATUS_DELETE: API_HOST + "update/status/{status}/virtualAccount/{vASid}"
 
         },  
         TRAINING: {
             GET_TRAINING: API_HOST +  "trainings",
             CREATE_TRAINING: API_HOST +  "training/create",
+            GET_TRAINING_SID:API_HOST +  "training/{trainingSid}",
             GET_TRAINING_SESSION: API_HOST +  "trainingsession/training/{trainingSid}/course/{courseSid}",
             CREATE_SESSION: API_HOST +  "trainingSession/create",
             SEARCH_TRAINER: API_HOST + "trainings/",
@@ -57,7 +59,7 @@ const GLOBELCONSTANT = {
             DELETE_TRAIN_SESSION: API_HOST + "delete/trainingsession/{trainingSesssionSid}"
         },
         INSTRUCTOR: {
-            GET_INSTRUCTOR: API_PATH +  'depatments'
+            GET_INSTRUCTOR: API_HOST +  'depatments'
         },
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},

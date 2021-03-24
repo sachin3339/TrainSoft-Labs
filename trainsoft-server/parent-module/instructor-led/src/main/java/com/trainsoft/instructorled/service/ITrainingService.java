@@ -31,4 +31,5 @@ public interface ITrainingService {
     boolean validateEmail(String email);
 
     boolean validateBatch(String batchName, String companySid);
+    void updateVirtualAccountStatus(String virtualAccountSid, String status);
 }

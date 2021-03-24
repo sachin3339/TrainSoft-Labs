@@ -18,11 +18,12 @@ import moment from 'moment'
 import AppContext from "../../../Store/AppContext";
 
 const Courses = ({ location }) => {
-    const { user, spinner } = useContext(AppContext)
+    const { user, spinner, setCourse,course } = useContext(AppContext)
     const Toast = useToast();
     const [show, setShow] = useState(false);
     const [courseList, setCourseList] = useState([])
     const [count,setCount] = useState(0)
+    
     const [initialValues, setInitialValues] = useState({
         name: '',
         description: ''
@@ -104,6 +105,7 @@ const Courses = ({ location }) => {
             }
             RestService.CreateCourse(payload).then(res => {
                 setCourseList([...courseList, res.data])
+                setCourse(...course, res.data)
                 Toast.success({ message: `Course is Successfully Created` });
                 setShow(false)
             }, err => console.log(err)
@@ -215,7 +217,7 @@ const Courses = ({ location }) => {
          <CardHeader {...{ location, 
                onChange: (e) => e.length === 0 && getCourse(e),
                onEnter:(e)=> searchCourse(e),
-               actionClick: ()=> setShow(true),
+               actionClick: ()=> {setShow(true);setIsEdit(false);setInitialValues({name: '',description: ''})},
                showAction: user.role === 'ADMIN' ? true : false
          }} />
         </div>

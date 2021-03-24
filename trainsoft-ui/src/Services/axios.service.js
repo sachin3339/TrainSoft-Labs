@@ -2,9 +2,9 @@ import axios from 'axios'
 import { TokenService } from './storage.service'
 const AxiosService = {
 
-    init:(baseURL,jwtToken) => {
+    init:(baseURL,authToken) => {
         axios.defaults.baseURL = baseURL;
-        axios.defaults.headers.common["Authorization"] =`${jwtToken}` 
+        axios.defaults.headers.common["Authorization"] = authToken;
     },
     // setHeader:()=> axios.defaults.headers.common["Authorization"] = `Bearer ${TokenService.getToken()}`,
     removeHeader:()=> axios.defaults.headers.common = {},
