@@ -229,8 +229,11 @@ CREATE TABLE `course_session` (
 DROP VIEW IF EXISTS vw_training;
 create view vw_training
 as
-select tr.id,tr.sid,tr.name,count(trbh.sid) as no_of_batches,cr.name as course_name,tr.instructor_name,tr.start_date,tr.end_date,tr.status,tr.created_by,tr.updated_by
-from training tr inner join training_has_batch trbh on tr.id=trbh.training_id inner join course cr on tr.course_id=cr.id group by tr.id
+select tr.id,tr.sid,tr.name,count(trbh.sid) as no_of_batches,cr.name as course_name,
+       tr.instructor_name,tr.start_date,tr.end_date,tr.status,tr.created_by,tr.updated_by from training tr
+                                                                                                   inner join training_has_course thc on thc.training_id=tr.id
+                                                                                                   inner join course cr on thc.course_id=cr.id
+                                                                                                   inner join training_has_batch trbh on tr.id=trbh.training_id group by tr.id
 
 #--================= vw_batch ==================--
 

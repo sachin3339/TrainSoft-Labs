@@ -39,10 +39,6 @@ public class TrainingView extends BaseEntity {
     private InstructorEnum.Status status;
 
     @ManyToOne
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
-    private Course course;
-
-    @ManyToOne
     @JoinColumn(name = "created_by", referencedColumnName = "id")
     private VirtualAccount createdBy;
 
