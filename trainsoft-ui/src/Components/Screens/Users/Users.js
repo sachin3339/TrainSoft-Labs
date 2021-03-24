@@ -180,10 +180,12 @@ const User = ({ location }) => {
                       "name":data.department.name
                   },
                   "departmentRole": data.departmentRole.key
-                },    
+                }, 
+                "role":"USER"   
               }
             RestService.createParticipant(payload).then(resp => {
                 setShow(false)
+                getUsers()
                 Toast.success({ message: `User is Successfully Created`});
             }, err => console.log(err)
             );
