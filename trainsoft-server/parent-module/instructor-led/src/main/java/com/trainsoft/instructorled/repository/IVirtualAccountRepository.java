@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface IVirtualAccountRepository extends JpaRepository<VirtualAccount, Integer>{
 	VirtualAccount findVirtualAccountBySid(byte[] sid);
-	Page<VirtualAccount> findVirtualAccountByCompanyAndStatusNotAndOrderByCreatedOnDesc(Company company, InstructorEnum.Status status, Pageable paging);
+	Page<VirtualAccount> findVirtualAccountByCompanyAndStatusNotOrderByCreatedOn(Company company, InstructorEnum.Status status, Pageable paging);
 	List<VirtualAccount> findVirtualAccountByCompanyAndStatusNot(Company company, InstructorEnum.Status status);
 	VirtualAccount findVirtualAccountByAppuser(AppUser user);
 	@Query(value = "select va from VirtualAccount va where va.appuser.emailId=:email")

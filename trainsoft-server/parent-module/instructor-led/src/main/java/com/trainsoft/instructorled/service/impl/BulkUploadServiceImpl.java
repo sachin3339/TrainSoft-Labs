@@ -181,7 +181,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
         List<UserTO> list= new ArrayList<>();
         Company company= companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Pageable paging = PageRequest.of(pageNo, record);
-        Page<VirtualAccount> virtualAccountPage=virtualAccountRepository.findVirtualAccountByCompanyAndStatusNotAndOrderByCreatedOnDesc(company,InstructorEnum.Status.DELETED,paging);
+        Page<VirtualAccount> virtualAccountPage=virtualAccountRepository.findVirtualAccountByCompanyAndStatusNotOrderByCreatedOn(company,InstructorEnum.Status.DELETED,paging);
         List<VirtualAccount> virtualAccounts=virtualAccountPage.toList();
         virtualAccounts.forEach(virtualAccount -> {
             if(type.equalsIgnoreCase("ALL")) {
