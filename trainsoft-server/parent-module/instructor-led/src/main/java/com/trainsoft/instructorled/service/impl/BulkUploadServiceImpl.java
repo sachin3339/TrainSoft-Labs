@@ -91,7 +91,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(userTO.getCompanySid()));
         List<VirtualAccount> virtualAccounts=virtualAccountRepository.findVirtualAccountByEmailId(userTO.getAppuser().getEmailId());
         VirtualAccount virtualAccount=null;
-        if(virtualAccounts!=null && virtualAccounts.size()>0) {
+        if(virtualAccounts==null || virtualAccounts.size()==0) {
             virtualAccount = mapper.convert(userTO, VirtualAccount.class);
             virtualAccount.generateUuid();
             virtualAccount.setCompany(company);
