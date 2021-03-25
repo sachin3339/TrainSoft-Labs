@@ -173,7 +173,7 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
-    public CourseSessionTO updateCourseSession(CourseSessionTO courseSessionTO) {
+    public CourseSessionTO updateCourseSession(CourseSessionTO courseSessionTO)  {
         try {
             if(StringUtils.isNotEmpty(courseSessionTO.getSid())){
                 CourseSession courseSession= courseSessionRepository.findCourseSessionBySid(
@@ -250,9 +250,11 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
-    public List<CourseSessionTO> getCourseSessionsByName(String name,String companySid) {
+    public List<CourseSessionTO> getCourseSessionsByName(String courseSid,String name,String companySid) {
         try {
-            List<CourseSession> courseSessionList= courseSessionRepository.findCourseSessionByTopicNameContainingAndCompanyAndStatusNot(name,getCompany(companySid), InstructorEnum.Status.DELETED);
+            Course course= courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+            List<CourseSession> courseSessionList= courseSessionRepository.
+                    findCourseSessionByCourseAndTopicNameContainingAndCompanyAndStatusNot(course,name,getCompany(companySid), InstructorEnum.Status.DELETED);
             return mapper.convertList(courseSessionList, CourseSessionTO.class);
         }catch (Exception e) {
             log.error("throwing exception while fetching the list courseSession details by name",e.toString());

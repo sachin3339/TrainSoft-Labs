@@ -100,13 +100,15 @@ public class CourseController {
         return ResponseEntity.ok(courseService.deleteCourseBySid(courseSid, jwt.getVirtualAccountSid()));
     }
 
-    @GetMapping("coursesessions/{name}")
+    @GetMapping("coursesessions/course/{courseSid}/{name}")
     @ApiOperation(value = "getCourseSessionsByName", notes = "Get list of course session by session name")
     public ResponseEntity<?> getCourseSessionsByName(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Course  sid", required = true) @PathVariable("courseSid") String courseSid,
             @ApiParam(value = "Course session name", required = true) @PathVariable("name") String name) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(courseService.getCourseSessionsByName(name,jwt.getCompanySid()));
+        return ResponseEntity.ok(courseService.getCourseSessionsByName(courseSid,name,jwt.getCompanySid()));
+
     }
 
     @PutMapping("update/coursesession")

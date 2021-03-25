@@ -11,7 +11,7 @@ const Calender = ({location}) => {
         <div className="table-shadow p-3">
            <CardHeader {...{location}}/>
            <div className="row mt-2">
-               <div className="col-md-5">
+               <div className="col-md-4">
                    <div>
                    <Calendar
                     onChange={(e)=> setValue(e)}
@@ -27,7 +27,7 @@ const Calender = ({location}) => {
                        <BsCheckbox checked={true} className="my-3" label="Delayed" id="Delayed"/>
                    </div>
                </div>
-               <div className="col-md-7">
+               <div className="col-md-8">
                    <div className="box-shadow full-h">
                        <div className="jcb my-2">
                             <div className="aic"><div className="title-md mb-0 mr-2">Calender</div> <div>{moment(value).format('dddd')}, {moment(value).format('Do MMM  YYYY')}</div></div>

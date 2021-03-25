@@ -16,13 +16,15 @@
   }
   .ng-table > thead > tr > th {
     text-align: left;
-    color: #272D3B !important;
+    color: #666 !important;
     opacity: 1;
     white-space: nowrap;
     vertical-align: middle;
-    padding: 5px 20px;
+    padding: 10px 20px !important;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
+    background-color: #eee;
+    border:none;
   }
   .ng-table > tbody > tr > td {
     vertical-align: middle;
@@ -49,7 +51,7 @@
 
   }
   .sort-enabled > thead > tr > th:hover {
-    background-color: #e9e9e952;
+    background-color: #e6e6e6;
     cursor: pointer;
     }
   .active-sort{
