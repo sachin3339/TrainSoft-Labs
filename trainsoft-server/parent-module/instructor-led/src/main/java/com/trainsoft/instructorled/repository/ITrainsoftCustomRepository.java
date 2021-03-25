@@ -8,5 +8,5 @@ import java.math.BigInteger;
 public interface ITrainsoftCustomRepository {
 
     Integer findIdBySid(String classz, String sid);
-    BigInteger noOfCountByClass(String classz);
+    BigInteger noOfCountByClass(String classz,String companySid);
 }

@@ -5,6 +5,7 @@ import com.trainsoft.instructorled.customexception.InstructorException;
 import com.trainsoft.instructorled.customexception.RecordNotFoundException;
 import com.trainsoft.instructorled.dozer.DozerUtils;
 import com.trainsoft.instructorled.entity.*;
+import com.trainsoft.instructorled.repository.ICompanyRepository;
 import com.trainsoft.instructorled.repository.ICourseRepository;
 import com.trainsoft.instructorled.repository.ICourseSessionRepository;
 import com.trainsoft.instructorled.repository.IVirtualAccountRepository;
@@ -37,6 +38,8 @@ public class CourseServiceImpl implements ICourseService {
     private ICourseSessionRepository courseSessionRepository;
     private DozerUtils mapper;
 
+    private ICompanyRepository companyRepository;
+
 
     @Override
     public CourseTO createCourse(CourseTO courseTO) {
@@ -47,6 +50,7 @@ public class CourseServiceImpl implements ICourseService {
                 Course course = mapper.convert(courseTO, Course.class);
                 course.generateUuid();
                 course.setCreatedBy(virtualAccount);
+                course.setCompany(getCompany(courseTO.getCompanySid()));
                 course.setStatus(InstructorEnum.Status.ENABLED);
                 course.setUpdatedOn(null);
                 course.setTrainingCourses(null);
@@ -57,11 +61,16 @@ public class CourseServiceImpl implements ICourseService {
             } else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
-            log.info("throwing exception while creating the course");
+            log.error("throwing exception while creating the course",e.toString());
             throw new ApplicationException("Something went wrong while creating the course");
         }
     }
-
+    private Company getCompany(String companySid){
+        Company c=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        Company company=new Company();
+        company.setId(c.getId());
+        return company;
+    }
     @Override
     public CourseTO updateCourse(CourseTO courseTO) {
         try {
@@ -79,9 +88,8 @@ public class CourseServiceImpl implements ICourseService {
                 return savedCourse;
             }else
                 throw new RecordNotFoundException();
-        } catch (Exception e)
-        {
-            log.info("throwing exception while updating the course");
+        } catch (Exception e) {
+            log.error("throwing exception while updating the course",e.toString());
             throw new ApplicationException("Something went wrong while updating the course");
         }
     }
@@ -95,23 +103,24 @@ public class CourseServiceImpl implements ICourseService {
             else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
-            log.info("throwing exception while fetching the course details by sid");
+            log.error("throwing exception while fetching the course details by sid",e.toString());
             throw new ApplicationException("Something went wrong while fetching the course details by sid");
         }
     }
 
     @Override
-    public List<CourseTO> getCourses() {
+    public List<CourseTO> getCourses(String companySid) {
         try {
-            List<Course> courses = courseRepository.findAll();
+            List<Course> courses = courseRepository.findAllByCompanyAndStatusNot(getCompany(companySid), InstructorEnum.Status.DELETED);
             return courses.stream().map(course->{
                 CourseTO to= mapper.convert(course, CourseTO.class);
                 to.setCreatedByVASid(course.getCreatedBy()==null?null:course.getCreatedBy().getStringSid());
                 to.setUpdatedByVASid(course.getUpdatedBy()==null?null:course.getUpdatedBy().getStringSid());
+                to.setCompanySid(course.getCompany()==null?null:course.getCompany().getStringSid());
                 return to;
             }).collect(Collectors.toList());
         }catch (Exception e) {
-            log.info("throwing exception while fetching the all course details");
+            log.error("throwing exception while fetching the all course details",e.toString());
             throw new ApplicationException("Something went wrong while fetching the course details");
         }
     }
@@ -132,7 +141,7 @@ public class CourseServiceImpl implements ICourseService {
             } else
                throw new RecordNotFoundException();
         } catch (Exception e) {
-            log.info("throwing exception while deleting the Course details by sid");
+            log.error("throwing exception while deleting the Course details by sid",e.toString());
             throw new ApplicationException("Something went wrong while deleting the Course details by sid");
         }
     }
@@ -149,6 +158,7 @@ public class CourseServiceImpl implements ICourseService {
                 courseSession.setStatus(InstructorEnum.Status.ENABLED);
                 courseSession.setCourse(course);
                 courseSession.setCreatedBy(virtualAccount);
+                courseSession.setCompany(getCompany(courseSessionTO.getCompanySid()));
                 courseSession.setCreatedOn(new Date(Instant.now().toEpochMilli()));
                 courseSession.setUpdatedOn(null);
                 CourseSessionTO savedCourseSessionTO= mapper.convert(courseSessionRepository.save(courseSession),CourseSessionTO.class);
@@ -157,7 +167,7 @@ public class CourseServiceImpl implements ICourseService {
             } else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
-            log.info("throwing exception while updating the Course session details");
+            log.error("throwing exception while updating the Course session details",e.toString());
             throw new ApplicationException("Something went wrong while updating the Course session details");
         }
     }
@@ -179,9 +189,8 @@ public class CourseServiceImpl implements ICourseService {
                 return savedSession;
             }else
                 throw new RecordNotFoundException();
-        } catch (Exception e)
-        {
-            log.info("throwing exception while updating the course Session");
+        } catch (Exception e) {
+            log.error("throwing exception while updating the course Session",e.toString());
             throw new ApplicationException("Something went wrong while updating the course Session");
         }
     }
@@ -197,24 +206,23 @@ public class CourseServiceImpl implements ICourseService {
                 courseSession.setUpdatedBy(virtualAccount);
                 courseSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 courseSessionRepository.save(courseSession);
-                log.info(String.format("Course Session %s is deleted successfully by %s",courseSessionSid, deletedBySid));
                 return true;
             } else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
-            log.info("throwing exception while deleting the Course Session details by sid");
+            log.error("throwing exception while deleting the Course Session details by sid",e.toString());
             throw new ApplicationException("Something went wrong while deleting the Course Session details by sid");
         }
     }
 
     @Override
-    public List<CourseSessionTO> findCourseSessionByCourseSid(String courseSid) {
-        Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+    public List<CourseSessionTO> findCourseSessionByCourseSid(String courseSid,String companySid) {
+        Course course = courseRepository.findCourseBySidAndCompanyAndStatusNot(BaseEntity.hexStringToByteArray(courseSid),getCompany(companySid), InstructorEnum.Status.DELETED);
         try {
             if (StringUtils.isNotEmpty(course.getStringSid())) {
-                List<CourseSession> courseSessions = courseSessionRepository.findCourseSessionByCourse(course).
+                List<CourseSession> courseSessions = courseSessionRepository.findCourseSessionByCourseAndStatusNot(course, InstructorEnum.Status.DELETED).
                         stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
-                        .collect(Collectors.toList());;
+                        .collect(Collectors.toList());
                return courseSessions.stream().map(courseSession -> {
                     CourseSessionTO to = mapper.convert(courseSession, CourseSessionTO.class);
                     to.setCreatedByVASid(courseSession.getCreatedBy() == null ? null : courseSession.getCreatedBy().getStringSid());
@@ -231,34 +239,36 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
-    public List<CourseTO> getCoursesByName(String name) {
+    public List<CourseTO> getCoursesByName(String name,String companySid) {
         try {
-            List<Course> courseList= courseRepository.findCourseByNameContaining(name);
+            List<Course> courseList= courseRepository.findCourseByNameContainingAndCompanyAndStatusNot(name,getCompany(companySid), InstructorEnum.Status.DELETED);
             return mapper.convertList(courseList, CourseTO.class);
-        }catch (Exception e)
-        {
-            log.info("throwing exception while fetching the Courses details by name");
+        }catch (Exception e) {
+            log.error("throwing exception while fetching the Courses details by name",e.toString());
             throw new ApplicationException("Something went wrong while fetching the Courses details by name ");
         }
     }
 
     @Override
-    public List<CourseSessionTO> getCourseSessionsByName(String courseSid,String name) {
+/*    public List<CourseSessionTO> getCourseSessionsByName(String courseSid,String name) {
         try {
             Course course= courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
             List<CourseSession> courseSessionList= courseSessionRepository.
-                    findCourseSessionByCourseAndStatusNotAndTopicNameContaining(course, InstructorEnum.Status.DELETED,name);
+                    findCourseSessionByCourseAndStatusNotAndTopicNameContaining(course, InstructorEnum.Status.DELETED,name);*/
+
+    public List<CourseSessionTO> getCourseSessionsByName(String name,String companySid) {
+        try {
+            List<CourseSession> courseSessionList= courseSessionRepository.findCourseSessionByTopicNameContainingAndCompanyAndStatusNot(name,getCompany(companySid), InstructorEnum.Status.DELETED);
             return mapper.convertList(courseSessionList, CourseSessionTO.class);
-        }catch (Exception e)
-        {
-            log.info("throwing exception while fetching the list courseSession details by name");
+        }catch (Exception e) {
+            log.error("throwing exception while fetching the list courseSession details by name",e.toString());
             throw new ApplicationException("Something went wrong while fetching the list courseSession details by name ");
         }
     }
 
     @Override
-    public List<CourseSessionTO> findCourseSessionByCourseSidWithPagination(String courseSid,int pageNo, int pageSize) {
-        Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+    public List<CourseSessionTO> findCourseSessionByCourseSidWithPagination(String courseSid,int pageNo, int pageSize,String companySid) {
+        Course course = courseRepository.findCourseBySidAndCompanyAndStatusNot(BaseEntity.hexStringToByteArray(courseSid),getCompany(companySid), InstructorEnum.Status.DELETED);
         try {
             if (StringUtils.isNotEmpty(course.getStringSid())) {
                 Pageable paging = PageRequest.of(pageNo, pageSize);
@@ -274,16 +284,16 @@ public class CourseServiceImpl implements ICourseService {
             } else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
-            log.info("throwing exception while fetching the Course session details");
+            log.error("throwing exception while fetching the Course session details",e.toString());
             throw new ApplicationException("throwing exception while fetching the all course session details based on courseSid");
         }
     }
 
     @Override
-    public List<CourseTO> getCoursesWithPagination(int pageNo, int pageSize) {
+    public List<CourseTO> getCoursesWithPagination(int pageNo, int pageSize,String companySid) {
         try {
             Pageable paging = PageRequest.of(pageNo, pageSize);
-            Page<Course> pagedResult = courseRepository.findAllByStatusNot(InstructorEnum.Status.DELETED,paging);
+            Page<Course> pagedResult = courseRepository.findAllByStatusNotAndCompany(InstructorEnum.Status.DELETED,getCompany(companySid),paging);
             List<Course> courses = pagedResult.toList();
             return courses.stream().map(course->{
                 CourseTO to= mapper.convert(course, CourseTO.class);
@@ -292,7 +302,7 @@ public class CourseServiceImpl implements ICourseService {
                 return to;
             }).collect(Collectors.toList());
         }catch (Exception e) {
-            log.info("throwing exception while fetching the all course details");
+            log.error("throwing exception while fetching the all course details",e.toString());
             throw new ApplicationException("Something went wrong while fetching the course details");
         }
     }

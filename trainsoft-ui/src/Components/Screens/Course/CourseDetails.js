@@ -162,7 +162,7 @@ const CourseDetails = ({ location }) => {
         <div className="table-shadow p-3">
         <CardHeader {...{ location, 
                onChange: (e) => e.length === 0 && getSessionByPage(),
-               onEnter:(e)=> searchSession(e)
+               onEnter:(e)=> console.log(e)
          }} />
             <SessionList {...{ sessionList:sessionList.slice().reverse(),
                  onDelete:(e)=> deleteSession(e),

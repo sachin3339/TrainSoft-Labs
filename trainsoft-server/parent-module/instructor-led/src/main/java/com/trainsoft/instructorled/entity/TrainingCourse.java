@@ -18,4 +18,5 @@ public class TrainingCourse extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
+
 }

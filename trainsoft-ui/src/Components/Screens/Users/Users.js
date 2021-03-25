@@ -26,6 +26,12 @@ const User = ({ location }) => {
     const [participant,setParticipant] = useState([])
     const [genPwd,setGenPwd] = useState('')
     const [file,setFile] = useState(null)
+     // get all batches
+ const  allDepartment= useFetch({
+    method: "get",
+    url: GLOBELCONSTANT.INSTRUCTOR.GET_INSTRUCTOR,
+    errorMsg: 'error occur on get Batches'
+ });
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
 
@@ -95,7 +101,7 @@ const User = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Toggle id={data.sid} checked={data.status === 'ENABLED' ? true : false}/>
+                render: (data) => <Toggle id={data.sid} onChange={() => { deleteUser(data.status === 'ENABLED' ? 'DISABLED' : 'ENABLED', data.vSid)}} checked={data.status === 'ENABLED' ? true : false}/>
             },
         },
         headerTextColor: '#454E50', // user can change table header text color
@@ -116,7 +122,7 @@ const User = ({ location }) => {
             {
                 "title": "Delete",
                 "icon": ICN_TRASH,
-                "onClick": (data, i) => console.log(data)
+                "onClick": (data, i) => deleteUser("DELETED",data.vSid)
             }
         ],
         actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
@@ -174,10 +180,12 @@ const User = ({ location }) => {
                       "name":data.department.name
                   },
                   "departmentRole": data.departmentRole.key
-                },    
+                }, 
+                "role":"USER"   
               }
             RestService.createParticipant(payload).then(resp => {
                 setShow(false)
+                getUsers()
                 Toast.success({ message: `User is Successfully Created`});
             }, err => console.log(err)
             );
@@ -191,12 +199,14 @@ const User = ({ location }) => {
     const getUsers = async () => {
         try {
             spinner.show();
-            RestService.getAllUser().then(
+            RestService.getAllUser("ALL").then(
                 response => {
                     let val = response.data.map(res=> {
                         let data = res.appuser
                         data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
                         data.department = res.departmentVA ? res.departmentVA.department.name : ''
+                        data.vSid = res.sid
+                        data.status = res.status
                         return data
                     })
                     setParticipant(val)
@@ -211,7 +221,7 @@ const User = ({ location }) => {
             console.error("error occur on getUsers()", err)
         }
     }
-
+ 
     // search batches by name 
     const searchUser = (name) => {
         try {
@@ -236,8 +246,28 @@ const User = ({ location }) => {
         }
     }    
 
+      // delete course
+      const deleteUser = (status,vSid) => {
+        try {
+            spinner.show();
+            RestService.changeAndDeleteStatus(status,vSid).then(res => {
+                spinner.hide();
+                getUsers()
+                Toast.success({ message: ` ${status === 'DELETED'? 'User is deleted': 'Status update'} successfully ` });
+            }, err => { spinner.hide(); }
+            )
+        }
+        catch (err) {
+            spinner.hide();
+            console.error('error occur on deleteUser', err)
+            Toast.error({ message: `Something wrong!!` });
+        }
+    }
+
     // initialize  component
-    useEffect(() => getUsers(), [])
+    useEffect(() => {
+        getUsers()
+    }, [])
 
 
 
@@ -256,7 +286,7 @@ const User = ({ location }) => {
         <BsModal {...{ show, setShow, headerTitle: "Add new User", size: "lg" }}>
                     <div className="form-container">
                         <Formik
-                            onSubmit={(value)=>createParticipant(value)}
+                            onSubmit={(value)=> createParticipant(value)}
                             initialValues={{
                                 name: '',
                                 employeeId: '',
@@ -291,7 +321,7 @@ const User = ({ location }) => {
                                     </Form.Group>
                                     <Form.Group className="row">
                                         <div className="col-6">
-                                            <SelectInput label="Department" name="department" bindKey="name" option={department} />
+                                            <SelectInput label="Department" name="department" bindKey="name" option={allDepartment.response} />
                                         </div>
                                         <div className="col-6">
                                             <SelectInput label="Role" name="departmentRole"  bindKey="name" option={GLOBELCONSTANT.DEPARTMENT_ROLE} />

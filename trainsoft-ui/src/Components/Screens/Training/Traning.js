@@ -20,14 +20,17 @@ import { Toggle } from "../../Common/BsUtils";
 // import AddEditTraining from "./AddEditTraining";
 const initialVal = {
     name: '',
-    instructorName: '',
+    instructor: '',
     courseSid: '',
     startDate: '',
     endDate: '',
-    trainingBatchs: ''
+    trainingBatchs: '',
+    instructorName:""
 }
 
 const Trainings = ({ location }) => {
+    const { setCourse,setBatches,setDepartment } = useContext(AppContext)
+
     const { setTraining } = useContext(TrainingContext)
     const Toast = useToast()
     const { batches, spinner, user } = useContext(AppContext)
@@ -36,6 +39,19 @@ const Trainings = ({ location }) => {
     const [isEdit,setIsEdit] = useState(false);
     const [initialValues,setInitialValue] = useState(initialVal)
     const [count,setCount] =  useState(0)
+    // get all courses
+    const allCourse = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.COURSE.GET_COURSE,
+        errorMsg: 'error occur on get course'
+    });
+
+    // get all batches
+    const allBatches = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.BATCHES.GET_BATCH_LIST,
+        errorMsg: 'error occur on get Batches'
+     });
 
     const queueDropdownProps = {
         selectItems: batches,
@@ -55,7 +71,7 @@ const Trainings = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link onClick={() => setTraining(data)} to={`training-details`} state={{ title: 'Training', rowData: data, subTitle: "Training Info", subPath: '/' }} className="dt-name">{data.name}</Link>
+                render: (data) => <Link onClick={() => setTraining(data)} to={`training-details`} state={{ title: 'Training', rowData: data,sid:data.sid, subTitle: "Training Info", subPath: '/' }} className="dt-name">{data.name}</Link>
 
             },
             "noOfBatches": {
@@ -129,7 +145,7 @@ const Trainings = ({ location }) => {
         ],
         actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
         actionVariant: "", // user can pass action button variant like primary, dark, light,
-        actionAlignment: true, // user can pass alignment property of dropdown menu by default it is alignLeft 
+        actionAlignment: true, // user can pass alignment property of dropdown menu by default it is alignLeft
         // call this callback function onSearch method in input field on onChange handler eg: <input type="text" onChange={(e) => onSearch(e.target.value)}/>
         // this search is working for search enable fields(column) eg. isSearchEnabled: true, in tale column configuration
         searchQuery: "",
@@ -216,6 +232,8 @@ const Trainings = ({ location }) => {
 
     // initialize component
     useEffect(() => {
+        allCourse.response && setCourse(allCourse.response)
+        allBatches.response && setBatches(allBatches.response)
         getTrainingCount()
         getTrainings()}, [])
     return (<>
@@ -229,7 +247,7 @@ const Trainings = ({ location }) => {
                     showAction: user.role === 'ADMIN' ? true: false
                 }} />
             </div>
-          
+
             <AddEditTraining {...{getTrainings, show, setShow,initialValues,isEdit }}/>
             <DynamicTable {...{count, configuration, sourceData: trainingList && trainingList.slice().reverse(), onPageChange: (e) => getTrainings(e) }} />
         </div>
@@ -252,7 +270,34 @@ export default Training
 const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) => {
     const Toast = useToast()
     const { course, batches, spinner, user } = useContext(AppContext)
-    
+    const [instructor,setInstructor] = useState([])
+
+     // get all training
+  const getAllInstructor = async () => {
+    try {
+        spinner.show();
+        RestService.getAllUser("INSTRUCTOR").then(
+            response => {
+                let val = response.data.map(res=> {
+                    let data = res.appuser
+                    data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
+                    data.department = res.departmentVA ? res.departmentVA.department.name : ''
+                    data.vSid = res.sid
+                    return data
+                })
+                setInstructor(val)
+            },
+            err => {
+                spinner.hide();
+            }
+        ).finally(() => {
+            spinner.hide();
+        });
+    } catch (err) {
+        console.error("error occur on getAllInstructor()", err)
+    }
+}
+
         // get all course list
         const createTraining = (data) => {
             try {
@@ -260,9 +305,12 @@ const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) =
                 let batcheId = data.trainingBatchs.map(resp => {
                     return ({ batchSid: resp.sid })
                 })
+
                 let payload = data
                 payload.courseSid = data.courseSid.sid
+                payload.instructor = {"sid":data.instructor.vSid}
                 payload.trainingBatchs = batcheId
+                payload.instructorName = data.instructor.name
                 payload.status = "ENABLED"
                 RestService.createTraining(payload).then(res => {
                     Toast.success({ message: `Training is Successfully Created` });
@@ -281,6 +329,9 @@ const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) =
                 Toast.error({ message: `Something wrong!!` });
             }
         }
+        useEffect(() => {
+            getAllInstructor()
+        }, [])
     return (<>
                     <Modal
                         size="lg"
@@ -325,8 +376,8 @@ const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) =
                                                     <SelectInput label="Course" bindKey="name" payloadKey="sid" name="courseSid" option={course} />
                                                 </div>
                                                 <div className="col-6">
-                                                    <TextInput label="Instructor" name="instructorName" />
-                                                </div>
+                                                <SelectInput label="Instructor" bindKey="name" payloadKey="sid" name="instructor" option={instructor} />
+                                            </div>
                                             </Form.Group>
                                         </div>
                                         {/* modal footer which contains action button to save data or cancel current action */}

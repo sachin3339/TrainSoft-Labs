@@ -29,6 +29,7 @@ public class CourseController {
             @ApiParam(value = "Create Course payload", required = true) @RequestBody CourseTO courseTO) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         courseTO.setCreatedByVASid(jwt.getVirtualAccountSid());
+        courseTO.setCompanySid(jwt.getCompanySid());
         CourseTO createCourse = courseService.createCourse(courseTO);
         return ResponseEntity.ok(createCourse);
     }
@@ -45,8 +46,8 @@ public class CourseController {
     @ApiOperation(value = "getCourses", notes = "Get list of Course")
     public ResponseEntity<?> getCourses(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token) {
-        log.info(String.format("Request received : User for GET /v1/courses"));
-        return ResponseEntity.ok(courseService.getCourses());
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(courseService.getCourses(jwt.getCompanySid()));
     }
 
     @PostMapping("/create/coursesession")
@@ -56,6 +57,7 @@ public class CourseController {
             @ApiParam(value = "Create Course Session payload", required = true) @RequestBody CourseSessionTO courseSessionTO) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         courseSessionTO.setCreatedByVASid(jwt.getVirtualAccountSid());
+        courseSessionTO.setCompanySid(jwt.getCompanySid());
         CourseSessionTO createSession = courseService.createSession(courseSessionTO);
         return ResponseEntity.ok(createSession);
     }
@@ -65,8 +67,8 @@ public class CourseController {
     public ResponseEntity<?> getCourseSessionByCourseSid(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Course Sid", required = true) @PathVariable("courseSid") String courseSid) {
-        log.info(String.format("Request received : User for GET /v1/courses"));
-        return ResponseEntity.ok(courseService.findCourseSessionByCourseSid(courseSid));
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(courseService.findCourseSessionByCourseSid(courseSid,jwt.getCompanySid()));
     }
 
     @GetMapping("courses/{name}")
@@ -74,8 +76,8 @@ public class CourseController {
     public ResponseEntity<?> getCoursesByName(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Course name", required = true) @PathVariable("name") String name) {
-        log.info(String.format("Request received : User for GET /v1/list/course"));
-        return ResponseEntity.ok(courseService.getCoursesByName(name));
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(courseService.getCoursesByName(name,jwt.getCompanySid()));
     }
 
     @PutMapping("update/course")
@@ -104,8 +106,9 @@ public class CourseController {
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Course  sid", required = true) @PathVariable("courseSid") String courseSid,
             @ApiParam(value = "Course session name", required = true) @PathVariable("name") String name) {
-        log.info(String.format("Request received : User for GET /v1/list/course session"));
-        return ResponseEntity.ok(courseService.getCourseSessionsByName(courseSid, name));
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(courseService.getCourseSessionsByName(name,jwt.getCompanySid()));
+
     }
 
     @PutMapping("update/coursesession")
@@ -135,8 +138,8 @@ public class CourseController {
             @ApiParam(value = "Course session sid", required = true) @PathVariable("courseSid") String courseSid,
             @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
             @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
-        log.info(String.format("Request received : User for GET /v1/courseSession"));
-        return ResponseEntity.ok(courseService.findCourseSessionByCourseSidWithPagination(courseSid,pageNo-1,pageSize));
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(courseService.findCourseSessionByCourseSidWithPagination(courseSid,pageNo-1,pageSize,jwt.getCompanySid()));
     }
 
     @GetMapping("/course/{pageNo}/{pageSize}")
@@ -145,7 +148,7 @@ public class CourseController {
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
             @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
-        log.info(String.format("Request received : User for GET /v1/course"));
-        return ResponseEntity.ok(courseService.getCoursesWithPagination(pageNo-1,pageSize));
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(courseService.getCoursesWithPagination(pageNo-1,pageSize,jwt.getCompanySid()));
     }
 }

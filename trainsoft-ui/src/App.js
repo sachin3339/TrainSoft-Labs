@@ -13,12 +13,10 @@ import AppContext from "./Store/AppContext";
 
 
 function App() {
-   const {user,spinner} = useContext(AppContext)
-
+   const {spinner,user} = useContext(AppContext)
    useEffect(() => {
       AxiosService.init('',user.jwtToken);
    }, [])
-
   return (<>
       <Spinner value={spinner}/>
       <Router>

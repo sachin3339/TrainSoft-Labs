@@ -30,7 +30,7 @@ const ClassLab = () => {
         <div className="p-4 full-w full-h">
             <div className="flx full-w full-h ">
                 <div className="full-w full-h flx3 column">
-                    <div className="title-lg pointer" onClick={()=>navigate('/home')}>TrainSoft - Instructor</div>
+                    <div className="title-lg pointer" onClick={ ()=> navigate('/dashboard') }>TrainSoft - Instructor</div>
                     <div className="flx">
                         {tab.length !== 0 ?
                             tab.map((res, i) => <div key={i} className={`class-mode ${selectedTab === res && 'active-tab-class'}`} key={i}>

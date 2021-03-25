@@ -23,4 +23,8 @@ public class DepartmentVirtualAccount extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "virtual_acoount_id", referencedColumnName = "id",nullable = false)
     private VirtualAccount virtualAccount;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id", referencedColumnName = "id")
+    private Company company;
 }

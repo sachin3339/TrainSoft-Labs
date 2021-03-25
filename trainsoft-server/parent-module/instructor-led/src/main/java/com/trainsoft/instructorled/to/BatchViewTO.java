@@ -21,5 +21,6 @@ public class BatchViewTO extends BaseTO {
     private Date updatedOn;
     private String createdByVASid;
     private String updatedByVASid;
+    private String companySid;
 
 }

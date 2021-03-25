@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState,useEffect } from "react";
 import '../Batches/batches.css'
 import './training.css'
 import { TabBtn } from "../../Common/Buttons/Buttons";
@@ -11,10 +11,37 @@ import Forum from "./Forum/Forum";
 import Report from "./Report/Report";
 import { useNavigate } from "@reach/router"
 import CardHeader from "../../Common/CardHeader";
-
+import useToast from "../../../Store/ToastHook";
+import moment from 'moment'
+import AppContext from "../../../Store/AppContext";
+import TrainingContext from "../../../Store/TrainingContext";
+import RestService from "../../../Services/api.service";
 
 const TrainingDetails = ({ location }) => {
+    // const {spinner} = useContext(AppContext)
+    // const {setTraining,training} = useContext(TrainingContext)
+    // const Toast = useToast()
     const navigate = useNavigate();
+    // get all training
+    // const getTrainingsBySid = async () => {
+    //     try {
+    //         spinner.show();
+    //         RestService.getTrainingBySid(location.state.sid).then(
+    //             response => {
+    //                 response && response.data && setTraining(...response.data);
+    //                 spinner.hide();
+    //             },
+    //             err => {
+    //                 spinner.hide();
+    //             }
+    //         )
+    //     } catch (err) {
+    //         spinner.hide();
+    //         console.error("error occur on getTrainings()", err)
+    //     }
+    // }
+
+
     return (<>
         <div className="table-shadow p-3">
             <CardHeader {...{location}}/>

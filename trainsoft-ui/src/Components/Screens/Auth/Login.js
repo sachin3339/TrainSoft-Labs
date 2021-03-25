@@ -9,10 +9,12 @@ import { navigate } from '../../Common/Router';
 import AppContext from '../../../Store/AppContext';
 import useToast from "../../../Store/ToastHook";
 import RestService from '../../../Services/api.service';
+import AxiosService from '../../../Services/axios.service';
+import { TokenService } from '../../../Services/storage.service';
 
 
 const Login = () => {
-    const {setValueBy,spinner} = useContext(AppContext)
+    const {setValueBy,spinner,user} = useContext(AppContext)
     const Toast = useToast();
     
     // on login the user
@@ -25,8 +27,10 @@ const Login = () => {
                         data.accessType = response.data.appuser.accessType
                         data.employeeId = response.data.appuser.accessType
                         setValueBy("LOGIN",data)
-                        data.role === "USER" ?  navigate('/home', { state: { title: 'Home'} }): navigate('/dashboard', { state: { title: 'Dashboard'} })
-                },
+                        TokenService.saveToken(response.data.jwtToken)
+                        data.role === "LEARNER" ?  navigate('/home', { state: { title: 'Home'} }): navigate('/dashboard', { state: { title: 'Dashboard'} })
+                        
+                    },
                 err => {
                     Toast.error({message: 'Invalid User Name / Password!'})
                     spinner.hide();
