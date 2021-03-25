@@ -8,7 +8,7 @@ const SearchBox = ({onChange=()=>{},onEnter=()=>{}}) => {
     useEffect(() => onChange(value), [value])
 
     return(<div className="search-box">
-        <div className="mr-2 aic">{ICN_SEARCH}</div>
+        <div className="mr-2 aic search-icon-wrap">{ICN_SEARCH}</div>
         <div className="full-w">
             <input value={value} onKeyUp={(e)=> e.key === 'Enter' && onEnter (value)} onChange={(e)=> setValue(e.target.value)} placeholder="Search..." className="form-control form-control-sm" type="text"/>
         </div>

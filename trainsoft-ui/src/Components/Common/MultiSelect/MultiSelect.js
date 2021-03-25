@@ -161,7 +161,7 @@ const MultiSelect = ({ dataSet, className = null,footerClick, selectAllMsg = "",
 
   return (<>
     {dataSet.selectItems && mapItem && <div className="dropdown-container">
-      <div onClick={()=>setShow(!show)} className="pointer">
+      <div onClick={()=>setShow(!show)} className="pointer full-w">
         {isShowMore ? renderData() : showLabel()}
       </div>
      { show && <div ref={wrapperRef} className={`multipleDropDown2 esc-multi-select-list `}  style={{"position": "absolute", "inset": "0px auto auto 0px", "margin": "0px", "transform": "translate(30px, 36px)"}}>

@@ -63,11 +63,11 @@ const GLOBELCONSTANT = {
         },
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},
-            {key: "BATCH_MGMT",name: "Batch Mgmt"},
-            {key: "COURSE_MGMT",name: "Course Mgmt"},
-            {key: "USER_MGMT",name: "User Mgmt"},
-            {key: "INSTRUCTOR_MGMT",name: "Instructor Mgmt"},
-            {key: "TRAINING_MGMT",name: "Training Mgmt"},
+            {key: "BATCH_MGMT",name: "Batch Management"},
+            {key: "COURSE_MGMT",name: "Course Management"},
+            {key: "USER_MGMT",name: "User Management"},
+            {key: "INSTRUCTOR_MGMT",name: "Instructor Management"},
+            {key: "TRAINING_MGMT",name: "Training Management"},
         ],
         DEPARTMENT_ROLE: [
             {key: "LEARNER",name: "Learner"},
