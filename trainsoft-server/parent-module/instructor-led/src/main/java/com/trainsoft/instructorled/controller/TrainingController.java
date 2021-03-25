@@ -230,6 +230,15 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getCountByClass(classz,jwt.getCompanySid()));
     }
 
+    @GetMapping("get/user/count/{Type}")
+    @ApiOperation(value = "get user count", notes = "Get count of given records in given class")
+    public ResponseEntity<?> getUserCount(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Given classZ", required = true) @PathVariable("classz") String classz) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(trainingService.getCountByClass(classz,jwt.getCompanySid()));
+    }
+
     @PostMapping(value = "upload/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "upload participants", notes = "API to upload Participant list through excel file.")
     public ResponseEntity<?> uploadParticipants(
