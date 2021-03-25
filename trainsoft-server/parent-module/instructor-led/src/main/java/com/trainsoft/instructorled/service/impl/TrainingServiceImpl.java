@@ -434,6 +434,7 @@ public class TrainingServiceImpl implements ITrainingService {
                     user.getAppuser().setPassword(null);
                     user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
                 }
+                userTOS.add(user);
             });
             return userTOS;
         }catch (Exception e) {
