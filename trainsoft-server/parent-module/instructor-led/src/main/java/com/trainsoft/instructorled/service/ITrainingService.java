@@ -20,7 +20,7 @@ public interface ITrainingService {
     List<TrainingSessionTO> getTrainingSessionsByName(String name,String companySid);
     boolean deleteTrainingBySid(String trainingSid, String deletedBySid,String companySid);
     boolean deleteTrainingSessionBySid(String trainingSessionSid, String deletedBySid);
-    List<AppUserTO> getUsersByNameOrEmailOrPhoneNumber(String str,String companySid);
+    List<UserTO> getUsersByNameOrEmailOrPhoneNumber(String str, String companySid);
     BigInteger getCountByClass(String classz,String companySid);
     TrainingTO updateTraining(TrainingTO trainingTO);
 

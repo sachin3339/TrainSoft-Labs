@@ -3,6 +3,8 @@ package com.trainsoft.instructorled.service;
 import com.trainsoft.instructorled.to.AppUserTO;
 import com.trainsoft.instructorled.to.UserTO;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.math.BigInteger;
 import java.util.List;
 
 public interface IBulkUploadService {
@@ -14,4 +16,6 @@ public interface IBulkUploadService {
      void uploadParticipantsWithBatch(MultipartFile file, String batchName, String instructorName,String companySid);
      void uploadParticipants(MultipartFile file,String companySid);
      UserTO updateUserDetails(UserTO userTO);
+
+     int getUserCount(String companySid, String type);
 }
