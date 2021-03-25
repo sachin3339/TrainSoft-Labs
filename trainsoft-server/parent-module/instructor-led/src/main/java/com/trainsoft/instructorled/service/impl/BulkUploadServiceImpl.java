@@ -185,12 +185,13 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
         virtualAccounts.forEach(virtualAccount -> {
             if(type.equalsIgnoreCase("ALL")) {
                 DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
+                UserTO user=null;
                 if(dVA!=null) {
-                    UserTO user = mapper.convert(virtualAccount, UserTO.class);
+                    user = mapper.convert(virtualAccount, UserTO.class);
                     user.getAppuser().setPassword(null);
                     user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
-                    list.add(user);
                 }
+                list.add(user);
             }else if(type.equalsIgnoreCase("INSTRUCTOR")){
                 DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
                 if(dVA!=null && dVA.getDepartmentRole().name().equalsIgnoreCase("INSTRUCTOR")) {
