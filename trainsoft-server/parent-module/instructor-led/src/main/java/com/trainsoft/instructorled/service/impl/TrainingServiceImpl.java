@@ -14,9 +14,7 @@ import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -424,14 +422,15 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public List<AppUserTO> getUsersByNameOrEmailOrPhoneNumber(String str,String companySid) {
+    public List<UserTO> getUsersByNameOrEmailOrPhoneNumber(String str, String companySid) {
         try {
-            List<AppUser> appUserTOList= appUserRepository.findAppUsersByNameContainingOrEmailIdContainingOrPhoneNumberContaining
-                    (str,BaseEntity.hexStringToByteArray(companySid),Status.DELETED);
-            appUserTOList.forEach(appUser -> {
-                appUser.setPassword(null);
+            List<VirtualAccount> virtualAccounts=virtualAccountRepository.findVirtualAccountByNameContainingOrEmailIdContainingOrPhoneNumberContaining(str,BaseEntity.hexStringToByteArray(companySid),Status.DELETED);
+            List<VirtualAccount> virtualAccounts1=new ArrayList<>();
+            virtualAccounts.forEach(virtualAccount -> {
+                virtualAccount.getAppuser().setPassword(null);
+                virtualAccounts1.add(virtualAccount);
             });
-            return mapper.convertList(appUserTOList,AppUserTO.class);
+            return mapper.convertList(virtualAccounts1,UserTO.class);
         }catch (Exception e) {
             log.error("throwing exception while fetching the appUser details by name,email and phone number",e.toString());
             throw new ApplicationException("Something went wrong while fetching the appUser details by name,email and phone number ");
@@ -442,7 +441,6 @@ public class TrainingServiceImpl implements ITrainingService {
     public BigInteger getCountByClass(String classz,String companySid) {
         return customRepositoy.noOfCountByClass(classz,companySid);
     }
-
     @Override
     public TrainingTO updateTraining(TrainingTO trainingTO) {
         try {
