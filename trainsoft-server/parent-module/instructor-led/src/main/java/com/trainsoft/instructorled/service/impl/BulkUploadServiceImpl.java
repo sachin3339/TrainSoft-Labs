@@ -95,6 +95,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
             virtualAccount = mapper.convert(userTO, VirtualAccount.class);
             virtualAccount.generateUuid();
             virtualAccount.setCompany(company);
+            virtualAccount.setCreatedOn(new Date(Instant.now().toEpochMilli()));
             AppUser appUser = virtualAccount.getAppuser();
             appUser.generateUuid();
             appUser.setSuperAdmin(false);
@@ -223,6 +224,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
             virtualAccount = mapper.convert(userTO, VirtualAccount.class);
             virtualAccount.generateUuid();
             virtualAccount.setCompany(company);
+            virtualAccount.setCreatedOn(new Date(Instant.now().toEpochMilli()));
             AppUser appUser = virtualAccount.getAppuser();
             appUser.generateUuid();
             appUser.setSuperAdmin(false);

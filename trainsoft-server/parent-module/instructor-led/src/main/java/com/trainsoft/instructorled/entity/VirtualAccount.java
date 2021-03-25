@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "virtual_account")
 @Getter @Setter @NoArgsConstructor
@@ -29,5 +31,9 @@ public class VirtualAccount extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "appuser_id", referencedColumnName = "id", nullable = false)
 	private AppUser appuser;
-	
+
+	@Column(name="created_on")
+	private Date createdOn;
+
+
 }
