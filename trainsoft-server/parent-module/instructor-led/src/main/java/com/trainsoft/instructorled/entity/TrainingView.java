@@ -25,6 +25,9 @@ public class TrainingView extends BaseEntity {
     @Column(name = "course_name")
     private String courseName;
 
+    @Column(name = "course_sid")
+    private String courseSid;
+
     @Column(name = "instructor_name")
     private String instructor;
 
@@ -44,6 +47,8 @@ public class TrainingView extends BaseEntity {
     @Column(name="updated_on")
     private Date updatedOn;
 
+    @Column(name="company_sid")
+    private String companySid;
     @ManyToOne
     @JoinColumn(name = "created_by", referencedColumnName = "id")
     private VirtualAccount createdBy;
@@ -51,5 +56,6 @@ public class TrainingView extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "updated_by", referencedColumnName = "id")
     private VirtualAccount updatedBy;
+
 
 }

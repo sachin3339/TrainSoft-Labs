@@ -27,9 +27,18 @@ public class CustomRepositoyImpl implements ITrainsoftCustomRepository {
     }
 
     @Override
-    public BigInteger noOfCountByClass(String classz) {
-        String customQuery = "SELECT count(a.id) as noOfCount from "+classz+" a where a.status <> 'DELETED'";
+    public BigInteger noOfCountByClass(String classz,String companySid) {
+        String customQuery = "SELECT count(a.id) as noOfCount from "+classz+" a where a.status <> 'DELETED' and company_sid=:companySid";
         Query query = entitymangager.createNativeQuery(customQuery);
+        query.setParameter("companySid",companySid);
         return (BigInteger)query.getSingleResult();
     }
+
+    /*@Override
+    public BigInteger noOfUserCountByClass(String classz,String companySid) {
+        String customQuery = "SELECT count(a.id) as noOfCount from "+classz+" a where a.status <> 'DELETED' and company_sid=:companySid";
+        Query query = entitymangager.createNativeQuery(customQuery);
+        query.setParameter("companySid",companySid);
+        return (BigInteger)query.getSingleResult();
+    }*/
 }

@@ -11,4 +11,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface IBatchViewRepository extends JpaRepository<BatchView,Integer>, PagingAndSortingRepository<BatchView, Integer> {
     BatchView findBatchViewBySid(byte[] sid);
     Page<BatchView> findAllByStatusNot(InstructorEnum.Status status, Pageable paging);
+    Page<BatchView> findAllByCompanySidAndStatusNot(String companySid,InstructorEnum.Status status, Pageable paging);
 }

@@ -31,6 +31,9 @@ public class BatchView extends BaseEntity {
     @Column(name="updated_on")
     private Date updatedOn;
 
+    @Column(name = "company_sid")
+    private String companySid;
+
     @ManyToOne
     @JoinColumn(name = "created_by", referencedColumnName = "id")
     private VirtualAccount createdBy;

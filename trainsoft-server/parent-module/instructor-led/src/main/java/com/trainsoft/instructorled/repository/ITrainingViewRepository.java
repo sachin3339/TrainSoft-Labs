@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface ITrainingViewRepository extends JpaRepository<TrainingView,Integer>, PagingAndSortingRepository<TrainingView, Integer> {
     TrainingView findTrainingViewBySid(byte[] sid);
-    List<TrainingView> findTrainingViewsByNameContaining(String name);
-    Page<TrainingView> findAllByStatusNot(InstructorEnum.Status status, Pageable paging);
+    List<TrainingView> findTrainingViewsByNameContainingAndCompanySidAndStatusNot(String name,String companySid,InstructorEnum.Status status);
+    Page<TrainingView> findAllByStatusNotAndCompanySid(InstructorEnum.Status status,String companySid, Pageable paging);
 
 }

@@ -25,4 +25,5 @@ public class TrainingTO extends BaseTO{
     private String courseSid;
     private String trainingCourseSid;
     private List<TrainingBatchTO> trainingBatchs;
+    private String companySid;
 }

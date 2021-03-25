@@ -10,5 +10,5 @@ public interface IDepartmentService {
       DepartmentTO updateDepartment(DepartmentTO departmentTO);
       DepartmentTO getDepartmentBySid(String departmentSid);
       boolean deleteDepartmentBySid(String deptSid,String deletedBySid);
-      List<DepartmentTO> getDepartments();
+      List<DepartmentTO> getDepartments(String companySid);
 }

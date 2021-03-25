@@ -26,4 +26,5 @@ public class TrainingSessionTO extends BaseTO {
     private String createdByVASid;
     private long updatedOn;
     private String updatedByVASid;
+    private String companySid;
 }
