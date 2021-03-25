@@ -18,7 +18,7 @@ public interface ICourseService {
     CourseSessionTO createSession(CourseSessionTO courseSessionTO);
     CourseSessionTO updateCourseSession(CourseSessionTO courseSessionTO);
     List<CourseSessionTO> findCourseSessionByCourseSid(String courseSid,String companySid);
-    List<CourseSessionTO> getCourseSessionsByName(String name,String companySid);
+    List<CourseSessionTO> getCourseSessionsByName(String courseSid,String name,String companySid);
    // List<CourseSessionTO> getCourseSessionsByName(String courseSid,String name);
     //boolean deleteCourseSessionBySid(String courseSessionSid,String deletedBySid);
     List<CourseSessionTO> findCourseSessionByCourseSidWithPagination(String courseSid,int pageNo, int pageSize,String companySid);

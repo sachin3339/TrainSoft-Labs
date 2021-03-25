@@ -86,7 +86,7 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getTrainings(jwt.getCompanySid()));
     }
 
-    @PostMapping(value="trainingSession/create",consumes = MediaType.ALL_VALUE)
+    @PostMapping(value="trainingSession/create")
     @ApiOperation(value = "createTrainingSession", notes = "API to create new TrainingSession.")
     public ResponseEntity<?> createTrainingSession(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
@@ -193,7 +193,7 @@ public class TrainingController {
             @ApiParam(value = "Training sid", required = true) @PathVariable("trainingSid") String trainingSid,
             @ApiParam(value = "Training Session name", required = true) @PathVariable("name") String name) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingSessionsByName(name,jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.getTrainingSessionsByName(trainingSid,name,jwt.getCompanySid()));
     }
 
     @DeleteMapping("delete/training/{trainingSid}")
@@ -232,13 +232,13 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getCountByClass(classz,jwt.getCompanySid()));
     }
 
-    @GetMapping("get/user/count/{Type}")
+    @GetMapping("get/user/count/{type}")
     @ApiOperation(value = "get user count", notes = "Get count of given records in given class")
     public ResponseEntity<?> getUserCount(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Given classZ", required = true) @PathVariable("classz") String classz) {
+            @ApiParam(value = "specify type", required = true) @PathVariable("type") String type) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getCountByClass(classz,jwt.getCompanySid()));
+        return ResponseEntity.ok(bulkUploadService.getUserCount(jwt.getCompanySid(),type));
     }
 
     @PostMapping(value = "upload/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -323,5 +323,16 @@ public class TrainingController {
             @ApiParam(value = "batchName", required = true) @RequestParam(value = "batchName") String batchName) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         return ResponseEntity.ok(trainingService.validateBatch(batchName,jwt.getCompanySid()));
+    }
+
+    @PostMapping("update/trainingsession")
+    @ApiOperation(value = "updateTrainingSession", notes = "API to update existing Training session.")
+    public ResponseEntity<?> updateTrainingSession(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "update Training Session payload", required = true) @RequestBody TrainingSessionTO trainingSessionTO) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        trainingSessionTO.setUpdatedByVASid(jwt.getVirtualAccountSid());
+        TrainingSessionTO updateTrainingSession = trainingService.updateTrainingSession(trainingSessionTO);
+        return ResponseEntity.ok(updateTrainingSession);
     }
 }

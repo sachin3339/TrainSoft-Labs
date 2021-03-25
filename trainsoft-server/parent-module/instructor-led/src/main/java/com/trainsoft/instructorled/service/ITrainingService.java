@@ -21,14 +21,14 @@ public interface ITrainingService {
     TrainingSessionTO getTrainingSessionBySid(String trainingSessionSid);
     List<TrainingSessionTO> getTrainingSessionByTrainingSid(String trainingSid,String companySid);
     List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid,String companySid);
-    List<TrainingSessionTO> getTrainingSessionsByName(String name,String companySid);
+    List<TrainingSessionTO> getTrainingSessionsByName(String trainingSid,String name,String companySid);
     boolean deleteTrainingSessionBySid(String trainingSessionSid, String deletedBySid);
 
 
 
     String generatePassword();
     List<UserTO> getParticipantsByBatchSid(String batchSid,String companySid);
-    List<AppUserTO> getUsersByNameOrEmailOrPhoneNumber(String str,String companySid);
+    List<UserTO> getUsersByNameOrEmailOrPhoneNumber(String str, String companySid);
     BigInteger getCountByClass(String classz,String companySid);
     boolean updateVirtualAccountRole(String role, String virtualAccountSid, String virtualAccountSid1);
     boolean updateDepartmentRole(String role, String departmentVASid, String virtualAccountSid);

@@ -16,4 +16,7 @@ public interface IVirtualAccountRepository extends JpaRepository<VirtualAccount,
 	VirtualAccount findVirtualAccountByAppuser(AppUser user);
 	@Query(value = "select va from VirtualAccount va where va.appuser.emailId=:email")
 	List<VirtualAccount> findVirtualAccountByEmailId(@Param("email")String email);
+	@Query(value = "SELECT va from VirtualAccount va where va.appuser.name like :str% or va.appuser.emailId like :str% or va.appuser.phoneNumber like :str% and va.company.sid=:sid and va.status<>:status")
+	List<VirtualAccount> findVirtualAccountByNameContainingOrEmailIdContainingOrPhoneNumberContaining(@Param("str") String str,@Param("sid")byte[] sid,InstructorEnum.Status status);
+
 }

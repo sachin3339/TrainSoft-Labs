@@ -14,9 +14,7 @@ import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +33,6 @@ import static com.trainsoft.instructorled.value.InstructorEnum.*;
 
 @Slf4j
 @AllArgsConstructor
-@NoArgsConstructor
 @Service
 public class TrainingServiceImpl implements ITrainingService {
 
@@ -210,12 +207,12 @@ public class TrainingServiceImpl implements ITrainingService {
         try {
             if (trainingSessionTO != null) {
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(
-                        BaseEntity.hexStringToByteArray(trainingSessionTO.getCreatedByVASid()));
+                        BaseEntity.hexStringToByteArray(trainingSessionTO.getUpdatedByVASid()));
                 Training training = trainingRepository.findTrainingBySidAndStatusNot(
                         BaseEntity.hexStringToByteArray(trainingSessionTO.getTrainingSid()),Status.DELETED);
                 Course course = courseRepository.findCourseBySid
                         (BaseEntity.hexStringToByteArray(trainingSessionTO.getCourseSid()));
-                TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(trainingSessionTO.getTrainingSid()));
+                TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(trainingSessionTO.getSid()));
                 trainingSession.setUpdatedBy(virtualAccount);
                 trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 trainingSession.setStartTime(new Date(trainingSessionTO.getStartTime()));
@@ -370,15 +367,11 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-/*    public List<TrainingSessionTO> getTrainingSessionsByTrainingSidAndSessionName(String trainingSid,String name) {
-        try {*/
-/*            Training training =trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
-            List<TrainingSession> trainingSessionList= trainingSessionRepository.
-                    findTrainingSessionByTrainingAndStatusNotAndAgendaNameContaining(training, InstructorEnum.Status.DELETED,name);*/
-
-    public List<TrainingSessionTO> getTrainingSessionsByName(String name,String companySid) {
+    public List<TrainingSessionTO> getTrainingSessionsByName(String trainingSid,String name,String companySid) {
         try {
-            List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByAgendaNameContainingAndCompanyAndStatusNot(name,getCompany(companySid),Status.DELETED);
+            Training training =trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
+            List<TrainingSession> trainingSessionList= trainingSessionRepository.
+                    findTrainingSessionByTrainingAndAgendaNameContainingAndCompanyAndStatusNot(training,name,getCompany(companySid),Status.DELETED);
             return mapper.convertList(trainingSessionList,TrainingSessionTO.class);
         }catch (Exception e) {
             log.error("throwing exception while fetching the training sessions details by name",e.toString());
@@ -429,14 +422,15 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public List<AppUserTO> getUsersByNameOrEmailOrPhoneNumber(String str,String companySid) {
+    public List<UserTO> getUsersByNameOrEmailOrPhoneNumber(String str, String companySid) {
         try {
-            List<AppUser> appUserTOList= appUserRepository.findAppUsersByNameContainingOrEmailIdContainingOrPhoneNumberContaining
-                    (str,BaseEntity.hexStringToByteArray(companySid),Status.DELETED);
-            appUserTOList.forEach(appUser -> {
-                appUser.setPassword(null);
+            List<VirtualAccount> virtualAccounts=virtualAccountRepository.findVirtualAccountByNameContainingOrEmailIdContainingOrPhoneNumberContaining(str,BaseEntity.hexStringToByteArray(companySid),Status.DELETED);
+            List<VirtualAccount> virtualAccounts1=new ArrayList<>();
+            virtualAccounts.forEach(virtualAccount -> {
+                virtualAccount.getAppuser().setPassword(null);
+                virtualAccounts1.add(virtualAccount);
             });
-            return mapper.convertList(appUserTOList,AppUserTO.class);
+            return mapper.convertList(virtualAccounts1,UserTO.class);
         }catch (Exception e) {
             log.error("throwing exception while fetching the appUser details by name,email and phone number",e.toString());
             throw new ApplicationException("Something went wrong while fetching the appUser details by name,email and phone number ");
@@ -447,7 +441,6 @@ public class TrainingServiceImpl implements ITrainingService {
     public BigInteger getCountByClass(String classz,String companySid) {
         return customRepositoy.noOfCountByClass(classz,companySid);
     }
-
     @Override
     public TrainingTO updateTraining(TrainingTO trainingTO) {
         try {
@@ -544,6 +537,7 @@ public class TrainingServiceImpl implements ITrainingService {
             throw new ApplicationException(e.getMessage());
         }
     }
+
     private Company getCompany(String companySid){
         Company company=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Company c=new Company();

@@ -377,4 +377,14 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
         userTO.getDepartmentVA().getDepartment().setSid(savedDepartmentVA.getDepartment().getStringSid());
         return userTO;
     }
+
+    @Override
+    public int getUserCount(String companySid, String type) {
+        List<UserTO> userTOS=getVirtualAccountByCompanySid(companySid,type);
+        if(userTOS!=null && userTOS.size()>0){
+            return userTOS.size();
+        }else {
+            return 0;
+        }
+    }
 }

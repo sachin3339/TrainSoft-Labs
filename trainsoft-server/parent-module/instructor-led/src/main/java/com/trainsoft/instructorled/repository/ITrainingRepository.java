@@ -10,4 +10,5 @@ import java.util.List;
 public interface ITrainingRepository extends JpaRepository<Training, Integer>{
 	Training findTrainingBySidAndStatusNot(byte[] sid,InstructorEnum.Status status);
 	List<Training> findAllByCompanyAndStatusNot(Company company, InstructorEnum.Status status);
+    Training findTrainingBySid(byte[] sid);
 }
