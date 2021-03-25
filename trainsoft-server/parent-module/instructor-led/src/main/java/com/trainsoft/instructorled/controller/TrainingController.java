@@ -289,8 +289,8 @@ public class TrainingController {
     @ApiOperation(value = "updating virtual account role", notes = "API to update virtual account role")
     public ResponseEntity<?> updateVirtualAccountRole(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "role name to be update", required = true) @RequestParam(value = "role") String role,
-            @ApiParam(value = "virtualAccount sid", required = true) @RequestParam(value = "virtualAccountSid") String virtualAccountSid) {
+            @ApiParam(value = "role name to be update", required = true) @PathVariable(value = "role") String role,
+            @ApiParam(value = "virtualAccount sid", required = true) @PathVariable(value = "virtualAccountSid") String virtualAccountSid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         if(!jwt.getVirtualAccountRole().equalsIgnoreCase("ADMIN")){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -301,8 +301,8 @@ public class TrainingController {
     @ApiOperation(value = "updating department role", notes = "API to update department role")
     public ResponseEntity<?> updateDepartmentVASidRole(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "role name to be update", required = true) @RequestParam(value = "role") String role,
-            @ApiParam(value = "departmentVASid", required = true) @RequestParam(value = "departmentVASid") String departmentVASid) {
+            @ApiParam(value = "role name to be update", required = true) @PathVariable(value = "role") String role,
+            @ApiParam(value = "departmentVASid", required = true) @PathVariable(value = "departmentVASid") String departmentVASid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         if(!jwt.getVirtualAccountRole().equalsIgnoreCase("ADMIN")){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -314,7 +314,7 @@ public class TrainingController {
     @ApiOperation(value = "validate email", notes = "validate email")
     public ResponseEntity<?> validateEmail(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "email", required = true) @RequestParam(value = "email") String email) {
+            @ApiParam(value = "email", required = true)  @PathVariable(value = "email") String email) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         return ResponseEntity.ok(trainingService.validateEmail(email));
     }
@@ -322,7 +322,7 @@ public class TrainingController {
     @ApiOperation(value = "validate batch name", notes = "Validate batch")
     public ResponseEntity<?> validateBatch(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "batchName", required = true) @RequestParam(value = "batchName") String batchName) {
+            @ApiParam(value = "batchName", required = true) @PathVariable(value = "batchName") String batchName) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         return ResponseEntity.ok(trainingService.validateBatch(batchName,jwt.getCompanySid()));
     }
