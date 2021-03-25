@@ -133,6 +133,8 @@ public class TrainingController {
         userTO.setCompanySid(jwt.getCompanySid());
         if(userTO.getDepartmentVA().getDepartmentRole()== InstructorEnum.DepartmentRole.SUPERVISOR){
             userTO.setRole(InstructorEnum.VirtualAccountRole.ADMIN);
+        }else {
+            userTO.setRole(InstructorEnum.VirtualAccountRole.USER);
         }
         UserTO createUser = bulkUploadService.createVirtualAccount(userTO);
         return ResponseEntity.ok(createUser);
