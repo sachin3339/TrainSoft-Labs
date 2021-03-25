@@ -86,10 +86,11 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getTrainings(jwt.getCompanySid()));
     }
 
-    @PostMapping("trainingSession/create")
+    @PostMapping(value="trainingSession/create",consumes = MediaType.ALL_VALUE)
     @ApiOperation(value = "createTrainingSession", notes = "API to create new TrainingSession.")
     public ResponseEntity<?> createTrainingSession(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+          //  @ApiParam(value = "File upload to S3 bucket", required = true) @RequestParam("file")MultipartFile multipartFile,
             @ApiParam(value = "Create TrainingSession payload", required = true) @RequestBody TrainingSessionTO trainingSessionTO) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         trainingSessionTO.setCreatedByVASid(jwt.getVirtualAccountSid());
@@ -185,10 +186,11 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getTrainingsByName(name,jwt.getCompanySid()));
     }
 
-    @GetMapping("trainingsessions/{name}")
+    @GetMapping("trainingsessions/training/{trainingSid}/session/{name}")
     @ApiOperation(value = "getTrainingSessionsByName", notes = "Get list of training sessions by trainingSession name")
     public ResponseEntity<?> getTrainingSessionsByName(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training sid", required = true) @PathVariable("trainingSid") String trainingSid,
             @ApiParam(value = "Training Session name", required = true) @PathVariable("name") String name) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         return ResponseEntity.ok(trainingService.getTrainingSessionsByName(name,jwt.getCompanySid()));

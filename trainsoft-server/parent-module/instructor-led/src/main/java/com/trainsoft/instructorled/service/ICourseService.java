@@ -12,12 +12,20 @@ public interface ICourseService {
     CourseTO getCourseBySid(String courseSid);
     List<CourseTO> getCourses(String companySid);
     boolean deleteCourseBySid(String courseSid,String deletedBySid);
+    List<CourseTO> getCoursesByName(String name,String companySid);
+    List<CourseTO> getCoursesWithPagination(int pageNo, int pageSize,String companySid);
+
     CourseSessionTO createSession(CourseSessionTO courseSessionTO);
     CourseSessionTO updateCourseSession(CourseSessionTO courseSessionTO);
-    boolean deleteCourseSessionBySid(String courseSessionSid,String deletedBySid);
     List<CourseSessionTO> findCourseSessionByCourseSid(String courseSid,String companySid);
-    List<CourseTO> getCoursesByName(String name,String companySid);
     List<CourseSessionTO> getCourseSessionsByName(String name,String companySid);
+   // List<CourseSessionTO> getCourseSessionsByName(String courseSid,String name);
+    //boolean deleteCourseSessionBySid(String courseSessionSid,String deletedBySid);
     List<CourseSessionTO> findCourseSessionByCourseSidWithPagination(String courseSid,int pageNo, int pageSize,String companySid);
-    List<CourseTO> getCoursesWithPagination(int pageNo, int pageSize,String companySid);
+    boolean deleteCourseSessionBySid(String courseSessionSid,String deletedBySid);
+
+
+
+
+
 }

@@ -49,6 +49,7 @@ public class TrainingView extends BaseEntity {
 
     @Column(name="company_sid")
     private String companySid;
+
     @ManyToOne
     @JoinColumn(name = "created_by", referencedColumnName = "id")
     private VirtualAccount createdBy;

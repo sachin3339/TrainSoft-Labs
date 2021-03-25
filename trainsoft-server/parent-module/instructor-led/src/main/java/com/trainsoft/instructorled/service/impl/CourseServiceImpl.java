@@ -173,7 +173,7 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
-    public CourseSessionTO updateCourseSession(CourseSessionTO courseSessionTO) {
+    public CourseSessionTO updateCourseSession(CourseSessionTO courseSessionTO)  {
         try {
             if(StringUtils.isNotEmpty(courseSessionTO.getSid())){
                 CourseSession courseSession= courseSessionRepository.findCourseSessionBySid(
@@ -250,6 +250,12 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
+/*    public List<CourseSessionTO> getCourseSessionsByName(String courseSid,String name) {
+        try {
+            Course course= courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+            List<CourseSession> courseSessionList= courseSessionRepository.
+                    findCourseSessionByCourseAndStatusNotAndTopicNameContaining(course, InstructorEnum.Status.DELETED,name);*/
+
     public List<CourseSessionTO> getCourseSessionsByName(String name,String companySid) {
         try {
             List<CourseSession> courseSessionList= courseSessionRepository.findCourseSessionByTopicNameContainingAndCompanyAndStatusNot(name,getCompany(companySid), InstructorEnum.Status.DELETED);

@@ -1,5 +1,6 @@
 package com.trainsoft.instructorled.service.impl;
 
+import com.trainsoft.instructorled.commons.AWSUploadClient;
 import com.trainsoft.instructorled.commons.CommonUtils;
 import com.trainsoft.instructorled.commons.CustomRepositoyImpl;
 import com.trainsoft.instructorled.customexception.ApplicationException;
@@ -11,6 +12,7 @@ import com.trainsoft.instructorled.service.ITrainingService;
 import com.trainsoft.instructorled.to.*;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigInteger;
 import java.time.Instant;
@@ -32,6 +35,7 @@ import static com.trainsoft.instructorled.value.InstructorEnum.*;
 
 @Slf4j
 @AllArgsConstructor
+@NoArgsConstructor
 @Service
 public class TrainingServiceImpl implements ITrainingService {
 
@@ -50,6 +54,7 @@ public class TrainingServiceImpl implements ITrainingService {
     IAppUserRepository appUserRepository;
     ITrainingCourseRepository trainingCourseRepository;
     CustomRepositoyImpl customRepositoy;
+    AWSUploadClient awsUploadClient;
 
 
     @Override
@@ -184,6 +189,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 trainingSession.setStartTime(new Date(trainingSessionTO.getStartTime()));
                 trainingSession.setEndTime(new Date(trainingSessionTO.getEndTime()));
                 trainingSession.setSessionDate(new Date(trainingSessionTO.getSessionDate()));
+                //trainingSession.setAssets(awsUploadClient.uploadFile(file));
                 TrainingSessionTO savedTrainingSessionTO = mapper.convert(trainingSessionRepository.save(trainingSession), TrainingSessionTO.class);
                 savedTrainingSessionTO.setCreatedByVASid(virtualAccount.getStringSid());
                 savedTrainingSessionTO.setCourseSid(course.getStringSid());
@@ -196,6 +202,37 @@ public class TrainingServiceImpl implements ITrainingService {
         } catch (Exception exception) {
             log.error("throwing exception while creating the trainingSession",exception.toString());
             throw new ApplicationException("Something went wrong while creating the trainingSession");
+        }
+    }
+
+    @Override
+    public TrainingSessionTO updateTrainingSession(TrainingSessionTO trainingSessionTO) {
+        try {
+            if (trainingSessionTO != null) {
+                VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(
+                        BaseEntity.hexStringToByteArray(trainingSessionTO.getCreatedByVASid()));
+                Training training = trainingRepository.findTrainingBySidAndStatusNot(
+                        BaseEntity.hexStringToByteArray(trainingSessionTO.getTrainingSid()),Status.DELETED);
+                Course course = courseRepository.findCourseBySid
+                        (BaseEntity.hexStringToByteArray(trainingSessionTO.getCourseSid()));
+                TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(trainingSessionTO.getTrainingSid()));
+                trainingSession.setUpdatedBy(virtualAccount);
+                trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                trainingSession.setStartTime(new Date(trainingSessionTO.getStartTime()));
+                trainingSession.setEndTime(new Date(trainingSessionTO.getEndTime()));
+                trainingSession.setSessionDate(new Date(trainingSessionTO.getSessionDate()));
+                TrainingSessionTO savedTrainingSessionTO = mapper.convert(trainingSessionRepository.save(trainingSession), TrainingSessionTO.class);
+                savedTrainingSessionTO.setCreatedByVASid(virtualAccount.getStringSid());
+                savedTrainingSessionTO.setCourseSid(course.getStringSid());
+                savedTrainingSessionTO.setTrainingSid(training.getStringSid());
+                return savedTrainingSessionTO;
+            }
+            else {
+                throw new RecordNotFoundException();
+            }
+        } catch (Exception exception) {
+            log.info("throwing exception while updating the trainingSession");
+            throw new ApplicationException("Something went wrong while updating the trainingSession");
         }
     }
 
@@ -333,6 +370,12 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
+/*    public List<TrainingSessionTO> getTrainingSessionsByTrainingSidAndSessionName(String trainingSid,String name) {
+        try {*/
+/*            Training training =trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
+            List<TrainingSession> trainingSessionList= trainingSessionRepository.
+                    findTrainingSessionByTrainingAndStatusNotAndAgendaNameContaining(training, InstructorEnum.Status.DELETED,name);*/
+
     public List<TrainingSessionTO> getTrainingSessionsByName(String name,String companySid) {
         try {
             List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByAgendaNameContainingAndCompanyAndStatusNot(name,getCompany(companySid),Status.DELETED);
@@ -425,7 +468,6 @@ public class TrainingServiceImpl implements ITrainingService {
                 training.setUpdatedBy(virtualAccount);
                 training.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 Training savedTraining=trainingRepository.save(training);
-               // Integer flag= trainingCourseRepository.deleteAllByTraining(savedTraining);
                TrainingCourse trainingCourse= trainingCourseRepository.findTrainingCourseByTraining(training);
                trainingCourse.setCourse(course);
                 trainingCourseRepository.save(trainingCourse);
@@ -434,11 +476,6 @@ public class TrainingServiceImpl implements ITrainingService {
                     saveTrainingBatch(savedTraining, trainingTO.getTrainingBatchs());
                 else
                     trainingTO.setTrainingBatchs(Collections.EMPTY_LIST);
-
-/*                if(trainingTO.getCourseSid()!=null)
-                    saveTrainingCourse(savedTraining, trainingTO.getCourseSid());
-                else
-                    trainingTO.setCourseSid(null);*/
                 TrainingTO savedTrainingTO = mapper.convert(savedTraining, TrainingTO.class);
                 savedTrainingTO.setCreatedByVASid(virtualAccount.getStringSid());
                 savedTrainingTO.setCourseSid(course.getStringSid());
