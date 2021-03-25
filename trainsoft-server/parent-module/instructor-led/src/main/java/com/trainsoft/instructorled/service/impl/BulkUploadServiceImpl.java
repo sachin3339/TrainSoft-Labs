@@ -16,6 +16,9 @@ import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -173,10 +176,12 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
     }
 
     @Override
-    public List<UserTO> getVirtualAccountByCompanySid(String companySid,String type){
+    public List<UserTO> getVirtualAccountByCompanySid(String companySid,String type,int pageNo,int record){
         List<UserTO> list= new ArrayList<>();
         Company company= companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
-        List<VirtualAccount> virtualAccounts=virtualAccountRepository.findVirtualAccountByCompanyAndStatusNot(company,InstructorEnum.Status.DELETED);;
+        Pageable paging = PageRequest.of(pageNo, record);
+        Page<VirtualAccount> virtualAccountPage=virtualAccountRepository.findVirtualAccountByCompanyAndStatusNot(company,InstructorEnum.Status.DELETED,paging);
+        List<VirtualAccount> virtualAccounts=virtualAccountPage.toList();
         virtualAccounts.forEach(virtualAccount -> {
             if(type.equalsIgnoreCase("ALL")) {
                 DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
@@ -380,9 +385,9 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
 
     @Override
     public int getUserCount(String companySid, String type) {
-        List<UserTO> userTOS=getVirtualAccountByCompanySid(companySid,type);
-        if(userTOS!=null && userTOS.size()>0){
-            return userTOS.size();
+        List<VirtualAccount> virtualAccounts=virtualAccountRepository.findVirtualAccountByCompanyAndStatusNot(getCompany(companySid), InstructorEnum.Status.DELETED);
+        if(virtualAccounts!=null && virtualAccounts.size()>0){
+            return virtualAccounts.size();
         }else {
             return 0;
         }

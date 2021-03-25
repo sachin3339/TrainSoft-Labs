@@ -12,7 +12,7 @@ public interface IBulkUploadService {
      List<AppUserTO> getAllAppUsers(String companySid);
      UserTO createVirtualAccount(UserTO userTO);
      UserTO getVirtualAccountByVASid(String virtualAccountSid);
-     List<UserTO> getVirtualAccountByCompanySid(String companySid,String type);
+     List<UserTO> getVirtualAccountByCompanySid(String companySid,String type,int pageNo,int record);
      void uploadParticipantsWithBatch(MultipartFile file, String batchName, String instructorName,String companySid);
      void uploadParticipants(MultipartFile file,String companySid);
      UserTO updateUserDetails(UserTO userTO);

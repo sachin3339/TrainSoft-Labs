@@ -158,13 +158,15 @@ public class TrainingController {
         return ResponseEntity.ok(password);
     }
 
-    @GetMapping("vaccounts/{type}")
+    @GetMapping("vaccounts/{type}/{pageNo}/{pageSize}")
     @ApiOperation(value = "getVirtualAccounts", notes = "Get list of virtual account")
     public ResponseEntity<?> getVirtualAccounts(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Type", required = true) @PathVariable(value = "type") String type) {
+            @ApiParam(value = "Type", required = true) @PathVariable(value = "type") String type,
+            @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
+            @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(bulkUploadService.getVirtualAccountByCompanySid(jwt.getCompanySid(),type));
+        return ResponseEntity.ok(bulkUploadService.getVirtualAccountByCompanySid(jwt.getCompanySid(),type,pageNo-1,pageNo));
     }
 
     @GetMapping("participants/batch/{batchSid}")
