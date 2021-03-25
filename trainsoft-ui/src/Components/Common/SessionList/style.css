@@ -19,6 +19,7 @@
 .se-date{
     display: flex;
     padding-right: 15px;
+    font-size: 12px;
 }
 .session-onExpand{
     padding: 0px 23px;
