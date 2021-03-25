@@ -27,7 +27,6 @@ const GLOBELCONSTANT = {
             SEARCH_SESSION:  API_HOST + "coursesessions/",
             COURSE_SESSION_PAGE: API_HOST + "coursesession/course/{courseSid}/{pageNo}/{pageSize}",
             COURSE_BY_PAGE:  API_HOST + "course/{pageNo}/{pageSize}",
-
         },  
         BATCHES: {
             GET_BATCH_SID: API_HOST +  'batch/{batchSid}',
@@ -36,17 +35,22 @@ const GLOBELCONSTANT = {
             GET_BATCH_PARTICIPANT: API_HOST +  'participants/batch/{batchSid}',
             DELETE_BATCHES: API_HOST +  'delete/batch/',
             EDIT_BATCHES: API_HOST +  'update/batch',
-            SEARCH_BATCHES: API_HOST + "batches/"
+            SEARCH_BATCHES: API_HOST + "batches/",
+            BATCH_VALIDATION: API_HOST + "validate/batch/{batchName}"
         },
         PARTICIPANT: {
             GET_PARTICIPANT: API_HOST +  "list/participant",
             UPLOAD_PARTICIPANT: API_HOST +  "upload/list/participants",
+            UPLOAD_USER_PARTICIPANT: API_HOST +  "upload/participants",
             CREATE_PARTICIPANT: API_HOST +  "user/create",
             ALL_USERS: API_HOST +  "vaccounts/",
             GENERATE_PWD: API_HOST +  "generate/password",
             SEARCH_USER: API_HOST + "user/{str}",
-            STATUS_DELETE: API_HOST + "update/status/{status}/virtualAccount/{vASid}"
-
+            STATUS_DELETE: API_HOST + "update/status/{status}/virtualAccount/{vASid}",
+            UPDATE_ROLE: API_HOST + 'update/v/role/{role}/{virtualAccountSid}',
+            UPDATE_DEPARTMENT_ROLE: API_HOST + 'update/department/role/{role}/{departmentVASid}',
+            GET_USER_COUNT: API_HOST + 'get/user/count/{type}',
+            EMAIL_VALIDATION: API_HOST + "validate/email/{email}",
         },  
         TRAINING: {
             GET_TRAINING: API_HOST +  "trainings",
@@ -72,6 +76,7 @@ const GLOBELCONSTANT = {
         DEPARTMENT_ROLE: [
             {key: "LEARNER",name: "Learner"},
             {key: "INSTRUCTOR",name: "Instructor"},
+            {key: "SUPERVISOR",name: "Supervisor"},
         ]
     }
 export default GLOBELCONSTANT;

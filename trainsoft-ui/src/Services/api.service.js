@@ -49,16 +49,21 @@ const RestService = {
   editBatches: (payload) => AxiosService.put(GLOBELCONSTANT.BATCHES.EDIT_BATCHES, payload),
   searchBatches : (name) => AxiosService.get(GLOBELCONSTANT.BATCHES.SEARCH_BATCHES + name),
   getBatchParticipant: (batchSid)=> AxiosService.get(GLOBELCONSTANT.BATCHES.GET_BATCH_PARTICIPANT.replace("{batchSid}",batchSid)),
+  validateBatches: (name)=> AxiosService.get(GLOBELCONSTANT.BATCHES.BATCH_VALIDATION.replace("{batchName}",name)),
 
 
   CreateBatch: (payload) => AxiosService.post(GLOBELCONSTANT.BATCHES.CREATE_BATCHES, payload),
   //participant
   getAllParticipant: (sid) => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.GET_PARTICIPANT),
   getAllUser: (type) => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.ALL_USERS + type),
+  getAllUserByPage: (type,pageNo,pageSize) => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.ALL_USERS +`${type}/${pageNo}/${pageSize}`),
   searchUser: (str) => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.SEARCH_USER.replace("{str}",str)),
   UploadParticipant: (payload,header) => AxiosService.uploadMultiPart(GLOBELCONSTANT.PARTICIPANT.UPLOAD_PARTICIPANT, payload, header),
   createParticipant: (payload) => AxiosService.post(GLOBELCONSTANT.PARTICIPANT.CREATE_PARTICIPANT,payload),
   generatePwd: () => AxiosService.post(GLOBELCONSTANT.PARTICIPANT.GENERATE_PWD),
+  getUserCount: (type)=> AxiosService.get(GLOBELCONSTANT.PARTICIPANT.GET_USER_COUNT.replace("{type}",type)),
+  validateEmail: (email)=> AxiosService.get(GLOBELCONSTANT.PARTICIPANT.EMAIL_VALIDATION.replace("{email}",email)),
+  changeUserRole: (role,vSid)=> AxiosService.get(GLOBELCONSTANT.PARTICIPANT.UPDATE_ROLE.replace("{role}",role).replace("{virtualAccountSid}",vSid)),
   changeAndDeleteStatus: (status,vSid)=> AxiosService.put(GLOBELCONSTANT.PARTICIPANT.STATUS_DELETE.replace("{status}",status).replace("{vASid}",vSid)),
 
 

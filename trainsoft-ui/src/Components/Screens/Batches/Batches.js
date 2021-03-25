@@ -18,6 +18,7 @@ import useFetch from "../../../Store/useFetch";
 import AppContext from "../../../Store/AppContext";
 import { SearchInputBox } from "react-bs-search";
 import './batches.css'
+import { getAllBatches } from "../../../Services/service";
 
 
 
@@ -26,13 +27,14 @@ const initialVal = {
 }
 
 const Batch = ({ location }) => {
-    const { user, spinner,setBatches,batches } = useContext(AppContext)
+    const { user, spinner, setBatches, batches } = useContext(AppContext)
     const Toast = useToast();
     const [show, setShow] = useState(false);
     const [batchList, setBatchList] = useState([])
     const [initialValue, setInitialValue] = useState(initialVal)
     const [isEdit, setIsEdit] = useState(false)
     const [count, setCount] = useState(0)
+    const [isBatch,setIsBatch] = useState(false)
 
 
     const schema = Yup.object().shape({
@@ -106,33 +108,9 @@ const Batch = ({ location }) => {
         clearSelection: false
     });
 
-    // create batches
-    // const createBatch = (data)=> {
-    //     try{
-    //         let payload = {
-    //             "name": data.name,
-    //             "status": "ENABLED",
-    //             "trainingType": "INSTRUCTOR_LED",
-    //         }
-
-    //         let val = {
-    //             batchName: data.name,
-    //             instructorName: data.trainingType
-    //         }
-    //         RestService.CreateBatch(payload).then(res => {
-    //                setBatchList([...batchList,res.data])
-    //                Toast.success({ message: `Batch is Successfully Created`});
-    //                uploadParticipant(data.upload,val)
-    //                setShow(false) 
-    //             }, err => console.log(err)
-    //         ); 
-    //     }
-    //     catch(err){
-    //         console.error('error occur on getAllCourse',err)
-    //     }
-    // }
 
 
+    // upload attachment
     const UploadAttachmentsAPI = async (val) => {
         return new Promise((resolve, reject) => {
             let data = new FormData();
@@ -173,7 +151,8 @@ const Batch = ({ location }) => {
             spinner.show();
             let [res] = await UploadAttachmentsAPI(val);
             spinner.hide();
-            getAllBatch()
+            getAllBatchByPage()
+            getAllBatches(setBatches);
             setShow(false)
             Toast.success({ message: `Batch is Successfully Created` });
         } catch (err) {
@@ -203,14 +182,16 @@ const Batch = ({ location }) => {
     //     }
     // }
 
-    // get all batches
+    // delete batch by batch id
     const deleteBatches = async (batchId) => {
         try {
             spinner.show();
             RestService.deleteBatches(batchId).then(
                 response => {
                     Toast.success({ message: `Delete batches successfully` });
-                    getAllBatch()
+                    getAllBatchByPage()
+                    getAllBatches(setBatches);
+
                 },
                 err => {
                     spinner.hide();
@@ -239,7 +220,9 @@ const Batch = ({ location }) => {
                 response => {
                     Toast.success({ message: `${changeStatus ? "Status" : 'Batch'} update successfully` });
                     spinner.hide();
-                    getAllBatch()
+                    getAllBatchByPage()
+                    getAllBatches(setBatches);
+
                     setShow(false)
                 },
                 err => {
@@ -256,8 +239,8 @@ const Batch = ({ location }) => {
         }
     }
 
-    // get all batches
-    const getAllBatch = async (pagination = "1") => {
+    // get all batches by page no
+    const getAllBatchByPage = async (pagination = "1") => {
         try {
             let pageSize = 10;
             spinner.show();
@@ -272,7 +255,7 @@ const Batch = ({ location }) => {
                 spinner.hide();
             });
         } catch (err) {
-            console.error("error occur on getAllBatch()", err)
+            console.error("error occur on getAllBatchByPage()", err)
         }
     }
 
@@ -295,10 +278,33 @@ const Batch = ({ location }) => {
         }
     }
 
+      // validateEmailId
+      const validateBatch = async (batchName) => {
+        try {
+            if(batchName.length > 0){
+            RestService.validateBatches(batchName).then(
+                response => {
+                    setIsBatch(response.data);
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        }else{
+            setIsBatch(false);
+        }
+        } catch (err) {
+            console.error("error occur on validateEmailId()", err)
+        }
+    }
+
     // get batches by sid
+
     const getBatchCount = async () => {
         try {
-            RestService.getCount("batch").then(
+            RestService.getCount("vw_batch").then(
                 response => {
                     setCount(response.data);
                 },
@@ -334,8 +340,8 @@ const Batch = ({ location }) => {
 
     //initialize component
     useEffect(() => {
-        getBatchCount();
-        getAllBatch()
+        getBatchCount()
+        getAllBatchByPage()
     }, [])
 
 
@@ -343,56 +349,56 @@ const Batch = ({ location }) => {
         <div className="p-3">
             <CardHeader {...{
                 location,
-                onChange: (e) => e.length === 0 && getAllBatch(),
+                onChange: (e) => e.length === 0 && getAllBatchByPage(),
                 onEnter: (e) => searchBatch(e),
-                actionClick: ()=> {setShow(true);setIsEdit(false)},
+                actionClick: () => { setShow(true); setIsEdit(false);setIsBatch(false) },
                 showAction: user.role === 'ADMIN' ? true : false
             }} />
         </div>
-            <div>
-                {/* {user.role === 'admin' && <Button onClick={() => setShow(true)}> + Add New </Button>} */}
-                <BsModal {...{ show, setShow, headerTitle: !isEdit ? "Add new Batch" : "Update Batch", size: "lg" }}>
-                    <div className="form-container">
-                        <Formik
-                            onSubmit={(value) => !isEdit ? uploadAttachments(value) : editBatches(value)}
-                            initialValues={!isEdit ? {
-                                name: '',
-                                trainingType: '',
-                                file: ''
-                            } : initialValue}
-                            validationSchema={schema}
-                        >
-                            {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
+        <div>
+            {/* {user.role === 'admin' && <Button onClick={() => setShow(true)}> + Add New </Button>} */}
+            <BsModal {...{ show, setShow, headerTitle: !isEdit ? "Add new Batch" : "Update Batch", size: "lg" }}>
+                <div className="form-container">
+                    <Formik
+                        onSubmit={(value) => !isEdit ? uploadAttachments(value) : editBatches(value)}
+                        initialValues={!isEdit ? {
+                            name: '',
+                            trainingType: '',
+                            file: ''
+                        } : initialValue}
+                        validationSchema={schema}
+                    >
+                        {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
+                            <div>
+                                <Form.Group className="row">
+                                    <div className="col-6">
+                                        <TextInput label="Batch Name" isNotValid={isBatch} onBlur={(e)=> validateBatch(e.target.value)} name="name" />
+                                    </div>
+                                    <div className="col-6">
+                                        <SelectInput label="Training Type" option={['INSTRUCTOR_LED', 'SELF', 'OFFLINE']} name="trainingType" />
+                                    </div>
+                                </Form.Group>
                                 <div>
-                                    <Form.Group className="row">
-                                        <div className="col-6">
-                                            <TextInput label="Batch Name" name="name" />
-                                        </div>
-                                        <div className="col-6">
-                                            <SelectInput label="Training Type" option={['INSTRUCTOR_LED', 'SELF', 'OFFLINE']} name="trainingType" />
-                                        </div>
-                                    </Form.Group>
+                                    {!isEdit && <div className="mb-4">
+                                        <div><span className="title-sm">Upload participants</span></div> <div><input placeholder="Browse File" onChange={(e) => { setFieldValue("file", e.target.files) }} type="file" /></div>
+                                    </div>
+                                    }
                                 </div>
-                                <footer className="jcb">
-                                    <div>
-                                        {!isEdit && <div className="col-6">
-                                            <div><span className="title-sm">Upload participants</span></div> <div><input placeholder="Browse File" onChange={(e) => { setFieldValue("file", e.target.files) }} type="file" /></div>
-                                        </div>
-                                        }
-
-                                    </div>
-                                    <div>
-                                        <Button type="submit" > {isEdit ? 'Update Batch' : 'Create Batch'}</Button>
-                                    </div>
-                                </footer>
-                            </form>
-                            }
-                        </Formik>
-                    </div>
-                </BsModal>
-            </div>
-        {batchList && <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse(), onPageChange: (e) => getAllBatch(e), count }} />}
+                            </div>
+                            <footer className="jcb">
+                            <div> <a href="https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx">Sample template</a> </div>
+                                <div>
+                                    <Button type="submit" > {isEdit ? 'Update Batch' : 'Create Batch'}</Button>
+                                </div>
+                            </footer>
+                        </form>
+                        }
+                    </Formik>
+                </div>
+            </BsModal>
         </div>
+        {batchList && <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse(), onPageChange: (e) => getAllBatchByPage(e), count }} />}
+    </div>
 
     </>)
 }
