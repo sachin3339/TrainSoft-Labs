@@ -29,11 +29,9 @@ const initialVal = {
 }
 
 const Trainings = ({ location }) => {
-    const { setCourse,setBatches,setDepartment } = useContext(AppContext)
-
+    const { setCourse,setBatches,batches, spinner, user } = useContext(AppContext)
     const { setTraining } = useContext(TrainingContext)
     const Toast = useToast()
-    const { batches, spinner, user } = useContext(AppContext)
     const [show, setShow] = useState(false);
     const [trainingList, setTrainingList] = useState([])
     const [isEdit,setIsEdit] = useState(false);

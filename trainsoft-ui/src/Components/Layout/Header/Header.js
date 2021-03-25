@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Dropdown } from 'react-bootstrap';
-import { ICN_NOTIFICATION, ICN_SEARCH } from '../../Common/Icon';
+import { ICN_NOTIFICATION } from '../../Common/Icon';
 import { CustomToggle } from '../../../Services/MethodFactory';
 import { ProfileImg } from '../../Common/BsUtils';
 import { navigate } from '../../Common/Router';
@@ -23,6 +23,7 @@ const Header = ({location}) => {
         }
         return a
     }
+
     return (<>
     { location.state.title !== "COMPILER" &&
     <div className="header">
@@ -30,7 +31,7 @@ const Header = ({location}) => {
                 <div className="title-lg mb-0">
                     {location.state && location.state.title}
                 </div>
-                <div class="breadcrumb-wrap"><a href="#">Summary</a><a href="#">Level1</a><a href="#">Level2</a></div>
+                {/* <div class="breadcrumb-wrap"><a href="#">Summary</a><a href="#">Level1</a><a href="#">Level2</a></div> */}
             </div>
             <div className="aic">
                 <Dropdown className="notification">
