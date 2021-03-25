@@ -107,7 +107,7 @@ public class CourseController {
             @ApiParam(value = "Course  sid", required = true) @PathVariable("courseSid") String courseSid,
             @ApiParam(value = "Course session name", required = true) @PathVariable("name") String name) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(courseService.getCourseSessionsByName(name,jwt.getCompanySid()));
+        return ResponseEntity.ok(courseService.getCourseSessionsByName(courseSid,name,jwt.getCompanySid()));
 
     }
 

@@ -35,7 +35,6 @@ import static com.trainsoft.instructorled.value.InstructorEnum.*;
 
 @Slf4j
 @AllArgsConstructor
-@NoArgsConstructor
 @Service
 public class TrainingServiceImpl implements ITrainingService {
 
@@ -210,12 +209,12 @@ public class TrainingServiceImpl implements ITrainingService {
         try {
             if (trainingSessionTO != null) {
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(
-                        BaseEntity.hexStringToByteArray(trainingSessionTO.getCreatedByVASid()));
+                        BaseEntity.hexStringToByteArray(trainingSessionTO.getUpdatedByVASid()));
                 Training training = trainingRepository.findTrainingBySidAndStatusNot(
                         BaseEntity.hexStringToByteArray(trainingSessionTO.getTrainingSid()),Status.DELETED);
                 Course course = courseRepository.findCourseBySid
                         (BaseEntity.hexStringToByteArray(trainingSessionTO.getCourseSid()));
-                TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(trainingSessionTO.getTrainingSid()));
+                TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(trainingSessionTO.getSid()));
                 trainingSession.setUpdatedBy(virtualAccount);
                 trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 trainingSession.setStartTime(new Date(trainingSessionTO.getStartTime()));
@@ -370,15 +369,11 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-/*    public List<TrainingSessionTO> getTrainingSessionsByTrainingSidAndSessionName(String trainingSid,String name) {
-        try {*/
-/*            Training training =trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
-            List<TrainingSession> trainingSessionList= trainingSessionRepository.
-                    findTrainingSessionByTrainingAndStatusNotAndAgendaNameContaining(training, InstructorEnum.Status.DELETED,name);*/
-
-    public List<TrainingSessionTO> getTrainingSessionsByName(String name,String companySid) {
+    public List<TrainingSessionTO> getTrainingSessionsByName(String trainingSid,String name,String companySid) {
         try {
-            List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByAgendaNameContainingAndCompanyAndStatusNot(name,getCompany(companySid),Status.DELETED);
+            Training training =trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
+            List<TrainingSession> trainingSessionList= trainingSessionRepository.
+                    findTrainingSessionByTrainingAndAgendaNameContainingAndCompanyAndStatusNot(training,name,getCompany(companySid),Status.DELETED);
             return mapper.convertList(trainingSessionList,TrainingSessionTO.class);
         }catch (Exception e) {
             log.error("throwing exception while fetching the training sessions details by name",e.toString());
@@ -544,6 +539,7 @@ public class TrainingServiceImpl implements ITrainingService {
             throw new ApplicationException(e.getMessage());
         }
     }
+
     private Company getCompany(String companySid){
         Company company=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Company c=new Company();
