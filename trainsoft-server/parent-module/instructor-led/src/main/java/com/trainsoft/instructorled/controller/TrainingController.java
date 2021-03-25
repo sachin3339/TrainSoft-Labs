@@ -87,14 +87,15 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getTrainings());
     }
 
-    @PostMapping("trainingSession/create")
+    @PostMapping(value="trainingSession/create",consumes = MediaType.ALL_VALUE)
     @ApiOperation(value = "createTrainingSession", notes = "API to create new TrainingSession.")
     public ResponseEntity<?> createTrainingSession(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "File upload to S3 bucket", required = true) @RequestParam("file")MultipartFile multipartFile,
             @ApiParam(value = "Create TrainingSession payload", required = true) @RequestBody TrainingSessionTO trainingSessionTO) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         trainingSessionTO.setCreatedByVASid(jwt.getVirtualAccountSid());
-        TrainingSessionTO createTrainingSessionTO = trainingService.createTrainingSession(trainingSessionTO);
+        TrainingSessionTO createTrainingSessionTO = trainingService.createTrainingSession(multipartFile,trainingSessionTO);
         return ResponseEntity.ok(createTrainingSessionTO);
     }
     @GetMapping("/trainingSession/{trainingSessionSid}")
@@ -182,13 +183,14 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getTrainingsByName(name));
     }
 
-    @GetMapping("trainingsessions/{name}")
+    @GetMapping("trainingsessions/training/{trainingSid}/session/{name}")
     @ApiOperation(value = "getTrainingSessionsByName", notes = "Get list of training sessions by trainingSession name")
     public ResponseEntity<?> getTrainingSessionsByName(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Training sid", required = true) @PathVariable("trainingSid") String trainingSid,
             @ApiParam(value = "Training Session name", required = true) @PathVariable("name") String name) {
         log.info(String.format("Request received : User for GET /v1/list/trainingSession"));
-        return ResponseEntity.ok(trainingService.getTrainingSessionsByName(name));
+        return ResponseEntity.ok(trainingService.getTrainingSessionsByTrainingSidAndSessionName(trainingSid,name));
     }
 
     @DeleteMapping("delete/training/{trainingSid}")

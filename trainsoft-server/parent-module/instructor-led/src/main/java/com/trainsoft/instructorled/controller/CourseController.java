@@ -98,13 +98,14 @@ public class CourseController {
         return ResponseEntity.ok(courseService.deleteCourseBySid(courseSid, jwt.getVirtualAccountSid()));
     }
 
-    @GetMapping("coursesessions/{name}")
+    @GetMapping("coursesessions/course/{courseSid}/{name}")
     @ApiOperation(value = "getCourseSessionsByName", notes = "Get list of course session by session name")
     public ResponseEntity<?> getCourseSessionsByName(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Course  sid", required = true) @PathVariable("courseSid") String courseSid,
             @ApiParam(value = "Course session name", required = true) @PathVariable("name") String name) {
         log.info(String.format("Request received : User for GET /v1/list/course session"));
-        return ResponseEntity.ok(courseService.getCourseSessionsByName(name));
+        return ResponseEntity.ok(courseService.getCourseSessionsByName(courseSid, name));
     }
 
     @PutMapping("update/coursesession")
