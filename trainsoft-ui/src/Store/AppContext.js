@@ -1,4 +1,5 @@
 import React, { useState,useReducer } from 'react';
+import { TokenService } from '../Services/storage.service';
 import useSpinner from './SpinnerHook';
 const AppContext = React.createContext({});
 export default AppContext;
@@ -26,7 +27,7 @@ export const authReducer = (state, action) => {
             localStorage.removeItem('user');
             return {
                 ...state,
-                user: ''
+                user: {}
             }
         default:
             return state
@@ -42,14 +43,14 @@ export const AppProvider = (props) => {
     const [department,setDepartment] = useState([])
 
 
-    const setValueBy = (type, value) => {
+    const setUserValue = (type, value) => {
         dispatch({type, value});
     }
    
     const appData = {
         spinner,
         ...authState,
-        setValueBy,
+        setUserValue,
         course,
         setCourse,
         batches,

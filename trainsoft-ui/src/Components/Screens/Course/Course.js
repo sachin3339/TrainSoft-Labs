@@ -16,6 +16,7 @@ import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import useToast from "../../../Store/ToastHook";
 import moment from 'moment'
 import AppContext from "../../../Store/AppContext";
+import { getAllCourse } from "../../../Services/service";
 
 const Courses = ({ location }) => {
     const { user, spinner, setCourse,course } = useContext(AppContext)
@@ -104,8 +105,8 @@ const Courses = ({ location }) => {
                 "status": "ENABLED",
             }
             RestService.CreateCourse(payload).then(res => {
-                setCourseList([...courseList, res.data])
-                setCourse(...course, res.data)
+                 setCourseList([...courseList, res.data])
+                getAllCourse(setCourse) 
                 Toast.success({ message: `Course is Successfully Created` });
                 setShow(false)
             }, err => console.log(err)
@@ -116,6 +117,8 @@ const Courses = ({ location }) => {
             Toast.error({ message: `Something wrong!!` });
         }
     }
+
+
 
     //edit course list
     const editCourse = (data) => {
@@ -154,11 +157,11 @@ const Courses = ({ location }) => {
     }
     
     // get all course
-    const getCourse = async (pagination = "1") => {
+    const getCourse = async (pagination = 1) => {
         try {
             let pageNo= 10
             spinner.show()
-            RestService.getCourseByPage(pageNo,pagination).then(
+            RestService.getCourseByPage(pageNo , pagination).then(
                 response => {
                     setCourseList(response.data);
                 },
@@ -192,7 +195,7 @@ const Courses = ({ location }) => {
     // get course count
     const getBatchCount = async () => {
         try {
-            RestService.getCount("course").then(
+            RestService.getCount("vw_course").then(
                 response => {
                     setCount(response.data);
                 },
@@ -208,8 +211,9 @@ const Courses = ({ location }) => {
     }
 
     useEffect(() => {
+        getBatchCount()
         getCourse();
-        getBatchCount()}, [])
+       }, [])
 
 
     return (<><div className="table-shadow">
@@ -253,7 +257,7 @@ const Courses = ({ location }) => {
                     </div>
                 </BsModal>
         
-        <DynamicTable {...{ configuration, sourceData: courseList.slice().reverse(),onPageChange: (e) => getCourse(e) ,count}} />
+        <DynamicTable {...{ configuration, sourceData: courseList.slice().reverse(),onPageChange: (e) => getCourse(e),count}} />
     </div>
 
     </>)

@@ -14,7 +14,7 @@ import { TokenService } from '../../../Services/storage.service';
 
 
 const Login = () => {
-    const {setValueBy,spinner,user} = useContext(AppContext)
+    const {setUserValue,spinner,user} = useContext(AppContext)
     const Toast = useToast();
     
     // on login the user
@@ -26,7 +26,8 @@ const Login = () => {
                         data.name = response.data.appuser.name
                         data.accessType = response.data.appuser.accessType
                         data.employeeId = response.data.appuser.accessType
-                        setValueBy("LOGIN",data)
+                        setUserValue("LOGIN",data)
+                        AxiosService.init('',response.data.jwtToken);
                         TokenService.saveToken(response.data.jwtToken)
                         data.role === "LEARNER" ?  navigate('/home', { state: { title: 'Home'} }): navigate('/dashboard', { state: { title: 'Dashboard'} })
                         

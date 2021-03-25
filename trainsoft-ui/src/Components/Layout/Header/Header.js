@@ -6,11 +6,12 @@ import { ProfileImg } from '../../Common/BsUtils';
 import { navigate } from '../../Common/Router';
 import AppContext from '../../../Store/AppContext';
 import './header.css'
+import { TokenService } from '../../../Services/storage.service';
 
 
 
 const Header = ({location}) => {
-    const {user} = useContext(AppContext)
+    const {user,setUserValue} = useContext(AppContext)
 
     // get user name
     const getUserName = (name) =>{
@@ -22,6 +23,16 @@ const Header = ({location}) => {
             console.error("Error occur on getUserName()",err)
         }
         return a
+    }
+
+    const LogOut = ()=>{
+        try{
+           TokenService.removeToken()
+           setUserValue("LOGOUT")
+           navigate('/')
+        } catch(err){
+            console.error("error occur on LogOut()",err)
+        }
     }
 
     return (<>
@@ -68,7 +79,7 @@ const Header = ({location}) => {
                             <div><ProfileImg name={getUserName(user.name)} size="md"/></div>
                         </Dropdown.Toggle>
                     <Dropdown.Menu as="div" align="left">
-                    <Dropdown.Item onClick={()=>navigate('/')}>Logout</Dropdown.Item>
+                    <Dropdown.Item onClick={()=> LogOut()}>Logout</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             </div>
