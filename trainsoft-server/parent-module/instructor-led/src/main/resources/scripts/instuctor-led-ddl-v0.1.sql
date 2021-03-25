@@ -241,8 +241,10 @@ DROP VIEW IF EXISTS vw_batch;
 create view vw_batch
 as
 select bt.id,bt.sid, bt.name,count(bhp.virtual_account_id) as no_of_learners,bt.status,bt.created_on,
-       bt.created_by,bt.updated_by,bt.updated_on from batch bt left  join batch_has_participants bhp on bt.id=bhp.batch_id
-group by bt.id order by no_of_learners desc
+       bt.created_by,bt.updated_by,bt.updated_on,hex(c.sid) AS company_sid from batch bt
+left  join batch_has_participants bhp on bt.id=bhp.batch_id
+left join company c on c.id=bt.company_id
+group by bt.id order by created_on desc
 
  #--================= vw_course ==================--
 

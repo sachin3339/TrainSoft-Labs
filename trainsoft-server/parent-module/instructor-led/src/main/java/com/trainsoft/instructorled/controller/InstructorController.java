@@ -109,7 +109,8 @@ public class InstructorController {
     @ApiOperation(value = "getDepartments", notes = "Get list of Department")
     public ResponseEntity<?> getDepartments(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token){
-        return ResponseEntity.ok(departmentService.getDepartments());
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(departmentService.getDepartments(jwt.getCompanySid()));
     }
 
     @PostMapping("create/company")

@@ -24,4 +24,5 @@ public class TrainingViewTO extends BaseTO{
     private String updatedByVASid;
     private long createdOn;
     private long updatedOn;
+    private String courseSid;
 }

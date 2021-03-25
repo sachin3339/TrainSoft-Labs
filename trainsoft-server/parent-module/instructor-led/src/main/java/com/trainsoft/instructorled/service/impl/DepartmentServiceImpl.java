@@ -36,11 +36,10 @@ public class DepartmentServiceImpl implements IDepartmentService {
     public DepartmentTO createDepartment(DepartmentTO departmentTO) {
         try {
             if (departmentTO != null && !StringUtils.isEmpty(departmentTO.getCompanySid())) {
-                Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(departmentTO.getCompanySid()));
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(departmentTO.getCreatedByVASid()));
                 Department department = mapper.convert(departmentTO, Department.class);
                 department.generateUuid();
-                department.setCompany(company);
+                department.setCompany(getCompany(departmentTO.getCompanySid()));
                 department.setUpdatedBy(virtualAccount);
                 department.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 DepartmentTO savedDepartmentTO = mapper.convert(departmentRepository.save(department), DepartmentTO.class);
@@ -50,39 +49,41 @@ public class DepartmentServiceImpl implements IDepartmentService {
             else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
-            log.info("throwing exception while creating the department");
+            log.error("throwing exception while creating the department",e.toString());
             throw new ApplicationException("Something went wrong while creating the department");
         }
     }
-
+    private Company getCompany(String companySid){
+        Company c=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        Company company=new Company();
+        company.setId(c.getId());
+        return company;
+    }
     @Override
     public DepartmentTO updateDepartment(DepartmentTO departmentTO) {
         try {
             if (departmentTO != null && !StringUtils.isEmpty(departmentTO.getCompanySid())) {
-                Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(departmentTO.getCompanySid()));
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(departmentTO.getCreatedByVASid()));
                 Department department = mapper.convert(departmentTO, Department.class);
                 department.generateUuid();
-                department.setCompany(company);
                 department.setCreatedBy(virtualAccount);
                 department.setUpdatedOn(new Date(0));
                 department.setCreatedOn(new Date(Instant.now().toEpochMilli()));
                 DepartmentTO savedDepartmentTO = mapper.convert(departmentRepository.save(department), DepartmentTO.class);
                 savedDepartmentTO.setCreatedByVASid(virtualAccount.getStringSid());
-                savedDepartmentTO.setCompanySid(company.getStringSid());
                 return savedDepartmentTO;
             }
             else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
-            log.info("throwing exception while creating the department");
+            log.error("throwing exception while creating the department",e.toString());
             throw new ApplicationException("Something went wrong while creating the department");
         }
     }
 
     @Override
     public DepartmentTO getDepartmentBySid(String departmentSid) {
-        Department dept= departmentRepository.findDepartmentBySid(BaseEntity.hexStringToByteArray(departmentSid));
+        Department dept= departmentRepository.findDepartmentBySidAndStatusNot(BaseEntity.hexStringToByteArray(departmentSid), InstructorEnum.Status.DELETED);
         try {
             if (!StringUtils.isEmpty(departmentSid) && dept!=null)
                 return mapper.convert(dept,DepartmentTO.class);
@@ -90,15 +91,15 @@ public class DepartmentServiceImpl implements IDepartmentService {
                 throw new RecordNotFoundException();
         }
         catch (Exception e){
-            log.info("throwing exception while fetching the department details by sid");
+            log.error("throwing exception while fetching the department details by sid",e.toString());
             throw new ApplicationException("Something went wrong while fetching the department details by sid");
         }
     }
 
     @Override
-    public List<DepartmentTO> getDepartments() {
+    public List<DepartmentTO> getDepartments(String companySid) {
         try {
-            List<Department> departmentList = departmentRepository.findAll();
+            List<Department> departmentList = departmentRepository.findAllByCompanyAndStatusNot(getCompany(companySid), InstructorEnum.Status.DELETED);
             return departmentList.stream().map(department -> {
                 DepartmentTO to = mapper.convert(department, DepartmentTO.class);
                 to.setCreatedByVASid(department.getCreatedBy() == null ? null : department.getCreatedBy().getStringSid());
@@ -108,14 +109,14 @@ public class DepartmentServiceImpl implements IDepartmentService {
             }).collect(Collectors.toList());
         }
         catch (Exception e){
-            log.info("throwing exception while fetching the department details");
+            log.error("throwing exception while fetching the department details",e.toString());
             throw new ApplicationException("Something went wrong while fetching the department details");
         }
     }
 
     @Override
     public boolean deleteDepartmentBySid(String deptSid,String deletedBySid) {
-        Department dept= departmentRepository.findDepartmentBySid(BaseEntity.hexStringToByteArray(deptSid));
+        Department dept= departmentRepository.findDepartmentBySidAndStatusNot(BaseEntity.hexStringToByteArray(deptSid), InstructorEnum.Status.DELETED);
         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(deletedBySid));
         try{
             if (!StringUtils.isEmpty(deletedBySid) && dept!=null) {
@@ -123,13 +124,12 @@ public class DepartmentServiceImpl implements IDepartmentService {
                 dept.setUpdatedBy(virtualAccount);
                 dept.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 departmentRepository.save(dept);
-                log.info(String.format("Department %s is deleted successfully by %s", deptSid,deletedBySid));
                 return true;
             }
             else
                 throw new RecordNotFoundException();
         }catch (Exception e){
-            log.info("throwing exception while deleting the department details by sid");
+            log.error("throwing exception while deleting the department details by sid",e.toString());
             throw new ApplicationException("Something went wrong while deleting the department details by sid");
         }
     }

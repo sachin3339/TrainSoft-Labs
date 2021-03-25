@@ -22,4 +22,5 @@ public class TrainingBatch extends BaseEntity {
 
     @Column(name="created_on")
     private Date createdOn;
+
 }

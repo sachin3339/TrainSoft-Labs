@@ -43,13 +43,12 @@ public class CompanyServiceImpl implements ICompanyService {
 
     @Override
     public CompanyTO createCompany(CompanyTO companyTO) {
-        //VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(companyTO.getCreatedByVASid()));
         long epochMilli = Instant.now().toEpochMilli();
         Company company = mapper.convert(companyTO, Company.class);
         company.generateUuid();
         company.setCreatedOn(new Date(epochMilli));
+        company.setStatus(InstructorEnum.Status.DISABLED);
         CompanyTO savedCompanyTO = mapper.convert(repository.save(company), CompanyTO.class);
-        //savedCompanyTO.setCreatedByVASid(virtualAccount.getStringSid());
         return savedCompanyTO;
     }
 
@@ -63,6 +62,7 @@ public class CompanyServiceImpl implements ICompanyService {
                 Company company = mapper.convert(companyTO, Company.class);
                 company.generateUuid();
                 company.setCreatedOn(new Date(epochMilli));
+                company.setStatus(InstructorEnum.Status.DISABLED);
                 Company savedCompany = repository.save(company);
                 CompanyTO savedCompanyTO = mapper.convert(savedCompany, CompanyTO.class);
 
@@ -90,7 +90,7 @@ public class CompanyServiceImpl implements ICompanyService {
                 Department departmentObj = new Department();
                 departmentObj.generateUuid();
                 departmentObj.setCompany(company);
-                departmentObj.setName("DEFAULT_DEPARTMENT");
+                departmentObj.setName("Default");
                 departmentObj.setDescription("Default Department");
                 departmentObj.setStatus(InstructorEnum.Status.ENABLED);
                 departmentObj.setEmailId(null);
@@ -101,7 +101,7 @@ public class CompanyServiceImpl implements ICompanyService {
                 departmentVirtualAccount.generateUuid();
                 departmentVirtualAccount.setVirtualAccount(virtualAccount);
                 departmentVirtualAccount.setDepartment(savedDepartment);
-                departmentVirtualAccount.setDepartmentRole(InstructorEnum.DepartmentRole.INSTRUCTOR);
+                departmentVirtualAccount.setDepartmentRole(InstructorEnum.DepartmentRole.SUPERVISOR);
                 savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
 
                 savedCompanyTO.setCreatedByVASid(virtualAccount.getStringSid());
@@ -136,7 +136,7 @@ public class CompanyServiceImpl implements ICompanyService {
              jwt.setCompanySid(virtualAccount.getCompany().getStringSid());
              jwt.setEmailId(virtualAccount.getAppuser().getEmailId());
              jwt.setVirtualAccountSid(virtualAccount.getStringSid());
-             jwt.setVirtualAccountRole(virtualAccount.getRole().toString());
+             jwt.setVirtualAccountRole(virtualAccount.getRole().name());
              jwt.setUserSid(virtualAccount.getAppuser().getStringSid());
              userTO.setJwtToken(JWTTokenGen.generateGWTToken(jwt));
              log.info("login Successfully with given user details");
@@ -145,7 +145,7 @@ public class CompanyServiceImpl implements ICompanyService {
             else
                 throw new IncorrectEmailIdOrPasswordException();
         } catch (Exception e) {
-            log.error("throwing error while fetching  user details", e);
+            log.error("throwing error while fetching  user details", e.toString());
             throw new IncorrectEmailIdOrPasswordException();
         }
     }

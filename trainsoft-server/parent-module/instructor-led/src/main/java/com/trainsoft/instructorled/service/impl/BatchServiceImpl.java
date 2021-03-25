@@ -36,6 +36,7 @@ public class BatchServiceImpl implements IBatchService {
     private ITrainsoftCustomRepository customRepository;
     private  IBatchParticipantRepository participantRepository;
     private DozerUtils mapper;
+    private ICompanyRepository companyRepository;
 
     @Override
     public BatchTO createBatch(BatchTO batchTO) {
@@ -49,17 +50,23 @@ public class BatchServiceImpl implements IBatchService {
                 batch.setUpdatedOn(null);
                 batch.setStatus(InstructorEnum.Status.ENABLED);
                 batch.setCreatedOn(new Date(Instant.now().toEpochMilli()));
+                batch.setCompany(getCompany(batchTO.getCompanySid()));
                 BatchTO savedBatchTO = mapper.convert(batchRepository.save(batch), BatchTO.class);
                 savedBatchTO.setCreatedByVASid(virtualAccount.getStringSid());
                 return savedBatchTO;
             } else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
-            log.info("throwing exception while creating the batch");
+            log.error("throwing exception while creating the batch",e.toString());
             throw new ApplicationException("Something went wrong while creating the batch");
         }
     }
-
+    private Company getCompany(String companySid){
+        Company c=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        Company company=new Company();
+        company.setId(c.getId());
+        return company;
+    }
     @Override
     public BatchTO updateBatch(BatchTO batchTO) {
         try {
@@ -77,9 +84,8 @@ public class BatchServiceImpl implements IBatchService {
                 return savedBatch;
             }else
                 throw new RecordNotFoundException();
-        } catch (Exception e)
-        {
-            log.info("throwing exception while updating the batch");
+        } catch (Exception e) {
+            log.error("throwing exception while updating the batch",e.toString());
             throw new ApplicationException("Something went wrong while updating the batch");
         }
 
@@ -94,29 +100,31 @@ public class BatchServiceImpl implements IBatchService {
                 batchTO = mapper.convert(batch, BatchTO.class);
                 batchTO.setCreatedByVASid(batch.getCreatedBy() == null ? null : batch.getCreatedBy().getStringSid());
                 batchTO.setUpdatedByVASid(batch.getUpdatedBy() == null ? null : batch.getUpdatedBy().getStringSid());
+                batchTO.setCompanySid(batch.getCompany() == null ? null : batch.getCompany().getStringSid());
             return batchTO;
         }else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
-            log.info("throwing exception while fetching the batch details by sid");
+            log.error("throwing exception while fetching the batch details by sid",e.toString());
             throw new ApplicationException("Something went wrong while fetching the batch details by sid");
         }
     }
 
     @Override
-    public List<BatchTO> getBatches() {
+    public List<BatchTO> getBatches(String companySid) {
         try {
-            List<Batch> batches = batchRepository.findAll()
+            List<Batch> batches = batchRepository.findAllByCompany(getCompany(companySid))
                     .stream().filter(c->c.getStatus()!= InstructorEnum.Status.DELETED)
                     .collect(Collectors.toList());
             return batches.stream().map(batch->{
                 BatchTO to= mapper.convert(batch, BatchTO.class);
                 to.setCreatedByVASid(batch.getCreatedBy()==null?null:batch.getCreatedBy().getStringSid());
                 to.setUpdatedByVASid(batch.getUpdatedBy()==null?null:batch.getUpdatedBy().getStringSid());
+                to.setCompanySid(batch.getCompany()==null?null:batch.getCompany().getStringSid());
                 return to;
             }).collect(Collectors.toList());
         }catch (Exception e) {
-            log.info("throwing exception while fetching the all batch details");
+            log.error("throwing exception while fetching the all batch details",e.toString());
             throw new ApplicationException("Something went wrong while fetching the batch details");
         }
     }
@@ -138,37 +146,37 @@ public class BatchServiceImpl implements IBatchService {
             } else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
-            log.info("throwing exception while deleting the Batch details by sid");
+            log.error("throwing exception while deleting the Batch details by sid",e.toString());
             throw new ApplicationException("Something went wrong while deleting the Batch details by sid");
         }
     }
 
     @Override
-    public List<BatchTO> getBatchesByName(String name) {
+    public List<BatchTO> getBatchesByName(String name,String companySid) {
         try {
-            List<Batch> batchList= batchRepository.findBatchesByNameContaining(name);
+            List<Batch> batchList= batchRepository.findBatchesByNameContainingAndCompany(name,getCompany(companySid));
             return mapper.convertList(batchList,BatchTO.class);
-        }catch (Exception e)
-        {
-            log.info("throwing exception while fetching the Batches details by name");
+        }catch (Exception e) {
+            log.error("throwing exception while fetching the Batches details by name",e.toString());
             throw new ApplicationException("Something went wrong while fetching the Batches details by name ");
         }
     }
 
     @Override
-    public List<BatchViewTO> getBatchesWithPagination(int pageNo, int pageSize) {
+    public List<BatchViewTO> getBatchesWithPagination(int pageNo, int pageSize,String companySid) {
         try {
             Pageable paging = PageRequest.of(pageNo, pageSize);
-            Page<BatchView> pagedResult = batchViewRepository.findAllByStatusNot(InstructorEnum.Status.DELETED,paging);
+            Page<BatchView> pagedResult = batchViewRepository.findAllByCompanySidAndStatusNot(companySid,InstructorEnum.Status.DELETED,paging);
             List<BatchView> batchViewList = pagedResult.toList();
             return batchViewList.stream().map(batch->{
                 BatchViewTO to= mapper.convert(batch, BatchViewTO.class);
                 to.setCreatedByVASid(batch.getCreatedBy()==null?null:batch.getCreatedBy().getStringSid());
                 to.setUpdatedByVASid(batch.getUpdatedBy()==null?null:batch.getUpdatedBy().getStringSid());
+                to.setCompanySid(batch.getCompanySid()==null?null:batch.getCompanySid());
                 return to;
             }).collect(Collectors.toList());
         }catch (Exception e) {
-            log.info("throwing exception while fetching the all batch details with learners");
+            log.error("throwing exception while fetching the all batch details with learners",e.toString());
             throw new ApplicationException("Something went wrong while fetching the batch details with learners");
         }
     }
@@ -185,7 +193,7 @@ public class BatchServiceImpl implements IBatchService {
             } else
                 throw new RecordNotFoundException();
         } catch (Exception exception) {
-            log.info("throwing exception while deleting the BatchParticipants details by batch and VASid");
+            log.error("throwing exception while deleting the BatchParticipants details by batch and VASid", exception.toString());
             throw new ApplicationException("Something went wrong while deleting the BatchParticipants details by batch and VASid");
         }
     }
