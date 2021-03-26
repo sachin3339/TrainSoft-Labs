@@ -8,7 +8,7 @@ import useToast from "../../../../Store/ToastHook"
 import useFetch from "../../../../Store/useFetch"
 import TrainingContext from "../../../../Store/TrainingContext"
 
-const AddSession = ({ show, setShow,getSessionByPage }) => {
+const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => {
     const { training } = useContext(TrainingContext)
     const Toast = useToast()
     const [title, setTitle] = useState('')
@@ -41,26 +41,54 @@ const AddSession = ({ show, setShow,getSessionByPage }) => {
         }
     }
 
+        // edit Training session
+        const editTrainingSession = (data) => {
+            try {
+                let payload = {
+                    "sid":data.sid,
+                    "agendaDescription": data.agendaDescription,
+                    "agendaName": data.agendaName,
+                    "assets": data.assets,
+                    "courseSid": training.courseSid,
+                    "endTime": data.endTime,
+                    "recording": "",
+                    "sessionDate": data.sessionDate,
+                    "startTime": data.startTime,
+                    "trainingSid": training.sid,
+                }
+                RestService.editTrainingSession(payload).then(res => {
+                    Toast.success({ message: `Session updated successfully ` });
+                    getSessionByPage()
+                    setShow(false)
+                }, err => console.log(err)
+                );
+            }
+            catch (err) {
+                console.error('error occur on editTrainingSession', err)
+                Toast.error({ message: `Something wrong!!` });
+            }
+        }
+
     return (<>
         <BsModal {...{ show, setShow, headerTitle: title, size: "lg" }}>
             <div className="">
                 <div>
                     <Formik
-                        initialValues={{
+                        initialValues={!isEdit ?{
                             agendaDescription: '',
                             agendaName: "",
                             assets: "",
                             endTime: '',
                             sessionDate: '',
                             startTime: '',
-                        }}
-                        onSubmit={createTrainingSession}
-                    >
+                        } : initialValue}
+                        onSubmit={(value)=> {!isEdit ? createTrainingSession(value) : editTrainingSession(value);}}
+                      >
                         {({ handleSubmit }) => (
                             <form onSubmit={handleSubmit}>
                                 <div className="row">
                                     <div className="col-md-12">
-                                        <TextInput name="agendaName" label="Agenda" />
+                                       {!isEdit  && <TextInput name="agendaName" label="Agenda" />}
                                     </div>
                                     <div className="col-md-12 mb-3">
                                         <TextArea name="agendaDescription" label="Description" />

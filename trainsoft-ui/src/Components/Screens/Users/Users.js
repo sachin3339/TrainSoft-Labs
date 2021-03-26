@@ -4,7 +4,7 @@ import { Modal, Form } from 'react-bootstrap'
 import { Field, Formik } from 'formik';
 import { ICN_TRASH, ICN_EDIT, ICN_DOWNLOAD } from "../../Common/Icon";
 import { BtnPrimary, Button } from "../../Common/Buttons/Buttons";
-import { TextInput, DateInput,CheckboxGroup, SelectInput, TextArea, RadioBox, Checkbox } from "../../Common/InputField/InputField";
+import { TextInput, DateInput, CheckboxGroup, SelectInput, TextArea, RadioBox, Checkbox } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
 import { BsModal, Toggle } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
@@ -20,43 +20,36 @@ import NoDataFound from "../../Common/NoDataFound/NoDataFound";
 
 
 const User = ({ location }) => {
-    const {department,spinner,user} = useContext(AppContext)
-    const [showBulkUpload,setShowBulkUpload] =  useState(false)
+    const { department, spinner, user } = useContext(AppContext)
+    const [showBulkUpload, setShowBulkUpload] = useState(false)
     const Toast = useToast()
-    const [count,setCount] = useState(0)
+    const [count, setCount] = useState(0)
     const [show, setShow] = useState(false);
-    const [participant,setParticipant] = useState([])
-    const [isEmail,setIsEmail] = useState(false)
-    const [genPwd,setGenPwd] = useState('')
-    const [file,setFile] = useState(null)
-     // get all batches
- const  allDepartment= useFetch({
-    method: "get",
-    url: GLOBELCONSTANT.INSTRUCTOR.GET_INSTRUCTOR,
-    errorMsg: 'error occur on get Batches'
- });
+    const [participant, setParticipant] = useState([])
+    const [isEmail, setIsEmail] = useState(false)
+    const [isEdit,setIsEdit] = useState(false)
+    const [initialValue,setInitialValue] = useState({})
+    // get all batches
+    const allDepartment = useFetch({
+        method: "get",
+        url: GLOBELCONSTANT.INSTRUCTOR.GET_INSTRUCTOR,
+        errorMsg: 'error occur on get Batches'
+    });
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
-
-    // const {response} = useFetch({
-    //     method: "get",
-    //     url: GLOBELCONSTANT.PARTICIPANT.ALL_USERS + "5D66EAB00B4446C9A7ADB898C43C2C119456C5E6CA4D4499AE237822E3A41CB7",
-    //     errorMsg: 'error occur on get participant'
-    //  });
-
-     //validation
-     const schema = Yup.object().shape({
+    //validation
+    const schema = Yup.object().shape({
         name: Yup.string()
-        .min(2, 'Too Short!')
-        .required("Required!"),
+            .min(2, 'Too Short!')
+            .required("Required!"),
         emailId: Yup.string()
-        .email("Email is not valid")
-        .required("Required!"),
-        phoneNumber:Yup.string()
-        .matches(phoneRegExp, 'Phone number is not valid')
-        .max(10,"Phone number is not valid")
-        .required("Required!"),
-      });
+            .email("Email is not valid")
+            .required("Required!"),
+        phoneNumber: Yup.string()
+            .matches(phoneRegExp, 'Phone number is not valid')
+            .max(10, "Phone number is not valid")
+            .required("Required!"),
+    });
 
     const [configuration, setConfiguration] = useState({
         columns: {
@@ -104,7 +97,7 @@ const User = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Toggle id={data.sid} onChange={() => { deleteUser(data.status === 'ENABLED' ? 'DISABLED' : 'ENABLED', data.vSid)}} checked={data.status === 'ENABLED' ? true : false}/>
+                render: (data) => <Toggle id={data.sid} onChange={() => { deleteUser(data.status === 'ENABLED' ? 'DISABLED' : 'ENABLED', data.vSid) }} checked={data.status === 'ENABLED' ? true : false} />
             },
         },
         headerTextColor: '#454E50', // user can change table header text color
@@ -117,15 +110,15 @@ const User = ({ location }) => {
             setConfiguration({ ...configuration });
         },
         actions: [
-            {
-                "title": "Edit",
-                "icon": ICN_EDIT,
-                "onClick": (data, i) => console.log(data)
-            },
+            // {
+            //     "title": "Edit",
+            //     "icon": ICN_EDIT,
+            //     "onClick": (data, i) => getUsersDetails(data.vSid,true)
+            // },
             {
                 "title": "Delete",
                 "icon": ICN_TRASH,
-                "onClick": (data, i) => deleteUser("DELETED",data.vSid)
+                "onClick": (data, i) => deleteUser("DELETED", data.vSid)
             }
         ],
         actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
@@ -139,25 +132,12 @@ const User = ({ location }) => {
         clearSelection: false
     });
 
-    // create new session
-    // const uploadParticipant = (data) => {
-    //     try {
-    //         RestService.UploadParticipant(data).then(resp => {
-    //             setShow(false)
-    //             console.log(resp)
-    //         }, err => console.log(err)
-    //         );
-    //     }
-    //     catch (err) {
-    //         console.error('error occur on createCourse', err)
-    //     }
-    // }
 
-        // generate pwd
-      const generatePwd = (setFieldValue) => {
+    // generate pwd
+    const generatePwd = (setFieldValue) => {
         try {
             RestService.generatePwd().then(resp => {
-                setFieldValue("password",resp.data)
+                setFieldValue("password", resp.data)
             }, err => console.log(err)
             );
         }
@@ -167,29 +147,17 @@ const User = ({ location }) => {
     }
 
     // create participant
-     const createParticipant = (data) => {
+    const createParticipant = (data) => {
         try {
-            let payload = {
-                "appuser": {
-                  "accessType": data.accessType.key,
-                  "emailId": data.emailId,
-                  "employeeId": data.employeeId,
-                  "name": data.name,
-                  "phoneNumber": data.phoneNumber,
-                  "password": data.password
-                },
-                "departmentVA": {
-                  "department": {
-                      "name":data.department.name
-                  },
-                  "departmentRole": data.departmentRole.key
-                }, 
-                "role":"USER"   
-              }
-            RestService.createParticipant(payload).then(resp => {
+
+            let val = data
+            val.appuser.accessType = data.appuser.accessType.key
+            val.departmentVA.department.name = data.departmentVA.department.name.name
+            val.departmentVA.departmentRole =data.departmentVA.departmentRole.key
+            RestService.createParticipant(data).then(resp => {
                 setShow(false)
                 getUsers()
-                Toast.success({ message: `User is Successfully Created`});
+                Toast.success({ message: `User is Successfully Created` });
             }, err => console.log(err)
             );
         }
@@ -197,15 +165,59 @@ const User = ({ location }) => {
             console.error('error occur on createCourse', err)
         }
     }
+   // get all training
+   const getUsersDetails = async (sid,edit=false) => {
+    try {
+        spinner.show();
+        RestService.getUserDetails(sid).then(
+            response => {
+                    if(edit){
+                      setInitialValue(response.data)
+                        setShow(true)
+                        setIsEdit(true)
+                    }
+                spinner.hide();
+            },
+            err => {
+                console.error("error occur on getUsers()", err)
+                spinner.hide();
+            }
+        )
+    } catch (err) {
+        console.error("error occur on getUsers()", err)
+        spinner.hide();
+    }
+}
+    
+
+    
+        // update participant
+        const updateParticipant = (data) => {
+            try {
+                let val = data
+                val.appuser.accessType = data.appuser.accessType.key
+                val.departmentVA.department.name = data.departmentVA.department.name
+                val.departmentVA.departmentRole =data.departmentVA.departmentRole.key
+                RestService.updateParticipant(val).then(resp => {
+                    setShow(false)
+                    getUsers()
+                    Toast.success({ message: `User is Successfully Created` });
+                }, err => console.log(err)
+                );
+            }
+            catch (err) {
+                console.error('error occur on createCourse', err)
+            }
+        }
 
     // get all training
-    const getUsers = async (pagination= 1) => {
+    const getUsers = async (pagination = 1) => {
         try {
             let pageSize = 10
             spinner.show();
-            RestService.getAllUserByPage("ALL",pagination, pageSize).then(
+            RestService.getAllUserByPage("ALL", pagination, pageSize).then(
                 response => {
-                    let val = response.data.map(res=> {
+                    let val = response.data.map(res => {
                         let data = res.appuser
                         data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
                         data.department = res.departmentVA ? res.departmentVA.department.name : ''
@@ -227,40 +239,40 @@ const User = ({ location }) => {
         }
     }
 
-
- 
     // search batches by name 
     const searchUser = (name) => {
         try {
             spinner.show();
             RestService.searchUser(name).then(resp => {
-                let val = resp.data.map(res=> {
+                let val = resp.data.map(res => {
                     let data = res.appuser
                     data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
+                    data.vSid = res.sid
+                    data.status = res.status
                     data.department = res.departmentVA ? res.departmentVA.department.name : ''
                     return data
                 })
                 setParticipant(val)
                 spinner.hide();
-              }, err => {
+            }, err => {
                 spinner.hide();
-              }
+            }
             );
         }
         catch (err) {
             console.error('error occur on searchUser()', err)
             spinner.hide();
         }
-    }    
+    }
 
-      // delete course
-      const deleteUser = (status,vSid) => {
+    // delete course
+    const deleteUser = (status, vSid) => {
         try {
             spinner.show();
-            RestService.changeAndDeleteStatus(status,vSid).then(res => {
+            RestService.changeAndDeleteStatus(status, vSid).then(res => {
                 spinner.hide();
                 getUsers()
-                Toast.success({ message: ` ${status === 'DELETED'? 'User is deleted': 'Status update'} successfully ` });
+                Toast.success({ message: ` ${status === 'DELETED' ? 'User is deleted' : 'Status update'} successfully ` });
             }, err => { spinner.hide(); }
             )
         }
@@ -273,93 +285,93 @@ const User = ({ location }) => {
 
     // get user count
     const getUserCount = async () => {
-    try {
-        RestService.getUserCount("ALL").then(
-            response => {
-                setCount(response.data);
-            },
-            err => {
+        try {
+            RestService.getUserCount("ALL").then(
+                response => {
+                    setCount(response.data);
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
                 spinner.hide();
-            }
-        ).finally(() => {
-            spinner.hide();
-        });
-    } catch (err) {
-        console.error("error occur on getAllBatch()", err)
+            });
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
+        }
     }
-}
 
-  // validateEmailId
+    // validateEmailId
     const validateEmailId = async (email) => {
-    try {
-        if(email.length > 0){
-        RestService.validateEmail(email).then(
-            response => {
-                setIsEmail(response.data);
-            },
-            err => {
-                spinner.hide();
+        try {
+            if (email.length > 0) {
+                RestService.validateEmail(email).then(
+                    response => {
+                        setIsEmail(response.data);
+                    },
+                    err => {
+                        spinner.hide();
+                    }
+                ).finally(() => {
+                    spinner.hide();
+                });
+            } else {
+                setIsEmail(false);
             }
-        ).finally(() => {
+        } catch (err) {
+            console.error("error occur on validateEmailId()", err)
+        }
+    }
+
+    // upload attachment
+    const UploadAttachmentsAPI = async (val) => {
+        return new Promise((resolve, reject) => {
+            let data = new FormData();
+            for (let i = 0, l = val.file.length; i < l; i++)
+                data.append("file", val.file[i])
+            let xhr = new XMLHttpRequest();
+            xhr.addEventListener("readystatechange", function () {
+                let response = null;
+                try {
+                    response = JSON.parse(this.responseText);
+                } catch (err) {
+                    response = this.responseText
+                }
+                if (this.readyState === 4 && this.status >= 200 && this.status <= 299) {
+                    resolve([response, this.status, this.getAllResponseHeaders()]);
+                } else if (this.readyState === 4 && !(this.status >= 200 && this.status <= 299)) {
+                    reject([response, this.status, this.getAllResponseHeaders()]);
+                }
+            });
+            xhr.open("POST", GLOBELCONSTANT.PARTICIPANT.UPLOAD_USER_PARTICIPANT);
+            xhr.setRequestHeader("Authorization", user.jwtToken);
+            xhr.send(data);
+        })
+    }
+
+    /** upload attachments file
+    *   @param {Object} file = selected files
+    *   @param {string} token = user auth token 
+    *   @param {string} bucketName = bucket name 
+    */
+    const uploadAttachments = async (
+        val
+    ) => {
+        try {
+            spinner.show();
+            let [res] = await UploadAttachmentsAPI(val);
             spinner.hide();
-        });
-    }else{
-        setIsEmail(false);
+            setShowBulkUpload(false)
+            getUsers()
+            Toast.success({ message: `Participant is successfully uploaded ` });
+        } catch (err) {
+            setShowBulkUpload(false)
+            spinner.hide();
+            Toast.error({ message: `Something Went Wrong` });
+            setShow(false)
+            console.error("Exception occurred in uploadAttachments -- ", err);
+        }
     }
-    } catch (err) {
-        console.error("error occur on validateEmailId()", err)
-    }
-}
-
-   // upload attachment
-   const UploadAttachmentsAPI = async (val) => {
-    return new Promise((resolve, reject) => {
-        let data = new FormData();
-        for (let i = 0, l = val.file.length; i < l; i++)
-            data.append("file", val.file[i])
-        let xhr = new XMLHttpRequest();
-        xhr.addEventListener("readystatechange", function () {
-            let response = null;
-            try {
-                response = JSON.parse(this.responseText);
-            } catch (err) {
-                response = this.responseText
-            }
-            if (this.readyState === 4 && this.status >= 200 && this.status <= 299) {
-                resolve([response, this.status, this.getAllResponseHeaders()]);
-            } else if (this.readyState === 4 && !(this.status >= 200 && this.status <= 299)) {
-                reject([response, this.status, this.getAllResponseHeaders()]);
-            }
-        });
-        xhr.open("POST", GLOBELCONSTANT.PARTICIPANT.UPLOAD_USER_PARTICIPANT);
-        xhr.setRequestHeader("Authorization", user.jwtToken);
-        xhr.send(data);
-    })
-}
-
-/** upload attachments file
-*   @param {Object} file = selected files
-*   @param {string} token = user auth token 
-*   @param {string} bucketName = bucket name 
-*/
-const uploadAttachments = async (
-    val
-) => {
-    try {
-        spinner.show();
-        let [res] = await UploadAttachmentsAPI(val);
-        spinner.hide();
-        setShowBulkUpload(false)
-        getUsers()
-        Toast.success({ message: `Participant is successfully uploaded `});
-    } catch (err) {
-        setShowBulkUpload(false)
-        spinner.hide();
-        Toast.error({ message: `Something Went Wrong` });
-        setShow(false)
-        console.error("Exception occurred in uploadAttachments -- ", err);
-    }
-}
 
     // initialize  component
     useEffect(() => {
@@ -369,131 +381,130 @@ const uploadAttachments = async (
 
 
     return (<>
-    <div className="table-shadow">
-        <div className="p-3">
-            <CardHeader {...{
-                location,
-                onChange: (e) => e.length === 0 && getUsers(),
-                onEnter: (e) => searchUser(e),
-            }}>
-                {user.role === 'ADMIN' && <>
-                <Button className="ml-2" onClick={()=>{setShowBulkUpload(true)}}>Bulk Upload</Button>
-                <Button className="ml-2" onClick={()=>{setShow(true);setIsEmail(false)}}>+ Add New</Button>
-                </>}
+        <div className="table-shadow">
+            <div className="p-3">
+                <CardHeader {...{
+                    location,
+                    onChange: (e) => e.length === 0 && getUsers(),
+                    onEnter: (e) => searchUser(e),
+                }}>
+                    {user.role === 'ADMIN' && <>
+                        <Button className="ml-2" onClick={() => { setShowBulkUpload(true) }}> Bulk Upload</Button>
+                        <Button className="ml-2" onClick={() => { setShow(true); setIsEmail(false);setIsEdit(false) }}>+ Add New</Button>
+                    </>}
 
-            </CardHeader>
-        </div>
-           <BsModal {...{ show, setShow, headerTitle: "Add new User", size: "lg" }}>
-                    <div className="form-container">
-                        <Formik
-                            onSubmit={(value)=> createParticipant(value)}
-                            initialValues={{
-                                name: '',
-                                employeeId: '',
-                                emailId: '',
-                                phoneNumber: '',
-                                department: '',
-                                departmentRole: '',
-                                password: '',
-                                accessType: '',
-
-                          
-                            }}
-                            validationSchema={schema}
-                        >
-                            {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
-                                <div>
-                                    <Form.Group className="row">
-                                        <div className="col-6">
-                                            <TextInput label="Name" name="name" />
-                                        </div>
-                                        <div className="col-6">
-                                            <TextInput label="Emp Id" name="employeeId" />
-                                        </div>
-                                    </Form.Group>
-                                    <Form.Group className="row">
-                                        <div className="col-6">
-                                            <TextInput label="Email Id" name="emailId" isNotValid={isEmail} onBlur ={(e)=>validateEmailId(e.target.value)} />
-                                        </div>
-                                        <div className="col-6">
-                                            <TextInput label="Phone No" name="phoneNumber" />
-                                        </div>
-                                    </Form.Group>
-                                    <Form.Group className="row">
-                                        <div className="col-6">
-                                            <SelectInput label="Department" name="department" bindKey="name" option={allDepartment.response} />
-                                        </div>
-                                        <div className="col-6">
-                                            <SelectInput label="Role" name="departmentRole"  bindKey="name" option={GLOBELCONSTANT.DEPARTMENT_ROLE} />
-                                        </div>
-                                    </Form.Group>
-                                    <Form.Group className="row">
-                                        <div className="col-6">
-                                            <TextInput label="Password" name="password" />
-                                        </div>
-                                        <div className="col-6">
-                                            <SelectInput label="Privilege/Access Level" name="accessType" bindKey="name" option={GLOBELCONSTANT.ACCESS_LEVEL} />
-                                        </div>
-                                    </Form.Group>
-                                    <Form.Group className="row">
+                </CardHeader>
+            </div>
+            <BsModal {...{ show, setShow, headerTitle:isEdit ? 'Update User': "Add new User", size: "lg" }}>
+                <div className="form-container">
+                    <Formik
+                        onSubmit={(value) => {isEdit ? updateParticipant(value) : createParticipant(value)}}
+                        initialValues={!isEdit ? {
+                            "appuser": {
+                                "accessType": '',
+                                "emailId":'',
+                                "employeeId": '',
+                                "name": '',
+                                "phoneNumber": '',
+                                "password": ''
+                            },
+                            "departmentVA": {
+                                "department": {
+                                    "name": ''
+                                },
+                                "departmentRole": ''
+                            },
+                            "role": "USER"
+                        } : initialValue}
+                        // validationSchema={schema}
+                    >
+                        {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
+                            <div>
+                                <Form.Group className="row">
                                     <div className="col-6">
-                                        <button type="button" onClick={()=>generatePwd(setFieldValue)} className="btn btn-secondary btn-sm">
+                                        <TextInput label="Name" name="appuser.name" />
+                                    </div>
+                                    <div className="col-6">
+                                        <TextInput label="Emp Id" name="appuser.employeeId" />
+                                    </div>
+                                </Form.Group>
+                                <Form.Group className="row">
+                                    <div className="col-6">
+                                        <TextInput label="Email Id" name="appuser.emailId" isNotValid={isEmail} onBlur={(e) => validateEmailId(e.target.value)} />
+                                    </div>
+                                    <div className="col-6">
+                                        <TextInput label="Phone No" name="appuser.phoneNumber" />
+                                    </div>
+                                </Form.Group>
+                                <Form.Group className="row">
+                                    <div className="col-6">
+                                        <SelectInput label="Department" name="departmentVA.department.name" bindKey="name" option={allDepartment.response} />
+                                    </div>
+                                    <div className="col-6">
+                                        <SelectInput label="Role" name="departmentVA.departmentRole" bindKey="name" option={GLOBELCONSTANT.DEPARTMENT_ROLE} />
+                                    </div>
+                                </Form.Group>
+                                <Form.Group className="row">
+                                    <div className="col-6">
+                                        <TextInput label="Password" name="appuser.password" />
+                                    </div>
+                                    <div className="col-6">
+                                        <SelectInput label="Privilege/Access Level" name="appuser.accessType" bindKey="name" option={GLOBELCONSTANT.ACCESS_LEVEL} />
+                                    </div>
+                                </Form.Group>
+                                <Form.Group className="row">
+                                    <div className="col-6">
+                                        <button type="button" onClick={() => generatePwd(setFieldValue)} className="btn btn-secondary btn-sm">
                                             Generate Password
                                             </button>
-                                     </div>
-                                        {/* <div className="col-6">
-                                            <Checkbox name="check" id="check" label="Require this user to change their password when they first sign in" />
-                                        </div> */}
-                                        {/* <div className="col-6">
-                                            <div>Upload bulk users</div> <div><Field name="upload"  placeholder="Browse File" onChange={(e)=> {console.log(e.target.files[0]); uploadParticipant(e.target.files[0])}} type="file"/></div>
-                                        </div> */}
-                                    </Form.Group>
+                                    </div>
+                                </Form.Group>
+                            </div>
+                            {/* modal footer which contains action button to save data or cancel current action */}
+                            <footer className="jcb">
+                                <div>
                                 </div>
-                                {/* modal footer which contains action button to save data or cancel current action */}
-                                <footer className="jcb">
-                                    <div>
-                                    </div>
-                                    <div>
-                                        <Button type="submit" className="px-4" >Add</Button>
-                                    </div>
-                                </footer>
-                            </form>
-                            }
-                        </Formik>
-                    </div>
-                </BsModal>
+                                <div>
+                                    <Button type="submit" className="px-4" >{isEdit ? "Update" : "Add"}</Button>
+                                </div>
+                            </footer>
+                        </form>
+                        }
+                    </Formik>
+                </div>
+            </BsModal>
 
-                <BsModal {...{ show: showBulkUpload, setShow: setShowBulkUpload, headerTitle: "Upload", size: "md" }}>
-                    <div className="form-container">
-                        <Formik
-                            onSubmit={(value)=> uploadAttachments(value)}
-                            initialValues={{
-                                file: '',
-                            }}
-                        >
-                            {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit}  className="create-batch" >
-                                    <div>
-                                    {<div className="col-6 pl-0">
-                                        <div><span className="title-sm">Upload participants</span></div> <div><input placeholder="Browse File" onChange={(e) => { setFieldValue("file", e.target.files) }} type="file" /></div>
-                                    </div>
-                                    }
-                                   
-                                    </div>
-                                  
-                                <footer className="jcb mt-4">
-                                <div> <a href="https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx">Sample template</a> </div>
-                                    <div>
-                                        <Button type="submit" className="px-4">Upload</Button>
-                                    </div>
-                                </footer>
-                            </form>
-                            }
-                        </Formik>
-                    </div>
-                </BsModal>
-        <DynamicTable {...{ configuration, sourceData: participant, count, onPageChange: (e) => getUsers(e) }} />    
-    </div>
-    
+            <BsModal {...{ show: showBulkUpload, setShow: setShowBulkUpload, headerTitle: "Upload", size: "md" }}>
+                <div className="form-container">
+                    <Formik
+                        onSubmit={(value) => uploadAttachments(value)}
+                        initialValues={{
+                            file: '',
+                        }}
+                    >
+                        {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
+                            <div>
+                                {<div className="col-6 pl-0">
+                                    <div><span className="title-sm">Upload participants</span></div> <div><input placeholder="Browse File" onChange={(e) => { setFieldValue("file", e.target.files) }} type="file" /></div>
+                                </div>
+                                }
+
+                            </div>
+
+                            <footer className="jcb mt-4">
+                                <div> <a href={GLOBELCONSTANT.SAMPLE_TEMPLATE}>Sample template</a> </div>
+                                <div>
+                                    <Button type="submit" className="px-4">Upload</Button>
+                                </div>
+                            </footer>
+                        </form>
+                        }
+                    </Formik>
+                </div>
+            </BsModal>
+            <DynamicTable {...{ configuration, sourceData: participant, count, onPageChange: (e) => getUsers(e) }} />
+        </div>
+
     </>)
 }
 
@@ -501,7 +512,7 @@ const uploadAttachments = async (
 const Users = () => {
     return (
 
-  
+
         <Router>
             <User path="/" />
         </Router>

@@ -97,8 +97,8 @@ export const ActiveBox = ({ label = "", className = "", bgColor = '' }) => {
 
 // toggle the checkbox
 export const Toggle = ({ id = '', checked = false, onChange }) => {
-    return (<> <label class="gen-switch ibvm">
+    return (<> <label className="gen-switch ibvm">
         <input type="checkbox" onChange={onChange} checked={checked} id={id} />
-        <div class="gen-slider round">
+        <div className="gen-slider round">
         </div></label></>)
 }

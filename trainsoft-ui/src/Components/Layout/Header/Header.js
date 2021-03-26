@@ -29,7 +29,7 @@ const Header = ({location}) => {
         try{
            TokenService.removeToken()
            setUserValue("LOGOUT")
-           navigate('/')
+           navigate('/login')
         } catch(err){
             console.error("error occur on LogOut()",err)
         }

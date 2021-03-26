@@ -105,7 +105,7 @@ export const SelectInput = (props) => {
                     searchKeywords: "",
                     onSelect: setValue,
                     title:  `Select ${props.label}`,
-                    selectedVal: value,
+                    selectedVal: props.value,
                 }} />
             </div>
             <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
