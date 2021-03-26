@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import { Button } from '../../../Common/Buttons/Buttons'
+import CardHeader from '../../../Common/CardHeader';
 import NoDataFound from '../../../Common/NoDataFound/NoDataFound';
 import SessionList from '../../../Common/SessionList/SessionList'
+import TrainingRoute from '../TrainingRoute';
 import AddAssessment from './AddAssessment'
 import "./assessment.css";
 
 
-const Assessment = () =>{
+const Assessment = ({location}) =>{
     const [show, setShow] = useState(false)
     const listValue = [
         { topicName:"Assessment 1",date:"07/06/2019",active:true },
@@ -14,6 +16,9 @@ const Assessment = () =>{
         { topicName:"Assessment 3",date:"07/06/2019",active:false },
     ]
     return(<>
+    <CardHeader {...{location,onChange: (e) => {},
+                    onEnter: (e) => {},}}/>
+    <TrainingRoute {...{location}}/>
      <NoDataFound title="Coming Soon..."/>
             {/* <div className="session-container">
             <SessionList {...{sessionList:listValue }}/>

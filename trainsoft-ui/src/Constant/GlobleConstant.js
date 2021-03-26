@@ -36,9 +36,11 @@ const GLOBELCONSTANT = {
             DELETE_BATCHES: API_HOST +  'delete/batch/',
             EDIT_BATCHES: API_HOST +  'update/batch',
             SEARCH_BATCHES: API_HOST + "batches/",
-            BATCH_VALIDATION: API_HOST + "validate/batch/{batchName}"
+            BATCH_VALIDATION: API_HOST + "validate/batch/{batchName}",
+            DELETE_BATCH_PARTICIPANT: API_HOST + "delete/batchparticipant/{batchSid}/{vASid}"
         },
         PARTICIPANT: {
+            GET_PARTICIPANT_ID: API_HOST + "virtualaccount/{VASid}",
             GET_PARTICIPANT: API_HOST +  "list/participant",
             UPLOAD_PARTICIPANT: API_HOST +  "upload/list/participants",
             UPLOAD_USER_PARTICIPANT: API_HOST +  "upload/participants",
@@ -48,6 +50,7 @@ const GLOBELCONSTANT = {
             SEARCH_USER: API_HOST + "user/{str}",
             STATUS_DELETE: API_HOST + "update/status/{status}/virtualAccount/{vASid}",
             UPDATE_ROLE: API_HOST + 'update/v/role/{role}/{virtualAccountSid}',
+            UPDATE_PARTICIPANT: API_HOST + 'update/user',
             UPDATE_DEPARTMENT_ROLE: API_HOST + 'update/department/role/{role}/{departmentVASid}',
             GET_USER_COUNT: API_HOST + 'get/user/count/{type}',
             EMAIL_VALIDATION: API_HOST + "validate/email/{email}",
@@ -60,7 +63,10 @@ const GLOBELCONSTANT = {
             CREATE_SESSION: API_HOST +  "trainingSession/create",
             SEARCH_TRAINER: API_HOST + "trainings/",
             DELETE_TRAINER: API_HOST + "delete/training/",
-            DELETE_TRAIN_SESSION: API_HOST + "delete/trainingsession/{trainingSesssionSid}"
+            DELETE_TRAIN_SESSION: API_HOST + "delete/trainingsession/{trainingSesssionSid}",
+            EDIT_TRAINING: API_HOST + "training/update",
+            UPDATE_TRAINING_SESSION: API_HOST + "update/trainingsession",
+            SEARCH_TRAINING_SESSION: API_HOST + "trainingsessions/training/{trainingSid}/session/{name}"
         },
         INSTRUCTOR: {
             GET_INSTRUCTOR: API_HOST +  'depatments'
@@ -77,6 +83,7 @@ const GLOBELCONSTANT = {
             {key: "LEARNER",name: "Learner"},
             {key: "INSTRUCTOR",name: "Instructor"},
             {key: "SUPERVISOR",name: "Supervisor"},
-        ]
+        ],
+        SAMPLE_TEMPLATE: "https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx"
     }
 export default GLOBELCONSTANT;

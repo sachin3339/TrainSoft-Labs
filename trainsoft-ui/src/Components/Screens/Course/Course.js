@@ -61,7 +61,7 @@ const Courses = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => moment(data.createdOn).format('Do MMMM YYYY')
+                render: (data) => moment(data.createdOn).format('DD/MM/YYYY')
             }
         },
         headerTextColor: '#454E50', // user can change table header text color
