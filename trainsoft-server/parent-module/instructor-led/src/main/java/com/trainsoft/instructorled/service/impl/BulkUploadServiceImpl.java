@@ -194,20 +194,20 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                 list.add(user);
             }else if(type.equalsIgnoreCase("INSTRUCTOR")){
                 DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
+                UserTO user = mapper.convert(virtualAccount, UserTO.class);
                 if(dVA!=null && dVA.getDepartmentRole().name().equalsIgnoreCase("INSTRUCTOR")) {
-                    UserTO user = mapper.convert(virtualAccount, UserTO.class);
                     user.getAppuser().setPassword(null);
                     user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
-                    list.add(user);
                 }
+                list.add(user);
             }else if(type.equalsIgnoreCase("LEARNER")){
                 DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
+                UserTO user = mapper.convert(virtualAccount, UserTO.class);
                 if(dVA!=null && dVA.getDepartmentRole().name().equalsIgnoreCase("LEARNER")) {
-                    UserTO user = mapper.convert(virtualAccount, UserTO.class);
                     user.getAppuser().setPassword(null);
                     user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
-                    list.add(user);
                 }
+                list.add(user);
             }
         });
         return list;
