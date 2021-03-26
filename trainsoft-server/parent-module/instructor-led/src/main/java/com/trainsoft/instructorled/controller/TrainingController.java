@@ -169,14 +169,6 @@ public class TrainingController {
         return ResponseEntity.ok(createUserTO);
     }
 
-    @PostMapping("generate/password")
-    @ApiOperation(value = "generatePassword", notes = "API to generate Password")
-    public ResponseEntity<?> generatePassword(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token){
-        String password = trainingService.generatePassword();
-        return ResponseEntity.ok(password);
-    }
-
     @GetMapping("vaccounts/{type}/{pageNo}/{pageSize}")
     @ApiOperation(value = "getVirtualAccounts", notes = "Get list of virtual account")
     public ResponseEntity<?> getVirtualAccounts(
