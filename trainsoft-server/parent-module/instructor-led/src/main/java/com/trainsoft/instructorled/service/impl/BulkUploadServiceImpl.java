@@ -91,10 +91,11 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(userTO.getCompanySid()));
         List<VirtualAccount> virtualAccounts=virtualAccountRepository.findVirtualAccountByEmailId(userTO.getAppuser().getEmailId());
         VirtualAccount virtualAccount=null;
-        if(virtualAccounts!=null && virtualAccounts.size()>0) {
+        if(virtualAccounts==null || virtualAccounts.size()==0) {
             virtualAccount = mapper.convert(userTO, VirtualAccount.class);
             virtualAccount.generateUuid();
             virtualAccount.setCompany(company);
+            virtualAccount.setCreatedOn(new Date(Instant.now().toEpochMilli()));
             AppUser appUser = virtualAccount.getAppuser();
             appUser.generateUuid();
             appUser.setSuperAdmin(false);
@@ -180,31 +181,33 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
         List<UserTO> list= new ArrayList<>();
         Company company= companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Pageable paging = PageRequest.of(pageNo, record);
-        Page<VirtualAccount> virtualAccountPage=virtualAccountRepository.findVirtualAccountByCompanyAndStatusNot(company,InstructorEnum.Status.DELETED,paging);
+        Page<VirtualAccount> virtualAccountPage=virtualAccountRepository.findVirtualAccountByCompanyAndStatusNotOrderByCreatedOnDesc(company,InstructorEnum.Status.DELETED,paging);
         List<VirtualAccount> virtualAccounts=virtualAccountPage.toList();
         virtualAccounts.forEach(virtualAccount -> {
             if(type.equalsIgnoreCase("ALL")) {
                 DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
-                UserTO user = mapper.convert(virtualAccount, UserTO.class);
-                user.getAppuser().setPassword(null);
-                user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+                UserTO user = mapper.convert(virtualAccount, UserTO.class);;
+                if(dVA!=null) {
+                    user.getAppuser().setPassword(null);
+                    user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+                }
                 list.add(user);
             }else if(type.equalsIgnoreCase("INSTRUCTOR")){
                 DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
-                if(dVA!=null && dVA.getDepartmentRole().name().equalsIgnoreCase("INSTRUCTOR")) {
-                    UserTO user = mapper.convert(virtualAccount, UserTO.class);
+                UserTO user = mapper.convert(virtualAccount, UserTO.class);
+                if(dVA!=null && dVA.getDepartmentRole()!=null && dVA.getDepartmentRole().name().equalsIgnoreCase("INSTRUCTOR")) {
                     user.getAppuser().setPassword(null);
                     user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
-                    list.add(user);
                 }
+                list.add(user);
             }else if(type.equalsIgnoreCase("LEARNER")){
                 DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
-                if(dVA!=null && dVA.getDepartmentRole().name().equalsIgnoreCase("LEARNER")) {
-                    UserTO user = mapper.convert(virtualAccount, UserTO.class);
+                UserTO user = mapper.convert(virtualAccount, UserTO.class);
+                if(dVA!=null && dVA.getDepartmentRole()!=null && dVA.getDepartmentRole().name().equalsIgnoreCase("LEARNER")) {
                     user.getAppuser().setPassword(null);
                     user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
-                    list.add(user);
                 }
+                list.add(user);
             }
         });
         return list;
@@ -221,6 +224,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
             virtualAccount = mapper.convert(userTO, VirtualAccount.class);
             virtualAccount.generateUuid();
             virtualAccount.setCompany(company);
+            virtualAccount.setCreatedOn(new Date(Instant.now().toEpochMilli()));
             AppUser appUser = virtualAccount.getAppuser();
             appUser.generateUuid();
             appUser.setSuperAdmin(false);

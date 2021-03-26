@@ -18,6 +18,7 @@ export const TextInput = (props) => {
             <div className={`input-field ${meta.touched && meta.error ? 'border border-danger' : ''}`}>
                 <input disabled={props.disabled} {...field}  {...props} className="form-control form-control-sm" />
             </div>
+            {props.isNotValid && field.value.length > 0 && <div className="text-danger small-text">{props.label} Already Exist !!</div>}
             <ErrorMessage component="div" name={props.name} className="text-danger small-text" />
         </div>
     </>)

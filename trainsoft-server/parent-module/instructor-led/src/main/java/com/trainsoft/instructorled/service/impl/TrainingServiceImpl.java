@@ -425,12 +425,18 @@ public class TrainingServiceImpl implements ITrainingService {
     public List<UserTO> getUsersByNameOrEmailOrPhoneNumber(String str, String companySid) {
         try {
             List<VirtualAccount> virtualAccounts=virtualAccountRepository.findVirtualAccountByNameContainingOrEmailIdContainingOrPhoneNumberContaining(str,BaseEntity.hexStringToByteArray(companySid),Status.DELETED);
-            List<VirtualAccount> virtualAccounts1=new ArrayList<>();
+            List<UserTO> userTOS=new ArrayList<>();
             virtualAccounts.forEach(virtualAccount -> {
                 virtualAccount.getAppuser().setPassword(null);
-                virtualAccounts1.add(virtualAccount);
+                DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
+                UserTO user = mapper.convert(virtualAccount, UserTO.class);;
+                if(dVA!=null) {
+                    user.getAppuser().setPassword(null);
+                    user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+                }
+                userTOS.add(user);
             });
-            return mapper.convertList(virtualAccounts1,UserTO.class);
+            return userTOS;
         }catch (Exception e) {
             log.error("throwing exception while fetching the appUser details by name,email and phone number",e.toString());
             throw new ApplicationException("Something went wrong while fetching the appUser details by name,email and phone number ");

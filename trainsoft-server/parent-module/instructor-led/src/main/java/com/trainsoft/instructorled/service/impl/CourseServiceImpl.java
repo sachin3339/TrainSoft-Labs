@@ -98,7 +98,7 @@ public class CourseServiceImpl implements ICourseService {
     public CourseTO getCourseBySid(String courseSid) {
         Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
         try {
-            if (!StringUtils.isEmpty(courseSid) && course != null)
+            if (course != null)
                 return mapper.convert(course, CourseTO.class);
             else
                 throw new RecordNotFoundException();
