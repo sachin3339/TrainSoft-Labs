@@ -195,7 +195,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
             }else if(type.equalsIgnoreCase("INSTRUCTOR")){
                 DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
                 UserTO user = mapper.convert(virtualAccount, UserTO.class);
-                if(dVA!=null && dVA.getDepartmentRole().name().equalsIgnoreCase("INSTRUCTOR")) {
+                if(dVA!=null && dVA.getDepartmentRole()!=null && dVA.getDepartmentRole().name().equalsIgnoreCase("INSTRUCTOR")) {
                     user.getAppuser().setPassword(null);
                     user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
                 }
@@ -203,7 +203,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
             }else if(type.equalsIgnoreCase("LEARNER")){
                 DepartmentVirtualAccount dVA = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
                 UserTO user = mapper.convert(virtualAccount, UserTO.class);
-                if(dVA!=null && dVA.getDepartmentRole().name().equalsIgnoreCase("LEARNER")) {
+                if(dVA!=null && dVA.getDepartmentRole()!=null && dVA.getDepartmentRole().name().equalsIgnoreCase("LEARNER")) {
                     user.getAppuser().setPassword(null);
                     user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
                 }
