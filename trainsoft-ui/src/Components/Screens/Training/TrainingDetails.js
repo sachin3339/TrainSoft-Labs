@@ -22,24 +22,6 @@ const TrainingDetails = ({ location }) => {
     // const {setTraining,training} = useContext(TrainingContext)
     // const Toast = useToast()
     const navigate = useNavigate();
-    // get all training
-    // const getTrainingsBySid = async () => {
-    //     try {
-    //         spinner.show();
-    //         RestService.getTrainingBySid(location.state.sid).then(
-    //             response => {
-    //                 response && response.data && setTraining(...response.data);
-    //                 spinner.hide();
-    //             },
-    //             err => {
-    //                 spinner.hide();
-    //             }
-    //         )
-    //     } catch (err) {
-    //         spinner.hide();
-    //         console.error("error occur on getTrainings()", err)
-    //     }
-    // }
 
 
     return (<>

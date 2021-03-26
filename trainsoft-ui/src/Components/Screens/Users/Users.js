@@ -21,9 +21,12 @@ import NoDataFound from "../../Common/NoDataFound/NoDataFound";
 
 const User = ({ location }) => {
     const {department,spinner,user} = useContext(AppContext)
+    const [showBulkUpload,setShowBulkUpload] =  useState(false)
     const Toast = useToast()
+    const [count,setCount] = useState(0)
     const [show, setShow] = useState(false);
     const [participant,setParticipant] = useState([])
+    const [isEmail,setIsEmail] = useState(false)
     const [genPwd,setGenPwd] = useState('')
     const [file,setFile] = useState(null)
      // get all batches
@@ -196,10 +199,11 @@ const User = ({ location }) => {
     }
 
     // get all training
-    const getUsers = async () => {
+    const getUsers = async (pagination= 1) => {
         try {
+            let pageSize = 10
             spinner.show();
-            RestService.getAllUser("ALL").then(
+            RestService.getAllUserByPage("ALL",pagination, pageSize).then(
                 response => {
                     let val = response.data.map(res=> {
                         let data = res.appuser
@@ -210,30 +214,33 @@ const User = ({ location }) => {
                         return data
                     })
                     setParticipant(val)
+                    spinner.hide();
                 },
                 err => {
+                    console.error("error occur on getUsers()", err)
                     spinner.hide();
                 }
-            ).finally(() => {
-                spinner.hide();
-            });
+            )
         } catch (err) {
             console.error("error occur on getUsers()", err)
+            spinner.hide();
         }
     }
+
+
  
     // search batches by name 
     const searchUser = (name) => {
         try {
             spinner.show();
             RestService.searchUser(name).then(resp => {
-                // let val = resp.map(res=> {
-                //     let data = res.appuser
-                //     data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
-                //     data.department = res.departmentVA ? res.departmentVA.department.name : ''
-                //     return data
-                // })
-                setParticipant(resp.data)
+                let val = resp.data.map(res=> {
+                    let data = res.appuser
+                    data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
+                    data.department = res.departmentVA ? res.departmentVA.department.name : ''
+                    return data
+                })
+                setParticipant(val)
                 spinner.hide();
               }, err => {
                 spinner.hide();
@@ -264,12 +271,101 @@ const User = ({ location }) => {
         }
     }
 
+    // get user count
+    const getUserCount = async () => {
+    try {
+        RestService.getUserCount("ALL").then(
+            response => {
+                setCount(response.data);
+            },
+            err => {
+                spinner.hide();
+            }
+        ).finally(() => {
+            spinner.hide();
+        });
+    } catch (err) {
+        console.error("error occur on getAllBatch()", err)
+    }
+}
+
+  // validateEmailId
+    const validateEmailId = async (email) => {
+    try {
+        if(email.length > 0){
+        RestService.validateEmail(email).then(
+            response => {
+                setIsEmail(response.data);
+            },
+            err => {
+                spinner.hide();
+            }
+        ).finally(() => {
+            spinner.hide();
+        });
+    }else{
+        setIsEmail(false);
+    }
+    } catch (err) {
+        console.error("error occur on validateEmailId()", err)
+    }
+}
+
+   // upload attachment
+   const UploadAttachmentsAPI = async (val) => {
+    return new Promise((resolve, reject) => {
+        let data = new FormData();
+        for (let i = 0, l = val.file.length; i < l; i++)
+            data.append("file", val.file[i])
+        let xhr = new XMLHttpRequest();
+        xhr.addEventListener("readystatechange", function () {
+            let response = null;
+            try {
+                response = JSON.parse(this.responseText);
+            } catch (err) {
+                response = this.responseText
+            }
+            if (this.readyState === 4 && this.status >= 200 && this.status <= 299) {
+                resolve([response, this.status, this.getAllResponseHeaders()]);
+            } else if (this.readyState === 4 && !(this.status >= 200 && this.status <= 299)) {
+                reject([response, this.status, this.getAllResponseHeaders()]);
+            }
+        });
+        xhr.open("POST", GLOBELCONSTANT.PARTICIPANT.UPLOAD_USER_PARTICIPANT);
+        xhr.setRequestHeader("Authorization", user.jwtToken);
+        xhr.send(data);
+    })
+}
+
+/** upload attachments file
+*   @param {Object} file = selected files
+*   @param {string} token = user auth token 
+*   @param {string} bucketName = bucket name 
+*/
+const uploadAttachments = async (
+    val
+) => {
+    try {
+        spinner.show();
+        let [res] = await UploadAttachmentsAPI(val);
+        spinner.hide();
+        setShowBulkUpload(false)
+        getUsers()
+        Toast.success({ message: `Participant is successfully uploaded `});
+    } catch (err) {
+        setShowBulkUpload(false)
+        spinner.hide();
+        Toast.error({ message: `Something Went Wrong` });
+        setShow(false)
+        console.error("Exception occurred in uploadAttachments -- ", err);
+    }
+}
+
     // initialize  component
     useEffect(() => {
+        getUserCount()
         getUsers()
     }, [])
-
-
 
 
     return (<>
@@ -279,11 +375,15 @@ const User = ({ location }) => {
                 location,
                 onChange: (e) => e.length === 0 && getUsers(),
                 onEnter: (e) => searchUser(e),
-                actionClick : () => {setShow(true);},
-                showAction: user.role === 'ADMIN' ? true: false
-            }} />
+            }}>
+                {user.role === 'ADMIN' && <>
+                <Button className="ml-2" onClick={()=>{setShowBulkUpload(true)}}>Bulk Upload</Button>
+                <Button className="ml-2" onClick={()=>{setShow(true);setIsEmail(false)}}>+ Add New</Button>
+                </>}
+
+            </CardHeader>
         </div>
-        <BsModal {...{ show, setShow, headerTitle: "Add new User", size: "lg" }}>
+           <BsModal {...{ show, setShow, headerTitle: "Add new User", size: "lg" }}>
                     <div className="form-container">
                         <Formik
                             onSubmit={(value)=> createParticipant(value)}
@@ -313,7 +413,7 @@ const User = ({ location }) => {
                                     </Form.Group>
                                     <Form.Group className="row">
                                         <div className="col-6">
-                                            <TextInput label="Email Id" name="emailId" />
+                                            <TextInput label="Email Id" name="emailId" isNotValid={isEmail} onBlur ={(e)=>validateEmailId(e.target.value)} />
                                         </div>
                                         <div className="col-6">
                                             <TextInput label="Phone No" name="phoneNumber" />
@@ -362,7 +462,36 @@ const User = ({ location }) => {
                         </Formik>
                     </div>
                 </BsModal>
-        <DynamicTable {...{ configuration, sourceData: participant }} />    
+
+                <BsModal {...{ show: showBulkUpload, setShow: setShowBulkUpload, headerTitle: "Upload", size: "md" }}>
+                    <div className="form-container">
+                        <Formik
+                            onSubmit={(value)=> uploadAttachments(value)}
+                            initialValues={{
+                                file: '',
+                            }}
+                        >
+                            {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit}  className="create-batch" >
+                                    <div>
+                                    {<div className="col-6 pl-0">
+                                        <div><span className="title-sm">Upload participants</span></div> <div><input placeholder="Browse File" onChange={(e) => { setFieldValue("file", e.target.files) }} type="file" /></div>
+                                    </div>
+                                    }
+                                   
+                                    </div>
+                                  
+                                <footer className="jcb mt-4">
+                                <div> <a href="https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx">Sample template</a> </div>
+                                    <div>
+                                        <Button type="submit" className="px-4">Upload</Button>
+                                    </div>
+                                </footer>
+                            </form>
+                            }
+                        </Formik>
+                    </div>
+                </BsModal>
+        <DynamicTable {...{ configuration, sourceData: participant, count, onPageChange: (e) => getUsers(e) }} />    
     </div>
     
     </>)

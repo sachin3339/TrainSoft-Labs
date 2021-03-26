@@ -91,18 +91,29 @@ const TrainingInfo = () => {
                 </div>
             </div>
             <div className="flx3">
-                <div className="jcb mb-3">
-                    {activityData.map((p, i) => <div key={i} className="user-activity">
+                <div className="flx mb-3">
+                   <div  className="user-activity">
                         <div className="flx mb-2">
                             <div className="activities-btn">
-                                {p.icon}
+                                {ICN_ON_GOING}
                             </div>
                             <div className="jcb-c text-right flx1">
-                                <div className="title-lg">{p.data}</div>
+                                <div className="title-lg">{training.noOfBatches}</div>
                             </div>
                         </div>
-                        <div className="title-sm">{p.name}</div>
-                    </div>)}
+                        <div className="title-sm">Batch enrolled</div>
+                    </div>
+                    <div  className="user-activity">
+                        <div className="flx mb-2">
+                            <div className="activities-btn">
+                                {ICN_PASSED}
+                            </div>
+                            <div className="jcb-c text-right flx1">
+                                <div className="title-lg">{10}</div>
+                            </div>
+                        </div>
+                        <div className="title-sm">Total Session</div>
+                    </div>
 
                 </div>
                 <div>

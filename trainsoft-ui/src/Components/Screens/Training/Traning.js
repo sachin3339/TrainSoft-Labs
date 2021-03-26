@@ -37,29 +37,13 @@ const Trainings = ({ location }) => {
     const [isEdit,setIsEdit] = useState(false);
     const [initialValues,setInitialValue] = useState(initialVal)
     const [count,setCount] =  useState(0)
-    // get all courses
-    const allCourse = useFetch({
-        method: "get",
-        url: GLOBELCONSTANT.COURSE.GET_COURSE,
-        errorMsg: 'error occur on get course'
-    });
-
+  
     // get all batches
     const allBatches = useFetch({
         method: "get",
         url: GLOBELCONSTANT.BATCHES.GET_BATCH_LIST,
         errorMsg: 'error occur on get Batches'
      });
-
-    const queueDropdownProps = {
-        selectItems: batches,
-        label: 'name',
-        placeholder: "Batches Select",
-        selectAllLabel: "Select All",
-        filterPlaceholder: "",
-        className: "",
-        dataNotFound: "No result Found",
-    }
 
 
     const [configuration, setConfiguration] = useState({
@@ -132,7 +116,7 @@ const Trainings = ({ location }) => {
             {
                 "title": "Edit",
                 "icon": ICN_EDIT,
-                "onClick": (data, i) => console.log(data)
+                "onClick": (data, i) => getTrainingsBySid(data.sid,true)
                 // {setIsEdit(true); setShow(true); setInitialValue(data)
             },
             {
@@ -152,7 +136,27 @@ const Trainings = ({ location }) => {
         clearSelection: false
     });
 
-
+// get training details by sid
+    const getTrainingsBySid = async (sid, edit=false) => {
+        try {
+            spinner.show();
+            RestService.getTrainingBySid(sid).then(
+                response => {
+                    response && response.data && setTraining(response.data);
+                    console.log(response.data)
+                    // edit && setInitialValue(response.data)
+                    // edit && setShow(true)
+                    spinner.hide();
+                },
+                err => {
+                    spinner.hide();
+                }
+            )
+        } catch (err) {
+            spinner.hide();
+            console.error("error occur on getTrainings()", err)
+        }
+    }
 
     // get all training
     const getTrainings = async (pagination = "1") => {
@@ -230,10 +234,11 @@ const Trainings = ({ location }) => {
 
     // initialize component
     useEffect(() => {
-        allCourse.response && setCourse(allCourse.response)
         allBatches.response && setBatches(allBatches.response)
         getTrainingCount()
-        getTrainings()}, [])
+        getTrainings()
+    }, [])
+
     return (<>
         <div className="table-shadow">
             <div className="p-3">
@@ -274,7 +279,7 @@ const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) =
   const getAllInstructor = async () => {
     try {
         spinner.show();
-        RestService.getAllUser("INSTRUCTOR").then(
+        RestService.getAllUserByPage("INSTRUCTOR",1,200).then(
             response => {
                 let val = response.data.map(res=> {
                     let data = res.appuser
