@@ -19,7 +19,7 @@ const Support = ({location})=>{
         <div className="table-shadow p-3">
         <CardHeader {...{location}}/>
           <div className="flx storeTab-shadow mb-3">
-              <TabBtn active={location.state.subPath === "support"} onClick={()=>navigate("/support",{state: { title: 'SUPPORT',subTitle:"", subPath:"support" }})}>Rise a ticket</TabBtn>
+              <TabBtn active={location.state.subPath === "support"} onClick={()=>navigate("/support",{state: { title: 'SUPPORT',subTitle:"", subPath:"support" }})}>Raise a ticket</TabBtn>
               <TabBtn  active={location.state.subPath === "history"} onClick={()=>navigate("/support/history",{state: { title: 'SUPPORT',subTitle:"History", subPath:"history"  }})}>History</TabBtn> 
           </div>
           <Router>

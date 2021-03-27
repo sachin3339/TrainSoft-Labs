@@ -20,7 +20,7 @@ const DevelopmentEnv =()=>{
     // get development link
     const getDevelopmentLink = (id) =>{
         try{
-            axios.get(`http://65.1.185.38/run/lab?id=`+ id)
+            axios.get(`http://ec2-65-1-145-196.ap-south-1.compute.amazonaws.com/run/lab?id=`+ id)
             .then(({ data }) => {
                 window.open(createPortal(data))
             })
