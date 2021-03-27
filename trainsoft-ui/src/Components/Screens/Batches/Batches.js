@@ -66,7 +66,7 @@ const Batch = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => moment(data.createdOn).format('Do MMMM YYYY')
+                render: (data) => moment(data.createdOn).format('DD/MM/YYYY')
             },
             "status": {
                 "title": "Status",
@@ -386,7 +386,7 @@ const Batch = ({ location }) => {
                                 </div>
                             </div>
                             <footer className="jcb">
-                            <div> <a href="https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx">Sample template</a> </div>
+                            <div> <a href={GLOBELCONSTANT.SAMPLE_TEMPLATE}>Sample template</a> </div>
                                 <div>
                                     <Button type="submit" > {isEdit ? 'Update Batch' : 'Create Batch'}</Button>
                                 </div>

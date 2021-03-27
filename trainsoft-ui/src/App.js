@@ -8,6 +8,7 @@ import ClassLab from "./Components/Screens/ClassLab/ClassLab";
 import Spinner from "./Components/Common/Spinner/Spinner";
 import AxiosService from './Services/axios.service';
 import AppContext from "./Store/AppContext";
+import LandingHome from "./Components/LandingPage/Home/LandingHome";
 
 
 
@@ -17,7 +18,8 @@ function App() {
   return (<>
       <Spinner value={spinner}/>
       <Router>
-         <Login path="/"/>
+         <LandingHome path="/"/>
+         <Login path="/login"/>
          <Dashboard path="/*"/>
          <ClassLab path="class/*"/>
       </Router>

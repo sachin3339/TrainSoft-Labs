@@ -2,28 +2,31 @@ import React, { useState, useContext, useEffect } from 'react'
 import { Button } from '../../../Common/Buttons/Buttons'
 import SessionList from '../../../Common/SessionList/SessionList'
 import AddSession from './AddSession'
-import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
-import useFetch from "../../../../Store/useFetch";
 import TrainingContext from "../../../../Store/TrainingContext";
 import AppContext from '../../../../Store/AppContext';
-import './session.css'
 import RestService from '../../../../Services/api.service';
 import useToast from '../../../../Store/ToastHook';
+import TrainingRoute from '../TrainingRoute';
+import CardHeader from '../../../Common/CardHeader';
+import './session.css'
 
-const Session = ()=>{
+
+const Session = ({location})=>{
     const Toast = useToast();
     const [show, setShow] = useState(false)
     const {user,spinner} =  useContext(AppContext)
     const {training} = useContext(TrainingContext)
     const [trainingSession,setTrainingSession] = useState('')
+    const [isEdit,setIsEdit] =  useState(false)
+    const [initialValue,setInitialValue] = useState({})
    
 
        // search session
        const searchSession = (name)=> {
         try{
             spinner.show();
-            RestService.searchTrainingSession(name).then(res => {
-                   setTrainingSession(res.data)
+            RestService.searchTrainingSession(training.sid,name).then(res => {
+                    setTrainingSession(res.data)
                     spinner.hide();
                 }, err => {
                     spinner.hide();
@@ -80,14 +83,23 @@ const Session = ()=>{
 
 
     return(<>
+              <CardHeader {...{
+                    location,
+                    onChange: (e) => e.length === 0 && getSessionByPage(),
+                    onEnter: (e) => searchSession(e),
+                }}>
+                    {user.role === 'ADMIN' && <>
+                        <Button className="ml-2" onClick={() => { setShow(true);setIsEdit(false)}}>+ Add Session</Button>
+                    </>}
+                </CardHeader>
+        <TrainingRoute {...{location}}/>
         <div className="session-container">
             <SessionList  {...{sessionList:trainingSession , sessionType:"training",
              onDelete:(e)=> deleteTraining(e),
-             onEdit:()=> console.log("")
+             onEdit:(e)=> {setIsEdit(true);setShow(true) ;setInitialValue(e)}
              }}/>
         </div>
-        {user.role === 'ADMIN' &&<div className="full-w mt-2"><Button className="btn-block" onClick={()=> setShow(true)}>+ Add Session</Button></div>}
-        <AddSession {...{show, setShow,getSessionByPage}}/>
+        <AddSession {...{show, setShow,getSessionByPage,isEdit,initialValue,setInitialValue, title: isEdit ? "Update Session": "Add Session"}}/>
     </>)
 }
 export default Session

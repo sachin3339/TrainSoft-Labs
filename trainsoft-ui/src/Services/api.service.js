@@ -46,6 +46,7 @@ const RestService = {
   getAllBatchesByPage: (pageNo,pageSize) => AxiosService.get(GLOBELCONSTANT.BATCHES.GET_BATCH_LIST + pageNo + "/" + pageSize),
   getBatchesBySid: (sid) => AxiosService.get(GLOBELCONSTANT.BATCHES.GET_BATCH_SID.replace("{batchSid}",sid)),
   deleteBatches: (batchId) => AxiosService.delete(GLOBELCONSTANT.BATCHES.DELETE_BATCHES + batchId),
+  deleteBatchesParticipant: (batchId,vASid) => AxiosService.delete(GLOBELCONSTANT.BATCHES.DELETE_BATCH_PARTICIPANT.replace("{batchSid}",batchId).replace("{vASid}",vASid)),
   editBatches: (payload) => AxiosService.put(GLOBELCONSTANT.BATCHES.EDIT_BATCHES, payload),
   searchBatches : (name) => AxiosService.get(GLOBELCONSTANT.BATCHES.SEARCH_BATCHES + name),
   getBatchParticipant: (batchSid)=> AxiosService.get(GLOBELCONSTANT.BATCHES.GET_BATCH_PARTICIPANT.replace("{batchSid}",batchSid)),
@@ -56,10 +57,13 @@ const RestService = {
   //participant
   getAllParticipant: (sid) => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.GET_PARTICIPANT),
   getAllUser: (type) => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.ALL_USERS + type),
+  getUserDetails: (vSId) => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.GET_PARTICIPANT_ID.replace("{VASid}",vSId)),
+
   getAllUserByPage: (type,pageNo,pageSize) => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.ALL_USERS +`${type}/${pageNo}/${pageSize}`),
   searchUser: (str) => AxiosService.get(GLOBELCONSTANT.PARTICIPANT.SEARCH_USER.replace("{str}",str)),
   UploadParticipant: (payload,header) => AxiosService.uploadMultiPart(GLOBELCONSTANT.PARTICIPANT.UPLOAD_PARTICIPANT, payload, header),
   createParticipant: (payload) => AxiosService.post(GLOBELCONSTANT.PARTICIPANT.CREATE_PARTICIPANT,payload),
+  updateParticipant: (payload) => AxiosService.post(GLOBELCONSTANT.PARTICIPANT.UPDATE_PARTICIPANT,payload),
   generatePwd: () => AxiosService.post(GLOBELCONSTANT.PARTICIPANT.GENERATE_PWD),
   getUserCount: (type)=> AxiosService.get(GLOBELCONSTANT.PARTICIPANT.GET_USER_COUNT.replace("{type}",type)),
   validateEmail: (email)=> AxiosService.get(GLOBELCONSTANT.PARTICIPANT.EMAIL_VALIDATION.replace("{email}",email)),
@@ -71,12 +75,14 @@ const RestService = {
   getAllTrainingByPage: (pageNo,pageSize)=> AxiosService.get(GLOBELCONSTANT.TRAINING.GET_TRAINING + "/" + pageNo + "/" + pageSize),
   getTrainingSession: (trainingSid,courseSid)=> AxiosService.get(GLOBELCONSTANT.TRAINING.GET_TRAINING_SESSION.replace("{trainingSid}",trainingSid).replace("{courseSid}",courseSid)),
   createTraining: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.CREATE_TRAINING,payload),
+  editTraining: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.EDIT_TRAINING,payload),
+  editTrainingSession: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.UPDATE_TRAINING_SESSION,payload),
   CreateTrainingSession: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.CREATE_SESSION,payload),
   searchTraining : (name) => AxiosService.get(GLOBELCONSTANT.TRAINING.SEARCH_TRAINER + name),
   deleteTraining: (trainingId)=> AxiosService.delete(GLOBELCONSTANT.TRAINING.DELETE_TRAINER + trainingId),
   getTrainingBySid: (trainingSid)=> AxiosService.get(GLOBELCONSTANT.TRAINING.GET_TRAINING_SID.replace("{trainingSid}",trainingSid)),
   deleteTrainingSession: (trainingId)=> AxiosService.delete(GLOBELCONSTANT.TRAINING.DELETE_TRAIN_SESSION.replace("{trainingSesssionSid}",trainingId) ),
-
+  searchTrainingSession:(trainingSid,name)=> AxiosService.get(GLOBELCONSTANT.TRAINING.SEARCH_TRAINING_SESSION.replace("{trainingSid}",trainingSid).replace("{name}",name)),
 
   zoomParticipant: ()=> AxiosService.get('https://api.zoom.us/v2/users/kumarkanhiya21@gmail.com/meetings?page_size=30&type=live',zoomAuth)
 

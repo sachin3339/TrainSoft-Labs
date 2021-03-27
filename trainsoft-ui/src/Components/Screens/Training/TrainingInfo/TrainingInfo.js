@@ -6,8 +6,10 @@ import TrainingContext from '../../../../Store/TrainingContext';
 import moment from 'moment'
 
 import '../training.css'
+import TrainingRoute from '../TrainingRoute';
+import CardHeader from '../../../Common/CardHeader';
 
-const TrainingInfo = () => {
+const TrainingInfo = ({location}) => {
     const {training} =  useContext(TrainingContext)
     const activityData = [
         { icon: ICN_ON_GOING, name: 'Batch enrolled', data: '15' },
@@ -22,6 +24,13 @@ const TrainingInfo = () => {
 
     ]
     return (<>
+          <CardHeader {...{
+                    location,
+                    onChange: (e) => {},
+                    onEnter: (e) => {},
+                }}>
+                </CardHeader>
+        <TrainingRoute {...{location}}/>
         <div className="flx full-h">
 
             <div className="left-details">

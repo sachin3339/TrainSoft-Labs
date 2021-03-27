@@ -2,9 +2,14 @@ import { ProfileImg } from "../../../Common/BsUtils"
 import { Button } from "../../../Common/Buttons/Buttons"
 import './forum.css'
 import Imagess from '../../../../Assets/Images/vid.jpg'
+import TrainingRoute from "../TrainingRoute"
+import CardHeader from "../../../Common/CardHeader"
 
-const Forum = () =>{
+const Forum = ({location}) =>{
     return(<>
+         <CardHeader {...{location,onChange: (e) => {},
+                    onEnter: (e) => {},}}/>
+        <TrainingRoute {...{location}}/>
        <div className="jcb pb-2">
             <div></div>
             <div className="aic ">
