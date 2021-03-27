@@ -5,10 +5,13 @@ import { Button } from "../../../Common/Buttons/Buttons"
 import { DateInput, TextArea, TextInput , TimeInput } from "../../../Common/InputField/InputField"
 import RestService from "../../../../Services/api.service"
 import useToast from "../../../../Store/ToastHook"
-import useFetch from "../../../../Store/useFetch"
 import TrainingContext from "../../../../Store/TrainingContext"
+// import { UploadAttachments } from "../../../../Services/MethodFactory"
+import GLOBELCONSTANT from "../../../../Constant/GlobleConstant"
+import AppContext from "../../../../Store/AppContext"
 
 const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => {
+    const {user,spinner} = useContext(AppContext)
     const { training } = useContext(TrainingContext)
     const Toast = useToast()
     const [title, setTitle] = useState('')
@@ -68,6 +71,49 @@ const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => 
                 Toast.error({ message: `Something wrong!!` });
             }
         }
+   // upload attachment
+   const UploadAttachmentsAPI = async (val) => {
+    return new Promise((resolve, reject) => {
+        let data = new FormData();
+        for (let i = 0, l = val.length; i < l; i++)
+            data.append("files", val[i])
+        let xhr = new XMLHttpRequest();
+        xhr.addEventListener("readystatechange", function () {
+            let response = null;
+            try {
+                response = JSON.parse(this.responseText);
+            } catch (err) {
+                response = this.responseText
+            }
+            if (this.readyState === 4 && this.status >= 200 && this.status <= 299) {
+                resolve([response, this.status, this.getAllResponseHeaders()]);
+            } else if (this.readyState === 4 && !(this.status >= 200 && this.status <= 299)) {
+                reject([response, this.status, this.getAllResponseHeaders()]);
+            }
+        });
+        xhr.open("POST", GLOBELCONSTANT.TRAINING.UPLOAD_ASSETS);
+        xhr.send(data);
+    })
+}
+                /** upload attachments file
+                *   @param {Object} file = selected files
+                *   @param {string} token = user auth token 
+                *   @param {string} bucketName = bucket name 
+                */
+                 const uploadAttachments = async (
+                    file
+                ) => {
+                    try {
+                        spinner.show();
+                        let [res] = await UploadAttachmentsAPI(file);
+                        spinner.hide();
+                        Toast.success({ message: `Assets is successfully uploaded ` });
+                    } catch (err) {
+                        spinner.hide();
+                        Toast.error({ message: `Something Went Wrong` });
+                        console.error("Exception occurred in uploadAttachments -- ", err);
+                    }
+                }
 
     return (<>
         <BsModal {...{ show, setShow, headerTitle: title, size: "lg" }}>
@@ -104,11 +150,16 @@ const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => 
                                         <TimeInput name="endTime" placeholder="Select Time" label="End Time" />
                                     </div>
                                     <div className="col-md-12">
-                                        <TextInput name="assets" label="Assets" />
+                                    <TextInput name="assets"  label="Assets" />
+
+                                    {/* {<div className="col-6 pl-0">
+                                    <div><span className="title-sm ">Assets</span></div> <div><input multiple placeholder="Browse File" onChange={(e) => { uploadAttachments(e.target.files) }} type="file" /></div>
+                                </div>
+                                } */}
                                     </div>
                                 </div>
                                 <div>
-                                    <Button className="btn-block py-2" type="submit">Confirm</Button>
+                                    <Button className="btn-block py-2 mt-3" type="submit">Confirm</Button>
                                 </div>
                             </form>
                         )}

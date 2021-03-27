@@ -100,7 +100,7 @@ const TableBody = ({ sourceData, configuration, onSelect }) => sourceData.map((d
     {Object.keys(configuration.columns).map((key, rowIdx) => <td key={rowIdx} className={`${configuration.columns[key].tdCustomClass ? configuration.columns[key].tdCustomClass : "elps"} ${getTableData(configuration.columns[key], data, key) === "NA" ? "text-muted" : ""}`} onClick={() => { if (typeof configuration.columns[key].onClick === 'function') configuration.columns[key].onClick(data) }}>
         {configuration.showTooltip ? <OverlayTrigger placement='auto' flip={true} overlay={<Tooltip>{data[key] || configuration.columns[key].title}</Tooltip>}><span>{getTableData(configuration.columns[key], data, key)}</span></OverlayTrigger> : <span>{getTableData(configuration.columns[key], data, key)}</span>}
     </td>)}
-    {configuration.actions && configuration.actions.length > 0 && <td className="text-right"><Action {...{ configuration, "row": data, index: idx }} /></td>}
+    {configuration.actions && configuration.actions.length > 0 && <td className="text-right">{!configuration.isHideEdit && <Action {...{ configuration, "row": data, index: idx }} />}</td>}
 </tr>)
 
 /*
@@ -209,7 +209,7 @@ export const DynamicTable = (props) => {
         </tbody>
     </Table></div>
     <div className="pagination-div">
-        {props.onPageChange && <PaginationOne totalCount={props.count ? props.count : 80}  onNavigate={props.onPageChange}/> }
+        {props.onPageChange && <PaginationOne totalCount={props.count ? props.count : 60}  onNavigate={props.onPageChange}/> }
     </div>
 </>}
 export default DynamicTable;

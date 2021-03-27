@@ -3,34 +3,19 @@ import Charts from '../../Charts/Charts'
 import Table from 'react-bootstrap/Table'
 import { ICN_COPY, ICN_COMING_BATCHES } from '../../Common/Icon';
 import { Progress, Card } from '../../Common/BsUtils';
-import {
-    CircularProgressbar,
-    buildStyles
-} from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
+import {CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import CalenderGraph from '../../Common/CalenderGraph/CalenderGraph';
 import AppContext from '../../../Store/AppContext';
-import './home.css'
 import useFetch from "../../../Store/useFetch";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import { Router } from '../../Common/Router';
+import "react-circular-progressbar/dist/styles.css";
+import './home.css'
 
 
-const tableData = [
-    { name: "ITU_01", avgScr: 50 },
-    { name: "ITU_02", avgScr: 70 },
-    { name: "ITU_03", avgScr: 100 },
-    { name: "ITU_05", avgScr: 60 },
-    { name: "ITU_01", avgScr: 50 },
-    { name: "ITU_02", avgScr: 70 },
-    { name: "ITU_03", avgScr: 100 },
-    { name: "ITU_05", avgScr: 60 },
-    { name: "ITU_01", avgScr: 90 }
-
-]
 
 const AdminHome = () => {
-    const { user, batches, course } = useContext(AppContext)
+    const { user, batches, course , ROLE} = useContext(AppContext)
 
     return (<div>
         <div className="row">
@@ -55,7 +40,7 @@ const AdminHome = () => {
             </div>
             <div className="col-md-4 ">
                 {/* ..........Lms insight......... */}
-                <Card title={`${user.role === 'ADMIN' ? 'Lms insight' : 'Attendance Rate'} `} action={true}>
+                <Card title={`${user.role === ROLE.SUPERVISOR ? 'Lms insight' : 'Attendance Rate'} `} action={true}>
                     <div className="">
                         <div className="lms-card"><div className="lms-card-g">AWS Solution Architect</div><div>45 Enrolled <span></span></div></div>
                         <div className="lms-card"><div className="lms-card-p">Machine Learning</div><div>40 Enrolled</div> <span></span></div>
@@ -131,7 +116,7 @@ const AdminHome = () => {
                                     </thead>
                                     <tbody>
                                         {batches.slice(0, 10).map((res, i) =>
-                                            <tr>
+                                            <tr key={i}>
                                                 <td>{res.name}</td>
                                                 <td><Progress className="mb-2" className="progress-sh" variant={i % 2 === 0 ? 'secondary' : 'danger'} value={50} /></td>
                                                 <td className="text-right">{50}</td>
@@ -177,13 +162,7 @@ const AdminHome = () => {
                                 </div>  
                             </div> 
                     </div>
-                    
-
-                    
-
                 </div>
-
-
                 {/* ..........Calender......... */}
                 <Card title="Calender" className="full-h">
                     <CalenderGraph />
@@ -217,8 +196,6 @@ const Home = () => {
     url: GLOBELCONSTANT.INSTRUCTOR.GET_INSTRUCTOR,
     errorMsg: 'error occur on get Batches'
  });
-
-
 
     useEffect(() => {
         allCourse.response && setCourse(allCourse.response)
