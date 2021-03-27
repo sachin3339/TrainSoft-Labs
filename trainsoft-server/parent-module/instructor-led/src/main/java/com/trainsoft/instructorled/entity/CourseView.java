@@ -34,11 +34,12 @@ public class CourseView extends BaseEntity{
     @Column(name="updated_on")
     private Date updatedOn;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by", referencedColumnName = "id")
-    private VirtualAccount createdBy;
+    @Column(name = "created_by")
+    private String createdBy;
 
-    @ManyToOne
-    @JoinColumn(name = "updated_by", referencedColumnName = "id")
-    private VirtualAccount updatedBy;
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    @Column(name = "company_sid")
+    private String companySid;
 }

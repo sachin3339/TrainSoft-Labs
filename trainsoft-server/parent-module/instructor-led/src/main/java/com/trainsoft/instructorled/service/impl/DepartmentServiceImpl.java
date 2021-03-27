@@ -133,4 +133,5 @@ public class DepartmentServiceImpl implements IDepartmentService {
             throw new ApplicationException("Something went wrong while deleting the department details by sid");
         }
     }
+
 }

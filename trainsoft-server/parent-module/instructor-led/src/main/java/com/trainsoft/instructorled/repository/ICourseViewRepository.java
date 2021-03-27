@@ -10,5 +10,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface ICourseViewRepository extends JpaRepository<CourseView,Integer>, PagingAndSortingRepository<CourseView, Integer> {
     CourseView findCourseViewBySid(byte[] sid);
-    Page<CourseView> findAllByStatusNot(InstructorEnum.Status status, Pageable paging);
+    Page<CourseView>  findAllByCompanySidAndStatusNot(String companySid,InstructorEnum.Status status, Pageable paging);
 }
