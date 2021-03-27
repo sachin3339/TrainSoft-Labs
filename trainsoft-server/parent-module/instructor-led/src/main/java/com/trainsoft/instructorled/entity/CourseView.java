@@ -18,9 +18,6 @@ public class CourseView extends BaseEntity{
     @Column(name = "name")
     private String name;
 
-    @Column(name = "learners")
-    private int noOfLearners;
-
     @Column(name = "no_of_trainings")
     private int noOfTrainings;
 
