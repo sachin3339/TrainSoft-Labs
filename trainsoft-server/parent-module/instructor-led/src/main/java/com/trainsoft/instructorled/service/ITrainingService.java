@@ -25,7 +25,6 @@ public interface ITrainingService {
     boolean deleteTrainingSessionBySid(String trainingSessionSid, String deletedBySid);
 
 
-
     String generatePassword();
     List<UserTO> getParticipantsByBatchSid(String batchSid,String companySid);
     List<UserTO> getUsersByNameOrEmailOrPhoneNumber(String str, String companySid);
