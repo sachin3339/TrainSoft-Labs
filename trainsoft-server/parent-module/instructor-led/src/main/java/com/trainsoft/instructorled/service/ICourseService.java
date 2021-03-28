@@ -3,6 +3,7 @@ package com.trainsoft.instructorled.service;
 import com.trainsoft.instructorled.to.BatchTO;
 import com.trainsoft.instructorled.to.CourseSessionTO;
 import com.trainsoft.instructorled.to.CourseTO;
+import com.trainsoft.instructorled.to.CourseViewTO;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface ICourseService {
     List<CourseTO> getCourses(String companySid);
     boolean deleteCourseBySid(String courseSid,String deletedBySid);
     List<CourseTO> getCoursesByName(String name,String companySid);
-    List<CourseTO> getCoursesWithPagination(int pageNo, int pageSize,String companySid);
+    List<CourseViewTO> getCoursesWithPagination(int pageNo, int pageSize, String companySid);
 
     CourseSessionTO createSession(CourseSessionTO courseSessionTO);
     CourseSessionTO updateCourseSession(CourseSessionTO courseSessionTO);

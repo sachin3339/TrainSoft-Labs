@@ -16,4 +16,7 @@ public class CourseViewTO extends BaseTO{
     private long updatedOn;
     private String createdBy;
     private String updatedBy;
+    private String createdByVASid;
+    private String updatedByVASid;
+    private String companySid;
 }

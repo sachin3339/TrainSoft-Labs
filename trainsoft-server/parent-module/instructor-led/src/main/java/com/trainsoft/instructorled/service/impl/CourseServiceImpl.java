@@ -5,14 +5,12 @@ import com.trainsoft.instructorled.customexception.InstructorException;
 import com.trainsoft.instructorled.customexception.RecordNotFoundException;
 import com.trainsoft.instructorled.dozer.DozerUtils;
 import com.trainsoft.instructorled.entity.*;
-import com.trainsoft.instructorled.repository.ICompanyRepository;
-import com.trainsoft.instructorled.repository.ICourseRepository;
-import com.trainsoft.instructorled.repository.ICourseSessionRepository;
-import com.trainsoft.instructorled.repository.IVirtualAccountRepository;
+import com.trainsoft.instructorled.repository.*;
 import com.trainsoft.instructorled.service.ICourseService;
 import com.trainsoft.instructorled.to.BatchTO;
 import com.trainsoft.instructorled.to.CourseSessionTO;
 import com.trainsoft.instructorled.to.CourseTO;
+import com.trainsoft.instructorled.to.CourseViewTO;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +35,7 @@ public class CourseServiceImpl implements ICourseService {
     private ICourseRepository courseRepository;
     private ICourseSessionRepository courseSessionRepository;
     private DozerUtils mapper;
-
+    private ICourseViewRepository courseViewRepository;
     private ICompanyRepository companyRepository;
 
 
@@ -286,15 +284,16 @@ public class CourseServiceImpl implements ICourseService {
     }
 
     @Override
-    public List<CourseTO> getCoursesWithPagination(int pageNo, int pageSize,String companySid) {
+    public List<CourseViewTO> getCoursesWithPagination(int pageNo, int pageSize, String companySid) {
         try {
             Pageable paging = PageRequest.of(pageNo, pageSize);
-            Page<Course> pagedResult = courseRepository.findAllByStatusNotAndCompany(InstructorEnum.Status.DELETED,getCompany(companySid),paging);
-            List<Course> courses = pagedResult.toList();
-            return courses.stream().map(course->{
-                CourseTO to= mapper.convert(course, CourseTO.class);
-                to.setCreatedByVASid(course.getCreatedBy()==null?null:course.getCreatedBy().getStringSid());
-                to.setUpdatedByVASid(course.getUpdatedBy()==null?null:course.getUpdatedBy().getStringSid());
+            Page<CourseView> pagedResult = courseViewRepository.findAllByCompanySidAndStatusNot(
+                    companySid,InstructorEnum.Status.DELETED,paging);
+            List<CourseView> CourseViews = pagedResult.toList();
+            return CourseViews.stream().map(course->{
+                CourseViewTO to= mapper.convert(course, CourseViewTO.class);
+                to.setCreatedByVASid(course.getCreatedBy()==null?null:course.getCreatedBy());
+                to.setUpdatedByVASid(course.getUpdatedBy()==null?null:course.getUpdatedBy());
                 return to;
             }).collect(Collectors.toList());
         }catch (Exception e) {
