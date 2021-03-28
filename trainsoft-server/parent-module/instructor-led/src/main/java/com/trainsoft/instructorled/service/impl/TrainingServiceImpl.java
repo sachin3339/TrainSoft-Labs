@@ -13,6 +13,7 @@ import com.trainsoft.instructorled.to.*;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,11 +57,9 @@ public class TrainingServiceImpl implements ITrainingService {
     public TrainingTO createTraining(TrainingTO trainingTO) {
         try {
             if (trainingTO != null) {
-                VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
-                        (BaseEntity.hexStringToByteArray(trainingTO.getCreatedByVASid()));
+                VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(trainingTO.getCreatedByVASid()));
                 VirtualAccount virtualAccount1=virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(trainingTO.getInstructor().getSid()));
-                Course course = courseRepository.findCourseBySid
-                        (BaseEntity.hexStringToByteArray(trainingTO.getCourseSid()));
+                Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(trainingTO.getCourseSid()));
                 Training training = mapper.convert(trainingTO, Training.class);
                 training.generateUuid();
                 training.setCreatedBy(virtualAccount);
@@ -83,6 +82,7 @@ public class TrainingServiceImpl implements ITrainingService {
                     saveTrainingCourse(savedTraining, trainingTO.getCourseSid());
                 else
                     trainingTO.setCourseSid(null);
+                saveCourseSession(trainingTO.getCourseSid(),savedTraining.getId(),trainingTO.getCreatedByVASid(),trainingTO.getCompanySid());
                 TrainingTO savedTrainingTO = mapper.convert(savedTraining, TrainingTO.class);
                 savedTrainingTO.setCreatedByVASid(virtualAccount.getStringSid());
                 savedTrainingTO.setCourseSid(course.getStringSid());
@@ -92,6 +92,42 @@ public class TrainingServiceImpl implements ITrainingService {
         } catch (Exception e) {
             log.error("throwing exception while creating the training",e.toString());
             throw new ApplicationException("Something went wrong while creating the training");
+        }
+    }
+
+    private void saveCourseSession(String courseSid,Integer trainerId,String virtualAccountSid,String companySid) {
+        try{
+            Course course=courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+            List<CourseSession> courseSessionList= courseSessionRepository.findCourseSessionByCourseAndStatusNot(course,Status.DELETED);
+            if(CollectionUtils.isNotEmpty(courseSessionList)){
+                courseSessionList.forEach(courseSession -> {
+                    try {
+                            VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(
+                                    BaseEntity.hexStringToByteArray(virtualAccountSid));
+                            Training training = new Training();
+                            training.setId(trainerId);
+                            TrainingSession trainingSession = new TrainingSession();
+                            trainingSession.generateUuid();
+                            trainingSession.setAgendaName(courseSession.getTopicName());
+                            trainingSession.setAgendaDescription(courseSession.getTopicDescription());
+                            trainingSession.setTraining(training);
+                            trainingSession.setStatus(Status.DISABLED);
+                            trainingSession.setCourse(course);
+                            trainingSession.setCreatedBy(virtualAccount);
+                            trainingSession.setCompany(getCompany(companySid));
+                            trainingSession.setUpdatedOn(null);
+                            trainingSession.setCreatedOn(new Date(Instant.now().toEpochMilli()));
+                            trainingSession.setCourseSessionSid(courseSid);
+                            trainingSessionRepository.save(trainingSession);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                        log.error("throwing exception while creating the trainingSession",exception.toString());
+                        throw new ApplicationException("Something went wrong while creating the trainingSession");
+                    }
+                });
+            }
+        }catch (Exception e){
+            log.error("while saving course session to trainning session throwing error",e);
         }
     }
 
@@ -206,29 +242,32 @@ public class TrainingServiceImpl implements ITrainingService {
             if (trainingSessionTO != null) {
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(
                         BaseEntity.hexStringToByteArray(trainingSessionTO.getUpdatedByVASid()));
-                Training training = trainingRepository.findTrainingBySidAndStatusNot(
+                /*Training training = trainingRepository.findTrainingBySidAndStatusNot(
                         BaseEntity.hexStringToByteArray(trainingSessionTO.getTrainingSid()),Status.DELETED);
                 Course course = courseRepository.findCourseBySid
-                        (BaseEntity.hexStringToByteArray(trainingSessionTO.getCourseSid()));
+                        (BaseEntity.hexStringToByteArray(trainingSessionTO.getCourseSid()));*/
                 TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(trainingSessionTO.getSid()));
                 trainingSession.setUpdatedBy(virtualAccount);
                 trainingSession.setAgendaDescription(trainingSessionTO.getAgendaDescription());
                 trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                if(trainingSessionTO.getStartTime()!=0 && trainingSessionTO.getEndTime()!=0)
+                    trainingSession.setStatus(Status.ENABLED);
                 trainingSession.setStartTime(new Date(trainingSessionTO.getStartTime()));
                 trainingSession.setEndTime(new Date(trainingSessionTO.getEndTime()));
                 trainingSession.setSessionDate(new Date(trainingSessionTO.getSessionDate()));
                 trainingSession.setAssets(trainingSessionTO.getAssets());
                 TrainingSessionTO savedTrainingSessionTO = mapper.convert(trainingSessionRepository.save(trainingSession), TrainingSessionTO.class);
                 savedTrainingSessionTO.setCreatedByVASid(virtualAccount.getStringSid());
-                savedTrainingSessionTO.setCourseSid(course.getStringSid());
-                savedTrainingSessionTO.setTrainingSid(training.getStringSid());
+                savedTrainingSessionTO.setCourseSid(trainingSession.getCourse().getStringSid());
+                savedTrainingSessionTO.setTrainingSid(trainingSession.getTraining().getStringSid());
                 return savedTrainingSessionTO;
             }
             else {
                 throw new RecordNotFoundException();
             }
         } catch (Exception exception) {
-            log.info("throwing exception while updating the trainingSession");
+            exception.printStackTrace();
+            log.info("throwing exception while updating the trainingSession",exception);
             throw new ApplicationException("Something went wrong while updating the trainingSession");
         }
     }
@@ -300,16 +339,16 @@ public class TrainingServiceImpl implements ITrainingService {
         List<TrainingSessionTO> sessionTOList= new ArrayList<>();
         try {
             Training training = trainingRepository.findTrainingBySidAndStatusNot(BaseEntity.hexStringToByteArray(trainingSid),Status.DELETED);
-            Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
-            List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourseAndStatusNot(course,Status.DELETED)
+            //Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+            /*List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourseAndStatusNot(course,Status.DELETED)
                     .stream().filter(c->c.getStatus()!= Status.DELETED)
-                    .collect(Collectors.toList());;
+                    .collect(Collectors.toList());;*/
             List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByTrainingAndCompanyAndStatusNot(training,getCompany(companySid),Status.DELETED);
             List<TrainingSessionTO> sessionsTO=mapper.convertList(trainingSessionList,TrainingSessionTO.class);
             if(sessionsTO!=null && sessionsTO.size()>0){
                 sessionTOList.addAll(sessionsTO);
             }
-            if(courseSessionList!=null && courseSessionList.size()>0){
+            /*if(courseSessionList!=null && courseSessionList.size()>0){
                 courseSessionList.forEach(courseSession -> {
                     TrainingSessionTO trainingSessionTO=new TrainingSessionTO();
                     trainingSessionTO.setSid(courseSession.getStringSid());
@@ -326,7 +365,7 @@ public class TrainingServiceImpl implements ITrainingService {
                         trainingSessionTO.setUpdatedByVASid(courseSession.getUpdatedBy().getStringSid());
                     sessionTOList.add(trainingSessionTO);
                 });
-            }
+            }*/
         }catch(Exception e){
             log.error("throwing exception while fetching the all trainingSession details",e.toString());
             throw new ApplicationException("Something went wrong while fetching the trainingSession details");
@@ -484,6 +523,7 @@ public class TrainingServiceImpl implements ITrainingService {
             } else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("throwing exception while updating the training",e.toString());
             throw new ApplicationException("Something went wrong while updating the training");
         }
@@ -573,22 +613,15 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public void updateTrainingSessionStatus(String sessionSid, String status,boolean trainingsession,String updatedBy) {
+
+    public void updateTrainingSessionStatus(String sessionSid, String status, String updatedBy) {
         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
                 (BaseEntity.hexStringToByteArray(updatedBy));
         try {
-            if (trainingsession) {
-                TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(sessionSid));
-                trainingSession.setStatus(InstructorEnum.Status.valueOf(status));
-                trainingSession.setUpdatedBy(virtualAccount);
-                trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
-            } else {
-                TrainingCourse trainingCourse = trainingCourseRepository.findTrainingCourseBySid(BaseEntity.hexStringToByteArray(sessionSid));
-                trainingCourse.setStatus(InstructorEnum.Status.valueOf(status));
-                trainingCourse.setUpdatedBy(virtualAccount);
-                trainingCourse.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
-            }
-
+            TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(sessionSid));
+            trainingSession.setStatus(InstructorEnum.Status.valueOf(status));
+            trainingSession.setUpdatedBy(virtualAccount);
+            trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
         } catch (Exception e) {
             log.error("while updating session status, throwing error", e);
         }
