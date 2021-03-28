@@ -129,6 +129,14 @@ public class InstructorController {
         UserTO user=companyService.login(email, password);
         return ResponseEntity.ok(user);
     }
+    @GetMapping("validate/name/{companyname}")
+    @ApiOperation(value = "validate company name", notes = "validate company name")
+    public ResponseEntity<?> validateCompanyByName(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Company name", required = true)  @PathVariable(value = "companyname") String companyname) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(companyService.validateCompany(companyname));
+    }
 
 }
 

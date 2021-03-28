@@ -18,9 +18,6 @@ public class CourseView extends BaseEntity{
     @Column(name = "name")
     private String name;
 
-    @Column(name = "learners")
-    private int noOfLearners;
-
     @Column(name = "no_of_trainings")
     private int noOfTrainings;
 
@@ -34,11 +31,11 @@ public class CourseView extends BaseEntity{
     @Column(name="updated_on")
     private Date updatedOn;
 
-    @ManyToOne
-    @JoinColumn(name = "created_by", referencedColumnName = "id")
-    private VirtualAccount createdBy;
+    @Column(name = "created_by")
+    private String createdBy;
+    @Column(name = "updated_by")
+    private String updatedBy;
 
-    @ManyToOne
-    @JoinColumn(name = "updated_by", referencedColumnName = "id")
-    private VirtualAccount updatedBy;
+    @Column(name = "company_sid")
+    private String companySid;
 }
