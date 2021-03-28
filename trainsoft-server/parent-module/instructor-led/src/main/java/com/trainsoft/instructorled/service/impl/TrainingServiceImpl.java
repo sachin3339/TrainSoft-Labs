@@ -108,7 +108,10 @@ public class TrainingServiceImpl implements ITrainingService {
                             training.setId(trainerId);
                             TrainingSession trainingSession = new TrainingSession();
                             trainingSession.generateUuid();
+                            trainingSession.setAgendaName(courseSession.getTopicName());
+                            trainingSession.setAgendaDescription(courseSession.getTopicDescription());
                             trainingSession.setTraining(training);
+                            trainingSession.setStatus(Status.DISABLED);
                             trainingSession.setCourse(course);
                             trainingSession.setCreatedBy(virtualAccount);
                             trainingSession.setCompany(getCompany(companySid));
@@ -117,6 +120,7 @@ public class TrainingServiceImpl implements ITrainingService {
                             trainingSession.setCourseSessionSid(courseSid);
                             trainingSessionRepository.save(trainingSession);
                     } catch (Exception exception) {
+                        exception.printStackTrace();
                         log.error("throwing exception while creating the trainingSession",exception.toString());
                         throw new ApplicationException("Something went wrong while creating the trainingSession");
                     }
@@ -238,10 +242,10 @@ public class TrainingServiceImpl implements ITrainingService {
             if (trainingSessionTO != null) {
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(
                         BaseEntity.hexStringToByteArray(trainingSessionTO.getUpdatedByVASid()));
-                Training training = trainingRepository.findTrainingBySidAndStatusNot(
+                /*Training training = trainingRepository.findTrainingBySidAndStatusNot(
                         BaseEntity.hexStringToByteArray(trainingSessionTO.getTrainingSid()),Status.DELETED);
                 Course course = courseRepository.findCourseBySid
-                        (BaseEntity.hexStringToByteArray(trainingSessionTO.getCourseSid()));
+                        (BaseEntity.hexStringToByteArray(trainingSessionTO.getCourseSid()));*/
                 TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(trainingSessionTO.getSid()));
                 trainingSession.setUpdatedBy(virtualAccount);
                 trainingSession.setAgendaDescription(trainingSessionTO.getAgendaDescription());
@@ -252,8 +256,8 @@ public class TrainingServiceImpl implements ITrainingService {
                 trainingSession.setAssets(trainingSessionTO.getAssets());
                 TrainingSessionTO savedTrainingSessionTO = mapper.convert(trainingSessionRepository.save(trainingSession), TrainingSessionTO.class);
                 savedTrainingSessionTO.setCreatedByVASid(virtualAccount.getStringSid());
-                savedTrainingSessionTO.setCourseSid(course.getStringSid());
-                savedTrainingSessionTO.setTrainingSid(training.getStringSid());
+                savedTrainingSessionTO.setCourseSid(trainingSession.getCourseSessionSid());
+                savedTrainingSessionTO.setTrainingSid(trainingSession.getTraining().getStringSid());
                 return savedTrainingSessionTO;
             }
             else {
@@ -333,15 +337,15 @@ public class TrainingServiceImpl implements ITrainingService {
         try {
             Training training = trainingRepository.findTrainingBySidAndStatusNot(BaseEntity.hexStringToByteArray(trainingSid),Status.DELETED);
             Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
-            List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourseAndStatusNot(course,Status.DELETED)
+            /*List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourseAndStatusNot(course,Status.DELETED)
                     .stream().filter(c->c.getStatus()!= Status.DELETED)
-                    .collect(Collectors.toList());;
+                    .collect(Collectors.toList());;*/
             List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByTrainingAndCompanyAndStatusNot(training,getCompany(companySid),Status.DELETED);
             List<TrainingSessionTO> sessionsTO=mapper.convertList(trainingSessionList,TrainingSessionTO.class);
             if(sessionsTO!=null && sessionsTO.size()>0){
                 sessionTOList.addAll(sessionsTO);
             }
-            if(courseSessionList!=null && courseSessionList.size()>0){
+            /*if(courseSessionList!=null && courseSessionList.size()>0){
                 courseSessionList.forEach(courseSession -> {
                     TrainingSessionTO trainingSessionTO=new TrainingSessionTO();
                     trainingSessionTO.setSid(courseSession.getStringSid());
@@ -357,7 +361,7 @@ public class TrainingServiceImpl implements ITrainingService {
                         trainingSessionTO.setUpdatedByVASid(courseSession.getUpdatedBy().getStringSid());
                     sessionTOList.add(trainingSessionTO);
                 });
-            }
+            }*/
         }catch(Exception e){
             log.error("throwing exception while fetching the all trainingSession details",e.toString());
             throw new ApplicationException("Something went wrong while fetching the trainingSession details");
