@@ -171,4 +171,14 @@ public class TrainingController {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         return ResponseEntity.ok(trainingService.deleteTrainingSessionBySid(trainingSesssionSid, jwt.getVirtualAccountSid()));
     }
+
+    @PostMapping("update/session/{sessionSid}/{status}")
+    @ApiOperation(value = "updateTraining", notes = "API to update existing Training.")
+    public void updateSessionStatus(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "session sid", required = true) @PathVariable("sessionSid") String sessionSid,
+            @ApiParam(value = "status", required = true) @PathVariable("status") String status) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        trainingService.updateTrainingSessionStatus(sessionSid,status,jwt.getVirtualAccountSid());
+    }
 }

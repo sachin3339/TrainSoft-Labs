@@ -63,4 +63,7 @@ public class TrainingSession extends BaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "company_id", referencedColumnName = "id")
 	private Company company;
+
+	@Column(name="course_session_sid")
+	private String courseSessionSid;
 }
