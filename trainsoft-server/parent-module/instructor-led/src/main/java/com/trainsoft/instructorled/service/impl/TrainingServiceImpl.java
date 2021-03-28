@@ -620,6 +620,7 @@ public class TrainingServiceImpl implements ITrainingService {
             trainingSession.setStatus(InstructorEnum.Status.valueOf(status));
             trainingSession.setUpdatedBy(virtualAccount);
             trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+            trainingSessionRepository.save(trainingSession);
         } catch (Exception e) {
             log.error("while updating session status, throwing error", e);
         }
