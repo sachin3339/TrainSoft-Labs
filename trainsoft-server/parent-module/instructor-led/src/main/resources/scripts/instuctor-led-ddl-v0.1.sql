@@ -253,7 +253,7 @@ create view vw_course
 as
 select cr.id,cr.sid,cr.name,cr.status,cr.created_on,cr.created_by,cr.updated_by,
        cr.updated_on,count(thc.training_id) as no_of_trainings,hex(c.sid) AS company_sid from course cr
-                                                                                                  inner join training_has_course thc on cr.id=thc.course_id
-                                                                                                  inner join training tr on tr.id=thc.training_id
-                                                                                                  inner join company c on c.id = cr.company_id
+                                                                                                  left outer join training_has_course thc on cr.id=thc.course_id
+                                                                                                  left join training tr on tr.id=thc.training_id
+                                                                                                  left join company c on c.id = cr.company_id
 group by cr.id order by created_on desc;

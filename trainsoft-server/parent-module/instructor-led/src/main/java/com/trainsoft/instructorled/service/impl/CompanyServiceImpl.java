@@ -38,8 +38,8 @@ public class CompanyServiceImpl implements ICompanyService {
     private DozerUtils mapper;
     private final JavaMailSender mailSender;
 
-    @Value("spring.mail.username")
-    private String emailSenderAddress;
+    //@Value("spring.mail.username")
+    //private String emailSenderAddress;
 
     @Override
     public CompanyTO getCompanyBySid(String sid) {
@@ -174,7 +174,7 @@ public class CompanyServiceImpl implements ICompanyService {
     public void sendEmail(String recipientEmail,String email,String password,String name){
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(emailSenderAddress);
+        message.setFrom("trainsoftio@gmail.com");
         message.setTo(recipientEmail);
         String subject = "username and password to login next time";
         StringBuilder emailContent = new StringBuilder();
