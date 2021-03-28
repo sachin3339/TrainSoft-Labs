@@ -622,7 +622,7 @@ public class TrainingServiceImpl implements ITrainingService {
             trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
             trainingSessionRepository.save(trainingSession);
         } catch (Exception e) {
-            log.error("while updating session status, throwing error", e);
+            log.error("while updating session status, throwing errors", e);
         }
     }
 
