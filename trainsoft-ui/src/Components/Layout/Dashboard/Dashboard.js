@@ -16,14 +16,16 @@ import User from "../../Screens/Users/Users";
 import UserHome from "../../Screens/Home/UserHome";
 import CodeEditor from '../../Screens/ClassLab/CodeEditor/CodeEditor'
 import Zoom from "../../Zoom/Zoom";
+import VsCode from "../../Screens/VsCode/VsCode";
+
 
 const Dashboard = ({location}) => {
     return (
         <div className="main-page">
             <div><Sidebar {...{location}} /></div>
-            <div className="dashboard-page">
+            <div className={`dashboard-page`}>
                 <Header {...{location}} />
-                <div className="dashboard-container">
+                <div className="dashboard-container" className={`dashboard-container ${location.state.title === "VS Code" ? 'p-0 full-h': ''}`}>
                     <Router>
                         <Home path="dashboard" />
                         <UserHome path="home"/>
@@ -40,6 +42,7 @@ const Dashboard = ({location}) => {
                         <LabStore path="labstore/*"/>
                         <CodeEditor path="compiler/*"/>
                         <Zoom path="zoom"/>
+                        <VsCode path="vscode"/>
                     </Router>
                 </div>
             </div>

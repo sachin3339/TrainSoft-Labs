@@ -83,7 +83,7 @@ const RestService = {
   getTrainingBySid: (trainingSid)=> AxiosService.get(GLOBELCONSTANT.TRAINING.GET_TRAINING_SID.replace("{trainingSid}",trainingSid)),
   deleteTrainingSession: (trainingId)=> AxiosService.delete(GLOBELCONSTANT.TRAINING.DELETE_TRAIN_SESSION.replace("{trainingSesssionSid}",trainingId) ),
   searchTrainingSession:(trainingSid,name)=> AxiosService.get(GLOBELCONSTANT.TRAINING.SEARCH_TRAINING_SESSION.replace("{trainingSid}",trainingSid).replace("{name}",name)),
-
+  unScheduleSession:  (sessionSid,status)=> AxiosService.post(GLOBELCONSTANT.TRAINING.UNSCHEDULE_SESSION.replace("{sessionSid}",sessionSid).replace("{status}",status)),
   zoomParticipant: ()=> AxiosService.get('https://api.zoom.us/v2/users/kumarkanhiya21@gmail.com/meetings?page_size=30&type=live',zoomAuth)
 
 

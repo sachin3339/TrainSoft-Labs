@@ -76,6 +76,24 @@ const Session = ({ location }) => {
         }
     }
 
+        // delete course
+        const unSchedule = (sessionSid) => {
+            try {
+                spinner.show();
+                RestService.unScheduleSession(sessionSid,"DISABLED").then(res => {
+                    spinner.hide();
+                    getSessionByPage()
+                    Toast.success({ message: `Session schedule successfully` });
+                }, err => { spinner.hide(); }
+                )
+            }
+            catch (err) {
+                spinner.hide();
+                console.error('error occur on unSchedule', err)
+                Toast.error({ message: `Something wrong!!` });
+            }
+        }
+
 
 
     useEffect(() => {
@@ -98,7 +116,8 @@ const Session = ({ location }) => {
             <SessionList  {...{
                 sessionList: trainingSession, sessionType: "training",
                 onDelete: (e) => deleteTraining(e),
-                onEdit: (e) => { setIsEdit(true); setShow(true); setInitialValue(e) }
+                onEdit: (e) => { setIsEdit(true); setShow(true); setInitialValue(e) },
+                onSchedule:(e)=> unSchedule(e)
             }} />
         </div>
         <AddSession {...{ show, setShow, getSessionByPage, isEdit, initialValue, setInitialValue, title: isEdit ? "Update Session" : "Add Session" }} />

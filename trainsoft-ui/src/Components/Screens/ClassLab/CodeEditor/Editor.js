@@ -13,7 +13,7 @@ const Editors = ({ lang, handleEditorDidMount, lightTheams}) => {
             width="100%"
             defaultLanguage={lang.language}
             defaultValue={language}
-            theme={lightTheams ? "vs-dark" : "vs-light"}
+            theme={lightTheams ?  "vs-light" : "vs-dark" }
             onMount={handleEditorDidMount}
         />
     </>)

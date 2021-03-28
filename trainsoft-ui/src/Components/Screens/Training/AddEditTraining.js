@@ -48,7 +48,7 @@ const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) =
                     return ({ batchSid: resp.sid })
                 })
                 let payload = data
-                payload.courseSid = data.courseSid.sid
+                payload.courseSid = data.courseSid.sid ? data.courseSid.sid : data.courseSid
                 payload.instructor = {"sid":data.instructor.vSid}
                 payload.trainingBatchs = batcheId
                 payload.instructorName = data.instructor.name
