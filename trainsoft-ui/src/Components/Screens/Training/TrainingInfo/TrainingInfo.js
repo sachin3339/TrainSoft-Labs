@@ -57,18 +57,6 @@ const TrainingInfo = ({location}) => {
                         <div className="col-12 form-lbl1">Instructor </div>
                         <div className="col-12 form-cont1">{training.instructor}</div>
                     </div>
-                    {/* <div className="row my-2">
-                        <div className="col-6">Created by</div>
-                        <div className="col-6">Jack A</div>
-                    </div>
-                    <div className="row my-2">
-                        <div className="col-6">Email ID</div>
-                        <div className="col-6">jack@email.com</div>
-                    </div>
-                    <div className="row my-2">
-                        <div className="col-6">Phone Number</div>
-                        <div className="col-6">(231) 983 9872</div>
-                    </div> */}
                     <div className="row my-2">
                         <div className="col-12 form-lbl1">Start Date</div>
                         <div className="col-12 form-cont1">{moment(training.startDate).format('Do MMMM YYYY')}</div>
@@ -112,7 +100,7 @@ const TrainingInfo = ({location}) => {
                         </div>
                         <div className="title-sm">Batch enrolled</div>
                     </div>
-                    <div  className="user-activity">
+                    {/* <div  className="user-activity">
                         <div className="flx mb-2">
                             <div className="activities-btn">
                                 {ICN_PASSED}
@@ -122,7 +110,7 @@ const TrainingInfo = ({location}) => {
                             </div>
                         </div>
                         <div className="title-sm">Total Session</div>
-                    </div>
+                    </div> */}
 
                 </div>
                 <div>
@@ -137,7 +125,7 @@ const TrainingInfo = ({location}) => {
                                 </div><div className="aic ml-4"><div>To</div> <div className="checkbox-div"></div> </div></div>
                             </div>
                         </div>
-                        {activityCard.map(res => <div className="activity-card">
+                        {activityCard.map(res => <div className="activity-card" key={res.sid}>
                             <div className="cat-title-md">{res.name}</div>
                             <div className="cat-title-sm">{res.time}</div>
                             <div className="mt-3">{res.label}</div>

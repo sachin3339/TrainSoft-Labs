@@ -85,8 +85,7 @@ public class UserController {
     // API's for file handling
     @PostMapping(value = "/upload",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadFile(@RequestParam("files")MultipartFile[] files){
-       CommonRes abc= awsUploadClient.uploadFiles(files);
-        return  ResponseEntity.ok(abc);
+        return  ResponseEntity.ok(awsUploadClient.uploadFiles(files));
     }
 
     @PostMapping(value = "upload/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -15,6 +15,7 @@ import Training from "../../Screens/Training/Traning";
 import User from "../../Screens/Users/Users";
 import UserHome from "../../Screens/Home/UserHome";
 import CodeEditor from '../../Screens/ClassLab/CodeEditor/CodeEditor'
+import Zoom from "../../Zoom/Zoom";
 
 const Dashboard = ({location}) => {
     return (
@@ -38,6 +39,7 @@ const Dashboard = ({location}) => {
                         <Support path="support/*"/>
                         <LabStore path="labstore/*"/>
                         <CodeEditor path="compiler/*"/>
+                        <Zoom path="zoom"/>
                     </Router>
                 </div>
             </div>

@@ -36,7 +36,7 @@ const Header = ({location}) => {
     }
 
     return (<>
-    { location.state.title !== "COMPILER" &&
+    { location.state && location.state.title !== "COMPILER" &&
     <div className="header">
             <div className="page-title">
                 <div className="title-lg mb-0">

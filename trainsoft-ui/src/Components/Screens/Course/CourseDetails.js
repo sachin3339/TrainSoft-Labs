@@ -163,12 +163,16 @@ const CourseDetails = ({ location }) => {
         <CardHeader {...{ location, 
                onChange: (e) => e.length === 0 && getSessionByPage(),
                onEnter:(e)=> console.log(e)
-         }} />
+         }} >
+             <Button className="btn-block ml-2" onClick={() => {setShow(true); setIsEdit(false)}}>+ Add Session</Button>
+
+             </CardHeader>
+             
             <SessionList {...{ sessionList:sessionList.slice().reverse(),
                  onDelete:(e)=> deleteSession(e),
                  onEdit: (data)=> {setIsEdit(true);setShow(true);setInitialValue(data) }}} 
             />
-            <div className="full-w mt-2"><Button className="btn-block" onClick={() => {setShow(true); setIsEdit(false)}}>+ Add Session</Button></div>
+            <div className="full-w mt-2"></div>
             <BsModal {...{ show, setShow, headerTitle: "Add Topic", size: "lg" }}>
                 <div className="">
                     <div>

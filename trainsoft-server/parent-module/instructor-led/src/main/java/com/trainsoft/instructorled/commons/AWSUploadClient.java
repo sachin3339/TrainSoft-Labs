@@ -70,7 +70,7 @@ public class AWSUploadClient {
 
     }
 
-    public CommonRes  uploadFiles(MultipartFile[] files) {
+    public List<FileTO>  uploadFiles(MultipartFile[] files) {
         FileTO message;
         List<FileTO> fileNames = new ArrayList<>();
         try {
@@ -81,7 +81,7 @@ public class AWSUploadClient {
         }catch (Exception e) {
             throw new ApplicationException("while uploading files, throwing error");
         }
-        return new CommonRes(JsonUtils.toJson(fileNames));
+        return fileNames;
     }
 
    // public String uploadFile(MultipartFile multipartFile) {

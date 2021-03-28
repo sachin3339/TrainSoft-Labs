@@ -5,6 +5,7 @@ const AxiosService = {
 
     init:(baseURL,authToken) => {
         axios.defaults.baseURL = baseURL;
+        axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
         axios.defaults.headers.common["Authorization"] = authToken;
     },
     // setHeader:()=> axios.defaults.headers.common["Authorization"] = `Bearer ${TokenService.getToken()}`,

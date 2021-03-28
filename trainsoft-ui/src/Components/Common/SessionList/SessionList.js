@@ -8,8 +8,8 @@ import { navigate } from '../Router';
 import { CustomToggle } from '../../../Services/MethodFactory';
 import { ICN_DELETE, ICN_EDIT, ICN_MORE } from '../Icon';
 
-const SessionList = ({ sessionList = [], role = "ADMIN", sessionType = 'course', onDelete=()=>{},onEdit=()=>{} }) => {
-    const { user } = useContext(AppContext)
+const SessionList = ({ sessionList = [], role = "SUPERVISOR", sessionType = 'course', onDelete=()=>{},onEdit=()=>{} }) => {
+    const { user, ROLE } = useContext(AppContext)
     const [open, setOpen] = useState(null);
 
     const onClickToggle = (e) => {
@@ -20,7 +20,7 @@ const SessionList = ({ sessionList = [], role = "ADMIN", sessionType = 'course',
         }
     }
 
-    return (<>
+    return (<div className="mt-2">
         {sessionList && sessionList.length > 0 ? sessionList.map((res, i) =>
             <div className="se-list" key={i}>
                 <div className="jcb full-w">
@@ -29,10 +29,10 @@ const SessionList = ({ sessionList = [], role = "ADMIN", sessionType = 'course',
                         <div onClick={() => onClickToggle(i)}>{res.topicName || res.agendaName}</div>
                     </div>
                     <div className="se-date">
-                        {sessionType === 'training' && user.role === "ADMIN" && <>
+                        {sessionType === 'training' && user.role === ROLE.SUPERVISOR && <>
                             {res.active ? <div className="batch-pri"> Scheduled</div> : <div className="batch-sec">Not Scheduled</div>}
                         </>}
-                        {sessionType === 'training' && user.role !== "ADMIN" && <div onClick={() => navigate('/class')} className="batch-sec">{user.role === 'TRAINER' ? 'Start Now' : 'Join Now'} </div>}
+                        {sessionType === 'training' && user.role !== ROLE.SUPERVISOR && <div onClick={() => navigate('/zoom')} className="batch-sec">{user.role === ROLE.TRAINER ? 'Start Now' : 'Join Now'} </div>}
                         <div>{moment(res.createdOn).format("DD/MM/YYYY")}</div>
                         <div className="ml-3">
                         <Dropdown alignRight={true}>
@@ -68,6 +68,6 @@ const SessionList = ({ sessionList = [], role = "ADMIN", sessionType = 'course',
                 </Collapse>
             </div>
         ) : <NoDataFound title="No data found" />}
-    </>)
+    </div>)
 }
 export default SessionList

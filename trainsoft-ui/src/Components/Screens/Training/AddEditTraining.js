@@ -1,26 +1,17 @@
 import { useState, useContext, useEffect } from "react";
-import '../Batches/batches.css'
-import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Modal, Form } from 'react-bootstrap'
 import { Formik } from 'formik';
-import { ICN_TRASH, ICN_EDIT, ICN_CLOSE } from '../../Common/Icon';
+import { ICN_CLOSE } from '../../Common/Icon';
 import { Button } from "../../Common/Buttons/Buttons";
 import { TextInput, DateInput, SelectInput, MultiSelectInput } from "../../Common/InputField/InputField";
-import { Link, Router } from "../../Common/Router";
-import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
-import TrainingDetails from "./TrainingDetails";
-import CardHeader from "../../Common/CardHeader";
 import RestService from "../../../Services/api.service";
-import useFetch from "../../../Store/useFetch";
 import useToast from "../../../Store/ToastHook";
-import moment from 'moment'
 import AppContext from "../../../Store/AppContext";
-import TrainingContext, { TrainingProvider } from "../../../Store/TrainingContext";
-import { Toggle } from "../../Common/BsUtils";
+import '../Batches/batches.css'
 
 const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) => {
     const Toast = useToast()
-    const { course, batches, spinner, user } = useContext(AppContext)
+    const { course, batches, spinner } = useContext(AppContext)
     const [instructor,setInstructor] = useState([])
 
      // get all training

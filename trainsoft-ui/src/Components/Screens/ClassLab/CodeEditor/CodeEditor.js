@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useContext } from 'react'
-import './codeEditor.css'
 import { Language } from './Language';
 import { Dropdown, Spinner } from 'react-bootstrap';
 import { CustomToggle } from '../../../../Services/MethodFactory';
@@ -7,6 +6,8 @@ import axios from 'axios';
 import { ICN_ARROW_DOWN, ICN_DOWNLOAD, ICN_FULL_SCREEN, ICN_PLAY, ICN_STAR_HALF } from '../../../Common/Icon';
 import AppContext from '../../../../Store/AppContext';
 import Editors from './Editor';
+import './codeEditor.css'
+
 const CodeEditor = ({themesColor=true}) => {
     const {spinner} = useContext(AppContext) 
     const [inputData, setInputData] = useState('')
@@ -17,7 +18,6 @@ const CodeEditor = ({themesColor=true}) => {
     const [inputTab, setInputTab] = useState(true)
     const [spinners,setSpinners] = useState(false)
     const [language,setLanguage] =useState()
-    console.log(lang)
     const handleEditorDidMount = (editor, monaco) => {
         editorRef.current = editor;
     }
@@ -35,9 +35,7 @@ const CodeEditor = ({themesColor=true}) => {
                 setInputTab(false)
                 setSpinners(false)
             })
-            
     }
-
     useEffect(() => {
         setOutput('')
         setInputTab('')

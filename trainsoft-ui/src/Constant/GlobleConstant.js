@@ -66,7 +66,8 @@ const GLOBELCONSTANT = {
             DELETE_TRAIN_SESSION: API_HOST + "delete/trainingsession/{trainingSesssionSid}",
             EDIT_TRAINING: API_HOST + "training/update",
             UPDATE_TRAINING_SESSION: API_HOST + "update/trainingsession",
-            SEARCH_TRAINING_SESSION: API_HOST + "trainingsessions/training/{trainingSid}/session/{name}"
+            SEARCH_TRAINING_SESSION: API_HOST + "trainingsessions/training/{trainingSid}/session/{name}",
+            UPLOAD_ASSETS: API_HOST + "upload"
         },
         INSTRUCTOR: {
             GET_INSTRUCTOR: API_HOST +  'depatments'
@@ -84,6 +85,11 @@ const GLOBELCONSTANT = {
             {key: "INSTRUCTOR",name: "Instructor"},
             {key: "SUPERVISOR",name: "Supervisor"},
         ],
+        ROLE:{
+            SUPERVISOR:"SUPERVISOR",
+            INSTRUCTOR:"INSTRUCTOR",
+            LEARNER:"LEARNER",
+        },
         SAMPLE_TEMPLATE: "https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx"
     }
 export default GLOBELCONSTANT;

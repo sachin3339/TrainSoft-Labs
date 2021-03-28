@@ -1,34 +1,33 @@
 import { useState, useEffect, useContext } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
-import { Modal, Form } from 'react-bootstrap'
-import { Field, Formik } from 'formik';
-import { ICN_TRASH, ICN_EDIT, ICN_DOWNLOAD } from "../../Common/Icon";
-import { BtnPrimary, Button } from "../../Common/Buttons/Buttons";
-import { TextInput, DateInput, CheckboxGroup, SelectInput, TextArea, RadioBox, Checkbox } from "../../Common/InputField/InputField";
-import { Link, Router } from "../../Common/Router";
+import {  Form } from 'react-bootstrap'
+import {  Formik } from 'formik';
+import { ICN_TRASH, ICN_EDIT } from "../../Common/Icon";
+import { Button } from "../../Common/Buttons/Buttons";
+import { TextInput, SelectInput } from "../../Common/InputField/InputField";
+import {  Router } from "../../Common/Router";
 import { BsModal, Toggle } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
 import RestService from "../../../Services/api.service";
-import './style.css'
-import './../Batches/batches.css'
 import useFetch from "../../../Store/useFetch";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import * as Yup from 'yup';
 import AppContext from "../../../Store/AppContext";
 import useToast from "../../../Store/ToastHook";
-import NoDataFound from "../../Common/NoDataFound/NoDataFound";
+import './style.css'
+import './../Batches/batches.css'
 
 
 const User = ({ location }) => {
-    const { department, spinner, user } = useContext(AppContext)
+    const {  spinner, user ,ROLE} = useContext(AppContext)
     const [showBulkUpload, setShowBulkUpload] = useState(false)
     const Toast = useToast()
     const [count, setCount] = useState(0)
     const [show, setShow] = useState(false);
     const [participant, setParticipant] = useState([])
     const [isEmail, setIsEmail] = useState(false)
-    const [isEdit,setIsEdit] = useState(false)
-    const [initialValue,setInitialValue] = useState({})
+    const [isEdit, setIsEdit] = useState(false)
+    const [initialValue, setInitialValue] = useState({})
     // get all batches
     const allDepartment = useFetch({
         method: "get",
@@ -95,7 +94,7 @@ const User = ({ location }) => {
             "status": {
                 "title": "Status",
                 "sortDirection": null,
-                "sortEnabled": true,
+                "sortEnabled": false,
                 isSearchEnabled: false,
                 render: (data) => <Toggle id={data.sid} onChange={() => { deleteUser(data.status === 'ENABLED' ? 'DISABLED' : 'ENABLED', data.vSid) }} checked={data.status === 'ENABLED' ? true : false} />
             },
@@ -110,11 +109,11 @@ const User = ({ location }) => {
             setConfiguration({ ...configuration });
         },
         actions: [
-            // {
-            //     "title": "Edit",
-            //     "icon": ICN_EDIT,
-            //     "onClick": (data, i) => getUsersDetails(data.vSid,true)
-            // },
+            {
+                "title": "Edit",
+                "icon": ICN_EDIT,
+                "onClick": (data, i) => {getUsersDetails(data.vSid, true);setIsEdit(true)}
+            },
             {
                 "title": "Delete",
                 "icon": ICN_TRASH,
@@ -152,8 +151,8 @@ const User = ({ location }) => {
 
             let val = data
             val.appuser.accessType = data.appuser.accessType.key
-            val.departmentVA.department.name = data.departmentVA.department.name.name
-            val.departmentVA.departmentRole =data.departmentVA.departmentRole.key
+            val.departmentVA.department.name = data.departmentVA.department.name
+            val.departmentVA.departmentRole = data.departmentVA.departmentRole.key
             RestService.createParticipant(data).then(resp => {
                 setShow(false)
                 getUsers()
@@ -165,50 +164,50 @@ const User = ({ location }) => {
             console.error('error occur on createCourse', err)
         }
     }
-   // get all training
-   const getUsersDetails = async (sid,edit=false) => {
-    try {
-        spinner.show();
-        RestService.getUserDetails(sid).then(
-            response => {
-                    if(edit){
-                      setInitialValue(response.data)
+    // get all training
+    const getUsersDetails = async (sid, edit = false) => {
+        try {
+            spinner.show();
+            RestService.getUserDetails(sid).then(
+                response => {
+                    if (edit) {
+                        setInitialValue(response.data)
                         setShow(true)
-                        setIsEdit(true)
+                        
                     }
-                spinner.hide();
-            },
-            err => {
-                console.error("error occur on getUsers()", err)
-                spinner.hide();
-            }
-        )
-    } catch (err) {
-        console.error("error occur on getUsers()", err)
-        spinner.hide();
-    }
-}
-    
-
-    
-        // update participant
-        const updateParticipant = (data) => {
-            try {
-                let val = data
-                val.appuser.accessType = data.appuser.accessType.key
-                val.departmentVA.department.name = data.departmentVA.department.name
-                val.departmentVA.departmentRole =data.departmentVA.departmentRole.key
-                RestService.updateParticipant(val).then(resp => {
-                    setShow(false)
-                    getUsers()
-                    Toast.success({ message: `User is Successfully Created` });
-                }, err => console.log(err)
-                );
-            }
-            catch (err) {
-                console.error('error occur on createCourse', err)
-            }
+                    spinner.hide();
+                },
+                err => {
+                    console.error("error occur on getUsers()", err)
+                    spinner.hide();
+                }
+            )
+        } catch (err) {
+            console.error("error occur on getUsers()", err)
+            spinner.hide();
         }
+    }
+
+
+
+    // update participant
+    const updateParticipant = (data) => {
+        try {
+            let val = data
+            val.appuser.accessType = data.appuser.accessType.key
+            val.departmentVA.department.name = data.departmentVA.department.name
+            val.departmentVA.departmentRole = data.departmentVA.departmentRole.key
+            RestService.updateParticipant(val).then(resp => {
+                setShow(false)
+                getUsers()
+                Toast.success({ message: `User is Successfully Created` });
+            }, err => console.log(err)
+            );
+        }
+        catch (err) {
+            console.error('error occur on createCourse', err)
+        }
+    }
 
     // get all training
     const getUsers = async (pagination = 1) => {
@@ -352,7 +351,6 @@ const User = ({ location }) => {
     /** upload attachments file
     *   @param {Object} file = selected files
     *   @param {string} token = user auth token 
-    *   @param {string} bucketName = bucket name 
     */
     const uploadAttachments = async (
         val
@@ -388,35 +386,33 @@ const User = ({ location }) => {
                     onChange: (e) => e.length === 0 && getUsers(),
                     onEnter: (e) => searchUser(e),
                 }}>
-                    {user.role === 'ADMIN' && <>
+                    {user.role === ROLE.SUPERVISOR && <>
                         <Button className="ml-2" onClick={() => { setShowBulkUpload(true) }}> Bulk Upload</Button>
-                        <Button className="ml-2" onClick={() => { setShow(true); setIsEmail(false);setIsEdit(false) }}>+ Add New</Button>
+                        <Button className="ml-2" onClick={() => { setShow(true); setIsEmail(false); setIsEdit(false) }}>+ Add New</Button>
                     </>}
 
                 </CardHeader>
             </div>
-            <BsModal {...{ show, setShow, headerTitle:isEdit ? 'Update User': "Add new User", size: "lg" }}>
+            <BsModal {...{ show, setShow, headerTitle: isEdit ? 'Update User' : "Add new User", size: "lg" }}>
                 <div className="form-container">
                     <Formik
-                        onSubmit={(value) => {isEdit ? updateParticipant(value) : createParticipant(value)}}
+                        onSubmit={(value) => { isEdit ? updateParticipant(value) : createParticipant(value) }}
                         initialValues={!isEdit ? {
                             "appuser": {
                                 "accessType": '',
-                                "emailId":'',
+                                "emailId": '',
                                 "employeeId": '',
                                 "name": '',
                                 "phoneNumber": '',
                                 "password": ''
                             },
                             "departmentVA": {
-                                "department": {
-                                    "name": ''
-                                },
+                                "department": '',
                                 "departmentRole": ''
                             },
                             "role": "USER"
                         } : initialValue}
-                        // validationSchema={schema}
+                    // validationSchema={schema}
                     >
                         {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
                             <div>
@@ -438,7 +434,7 @@ const User = ({ location }) => {
                                 </Form.Group>
                                 <Form.Group className="row">
                                     <div className="col-6">
-                                        <SelectInput label="Department" name="departmentVA.department.name" bindKey="name" option={allDepartment.response} />
+                                        <SelectInput label="Department" name="departmentVA.department" bindKey="name" option={allDepartment.response} />
                                     </div>
                                     <div className="col-6">
                                         <SelectInput label="Role" name="departmentVA.departmentRole" bindKey="name" option={GLOBELCONSTANT.DEPARTMENT_ROLE} />

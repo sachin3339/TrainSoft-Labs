@@ -29,7 +29,7 @@ const initialVal = {
 }
 
 const Trainings = ({ location }) => {
-    const { setCourse,setBatches,batches, spinner, user } = useContext(AppContext)
+    const { setCourse,setBatches,ROLE, spinner, user } = useContext(AppContext)
     const { setTraining } = useContext(TrainingContext)
     const Toast = useToast()
     const [show, setShow] = useState(false);
@@ -74,15 +74,13 @@ const Trainings = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false
-            }
-            ,
+            },
             "startDate": {
                 "title": "Start Date",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
                 render: (data) => moment(data.startDate).format('DD/MM/YYYY')
-
             }
             ,
             "endDate": {
@@ -97,9 +95,9 @@ const Trainings = ({ location }) => {
             "status": {
                 "title": "Status",
                 "sortDirection": null,
-                "sortEnabled": true,
+                "sortEnabled": false,
                 isSearchEnabled: false,
-                render: (data) => <Toggle onChange={()=> getTrainingsBySid(data.sid,"status")} id={data.sid} checked={data.status === 'ENABLED' ? true : false} />
+                render: (data) => <Toggle onChange={()=> user.role === ROLE.SUPERVISOR && getTrainingsBySid(data.sid,"status")} id={data.sid} checked={data.status === 'ENABLED' ? true : false} />
             },
 
         },
@@ -112,19 +110,19 @@ const Trainings = ({ location }) => {
             configuration.sortDirection = configuration.columns[sortKey].sortDirection;
             setConfiguration({ ...configuration });
         },
-        actions: [
+       actions: user.role === ROLE.SUPERVISOR ? [
             {
                 "title": "Edit",
                 "icon": ICN_EDIT,
                 "onClick": (data, i) => getTrainingsBySid(data.sid,"edit")
-                // {setIsEdit(true); setShow(true); setInitialValue(data)
             },
             {
                 "title": "Delete",
                 "icon": ICN_TRASH,
                 "onClick": (data) => deleteTraining(data.sid)
             }
-        ],
+            
+        ] :[],
         actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
         actionVariant: "", // user can pass action button variant like primary, dark, light,
         actionAlignment: true, // user can pass alignment property of dropdown menu by default it is alignLeft
@@ -133,7 +131,7 @@ const Trainings = ({ location }) => {
         searchQuery: "",
         tableCustomClass: "ng-table sort-enabled", // table custom class
         showCheckbox: true,
-        clearSelection: false
+        clearSelection: false,
     });
 
 // get training details by sid
@@ -272,7 +270,7 @@ const Trainings = ({ location }) => {
                     onChange: (e) => e.length === 0 && getTrainings(),
                     onEnter: (e) => searchTraining(e),
                     actionClick : () => {setShow(true);setInitialValue(initialVal);setIsEdit(false)},
-                    showAction: user.role === 'ADMIN' ? true: false
+                    showAction: user.role === ROLE.SUPERVISOR ? true: false
                 }} />
             </div>
 
