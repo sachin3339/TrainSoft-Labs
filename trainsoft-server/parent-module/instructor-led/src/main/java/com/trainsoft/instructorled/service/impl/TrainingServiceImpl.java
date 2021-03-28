@@ -194,6 +194,7 @@ public class TrainingServiceImpl implements ITrainingService {
             else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
+            e.printStackTrace();
             log.info("throwing exception while fetching the training details by sid");
             throw new ApplicationException("Something went wrong while fetching the training details by sid");
         }
