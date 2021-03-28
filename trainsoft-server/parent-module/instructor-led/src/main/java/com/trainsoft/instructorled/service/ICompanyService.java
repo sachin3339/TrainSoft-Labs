@@ -9,5 +9,6 @@ public interface ICompanyService {
       CompanyTO getCompanyBySid(String sid);
       CompanyTO createCompanyWithAppUser(CompanyTO companyTO);
       UserTO login(String email, String password);
+      boolean validateCompany(String name);
 
 }

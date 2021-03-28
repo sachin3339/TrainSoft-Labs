@@ -170,8 +170,8 @@ public class BatchServiceImpl implements IBatchService {
             List<BatchView> batchViewList = pagedResult.toList();
             return batchViewList.stream().map(batch->{
                 BatchViewTO to= mapper.convert(batch, BatchViewTO.class);
-                to.setCreatedByVASid(batch.getCreatedBy()==null?null:batch.getCreatedBy().getStringSid());
-                to.setUpdatedByVASid(batch.getUpdatedBy()==null?null:batch.getUpdatedBy().getStringSid());
+                to.setCreatedByVASid(batch.getCreatedBy()==null?null:batch.getCreatedBy());
+                to.setUpdatedByVASid(batch.getUpdatedBy()==null?null:batch.getUpdatedBy());
                 to.setCompanySid(batch.getCompanySid()==null?null:batch.getCompanySid());
                 return to;
             }).collect(Collectors.toList());
