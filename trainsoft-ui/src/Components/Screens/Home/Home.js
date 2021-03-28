@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Charts from '../../Charts/Charts'
 import Table from 'react-bootstrap/Table'
 import { ICN_COPY, ICN_COMING_BATCHES } from '../../Common/Icon';
@@ -11,11 +11,36 @@ import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import { Router } from '../../Common/Router';
 import "react-circular-progressbar/dist/styles.css";
 import './home.css'
+import RestService from '../../../Services/api.service';
 
 
 
 const AdminHome = () => {
-    const { user, batches, course , ROLE} = useContext(AppContext)
+    const { user, batches, course , ROLE, spinner} = useContext(AppContext)
+    const [batchCount,setBatchCount]  = useState(0)
+
+      // get batches by sid
+
+      const getBatchCount = async () => {
+        try {
+            RestService.getCount("vw_batch").then(
+                response => {
+                    setBatchCount(response.data);
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
+        }
+    }
+    useEffect(() => {
+        getBatchCount();
+
+    }, [])
 
     return (<div>
         <div className="row">
@@ -137,7 +162,7 @@ const AdminHome = () => {
                                 <div className="grid-batch">
                                     <div className="mb10">{ICN_COPY}</div>
                                     <div>
-                                        <div className="batch-title">{batches.length}</div>
+                                        <div className="batch-title">{batchCount}</div>
                                         <div className="batch-label">On-going batches</div>
                                     </div>
                                     <div className="jce">
@@ -182,7 +207,6 @@ const Home = () => {
         url: GLOBELCONSTANT.COURSE.GET_COURSE,
         errorMsg: 'error occur on get course'
     });
-
     // get all batches
     const allBatches = useFetch({
         method: "get",
@@ -197,7 +221,10 @@ const Home = () => {
     errorMsg: 'error occur on get Batches'
  });
 
+  
+
     useEffect(() => {
+    
         allCourse.response && setCourse(allCourse.response)
         allBatches.response && setBatches(allBatches.response)
         allDepartment.response && setDepartment(allDepartment.response)

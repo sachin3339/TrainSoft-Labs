@@ -8,12 +8,12 @@ import AppContext from '../../../../Store/AppContext';
 import Editors from './Editor';
 import './codeEditor.css'
 
-const CodeEditor = ({themesColor=true}) => {
+const CodeEditor = ({themesColor=false}) => {
     const {spinner} = useContext(AppContext) 
     const [inputData, setInputData] = useState('')
     const editorRef = useRef(null);
     const [lang, setLang] = useState(Language[0])
-    const [lightTheams, setLightTheams] = useState(themesColor)
+    const [lightTheams, setLightTheams] = useState(false)
     const [output, setOutput] = useState('')
     const [inputTab, setInputTab] = useState(true)
     const [spinners,setSpinners] = useState(false)

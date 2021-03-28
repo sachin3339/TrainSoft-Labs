@@ -101,11 +101,13 @@ const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => 
                 *   @param {string} bucketName = bucket name 
                 */
                  const uploadAttachments = async (
-                    file
+                    file,
+                    setFieldValue
                 ) => {
                     try {
                         spinner.show();
-                        let [res] = await UploadAttachmentsAPI(file);
+                        let data = await UploadAttachmentsAPI(file);
+                        setFieldValue("assets",JSON.stringify(data[0]))
                         spinner.hide();
                         Toast.success({ message: `Assets is successfully uploaded ` });
                     } catch (err) {
@@ -130,7 +132,7 @@ const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => 
                         } : initialValue}
                         onSubmit={(value)=> {!isEdit ? createTrainingSession(value) : editTrainingSession(value);}}
                       >
-                        {({ handleSubmit }) => (
+                        {({ handleSubmit,setFieldValue }) => (
                             <form onSubmit={handleSubmit}>
                                 <div className="row">
                                     <div className="col-md-12">
@@ -150,12 +152,12 @@ const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => 
                                         <TimeInput name="endTime" placeholder="Select Time" label="End Time" />
                                     </div>
                                     <div className="col-md-12">
-                                    <TextInput name="assets"  label="Assets" />
+                                    {/* <TextInput name="assets"  label="Assets" /> */}
 
-                                    {/* {<div className="col-6 pl-0">
-                                    <div><span className="title-sm ">Assets</span></div> <div><input multiple placeholder="Browse File" onChange={(e) => { uploadAttachments(e.target.files) }} type="file" /></div>
+                                    {<div className="col-6 pl-0">
+                                    <div><span className="title-sm ">Assets</span></div> <div><input multiple placeholder="Browse File" onChange={(e) => { uploadAttachments(e.target.files,setFieldValue) }} type="file" /></div>
                                 </div>
-                                } */}
+                                }
                                     </div>
                                 </div>
                                 <div>

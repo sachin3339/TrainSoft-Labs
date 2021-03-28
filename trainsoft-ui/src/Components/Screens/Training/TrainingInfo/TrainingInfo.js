@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext,useEffect,useState } from 'react';
 import { Button } from "../../../Common/Buttons/Buttons";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { ICN_TRASH, ICN_EDIT, ICN_BATCHES, ICN_ON_GOING, ICN_PROGRESS, ICN_COMPLETED, ICN_PASSED, ICN_EMAIL_W, ICN_TEXT_W } from '../../../Common/Icon';
@@ -8,9 +8,13 @@ import moment from 'moment'
 import '../training.css'
 import TrainingRoute from '../TrainingRoute';
 import CardHeader from '../../../Common/CardHeader';
+import RestService from '../../../../Services/api.service';
+import AppContext from '../../../../Store/AppContext';
 
 const TrainingInfo = ({location}) => {
+     const {user, spinner} = useContext(AppContext)
     const {training} =  useContext(TrainingContext)
+    const [trainingSession,setTrainingSession] = useState([])
     const activityData = [
         { icon: ICN_ON_GOING, name: 'Batch enrolled', data: '15' },
         { icon: ICN_PROGRESS, name: 'Total Training', data: '10' },
@@ -23,6 +27,31 @@ const TrainingInfo = ({location}) => {
         { name: "OOAD session", time: 'Mon, 20 Jun 2020 12:03:05', label: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.' },
 
     ]
+
+
+      // get All session
+      const getSessionByPage = async (pagination = "1") => {
+        try {
+            let pageSize = 10;
+            spinner.show();
+            RestService.getTrainingSession(training.sid, training.courseSid).then(
+                response => {
+                    setTrainingSession(response.data);
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("error occur on getSession()", err)
+        }
+    }
+
+    useEffect(() => {
+        getSessionByPage()
+    }, [])
     return (<>
           <CardHeader {...{
                     location,
@@ -125,10 +154,10 @@ const TrainingInfo = ({location}) => {
                                 </div><div className="aic ml-4"><div>To</div> <div className="checkbox-div"></div> </div></div>
                             </div>
                         </div>
-                        {activityCard.map(res => <div className="activity-card" key={res.sid}>
-                            <div className="cat-title-md">{res.name}</div>
-                            <div className="cat-title-sm">{res.time}</div>
-                            <div className="mt-3">{res.label}</div>
+                        {trainingSession.map(res => <div className="activity-card" key={res.sid}>
+                            <div className="cat-title-md">{res.agendaName}</div>
+                            <div className="cat-title-sm">{ moment(res.updatedOn).format("DD/MM/YYYY")}</div>
+                            <div className="mt-3">{res.agendaDescription}</div>
                         </div>)}
 
                     </div>

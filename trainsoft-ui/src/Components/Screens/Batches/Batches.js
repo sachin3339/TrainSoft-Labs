@@ -396,7 +396,7 @@ const Batch = ({ location }) => {
                 </div>
             </BsModal>
         </div>
-        {batchList && <DynamicTable {...{ configuration, sourceData: batchList.slice().reverse(), onPageChange: (e) => getAllBatchByPage(e), count }} />}
+        {batchList && <DynamicTable {...{ configuration, sourceData: batchList, onPageChange: (e) => getAllBatchByPage(e), count }} />}
     </div>
 
     </>)

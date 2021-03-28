@@ -275,7 +275,7 @@ const Trainings = ({ location }) => {
             </div>
 
             <AddEditTraining {...{getTrainings, show, setShow,initialValues,isEdit }}/>
-            <DynamicTable {...{count, configuration, sourceData: trainingList && trainingList.slice().reverse(), onPageChange: (e) => getTrainings(e) }} />
+            <DynamicTable {...{count, configuration, sourceData: trainingList, onPageChange: (e) => getTrainings(e) }} />
         </div>
     </>)
 }

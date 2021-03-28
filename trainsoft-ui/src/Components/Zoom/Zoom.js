@@ -7,7 +7,6 @@ import './zoom.css'
 
 const crypto = require("crypto"); // crypto comes with Node.js
 
-// https://www.npmjs.com/package/jsrsasign
 
 
 function generateSignature(apiKey, apiSecret, meetingNumber, role) {
