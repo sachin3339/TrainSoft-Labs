@@ -250,13 +250,15 @@ public class TrainingServiceImpl implements ITrainingService {
                 trainingSession.setUpdatedBy(virtualAccount);
                 trainingSession.setAgendaDescription(trainingSessionTO.getAgendaDescription());
                 trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                if(trainingSessionTO.getStartTime()!=0 && trainingSessionTO.getEndTime()!=0)
+                    trainingSession.setStatus(Status.ENABLED);
                 trainingSession.setStartTime(new Date(trainingSessionTO.getStartTime()));
                 trainingSession.setEndTime(new Date(trainingSessionTO.getEndTime()));
                 trainingSession.setSessionDate(new Date(trainingSessionTO.getSessionDate()));
                 trainingSession.setAssets(trainingSessionTO.getAssets());
                 TrainingSessionTO savedTrainingSessionTO = mapper.convert(trainingSessionRepository.save(trainingSession), TrainingSessionTO.class);
                 savedTrainingSessionTO.setCreatedByVASid(virtualAccount.getStringSid());
-                savedTrainingSessionTO.setCourseSid(trainingSession.getCourseSessionSid());
+                savedTrainingSessionTO.setCourseSid(trainingSession.getCourse().getStringSid());
                 savedTrainingSessionTO.setTrainingSid(trainingSession.getTraining().getStringSid());
                 return savedTrainingSessionTO;
             }
@@ -264,6 +266,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 throw new RecordNotFoundException();
             }
         } catch (Exception exception) {
+            exception.printStackTrace();
             log.info("throwing exception while updating the trainingSession",exception);
             throw new ApplicationException("Something went wrong while updating the trainingSession");
         }
@@ -519,6 +522,7 @@ public class TrainingServiceImpl implements ITrainingService {
             } else
                 throw new RecordNotFoundException();
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("throwing exception while updating the training",e.toString());
             throw new ApplicationException("Something went wrong while updating the training");
         }
