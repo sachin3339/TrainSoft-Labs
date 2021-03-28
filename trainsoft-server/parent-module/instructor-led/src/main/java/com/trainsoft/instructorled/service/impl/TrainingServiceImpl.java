@@ -339,7 +339,7 @@ public class TrainingServiceImpl implements ITrainingService {
         List<TrainingSessionTO> sessionTOList= new ArrayList<>();
         try {
             Training training = trainingRepository.findTrainingBySidAndStatusNot(BaseEntity.hexStringToByteArray(trainingSid),Status.DELETED);
-            Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
+            //Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
             /*List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourseAndStatusNot(course,Status.DELETED)
                     .stream().filter(c->c.getStatus()!= Status.DELETED)
                     .collect(Collectors.toList());;*/
