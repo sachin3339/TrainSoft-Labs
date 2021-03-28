@@ -573,21 +573,24 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public void updateTrainingSessionStatus(String trainingSid,String trainingSessionSid, String status) {
-        Training training= trainingRepository.findTrainingBySidAndStatusNot(BaseEntity.hexStringToByteArray(trainingSid),Status.DELETED);
-        TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySidAndTraining(trainingSessionSid,training);
-        boolean update = false;
-        if (status.equals("ENABLED")) {
-            trainingSession.setStatus(InstructorEnum.Status.ENABLED);
-            update = true;
-        }
-        if (status.equals("DISABLED")) {
-            trainingSession.setStatus(InstructorEnum.Status.DISABLED);
-            update = true;
-        }
-        if (update == true) {
-            trainingSessionRepository.save(trainingSession);
+    public void updateTrainingSessionStatus(String sessionSid, String status,boolean trainingsession,String updatedBy) {
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
+                (BaseEntity.hexStringToByteArray(updatedBy));
+        try {
+            if (trainingsession) {
+                TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(sessionSid));
+                trainingSession.setStatus(InstructorEnum.Status.valueOf(status));
+                trainingSession.setUpdatedBy(virtualAccount);
+                trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+            } else {
+                TrainingCourse trainingCourse = trainingCourseRepository.findTrainingCourseBySid(BaseEntity.hexStringToByteArray(sessionSid));
+                trainingCourse.setStatus(InstructorEnum.Status.valueOf(status));
+                trainingCourse.setUpdatedBy(virtualAccount);
+                trainingCourse.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+            }
+
+        } catch (Exception e) {
+            log.error("while updating session status, throwing error", e);
         }
     }
-
 }
