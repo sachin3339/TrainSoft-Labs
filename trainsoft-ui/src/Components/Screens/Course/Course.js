@@ -257,7 +257,7 @@ const Courses = ({ location }) => {
                     </div>
                 </BsModal>
         
-        <DynamicTable {...{ configuration, sourceData: courseList.slice().reverse(),onPageChange: (e) => getCourse(e),count}} />
+        <DynamicTable {...{ configuration, sourceData: courseList,onPageChange: (e) => getCourse(e),count}} />
     </div>
     </>)
 }

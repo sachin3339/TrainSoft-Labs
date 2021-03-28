@@ -164,7 +164,7 @@ const CourseDetails = ({ location }) => {
                onChange: (e) => e.length === 0 && getSessionByPage(),
                onEnter:(e)=> console.log(e)
          }} >
-             <Button className="btn-block ml-2" onClick={() => {setShow(true); setIsEdit(false)}}>+ Add Session</Button>
+             <Button className=" ml-2" onClick={() => {setShow(true); setIsEdit(false)}}>+ Add Session</Button>
 
              </CardHeader>
              

@@ -8,7 +8,7 @@ import { navigate } from '../Router';
 import { CustomToggle } from '../../../Services/MethodFactory';
 import { ICN_DELETE, ICN_EDIT, ICN_MORE } from '../Icon';
 
-const SessionList = ({ sessionList = [], role = "SUPERVISOR", sessionType = 'course', onDelete=()=>{},onEdit=()=>{} }) => {
+const SessionList = ({ sessionList = [], role = "SUPERVISOR",onSchedule=()=>{}, sessionType = 'course', onDelete=()=>{},onEdit=()=>{} }) => {
     const { user, ROLE } = useContext(AppContext)
     const [open, setOpen] = useState(null);
 
@@ -30,21 +30,21 @@ const SessionList = ({ sessionList = [], role = "SUPERVISOR", sessionType = 'cou
                     </div>
                     <div className="se-date">
                         {sessionType === 'training' && user.role === ROLE.SUPERVISOR && <>
-                            {res.active ? <div className="batch-pri"> Scheduled</div> : <div className="batch-sec">Not Scheduled</div>}
+                            {res.status === "ENABLED" ? <div className="batch-pri" onClick={()=>onSchedule(res.sid)}> Scheduled</div> : <div onClick={()=>onSchedule(res.sid)}  className="batch-sec">Not Scheduled</div>}
                         </>}
-                        {sessionType === 'training' && user.role !== ROLE.SUPERVISOR && <div onClick={() => navigate('/zoom')} className="batch-sec">{user.role === ROLE.TRAINER ? 'Start Now' : 'Join Now'} </div>}
+                        {sessionType === 'training' && user.role !== ROLE.SUPERVISOR && <div onClick={() => navigate('/zoom')} className="batch-sec">{user.role === ROLE.INSTRUCTOR ? 'Start Now' : 'Join Now'} </div>}
                         <div>{moment(res.createdOn).format("DD/MM/YYYY")}</div>
                         <div className="ml-3">
-                        <Dropdown alignRight={true}>
+                       {user.role === ROLE.SUPERVISOR &&  <Dropdown  className="session-list-dropDown">
                             <Dropdown.Toggle as={CustomToggle} >
                                 {ICN_MORE}
                             </Dropdown.Toggle>
                             <Dropdown.Menu size="sm" >
                                   <Dropdown.Item key={i} onClick={()=>onEdit(res)}>{ICN_EDIT} Edit</Dropdown.Item>
-                                  <Dropdown.Item onClick={()=> onDelete(res.sid)} key={i}>{ICN_DELETE} DELETE</Dropdown.Item>
+                                  <Dropdown.Item onClick={()=> onDelete(res.sid)} key={i}>{ICN_DELETE} Delete</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-                        </div>
+                    }</div>
                     </div>
                 </div>
                 <Collapse in={sessionType === 'training' ? open === i : true}>
@@ -60,6 +60,11 @@ const SessionList = ({ sessionList = [], role = "SUPERVISOR", sessionType = 'cou
                                 </div>
                                 <div className="col-md-3">
                                     <div><span className="title-sm">End Time: </span><span>{res.startTime !== 0 ? moment(res.startTime).format('h:mm a'): 'N/A'}</span></div>
+                                </div>
+                            </div>
+                            <div className="row mt-2">
+                                <div className="col-md-3">
+                                <div className='flx'><div className="title-sm mr-2">Assets: </div><div>{res.assets ? JSON.parse(res.assets).map(resp=><div><a href={resp.fileUrl}>{resp.fileName}</a></div>): 'N/A'}</div></div>
                                 </div>
                             </div>
                         </div>
