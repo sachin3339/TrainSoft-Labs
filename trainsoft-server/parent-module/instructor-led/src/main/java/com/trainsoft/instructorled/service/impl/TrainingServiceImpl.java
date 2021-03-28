@@ -315,6 +315,7 @@ public class TrainingServiceImpl implements ITrainingService {
                     trainingSessionTO.setSid(courseSession.getStringSid());
                     trainingSessionTO.setAgendaDescription(courseSession.getTopicDescription());
                     trainingSessionTO.setAgendaName(courseSession.getTopicName());
+                    trainingSessionTO.setTrainingSession(false);
                     if(courseSession.getCreatedBy()!=null)
                     trainingSessionTO.setCreatedByVASid(courseSession.getCreatedBy().getStringSid());
                     trainingSessionTO.setCourseSid(courseSession.getCourse().getStringSid());
@@ -568,6 +569,24 @@ public class TrainingServiceImpl implements ITrainingService {
         }
         if (update == true) {
             virtualAccountRepository.save(virtualAccount);
+        }
+    }
+
+    @Override
+    public void updateTrainingSessionStatus(String trainingSid,String trainingSessionSid, String status) {
+        Training training= trainingRepository.findTrainingBySidAndStatusNot(BaseEntity.hexStringToByteArray(trainingSid),Status.DELETED);
+        TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySidAndTraining(trainingSessionSid,training);
+        boolean update = false;
+        if (status.equals("ENABLED")) {
+            trainingSession.setStatus(InstructorEnum.Status.ENABLED);
+            update = true;
+        }
+        if (status.equals("DISABLED")) {
+            trainingSession.setStatus(InstructorEnum.Status.DISABLED);
+            update = true;
+        }
+        if (update == true) {
+            trainingSessionRepository.save(trainingSession);
         }
     }
 

@@ -17,6 +17,9 @@ import com.trainsoft.instructorled.to.UserTO;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -33,6 +36,10 @@ public class CompanyServiceImpl implements ICompanyService {
     private IDepartmentRepository departmentRepository;
     private IDepartmentVirtualAccountRepository departmentVARepo;
     private DozerUtils mapper;
+    private final JavaMailSender mailSender;
+
+    @Value("spring.mail.username")
+    private String emailSenderAddress;
 
     @Override
     public CompanyTO getCompanyBySid(String sid) {
@@ -161,5 +168,30 @@ public class CompanyServiceImpl implements ICompanyService {
         }catch (Exception e){
             throw new ApplicationException(e.getMessage());
         }
+    }
+
+    @Override
+    public void sendEmail(String recipientEmail,String email,String password,String name){
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(emailSenderAddress);
+        message.setTo(recipientEmail);
+        String subject = "username and password to login next time";
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append(System.lineSeparator())
+                .append("Your login credentials is as below:")
+                .append(System.lineSeparator())
+                .append("Email : ")
+                .append(email)
+                .append(System.lineSeparator())
+                .append("Password : ")
+                .append(password);
+        emailContent.append(System.lineSeparator())
+                .append("Thanks,")
+                .append(System.lineSeparator())
+            .append(name);
+        message.setSubject(subject);
+        message.setText(emailContent.toString());
+        mailSender.send(message);
     }
 }

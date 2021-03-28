@@ -23,6 +23,7 @@ public interface ITrainingService {
     List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid,String companySid);
     List<TrainingSessionTO> getTrainingSessionsByName(String trainingSid,String name,String companySid);
     boolean deleteTrainingSessionBySid(String trainingSessionSid, String deletedBySid);
+    void updateTrainingSessionStatus(String trainingSid,String trainingSessionSid, String status);
 
 
     String generatePassword();

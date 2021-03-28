@@ -8,6 +8,7 @@ import com.trainsoft.instructorled.entity.*;
 import com.trainsoft.instructorled.repository.*;
 import com.trainsoft.instructorled.service.IBatchService;
 import com.trainsoft.instructorled.service.IBulkUploadService;
+import com.trainsoft.instructorled.service.ICompanyService;
 import com.trainsoft.instructorled.to.AppUserTO;
 import com.trainsoft.instructorled.to.BatchTO;
 import com.trainsoft.instructorled.to.DepartmentVirtualAccountTO;
@@ -42,6 +43,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
     IDepartmentVirtualAccountRepository departmentVARepo;
     DozerUtils mapper;
     IBatchService batchService;
+    ICompanyService companyService;
 
     @Override
     public void uploadParticipantsWithBatch(MultipartFile file, String batchName, String instructorName,String companySid) {

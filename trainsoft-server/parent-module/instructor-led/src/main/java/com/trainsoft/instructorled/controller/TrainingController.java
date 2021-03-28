@@ -1,27 +1,17 @@
 package com.trainsoft.instructorled.controller;
-
-import com.trainsoft.instructorled.commons.AWSUploadClient;
 import com.trainsoft.instructorled.commons.JWTDecode;
 import com.trainsoft.instructorled.commons.JWTTokenTO;
 import com.trainsoft.instructorled.service.IBatchService;
 import com.trainsoft.instructorled.service.IBulkUploadService;
 import com.trainsoft.instructorled.service.ITrainingService;
 import com.trainsoft.instructorled.to.*;
-import com.trainsoft.instructorled.value.InstructorEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
@@ -33,7 +23,6 @@ public class TrainingController {
     IBatchService batchService;
     ITrainingService trainingService;
     IBulkUploadService bulkUploadService;
-    AWSUploadClient awsUploadClient;
 
 
     @PostMapping("training/create")

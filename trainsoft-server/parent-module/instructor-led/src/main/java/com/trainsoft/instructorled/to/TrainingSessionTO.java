@@ -16,6 +16,7 @@ public class TrainingSessionTO extends BaseTO {
     private String agendaDescription;
     private InstructorEnum.Status status;
     private String assets;
+    private boolean trainingSession;
     private String recording;
     private long sessionDate;
     private long startTime;

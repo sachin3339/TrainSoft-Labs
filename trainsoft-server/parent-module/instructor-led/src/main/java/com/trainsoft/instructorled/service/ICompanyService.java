@@ -1,6 +1,5 @@
 package com.trainsoft.instructorled.service;
 
-import com.trainsoft.instructorled.to.AppUserTO;
 import com.trainsoft.instructorled.to.CompanyTO;
 import com.trainsoft.instructorled.to.UserTO;
 
@@ -10,5 +9,6 @@ public interface ICompanyService {
       CompanyTO createCompanyWithAppUser(CompanyTO companyTO);
       UserTO login(String email, String password);
       boolean validateCompany(String name);
+      void sendEmail(String recipientEmail,String email,String password,String name);
 
 }

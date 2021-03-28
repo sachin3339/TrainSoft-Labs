@@ -16,4 +16,5 @@ public interface ITrainingSessionRepository extends JpaRepository<TrainingSessio
 	TrainingSession findTrainingSessionBySidAndStatusNot(byte[] sid, InstructorEnum.Status status);
 	List<TrainingSession> findTrainingSessionByTrainingAndCompanyAndStatusNot(Training training, Company company, InstructorEnum.Status status);
 	List<TrainingSession> findTrainingSessionByTrainingAndAgendaNameContainingAndCompanyAndStatusNot(Training training,String name,Company company,InstructorEnum.Status status);
+	TrainingSession findTrainingSessionBySidAndTraining(String sessionSid,Training training);
 }

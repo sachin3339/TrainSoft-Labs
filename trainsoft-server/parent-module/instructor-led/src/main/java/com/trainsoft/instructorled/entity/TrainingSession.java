@@ -13,6 +13,7 @@ import java.util.Date;
 @Table(name = "training_session")
 @Getter @Setter @NoArgsConstructor
 public class TrainingSession extends BaseEntity {
+
 	@Column(name = "agenda_name")
 	private String agendaName;
 
