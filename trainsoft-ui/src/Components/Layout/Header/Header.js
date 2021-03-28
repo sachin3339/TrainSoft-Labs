@@ -29,14 +29,14 @@ const Header = ({location}) => {
         try{
            TokenService.removeToken()
            setUserValue("LOGOUT")
-           navigate('/')
+           navigate('/login')
         } catch(err){
             console.error("error occur on LogOut()",err)
         }
     }
 
     return (<>
-    { location.state.title !== "COMPILER" &&
+    { location.state && location.state.title !== "COMPILER" &&
     <div className="header">
             <div className="page-title">
                 <div className="title-lg mb-0">

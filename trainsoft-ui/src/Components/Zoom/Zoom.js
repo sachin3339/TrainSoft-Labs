@@ -1,6 +1,8 @@
 // import "./Zoom.css";
 import { ZoomMtg } from "@zoomus/websdk";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import AxiosService from "../../Services/axios.service";
+import AppContext from "../../Store/AppContext";
 import './zoom.css'
 
 const crypto = require("crypto"); // crypto comes with Node.js
@@ -19,19 +21,21 @@ function generateSignature(apiKey, apiSecret, meetingNumber, role) {
   return signature
 }
 
- // call the generateInstantToken function
 
-var apiKey = "tGcuTNjdQUS3jkTw_eaz9g";
-var apiSecret = "yaoH9H4cBmh1wgxXTkGqmGR8a65Qrwpu3sju";
-var meetingNumber = 9329001255;
-var leaveUrl = "http://localhost:3000"; // our redirect url
-var userName = "vikash";
-var userEmail = "vikash@akalmatechnolies.com";
-var passWord = "kkd";
 
 
 
 const Zoom = () => {
+  const  {user} = useContext(AppContext)
+   // call the generateInstantToken function
+
+  var apiKey = "tGcuTNjdQUS3jkTw_eaz9g";
+  var apiSecret = "yaoH9H4cBmh1wgxXTkGqmGR8a65Qrwpu3sju";
+  var meetingNumber = 9329001255;
+  var leaveUrl = "https://www.trainsoft.io/dashboard"; // our redirect url
+  var userName =  user.appuser.name;
+  var userEmail =  user.appuser.emailId;
+  var passWord = "kkd";
   // loading zoom libraries before joining on component did mount
   useEffect(() => {
     showZoomDIv();
@@ -79,6 +83,11 @@ const Zoom = () => {
     });
   };
 
+  useEffect(() => {
+    return () => {
+      AxiosService.init('',user.jwtToken)
+    }
+  }, [])
   
 
   return <div className="App">Zoom</div>;

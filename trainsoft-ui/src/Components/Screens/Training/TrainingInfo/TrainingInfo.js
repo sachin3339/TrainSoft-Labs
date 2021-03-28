@@ -6,8 +6,10 @@ import TrainingContext from '../../../../Store/TrainingContext';
 import moment from 'moment'
 
 import '../training.css'
+import TrainingRoute from '../TrainingRoute';
+import CardHeader from '../../../Common/CardHeader';
 
-const TrainingInfo = () => {
+const TrainingInfo = ({location}) => {
     const {training} =  useContext(TrainingContext)
     const activityData = [
         { icon: ICN_ON_GOING, name: 'Batch enrolled', data: '15' },
@@ -22,6 +24,13 @@ const TrainingInfo = () => {
 
     ]
     return (<>
+          <CardHeader {...{
+                    location,
+                    onChange: (e) => {},
+                    onEnter: (e) => {},
+                }}>
+                </CardHeader>
+        <TrainingRoute {...{location}}/>
         <div className="flx full-h">
 
             <div className="left-details">
@@ -48,18 +57,6 @@ const TrainingInfo = () => {
                         <div className="col-12 form-lbl1">Instructor </div>
                         <div className="col-12 form-cont1">{training.instructor}</div>
                     </div>
-                    {/* <div className="row my-2">
-                        <div className="col-6">Created by</div>
-                        <div className="col-6">Jack A</div>
-                    </div>
-                    <div className="row my-2">
-                        <div className="col-6">Email ID</div>
-                        <div className="col-6">jack@email.com</div>
-                    </div>
-                    <div className="row my-2">
-                        <div className="col-6">Phone Number</div>
-                        <div className="col-6">(231) 983 9872</div>
-                    </div> */}
                     <div className="row my-2">
                         <div className="col-12 form-lbl1">Start Date</div>
                         <div className="col-12 form-cont1">{moment(training.startDate).format('Do MMMM YYYY')}</div>
@@ -103,7 +100,7 @@ const TrainingInfo = () => {
                         </div>
                         <div className="title-sm">Batch enrolled</div>
                     </div>
-                    <div  className="user-activity">
+                    {/* <div  className="user-activity">
                         <div className="flx mb-2">
                             <div className="activities-btn">
                                 {ICN_PASSED}
@@ -113,7 +110,7 @@ const TrainingInfo = () => {
                             </div>
                         </div>
                         <div className="title-sm">Total Session</div>
-                    </div>
+                    </div> */}
 
                 </div>
                 <div>
@@ -128,7 +125,7 @@ const TrainingInfo = () => {
                                 </div><div className="aic ml-4"><div>To</div> <div className="checkbox-div"></div> </div></div>
                             </div>
                         </div>
-                        {activityCard.map(res => <div className="activity-card">
+                        {activityCard.map(res => <div className="activity-card" key={res.sid}>
                             <div className="cat-title-md">{res.name}</div>
                             <div className="cat-title-sm">{res.time}</div>
                             <div className="mt-3">{res.label}</div>

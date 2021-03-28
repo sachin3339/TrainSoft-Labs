@@ -43,3 +43,5 @@ export const getAllBatches = async (setBatches) => {
         console.error("error occur on getAllBatch()", err)
     }
 };
+
+

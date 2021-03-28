@@ -17,7 +17,7 @@ import moment from 'moment'
 import AppContext from "../../../Store/AppContext";
 import TrainingContext, { TrainingProvider } from "../../../Store/TrainingContext";
 import { Toggle } from "../../Common/BsUtils";
-// import AddEditTraining from "./AddEditTraining";
+import AddEditTraining from "./AddEditTraining";
 const initialVal = {
     name: '',
     instructor: '',
@@ -29,7 +29,7 @@ const initialVal = {
 }
 
 const Trainings = ({ location }) => {
-    const { setCourse,setBatches,batches, spinner, user } = useContext(AppContext)
+    const { setCourse,setBatches,ROLE, spinner, user } = useContext(AppContext)
     const { setTraining } = useContext(TrainingContext)
     const Toast = useToast()
     const [show, setShow] = useState(false);
@@ -74,15 +74,13 @@ const Trainings = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false
-            }
-            ,
+            },
             "startDate": {
                 "title": "Start Date",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => moment(data.startDate).format('Do MMMM YYYY')
-
+                render: (data) => moment(data.startDate).format('DD/MM/YYYY')
             }
             ,
             "endDate": {
@@ -90,16 +88,16 @@ const Trainings = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => moment(data.endDate).format('Do MMMM YYYY')
+                render: (data) => moment(data.endDate).format('DD/MM/YYYY')
 
             }
             ,
             "status": {
                 "title": "Status",
                 "sortDirection": null,
-                "sortEnabled": true,
+                "sortEnabled": false,
                 isSearchEnabled: false,
-                render: (data) => <Toggle id={data.sid} checked={data.status === 'ENABLED' ? true : false} />
+                render: (data) => <Toggle onChange={()=> user.role === ROLE.SUPERVISOR && getTrainingsBySid(data.sid,"status")} id={data.sid} checked={data.status === 'ENABLED' ? true : false} />
             },
 
         },
@@ -112,19 +110,19 @@ const Trainings = ({ location }) => {
             configuration.sortDirection = configuration.columns[sortKey].sortDirection;
             setConfiguration({ ...configuration });
         },
-        actions: [
+       actions: user.role === ROLE.SUPERVISOR ? [
             {
                 "title": "Edit",
                 "icon": ICN_EDIT,
-                "onClick": (data, i) => getTrainingsBySid(data.sid,true)
-                // {setIsEdit(true); setShow(true); setInitialValue(data)
+                "onClick": (data, i) => getTrainingsBySid(data.sid,"edit")
             },
             {
                 "title": "Delete",
                 "icon": ICN_TRASH,
                 "onClick": (data) => deleteTraining(data.sid)
             }
-        ],
+            
+        ] :[],
         actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
         actionVariant: "", // user can pass action button variant like primary, dark, light,
         actionAlignment: true, // user can pass alignment property of dropdown menu by default it is alignLeft
@@ -133,30 +131,55 @@ const Trainings = ({ location }) => {
         searchQuery: "",
         tableCustomClass: "ng-table sort-enabled", // table custom class
         showCheckbox: true,
-        clearSelection: false
+        clearSelection: false,
     });
 
 // get training details by sid
-    const getTrainingsBySid = async (sid, edit=false) => {
+    const getTrainingsBySid = async (sid, type="get") => {
         try {
-            spinner.show();
             RestService.getTrainingBySid(sid).then(
                 response => {
                     response && response.data && setTraining(response.data);
-                    console.log(response.data)
-                    // edit && setInitialValue(response.data)
-                    // edit && setShow(true)
-                    spinner.hide();
+                    type === "status" && changeStatus(response.data)
+                    if(type==="edit"){
+                        let intVal = response.data                        
+                         setInitialValue(intVal)
+                         setShow(true)
+                         setIsEdit(true)
+                    }
                 },
                 err => {
-                    spinner.hide();
+                   console.error("",err)
                 }
             )
         } catch (err) {
-            spinner.hide();
             console.error("error occur on getTrainings()", err)
         }
     }
+
+    // editTraining
+    const changeStatus = (data) => {
+        try {
+            spinner.show()
+            let payload = data
+            payload.status = data.status === "ENABLED" ? "DISABLED": "ENABLED"
+            RestService.editTraining(payload).then(res => {
+                getTrainings()
+                spinner.hide()
+                setShow(false)
+                Toast.success({ message: `Status change successfully` });
+            }, err => {
+                spinner.hide()
+                console.error(err)
+            }
+            )}
+        catch (err) {
+            spinner.hide()
+            console.error('error occur on changeStatus', err)
+            Toast.error({ message: `Something wrong!!` });
+        }
+    }
+
 
     // get all training
     const getTrainings = async (pagination = "1") => {
@@ -209,7 +232,7 @@ const Trainings = ({ location }) => {
         }
         catch (err) {
             spinner.hide();
-            console.error('error occur on deleteTraining', err)
+            console.error('error occur on deleteTraining()', err)
             Toast.error({ message: `Something wrong!!` });
         }
     }
@@ -246,8 +269,8 @@ const Trainings = ({ location }) => {
                     location,
                     onChange: (e) => e.length === 0 && getTrainings(),
                     onEnter: (e) => searchTraining(e),
-                    actionClick : () => {setShow(true);setInitialValue(initialVal)},
-                    showAction: user.role === 'ADMIN' ? true: false
+                    actionClick : () => {setShow(true);setInitialValue(initialVal);setIsEdit(false)},
+                    showAction: user.role === ROLE.SUPERVISOR ? true: false
                 }} />
             </div>
 
@@ -270,135 +293,6 @@ const Training = () => {
 }
 export default Training
 
-const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) => {
-    const Toast = useToast()
-    const { course, batches, spinner, user } = useContext(AppContext)
-    const [instructor,setInstructor] = useState([])
 
-     // get all training
-  const getAllInstructor = async () => {
-    try {
-        spinner.show();
-        RestService.getAllUserByPage("INSTRUCTOR",1,200).then(
-            response => {
-                let val = response.data.map(res=> {
-                    let data = res.appuser
-                    data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
-                    data.department = res.departmentVA ? res.departmentVA.department.name : ''
-                    data.vSid = res.sid
-                    return data
-                })
-                setInstructor(val)
-            },
-            err => {
-                spinner.hide();
-            }
-        ).finally(() => {
-            spinner.hide();
-        });
-    } catch (err) {
-        console.error("error occur on getAllInstructor()", err)
-    }
-}
-
-        // get all course list
-        const createTraining = (data) => {
-            try {
-                spinner.show()
-                let batcheId = data.trainingBatchs.map(resp => {
-                    return ({ batchSid: resp.sid })
-                })
-
-                let payload = data
-                payload.courseSid = data.courseSid.sid
-                payload.instructor = {"sid":data.instructor.vSid}
-                payload.trainingBatchs = batcheId
-                payload.instructorName = data.instructor.name
-                payload.status = "ENABLED"
-                RestService.createTraining(payload).then(res => {
-                    Toast.success({ message: `Training is Successfully Created` });
-                    getTrainings()
-                    spinner.hide()
-                    setShow(false)
-                }, err => {
-                    spinner.hide()
-                    console.error(err)
-                }
-                );
-            }
-            catch (err) {
-                spinner.hide()
-                console.error('error occur on createTraining', err)
-                Toast.error({ message: `Something wrong!!` });
-            }
-        }
-        useEffect(() => {
-            getAllInstructor()
-        }, [])
-    return (<>
-                    <Modal
-                        size="lg"
-                        show={show}
-                        onHide={() => setShow(false)}
-                        dialogClassName="modal-90w"
-                        aria-labelledby="example-custom-modal-styling-title"
-                    >
-                        <Modal.Body className="px-5 py-4">
-                            <div className="jcb mb-3">
-                                <div className="title-md ">Add Training</div>
-                                <div><div className="circle-md" onClick={() => setShow(false)}>
-                                    {ICN_CLOSE}
-                                </div>
-                                </div>
-                            </div>
-                            <div className="form-container">
-                                <Formik
-                                    onSubmit={createTraining}
-                                    initialValues={initialValues}
-                                >
-                                    {({ handleSubmit, isSubmitting, dirty, setFieldValue, values }) => <form onSubmit={handleSubmit} className="create-batch" >
-                                        <div className="edit-shipping">
-                                            <Form.Group className="row">
-                                                <div className="col-6">
-                                                    <TextInput label="Training Name" name="name" />
-                                                </div>
-                                                <div className="col-6">
-                                                    <MultiSelectInput  label="Select Batch(s)" footerAction={true}  bindKey="name" option={batches} name="trainingBatchs" />
-                                                </div>
-                                            </Form.Group>
-                                            <Form.Group className="row">
-                                                <div className="col-6">
-                                                    <DateInput label="Start Date" name="startDate" setFieldValue={setFieldValue} values={values} />
-                                                </div>
-                                                <div className="col-6">
-                                                    <DateInput label="End date" name="endDate" setFieldValue={setFieldValue} values={values} />
-                                                </div>
-                                            </Form.Group>
-                                            <Form.Group className="row">
-                                                <div className="col-6">
-                                                    <SelectInput label="Course" bindKey="name" payloadKey="sid" name="courseSid" option={course} />
-                                                </div>
-                                                <div className="col-6">
-                                                <SelectInput label="Instructor" bindKey="name" payloadKey="sid" name="instructor" option={instructor} />
-                                            </div>
-                                            </Form.Group>
-                                        </div>
-                                        {/* modal footer which contains action button to save data or cancel current action */}
-                                        <footer className="jcb">
-                                            <div>
-                                            </div>
-                                            <div>
-                                                <Button type="submit">Create</Button>
-                                            </div>
-                                        </footer>
-                                    </form>
-                                    }
-                                </Formik>
-                            </div>
-
-                        </Modal.Body>
-                    </Modal>
-    </>)
-}
 
 

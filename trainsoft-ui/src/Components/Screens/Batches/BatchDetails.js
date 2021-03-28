@@ -9,10 +9,12 @@ import useFetch from "../../../Store/useFetch";
 import moment from 'moment'
 import AppContext from "../../../Store/AppContext";
 import RestService from "../../../Services/api.service";
+import useToast from "../../../Store/ToastHook";
 
 
 const BatchesDetails = ({location}) => {
     const {spinner} = useContext(AppContext)
+    const Toast = useToast()
     const [participant, setParticipant]= useState([])
 
        // initialize  component
@@ -80,15 +82,11 @@ const BatchesDetails = ({location}) => {
             setConfiguration({ ...configuration });
         },
         actions: [
-            {
-                "title": "Edit",
-                "icon": ICN_EDIT,
-                "onClick": (data, i) => console.log(data)
-            },
+     
             {
                 "title": "Delete",
                 "icon": ICN_TRASH,
-                "onClick": (data, i) => console.log(data)
+                "onClick": (data, i) => deleteBatchesParticipant(data.vASid)
             }
         ],
         actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
@@ -97,7 +95,7 @@ const BatchesDetails = ({location}) => {
         // call this callback function onSearch method in input field on onChange handler eg: <input type="text" onChange={(e) => onSearch(e.target.value)}/>
         // this search is working for search enable fields(column) eg. isSearchEnabled: true, in tale column configuration
         searchQuery: "",
-        tableCustomClass: "ng-table sort-enabled table-borderless", // table custom class
+        tableCustomClass: "ng-table sort-enabled", // table custom class
         showCheckbox: false,
         clearSelection: false
     });
@@ -113,6 +111,7 @@ const BatchesDetails = ({location}) => {
                         let data = res.appuser
                         data.role= res.role
                         data.department = res.departmentVA ? res.departmentVA.department.name : ''
+                        data.vASid = res.sid
                         return data
                     })
                     setParticipant(val)
@@ -127,6 +126,26 @@ const BatchesDetails = ({location}) => {
             console.error("error occur on getAllBatch()", err)
         }
     }
+
+        // delete batch by batch id
+        const deleteBatchesParticipant = async (vASid) => {
+            try {
+                spinner.show();
+                RestService.deleteBatchesParticipant(location.state.sid,vASid).then(
+                    response => {
+                        Toast.success({ message: `Delete participant successfully` });
+                        getParticipant()
+                    },
+                    err => {
+                        spinner.hide();
+                    }
+                ).finally(() => {
+                    spinner.hide();
+                });
+            } catch (err) {
+                console.error("error occur on deleteBatches()", err)
+            }
+        }
 
      // search batches
      const searchParticipate = (name)=> {

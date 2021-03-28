@@ -7,6 +7,10 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.trainsoft.instructorled.customexception.ApplicationException;
+import com.trainsoft.instructorled.to.CommonRes;
+import com.trainsoft.instructorled.to.FileTO;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,10 +21,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @Service
-@NoArgsConstructor
 public class AWSUploadClient {
 
     private AmazonS3 s3Client;
@@ -55,27 +61,51 @@ public class AWSUploadClient {
     }
 
     private String generateFileName(MultipartFile multiPart) {
-        return new Date().getTime() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
+        return multiPart.getOriginalFilename()+"_"+new Date().getTime();
     }
 
     private void uploadFileTos3bucket(String fileName, File file) {
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, file)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
+
     }
 
-    public String uploadFile(MultipartFile multipartFile) {
+    public CommonRes  uploadFiles(MultipartFile[] files) {
+        FileTO message;
+        List<FileTO> fileNames = new ArrayList<>();
+        try {
+            for (MultipartFile file : Arrays.asList(files)) {
+                message=uploadFile(file);
+                fileNames.add(message);
+            }
+        }catch (Exception e) {
+            throw new ApplicationException("while uploading files, throwing error");
+        }
+        return new CommonRes(JsonUtils.toJson(fileNames));
+    }
 
+   // public String uploadFile(MultipartFile multipartFile) {
+    public FileTO uploadFile(MultipartFile multipartFile) {
         String fileUrl = "";
         try {
             File file = convertMultiPartToFile(multipartFile);
             String fileName = generateFileName(multipartFile);
-            fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
+            String fileType=multipartFile.getContentType();
+            long fileSize=multipartFile.getSize();
+            fileUrl = endpointUrl + "/"+ fileName;
+            FileTO fileTO=new FileTO();
+            fileTO.setFileName(multipartFile.getOriginalFilename());
+            fileTO.setFileType(fileType);
+            fileTO.setFileUrl(fileUrl);
+            fileTO.setFileSize(fileSize);
+            fileTO.setMFileName(fileName);
+
             uploadFileTos3bucket(fileName, file);
             file.delete();
+            return fileTO;
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new ApplicationException("while uploading file, throwing error");
         }
-        return fileUrl;
     }
 
     public String deleteFileFromS3Bucket(String fileUrl) {

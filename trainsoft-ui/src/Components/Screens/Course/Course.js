@@ -19,7 +19,7 @@ import AppContext from "../../../Store/AppContext";
 import { getAllCourse } from "../../../Services/service";
 
 const Courses = ({ location }) => {
-    const { user, spinner, setCourse,course } = useContext(AppContext)
+    const { user, spinner, setCourse,ROLE } = useContext(AppContext)
     const Toast = useToast();
     const [show, setShow] = useState(false);
     const [courseList, setCourseList] = useState([])
@@ -42,15 +42,15 @@ const Courses = ({ location }) => {
                 render: (data) => <Link to={'course-details'} state={{ title: "Course", subTitle: data.name, path: "course", rowData: data, sid: data.sid }} className="dt-name">{data.name}</Link>
 
             },
-            "description": {
-                "title": "Description",
-                "sortDirection": null,
-                "sortEnabled": true,
-                isSearchEnabled: false,
+            // "description": {
+            //     "title": "Description",
+            //     "sortDirection": null,
+            //     "sortEnabled": true,
+            //     isSearchEnabled: false,
 
-            },
-            "learner": {
-                "title": "learners",
+            // },
+            "noOfTrainings": {
+                "title": "No. of Trainings",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false
@@ -61,7 +61,7 @@ const Courses = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => moment(data.createdOn).format('Do MMMM YYYY')
+                render: (data) => moment(data.createdOn).format('DD/MM/YYYY')
             }
         },
         headerTextColor: '#454E50', // user can change table header text color
@@ -222,7 +222,7 @@ const Courses = ({ location }) => {
                onChange: (e) => e.length === 0 && getCourse(e),
                onEnter:(e)=> searchCourse(e),
                actionClick: ()=> {setShow(true);setIsEdit(false);setInitialValues({name: '',description: ''})},
-               showAction: user.role === 'ADMIN' ? true : false
+               showAction: user.role === ROLE.SUPERVISOR ? true : false
          }} />
         </div>
       
@@ -232,7 +232,7 @@ const Courses = ({ location }) => {
                             onSubmit={(value) => { !isEdit ? createCourse(value) : editCourse(value) }}
                             initialValues={initialValues}
                         >
-                            {({ handleSubmit, isSubmitting, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
+                            {({ handleSubmit, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
                                 <div>
                                     <Form.Group className="row">
                                         <div className="col-12">
@@ -259,7 +259,6 @@ const Courses = ({ location }) => {
         
         <DynamicTable {...{ configuration, sourceData: courseList.slice().reverse(),onPageChange: (e) => getCourse(e),count}} />
     </div>
-
     </>)
 }
 

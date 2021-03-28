@@ -1,0 +1,199 @@
+.main-title{
+    color: #2D62ED !important;
+    font-size: 28px;
+    font-weight: bold;
+}
+.pg-header {
+    padding: 10px 40px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    background: white;
+    z-index: 999999;
+    position: sticky;
+    top: 0px;
+    box-shadow: 0px 0px 4px 0px #4e4e4e46;
+}
+.navbar-light .navbar-nav .nav-link {
+    color: #333333;
+    text-align: left;
+    font: normal normal 600 16px/22px Open Sans !important;
+    letter-spacing: 0px;
+    color: #333333;
+    opacity: 1;
+    font-weight: bold;
+}
+.pg-header a{
+    color: #333333;
+    font-weight: bold;
+}
+.nav-active{
+    color: #2D62ED !important;
+}
+
+.section{
+    min-height: 100vh;
+    height: 100%;
+    padding: 40px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: white;
+}
+.section-dk{
+    background: #F2F2F2;
+}
+.pg-img img{
+    width: 100%;
+}
+.pg-title-sm{
+    text-align: left;
+    font: normal normal 300 26px/36px Open Sans;
+    letter-spacing: 0px;
+    color: #111111;
+    opacity: 1;
+    font-size: 26px;
+}
+.pg-title{
+    font-size: 36px;
+    text-align: left;
+    font: normal normal bold 36px/49px Open Sans;
+    letter-spacing: 0px;
+    color: #111111;
+    opacity: 1;
+    padding: 15px 0px;
+}
+.pg-title2{
+    font: normal normal bold 28px/38px Open Sans;
+    letter-spacing: 0px;
+    color: #111111;
+    opacity: 1;
+}
+.pg-title3 {
+    font: normal normal bold 20px Open Sans;
+    letter-spacing: 0px;
+    color: #111111;
+    opacity: 1;
+}
+.pg-desc{
+    font: normal normal normal 22px Open Sans;
+    letter-spacing: 0px;
+    color: #333333;
+    opacity: 1;
+    font-size: 16px;
+    padding: 15px 0px;
+}
+.pg-desc1{
+    text-align: center;
+    font: normal normal normal 16px/22px Open Sans;
+    letter-spacing: 0px;
+    color: #555555;
+    opacity: 1;
+}
+.sec-about{
+    text-align: center;
+}
+.edu-img img{
+    width: 100%;
+}
+.contact-info svg{
+    color: #2D62ED;
+}
+.contact-info .MuiSvgIcon-root{
+    font-size: 2.5rem;
+}
+/* ..........page-card........ */
+.page-card-container{
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 0px 80px;
+}
+.page-card{
+    width: 380px;
+    background: white;
+    padding: 30px;
+    border-radius: 4px;
+}
+.page-card-title{
+    text-align: left;
+    font: normal normal bold 18px/22px Open Sans;
+    letter-spacing: 0px;
+    color: #2D62ED;
+    opacity: 1;
+    cursor: pointer;
+}
+.page-card-subTitle{
+    text-align: left;
+    font: normal normal normal 14px/22px Open Sans;
+    letter-spacing: 0px;
+    color: #111111;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+}
+.page-card-body{
+    text-align: left;
+    font: normal normal normal 12px/22px Open Sans;
+    letter-spacing: 0px;
+    color: #333333;
+    text-align: justify;
+}
+.page-input .input-wrapper{
+    width: 100%;
+}
+.page-input .input-field {
+    border-radius: 0px;
+    padding: 5px 0px;
+    background: transparent !important;
+    border: 0px solid !important;
+    border-bottom: 1.5px solid #8282826b !important;
+}
+.page-input .input-field .form-control-sm {
+    height: calc(1.5em + .5rem + 2px);
+    padding: .25rem 0rem;
+}
+.pg-footer{
+    background: #2F63ED;
+}
+.pg-footer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* height: 80px; */
+    color: rgba(255, 255, 255, 0.719);
+    padding: 20px 40px;
+    font-size: 14px;
+}
+.btn-mes{
+    padding: 10px 15px;
+    align-items: center;
+    border-radius: 2px;
+    text-align: center;
+    background: #F0861D;
+    color:white;
+}
+.btn-mesR{
+    width: 150px;
+    padding: 8px 15px;
+    align-items: center;
+    border-radius: 30px;
+    text-align: center;
+    background: #F0861D;
+    color:white;
+    cursor: pointer;
+}
+@media only screen and (max-width: 600px) {
+    .section {
+        padding: 10px;
+        min-height: 100%;
+    }
+    .pg-img img,.edu-img img {
+        width: 300px;
+    }
+    .pg-title{
+        font-size: 20px;
+        font: normal normal bold 20px/25px Open Sans;
+    }
+
+  }

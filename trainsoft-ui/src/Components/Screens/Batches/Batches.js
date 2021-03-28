@@ -27,7 +27,7 @@ const initialVal = {
 }
 
 const Batch = ({ location }) => {
-    const { user, spinner, setBatches, batches } = useContext(AppContext)
+    const { user, spinner, setBatches, ROLE } = useContext(AppContext)
     const Toast = useToast();
     const [show, setShow] = useState(false);
     const [batchList, setBatchList] = useState([])
@@ -66,12 +66,12 @@ const Batch = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => moment(data.createdOn).format('Do MMMM YYYY')
+                render: (data) => moment(data.createdOn).format('DD/MM/YYYY')
             },
             "status": {
                 "title": "Status",
                 "sortDirection": null,
-                "sortEnabled": true,
+                "sortEnabled": false,
                 isSearchEnabled: false,
                 render: (data) => <Toggle id={data.sid} onChange={() => { getBatchBySid(data.sid, true); setIsEdit(false) }} checked={data.status === 'ENABLED' ? true : false} />
             }
@@ -352,11 +352,10 @@ const Batch = ({ location }) => {
                 onChange: (e) => e.length === 0 && getAllBatchByPage(),
                 onEnter: (e) => searchBatch(e),
                 actionClick: () => { setShow(true); setIsEdit(false);setIsBatch(false) },
-                showAction: user.role === 'ADMIN' ? true : false
+                showAction: user.role === ROLE.SUPERVISOR ? true : false
             }} />
         </div>
         <div>
-            {/* {user.role === 'admin' && <Button onClick={() => setShow(true)}> + Add New </Button>} */}
             <BsModal {...{ show, setShow, headerTitle: !isEdit ? "Add new Batch" : "Update Batch", size: "lg" }}>
                 <div className="form-container">
                     <Formik
@@ -386,7 +385,7 @@ const Batch = ({ location }) => {
                                 </div>
                             </div>
                             <footer className="jcb">
-                            <div> <a href="https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx">Sample template</a> </div>
+                            <div> <a href={GLOBELCONSTANT.SAMPLE_TEMPLATE}>Sample template</a> </div>
                                 <div>
                                     <Button type="submit" > {isEdit ? 'Update Batch' : 'Create Batch'}</Button>
                                 </div>

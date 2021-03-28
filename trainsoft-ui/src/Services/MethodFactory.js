@@ -29,28 +29,27 @@ export const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
       }
       return courseName
   }
-//   export const UploadAttachments = async (link,file, token, bucketName) => {
-//     return new Promise((resolve, reject) => {
-//         let data = new FormData();
-//         for (let i = 0, l = file.length; i < l; i++)
-//             data.append("files", file[i])
-//         let xhr = new XMLHttpRequest();
-//         xhr.addEventListener("readystatechange", function () {
-//             let response = null;
-//             try {
-//                 response = JSON.parse(this.responseText);
-//             } catch (err) {
-//                 response = this.responseText
-//             }
-//             if (this.readyState === 4 && this.status >= 200 && this.status <= 299) {
-//                 resolve([response, this.status, this.getAllResponseHeaders()]);
-//             } else if (this.readyState === 4 && !(this.status >= 200 && this.status <= 299)) {
-//                 reject([response, this.status, this.getAllResponseHeaders()]);
-//             }
-//         });
-//         xhr.open("POST", link);
-//         xhr.setRequestHeader("bucketName", bucketName);
-//         xhr.setRequestHeader("Authorization", token);
-//         xhr.send(data);
-//     })
-// }
+  export const UploadAttachments = async (link, file, token) => {
+    return new Promise((resolve, reject) => {
+        let data = new FormData();
+        for (let i = 0, l = file.length; i < l; i++)
+            data.append("files", file[i])
+        let xhr = new XMLHttpRequest();
+        xhr.addEventListener("readystatechange", function () {
+            let response = null;
+            try {
+                response = JSON.parse(this.responseText);
+            } catch (err) {
+                response = this.responseText
+            }
+            if (this.readyState === 4 && this.status >= 200 && this.status <= 299) {
+                resolve([response, this.status, this.getAllResponseHeaders()]);
+            } else if (this.readyState === 4 && !(this.status >= 200 && this.status <= 299)) {
+                reject([response, this.status, this.getAllResponseHeaders()]);
+            }
+        });
+        xhr.open("POST", link);
+        xhr.setRequestHeader("Authorization", token);
+        xhr.send(data);
+    })
+}

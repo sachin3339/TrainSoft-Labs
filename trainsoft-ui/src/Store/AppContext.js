@@ -1,4 +1,5 @@
 import React, { useState,useReducer } from 'react';
+import GLOBELCONSTANT from '../Constant/GlobleConstant';
 import { TokenService } from '../Services/storage.service';
 import useSpinner from './SpinnerHook';
 const AppContext = React.createContext({});
@@ -48,6 +49,7 @@ export const AppProvider = (props) => {
     }
    
     const appData = {
+        ROLE: GLOBELCONSTANT.ROLE,
         spinner,
         ...authState,
         setUserValue,

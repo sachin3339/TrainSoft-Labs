@@ -12,14 +12,12 @@ import com.trainsoft.instructorled.service.ITrainingService;
 import com.trainsoft.instructorled.to.*;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigInteger;
 import java.time.Instant;
@@ -186,7 +184,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 trainingSession.setStartTime(new Date(trainingSessionTO.getStartTime()));
                 trainingSession.setEndTime(new Date(trainingSessionTO.getEndTime()));
                 trainingSession.setSessionDate(new Date(trainingSessionTO.getSessionDate()));
-                //trainingSession.setAssets(awsUploadClient.uploadFile(file));
+                trainingSession.setAssets(trainingSessionTO.getAssets());
                 TrainingSessionTO savedTrainingSessionTO = mapper.convert(trainingSessionRepository.save(trainingSession), TrainingSessionTO.class);
                 savedTrainingSessionTO.setCreatedByVASid(virtualAccount.getStringSid());
                 savedTrainingSessionTO.setCourseSid(course.getStringSid());
@@ -214,10 +212,12 @@ public class TrainingServiceImpl implements ITrainingService {
                         (BaseEntity.hexStringToByteArray(trainingSessionTO.getCourseSid()));
                 TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(trainingSessionTO.getSid()));
                 trainingSession.setUpdatedBy(virtualAccount);
+                trainingSession.setAgendaDescription(trainingSessionTO.getAgendaDescription());
                 trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 trainingSession.setStartTime(new Date(trainingSessionTO.getStartTime()));
                 trainingSession.setEndTime(new Date(trainingSessionTO.getEndTime()));
                 trainingSession.setSessionDate(new Date(trainingSessionTO.getSessionDate()));
+                trainingSession.setAssets(trainingSessionTO.getAssets());
                 TrainingSessionTO savedTrainingSessionTO = mapper.convert(trainingSessionRepository.save(trainingSession), TrainingSessionTO.class);
                 savedTrainingSessionTO.setCreatedByVASid(virtualAccount.getStringSid());
                 savedTrainingSessionTO.setCourseSid(course.getStringSid());
