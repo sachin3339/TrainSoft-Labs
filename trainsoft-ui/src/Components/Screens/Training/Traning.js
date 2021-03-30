@@ -25,25 +25,25 @@ const initialVal = {
     startDate: '',
     endDate: '',
     trainingBatchs: '',
-    instructorName:""
+    instructorName: ""
 }
 
 const Trainings = ({ location }) => {
-    const { setCourse,setBatches,ROLE, spinner, user } = useContext(AppContext)
+    const { setCourse, setBatches, ROLE, course, spinner, user, batches } = useContext(AppContext)
     const { setTraining } = useContext(TrainingContext)
     const Toast = useToast()
     const [show, setShow] = useState(false);
     const [trainingList, setTrainingList] = useState([])
-    const [isEdit,setIsEdit] = useState(false);
-    const [initialValues,setInitialValue] = useState(initialVal)
-    const [count,setCount] =  useState(0)
-  
+    const [isEdit, setIsEdit] = useState(false);
+    const [initialValues, setInitialValue] = useState(initialVal)
+    const [count, setCount] = useState(0)
+
     // get all batches
     const allBatches = useFetch({
         method: "get",
         url: GLOBELCONSTANT.BATCHES.GET_BATCH_LIST,
         errorMsg: 'error occur on get Batches'
-     });
+    });
 
 
     const [configuration, setConfiguration] = useState({
@@ -53,7 +53,7 @@ const Trainings = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link onClick={() => setTraining(data)} to={`training-details`} state={{ title: 'Training', rowData: data,sid:data.sid, subTitle: "Training Info", subPath: '/' }} className="dt-name">{data.name}</Link>
+                render: (data) => <Link onClick={() => setTraining(data)} to={`training-details`} state={{ title: 'Training', rowData: data, sid: data.sid, subTitle: "Training Info", subPath: '/' }} className="dt-name">{data.name}</Link>
 
             },
             "noOfBatches": {
@@ -97,7 +97,7 @@ const Trainings = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": false,
                 isSearchEnabled: false,
-                render: (data) => <Toggle onChange={()=> user.role === ROLE.SUPERVISOR && getTrainingsBySid(data.sid,"status")} id={data.sid} checked={data.status === 'ENABLED' ? true : false} />
+                render: (data) => <Toggle onChange={() => user.role === ROLE.SUPERVISOR && getTrainingsBySid(data.sid, "status")} id={data.sid} checked={data.status === 'ENABLED' ? true : false} />
             },
 
         },
@@ -110,19 +110,19 @@ const Trainings = ({ location }) => {
             configuration.sortDirection = configuration.columns[sortKey].sortDirection;
             setConfiguration({ ...configuration });
         },
-       actions: user.role === ROLE.SUPERVISOR ? [
+        actions: user.role === ROLE.SUPERVISOR ? [
             {
                 "title": "Edit",
                 "icon": ICN_EDIT,
-                "onClick": (data, i) => getTrainingsBySid(data.sid,"edit")
+                "onClick": (data, i) => getTrainingsBySid(data.sid, "edit")
             },
             {
                 "title": "Delete",
                 "icon": ICN_TRASH,
                 "onClick": (data) => deleteTraining(data.sid)
             }
-            
-        ] :[],
+
+        ] : [],
         actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
         actionVariant: "", // user can pass action button variant like primary, dark, light,
         actionAlignment: true, // user can pass alignment property of dropdown menu by default it is alignLeft
@@ -134,22 +134,27 @@ const Trainings = ({ location }) => {
         clearSelection: false,
     });
 
-// get training details by sid
-    const getTrainingsBySid = async (sid, type="get") => {
+    // get training details by sid
+    const getTrainingsBySid = async (sid, type = "get") => {
         try {
             RestService.getTrainingBySid(sid).then(
                 response => {
                     response && response.data && setTraining(response.data);
                     type === "status" && changeStatus(response.data)
-                    if(type==="edit"){
-                        let intVal = response.data                        
-                         setInitialValue(intVal)
-                         setShow(true)
-                         setIsEdit(true)
+                    if (type === "edit") {
+                        let intVal = response.data
+                        intVal.courseSid = course.find(res => res.sid === response.data.courseSid)
+                        intVal.instructor = (response.data.instructor !== null) ? { ...response.data.instructor.appuser, "vSid": response.data.instructor.sid } : ''
+                        intVal.trainingBatchs = response.data.trainingBatchs.map(res => {
+                            return batches.find(resp => resp.sid === res.batchSid)
+                        })
+                        setInitialValue(intVal)
+                        setShow(true)
+                        setIsEdit(true)
                     }
                 },
                 err => {
-                   console.error("",err)
+                    console.error("", err)
                 }
             )
         } catch (err) {
@@ -162,7 +167,7 @@ const Trainings = ({ location }) => {
         try {
             spinner.show()
             let payload = data
-            payload.status = data.status === "ENABLED" ? "DISABLED": "ENABLED"
+            payload.status = data.status === "ENABLED" ? "DISABLED" : "ENABLED"
             RestService.editTraining(payload).then(res => {
                 getTrainings()
                 spinner.hide()
@@ -172,7 +177,8 @@ const Trainings = ({ location }) => {
                 spinner.hide()
                 console.error(err)
             }
-            )}
+            )
+        }
         catch (err) {
             spinner.hide()
             console.error('error occur on changeStatus', err)
@@ -237,12 +243,12 @@ const Trainings = ({ location }) => {
         }
     }
 
-       // get training count
-       const getTrainingCount = async () => {
+    // get training count
+    const getTrainingCount = async () => {
         try {
             RestService.getCount("vw_training").then(
                 response => {
-                 setCount(response.data);
+                    setCount(response.data);
                 },
                 err => {
                     spinner.hide();
@@ -269,13 +275,13 @@ const Trainings = ({ location }) => {
                     location,
                     onChange: (e) => e.length === 0 && getTrainings(),
                     onEnter: (e) => searchTraining(e),
-                    actionClick : () => {setShow(true);setInitialValue(initialVal);setIsEdit(false)},
-                    showAction: user.role === ROLE.SUPERVISOR ? true: false
+                    actionClick: () => { setShow(true); setInitialValue(initialVal); setIsEdit(false) },
+                    showAction: user.role === ROLE.SUPERVISOR ? true : false
                 }} />
             </div>
 
-            <AddEditTraining {...{getTrainings, show, setShow,initialValues,isEdit }}/>
-            <DynamicTable {...{count, configuration, sourceData: trainingList, onPageChange: (e) => getTrainings(e) }} />
+            <AddEditTraining {...{ getTrainings, show, setShow, initialValues, isEdit }} />
+            <DynamicTable {...{ count, configuration, sourceData: trainingList, onPageChange: (e) => getTrainings(e) }} />
         </div>
     </>)
 }

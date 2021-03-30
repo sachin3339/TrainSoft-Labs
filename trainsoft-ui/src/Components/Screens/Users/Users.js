@@ -28,6 +28,7 @@ const User = ({ location }) => {
     const [isEmail, setIsEmail] = useState(false)
     const [isEdit, setIsEdit] = useState(false)
     const [initialValue, setInitialValue] = useState({})
+
     // get all batches
     const allDepartment = useFetch({
         method: "get",
@@ -171,9 +172,11 @@ const User = ({ location }) => {
             RestService.getUserDetails(sid).then(
                 response => {
                     if (edit) {
-                        setInitialValue(response.data)
+                        let inValue = response.data
+                        inValue.appuser.accessType = GLOBELCONSTANT.ACCESS_LEVEL.find(res=> res.key === response.data.appuser.accessType)
+                        inValue.departmentVA.departmentRole = response.data.departmentVA &&  GLOBELCONSTANT.DEPARTMENT_ROLE.find(res=> res.key ===  response.data.departmentVA.departmentRole)
+                        setInitialValue(inValue)
                         setShow(true)
-                        
                     }
                     spinner.hide();
                 },
@@ -197,6 +200,8 @@ const User = ({ location }) => {
             val.appuser.accessType = data.appuser.accessType.key
             val.departmentVA.department.name = data.departmentVA.department.name
             val.departmentVA.departmentRole = data.departmentVA.departmentRole.key
+            val.departmentVA.department = data.departmentVA.department
+
             RestService.updateParticipant(val).then(resp => {
                 setShow(false)
                 getUsers()
@@ -414,7 +419,7 @@ const User = ({ location }) => {
                         } : initialValue}
                     // validationSchema={schema}
                     >
-                        {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
+                        {({ handleSubmit, isSubmitting, dirty, setFieldValue,values }) => <form onSubmit={handleSubmit} className="create-batch" >
                             <div>
                                 <Form.Group className="row">
                                     <div className="col-6">
@@ -434,10 +439,10 @@ const User = ({ location }) => {
                                 </Form.Group>
                                 <Form.Group className="row">
                                     <div className="col-6">
-                                        <SelectInput label="Department" name="departmentVA.department" bindKey="name" option={allDepartment.response} />
+                                        <SelectInput label="Department" name="departmentVA.department" value={values.departmentVA.department} bindKey="name" option={allDepartment.response} />
                                     </div>
                                     <div className="col-6">
-                                        <SelectInput label="Role" name="departmentVA.departmentRole" bindKey="name" option={GLOBELCONSTANT.DEPARTMENT_ROLE} />
+                                        <SelectInput label="Role" name="departmentVA.departmentRole" value={values.departmentVA.departmentRole} bindKey="name" option={GLOBELCONSTANT.DEPARTMENT_ROLE} />
                                     </div>
                                 </Form.Group>
                                 <Form.Group className="row">
@@ -445,7 +450,7 @@ const User = ({ location }) => {
                                         <TextInput label="Password" name="appuser.password" />
                                     </div>
                                     <div className="col-6">
-                                        <SelectInput label="Privilege/Access Level" name="appuser.accessType" bindKey="name" option={GLOBELCONSTANT.ACCESS_LEVEL} />
+                                        <SelectInput label="Privilege/Access Level" value={values.appuser.accessType} name="appuser.accessType" bindKey="name" option={GLOBELCONSTANT.ACCESS_LEVEL} />
                                     </div>
                                 </Form.Group>
                                 <Form.Group className="row">
