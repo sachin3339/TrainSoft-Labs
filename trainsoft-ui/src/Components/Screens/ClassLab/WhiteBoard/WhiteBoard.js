@@ -1,7 +1,9 @@
 import { useState,useEffect } from 'react';
+import './boardStyle.css'
+
 // import { SketchField, Tools } from 'react-sketch';
 import { ICN_CIRCLE, ICN_PAINT, ICN_PEN, ICN_SELECT, ICN_STOP, ICN_TEXT_FIELD , ICN_CALL_MADE, ICN_EDIT, ICN_DELETE} from '../../../Common/Icon';
-import './boardStyle.css'
+
 const WhiteBoard = ({className}) => {
     // const [toolType, setToolType] = useState(Tools.Select)
     const [color,setColor] = useState("black")
@@ -77,6 +79,7 @@ const WhiteBoard = ({className}) => {
                         {ICN_SELECT}
                     </div> */}
                 </div>
+
                 <div className="full-w">
                 {/* <SketchField
                     width='920px'
