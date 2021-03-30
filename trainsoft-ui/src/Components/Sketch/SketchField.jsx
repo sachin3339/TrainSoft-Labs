@@ -726,7 +726,6 @@ class SketchField extends PureComponent {
           Sorry, Canvas HTML5 element is not supported by your browser
           :(
         </canvas>
-        adAS
       </div>
     )
   }
