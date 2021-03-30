@@ -105,7 +105,7 @@ const Courses = ({ location }) => {
                 "status": "ENABLED",
             }
             RestService.CreateCourse(payload).then(res => {
-                 setCourseList([...courseList, res.data])
+                getCourse();
                 getAllCourse(setCourse) 
                 Toast.success({ message: `Course is Successfully Created` });
                 setShow(false)

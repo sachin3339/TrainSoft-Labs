@@ -49,7 +49,7 @@ const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) =
                 })
                 let payload = data
                 payload.courseSid = data.courseSid.sid ? data.courseSid.sid : data.courseSid
-                payload.instructor = {"sid":data.instructor.vSid}
+                payload.instructor = {"sid": data.instructor.vSid}
                 payload.trainingBatchs = batcheId
                 payload.instructorName = data.instructor.name
                 payload.status = "ENABLED"
@@ -105,13 +105,13 @@ const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) =
             getAllInstructor()
         }, [])
     return (<>
-                    <Modal
-                        size="lg"
-                        show={show}
-                        onHide={() => setShow(false)}
-                        dialogClassName="modal-90w"
-                        aria-labelledby="example-custom-modal-styling-title"
-                    >
+                <Modal
+                    size="lg"
+                    show={show}
+                    onHide={() => setShow(false)}
+                    dialogClassName="modal-90w"
+                    aria-labelledby="example-custom-modal-styling-title"
+                >
                         <Modal.Body className="px-5 py-4">
                             <div className="jcb mb-3">
                                 <div className="title-md ">{isEdit ? "Update" : 'Add'} Training</div>
@@ -132,7 +132,7 @@ const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) =
                                                     <TextInput label="Training Name" name="name" />
                                                 </div>
                                                 <div className="col-6">
-                                                    <MultiSelectInput  label="Select Batch(s)" footerAction={true}  bindKey="name" option={batches} name="trainingBatchs" />
+                                                    <MultiSelectInput  label="Select Batch(s)"  footerAction={true} initialVal={values.trainingBatchs}  bindKey="name" bindLevel="name" option={batches} name="trainingBatchs" />
                                                 </div>
                                             </Form.Group>
                                             <Form.Group className="row">
@@ -145,10 +145,10 @@ const AddEditTraining = ({ show, setShow ,getTrainings,initialValues, isEdit}) =
                                             </Form.Group>
                                             <Form.Group className="row">
                                                 <div className="col-6">
-                                                    <SelectInput label="Course" bindKey="name" value={course.find(res=>res.sid === values.courseSid)} payloadKey="sid" name="courseSid" option={course} />
+                                                    <SelectInput label="Course" bindKey="name" value={values.courseSid} payloadKey="sid" name="courseSid" option={course} />
                                                 </div>
                                                 <div className="col-6">
-                                                <SelectInput label="Instructor" bindKey="name" payloadKey="sid" name="instructor" option={instructor} />
+                                                <SelectInput label="Instructor" bindKey="name" value={values.instructor} payloadKey="sid" name="instructor" option={instructor} />
                                             </div>
                                             </Form.Group>
                                         </div>

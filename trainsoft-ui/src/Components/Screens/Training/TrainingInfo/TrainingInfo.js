@@ -159,7 +159,6 @@ const TrainingInfo = ({location}) => {
                             <div className="cat-title-sm">{ moment(res.updatedOn).format("DD/MM/YYYY")}</div>
                             <div className="mt-3">{res.agendaDescription}</div>
                         </div>)}
-
                     </div>
                 </div>
             </div>
