@@ -27,3 +27,9 @@
 .session-modal-container{
     width: 80%;
 }
+.downloadLink{
+    background: #80808014;
+    padding: 2px 10px;
+    border-radius: 2px;
+    margin-right: 10px;
+}
