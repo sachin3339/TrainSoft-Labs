@@ -106,6 +106,7 @@ export const SelectInput = (props) => {
                     onSelect: setValue,
                     title:  `Select ${props.label}`,
                     selectedVal: props.value,
+                    disabled: props.disabled
                 }} />
             </div>
             <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
@@ -136,7 +137,7 @@ export const MultiSelectInput = (props) => {
                 onSelect={(data) => setValue(data)}
                     checked={false}
                     selectAllMsg="All Selected"
-                    initialData = {props.initialData ? props.initialData : []}
+                    initialData = {props.initialVal ? props.initialVal : []}
                 />
             </div>
             <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />

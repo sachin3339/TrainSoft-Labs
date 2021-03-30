@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Form } from 'react-bootstrap'
-import { Formik, Field } from 'formik';
+import { Formik, Field, validateYupSchema } from 'formik';
 import { ICN_TRASH, ICN_EDIT, ICN_CLOSE, ICN_DELETE } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
 import { TextInput, DateInput, SelectInput } from "../../Common/InputField/InputField";
@@ -367,14 +367,14 @@ const Batch = ({ location }) => {
                         } : initialValue}
                         validationSchema={schema}
                     >
-                        {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
+                        {({ handleSubmit, isSubmitting, dirty, setFieldValue,values }) => <form onSubmit={handleSubmit} className="create-batch" >
                             <div>
                                 <Form.Group className="row">
                                     <div className="col-6">
                                         <TextInput label="Batch Name" isNotValid={isBatch} onBlur={(e)=> validateBatch(e.target.value)} name="name" />
                                     </div>
                                     <div className="col-6">
-                                        <SelectInput label="Training Type" option={['INSTRUCTOR_LED', 'SELF', 'OFFLINE']} name="trainingType" />
+                                        <SelectInput label="Training Type" value={values.trainingType} option={['INSTRUCTOR_LED', 'SELF', 'OFFLINE']} name="trainingType" />
                                     </div>
                                 </Form.Group>
                                 <div>

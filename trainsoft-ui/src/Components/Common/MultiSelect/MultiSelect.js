@@ -85,22 +85,6 @@ const MultiSelect = ({ dataSet, className = null,footerClick, selectAllMsg = "",
   const selectAll = (e) => e ? setMapItem(dataSet.selectItems) : setMapItem([])
 
 
-
-  // pass the data on parent component
-  useEffect(() => {
-    !footerAction && mapItem && onSelect(mapItem)
-  }, [mapItem])
-
-  // take initial values
-  useEffect(() => {
-    initialData && setMapItem(initialData)
-  }, [])
-
-
-  useEffect(() => {
-    selectAll(checked)
-  }, [checked])
-
   // view render data
   const renderData = () => {
     let joinData = ''
@@ -158,6 +142,21 @@ const MultiSelect = ({ dataSet, className = null,footerClick, selectAllMsg = "",
     }
 
   }
+
+   // pass the data on parent component
+   useEffect(() => {
+    !footerAction && mapItem && onSelect(mapItem)
+  }, [mapItem])
+
+
+  useEffect(() => {
+    selectAll(checked)
+  }, [checked])
+
+    // take initial values
+    useEffect(() => {
+      initialData && setMapItem(initialData)
+    }, [])
 
   return (<>
     {dataSet.selectItems && mapItem && <div className="dropdown-container">

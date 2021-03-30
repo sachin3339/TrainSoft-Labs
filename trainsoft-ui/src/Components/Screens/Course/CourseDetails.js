@@ -162,7 +162,7 @@ const CourseDetails = ({ location }) => {
         <div className="table-shadow p-3">
         <CardHeader {...{ location, 
                onChange: (e) => e.length === 0 && getSessionByPage(),
-               onEnter:(e)=> console.log(e)
+               onEnter:(e)=> searchSession(e)
          }} >
              <Button className=" ml-2" onClick={() => {setShow(true); setIsEdit(false)}}>+ Add Session</Button>
 
