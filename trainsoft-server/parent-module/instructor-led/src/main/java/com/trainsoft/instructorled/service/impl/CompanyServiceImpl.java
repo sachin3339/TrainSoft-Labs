@@ -23,13 +23,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
 @Slf4j
 public class CompanyServiceImpl implements ICompanyService {
     private IVirtualAccountRepository virtualAccountRepository;
-    private ICompanyRepository repository;
+    private ICompanyRepository companyRepository;
     private IAppUserRepository appUserRepository;
     private IDepartmentRepository departmentRepository;
     private IDepartmentVirtualAccountRepository departmentVARepo;
@@ -37,7 +38,7 @@ public class CompanyServiceImpl implements ICompanyService {
 
     @Override
     public CompanyTO getCompanyBySid(String sid) {
-        Company company = repository.findCompanyBySid(BaseEntity.hexStringToByteArray(sid));
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(sid));
         return mapper.convert(company, CompanyTO.class);
     }
 
@@ -48,7 +49,7 @@ public class CompanyServiceImpl implements ICompanyService {
         company.generateUuid();
         company.setCreatedOn(new Date(epochMilli));
         company.setStatus(InstructorEnum.Status.DISABLED);
-        CompanyTO savedCompanyTO = mapper.convert(repository.save(company), CompanyTO.class);
+        CompanyTO savedCompanyTO = mapper.convert(companyRepository.save(company), CompanyTO.class);
         return savedCompanyTO;
     }
 
@@ -63,7 +64,7 @@ public class CompanyServiceImpl implements ICompanyService {
                 company.generateUuid();
                 company.setCreatedOn(new Date(epochMilli));
                 company.setStatus(InstructorEnum.Status.DISABLED);
-                Company savedCompany = repository.save(company);
+                Company savedCompany = companyRepository.save(company);
                 CompanyTO savedCompanyTO = mapper.convert(savedCompany, CompanyTO.class);
 
                 AppUser appUser = mapper.convert(companyTO.getAppuser(), AppUser.class);
@@ -147,6 +148,19 @@ public class CompanyServiceImpl implements ICompanyService {
         } catch (Exception e) {
             log.error("throwing error while fetching  user details", e.toString());
             throw new IncorrectEmailIdOrPasswordException();
+        }
+    }
+    @Override
+    public boolean validateCompany(String name) {
+        try {
+            List<Company> company=  companyRepository.findCompanyByName(name);
+            if(company!=null && company.size()>0){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (Exception e){
+            throw new ApplicationException(e.getMessage());
         }
     }
 }

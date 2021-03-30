@@ -160,7 +160,7 @@ public class UserController {
             @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
             @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(bulkUploadService.getVirtualAccountByCompanySid(jwt.getCompanySid(),type,pageNo-1,pageNo));
+        return ResponseEntity.ok(bulkUploadService.getVirtualAccountByCompanySid(jwt.getCompanySid(),type,pageNo-1,pageSize));
     }
 
     @GetMapping("participants/batch/{batchSid}")
