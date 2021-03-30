@@ -64,7 +64,7 @@ const SessionList = ({ sessionList = [], role = "SUPERVISOR",onSchedule=()=>{}, 
                             </div>
                             <div className="row mt-2">
                                 <div className="col-md-12">
-                                <div className='flx'><div className="title-sm mr-2">Assets: </div><div>{res.assets ? JSON.parse(res.assets).map(resp=><div><a target="_blank" href={resp.fileUrl}>{resp.fileName}</a></div>): 'N/A'}</div></div>
+                                <div className='aic'><div className="title-sm mr-2">Assets: </div><div className="flx">{res.assets ? JSON.parse(res.assets).map(resp=><div className="downloadLink"><a target="_blank" href={resp.fileUrl}>{resp.fileName}</a></div>): 'N/A'}</div></div>
                                 </div>
                             </div>
                         </div>
