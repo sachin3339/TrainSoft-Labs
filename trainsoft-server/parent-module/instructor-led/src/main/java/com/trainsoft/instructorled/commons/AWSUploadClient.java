@@ -104,6 +104,7 @@ public class AWSUploadClient {
             file.delete();
             return fileTO;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ApplicationException("while uploading file, throwing error");
         }
     }
