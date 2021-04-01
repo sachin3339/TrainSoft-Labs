@@ -68,6 +68,8 @@ const RestService = {
   getUserCount: (type)=> AxiosService.get(GLOBELCONSTANT.PARTICIPANT.GET_USER_COUNT.replace("{type}",type)),
   validateEmail: (email)=> AxiosService.get(GLOBELCONSTANT.PARTICIPANT.EMAIL_VALIDATION.replace("{email}",email)),
   changeUserRole: (role,vSid)=> AxiosService.get(GLOBELCONSTANT.PARTICIPANT.UPDATE_ROLE.replace("{role}",role).replace("{virtualAccountSid}",vSid)),
+  changeDepartmentRole: (role,departmentVASid)=> AxiosService.put(GLOBELCONSTANT.PARTICIPANT.UPDATE_DEPARTMENT_ROLE.replace("{role}",role).replace("{departmentVASid}",departmentVASid)),
+
   changeAndDeleteStatus: (status,vSid)=> AxiosService.put(GLOBELCONSTANT.PARTICIPANT.STATUS_DELETE.replace("{status}",status).replace("{vASid}",vSid)),
 
 

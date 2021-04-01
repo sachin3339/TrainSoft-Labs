@@ -6,42 +6,55 @@ export const AdminConfig = [
         title: "Home",
         pathname: "home",
         disabled: false,
-        role:[GLOBELCONSTANT.ROLE.LEARNER]
+        role:[GLOBELCONSTANT.ROLE.LEARNER],
+        Children:[]
+        
     },
     {
         icon: ICN_DASHBOARD,
         title: "Dashboard",
         pathname: "dashboard",
         disabled: false,
-        role:[GLOBELCONSTANT.ROLE.SUPERVISOR,GLOBELCONSTANT.ROLE.INSTRUCTOR]
+        role:[GLOBELCONSTANT.ROLE.SUPERVISOR,GLOBELCONSTANT.ROLE.INSTRUCTOR],
+        Children:[]
     },
     {
         icon: ICN_ORG_MGT,
         title: "Org. Mgmt",
         pathname: "org-mgmt",
         disabled: true,
-        role:[GLOBELCONSTANT.ROLE.SUPERVISOR]
+        role:[GLOBELCONSTANT.ROLE.SUPERVISOR],
+        Children:[]
     },
     {
         icon: ICN_PARTICIPANT,
         title: "Training",
         pathname: "training",
         disabled: false,
-        role:[GLOBELCONSTANT.ROLE.SUPERVISOR,GLOBELCONSTANT.ROLE.LEARNER,GLOBELCONSTANT.ROLE.INSTRUCTOR]
+        role:[GLOBELCONSTANT.ROLE.SUPERVISOR,GLOBELCONSTANT.ROLE.LEARNER,GLOBELCONSTANT.ROLE.INSTRUCTOR],
+        Children:[]
     },
     {
         icon: ICN_BATCHES,
         title: "Batches",
         pathname: "batches",
         disabled: false,
-        role:[GLOBELCONSTANT.ROLE.SUPERVISOR]
+        role:[GLOBELCONSTANT.ROLE.SUPERVISOR],
+        Children: [
+            {
+                title: "Batch Details",
+                pathName:'batch-details',
+                disabled: false,
+            }
+        ]
     },
     {
         icon: ICN_BATCHES,
         title: "User",
         pathname: "user",
         disabled: false,
-        role:[GLOBELCONSTANT.ROLE.SUPERVISOR]
+        role:[GLOBELCONSTANT.ROLE.SUPERVISOR],
+        Children:[]
 
     },
     {
@@ -49,7 +62,8 @@ export const AdminConfig = [
         title: "Course",
         pathname: "course",
         disabled: true,
-        role:[GLOBELCONSTANT.ROLE.SUPERVISOR]
+        role:[GLOBELCONSTANT.ROLE.SUPERVISOR],
+        Children:[]
     },
     {
         icon: ICN_LAB_STORE,
@@ -76,42 +90,48 @@ export const AdminConfig = [
         title: "Report",
         pathname: "report",
         disabled: true,
-        role:[GLOBELCONSTANT.ROLE.SUPERVISOR,GLOBELCONSTANT.ROLE.INSTRUCTOR,GLOBELCONSTANT.ROLE.LEARNER]
+        role:[GLOBELCONSTANT.ROLE.SUPERVISOR,GLOBELCONSTANT.ROLE.INSTRUCTOR,GLOBELCONSTANT.ROLE.LEARNER],
+        Children:[]
     },
     {
         icon: ICN_CALENDER,
         title: "Calendar",
         pathname: "calender",
         disabled: true,
-        role:[GLOBELCONSTANT.ROLE.SUPERVISOR,GLOBELCONSTANT.ROLE.INSTRUCTOR,GLOBELCONSTANT.ROLE.LEARNER]
+        role:[GLOBELCONSTANT.ROLE.SUPERVISOR,GLOBELCONSTANT.ROLE.INSTRUCTOR,GLOBELCONSTANT.ROLE.LEARNER],
+        Children:[]
     },
     {
         icon: ICN_COMPILER,
         title: "Compiler",
         pathname: "compiler",
         disabled: true,
-        role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR]
+        role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR],
+        Children:[]
     },
     {
         icon: ICN_VSCODE,
         title: "VS Code",
         pathname: "vscode",
         disabled: true,
-        role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR]
+        role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR],
+        Children:[]
     },
     {
         icon: ICN_SUPPORT_HOME,
         title: "Support",
         pathname: "support",
         disabled: true,
-        role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]
+        role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR],
+        Children:[]
     },
     {
         icon: ICN_VSCODE,
         title: "Class",
         pathname: "class",
         disabled: true,
-        role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]
+        role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR],
+        Children:[]
     },
 ]
 

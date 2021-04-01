@@ -1,17 +1,23 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { ICN_NOTIFICATION } from '../../Common/Icon';
 import { CustomToggle } from '../../../Services/MethodFactory';
 import { ProfileImg } from '../../Common/BsUtils';
 import { navigate } from '../../Common/Router';
 import AppContext from '../../../Store/AppContext';
-import './header.css'
 import { TokenService } from '../../../Services/storage.service';
+import './header.css'
+import { AdminConfig } from '../Sidebar/SidebarConfig';
+import BreadcrumbContext from '../../../Store/BreadcrumbContext';
+
 
 
 
 const Header = ({location}) => {
+    const breadcrumbContext = useContext(BreadcrumbContext)
     const {user,setUserValue} = useContext(AppContext)
+    const [bcPath,setBcPath] = useState('/')
+    console.log(location)
 
     // get user name
     const getUserName = (name) =>{
@@ -35,6 +41,20 @@ const Header = ({location}) => {
         }
     }
 
+    useEffect(() => {
+        // if(location.pathname){
+        //     let arr = location.pathname.split('/')
+        //     let path = AdminConfig.find(res=> res.pathname === arr[0])
+        //     for(let i= 0;  i< path.Children.length; i++){
+        //         let pathData = path.Children[i]
+        //     }   
+        //     let data = path
+        //     data.title = path.title
+        //     breadcrumbContext.update(data)
+        // }
+        // setBcPath(location.pathname)
+    }, [location])
+
     return (<>
     { location.state && ( location.state.title !== "Compiler" && location.state.title !== "VS Code" ) &&
     <div className="header">
@@ -42,7 +62,9 @@ const Header = ({location}) => {
                 <div className="title-lg mb-0">
                     {location.state && location.state.title}
                 </div>
-                {/* <div class="breadcrumb-wrap"><a href="#">Summary</a><a href="#">Level1</a><a href="#">Level2</a></div> */}
+                <div class="breadcrumb-wrap">
+                    {/* <a href="#">Summary</a><a href="#">Level1</a><a href="#">Level2</a> */}
+                </div>
             </div>
             <div className="aic">
                 <Dropdown className="notification">

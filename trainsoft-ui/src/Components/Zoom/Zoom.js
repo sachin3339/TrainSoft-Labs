@@ -61,7 +61,7 @@ const Zoom = () => {
              apiKey,
              apiSecret,
              meetingNumber,
-            '0'
+            user.role === 'TRAINER' ? 1 : 0
           ),
           meetingNumber: meetingNumber,
           userName: userName,

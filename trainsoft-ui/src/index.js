@@ -6,6 +6,7 @@ import { AppProvider } from './Store/AppContext';
 import { ReactBootstrapAlert } from "rct-bs-alert";
 import * as serviceWorker from './serviceWorker';
 import { HelmetProvider } from 'react-helmet-async';
+import { BreadcrumbProvider } from './Store/BreadcrumbContext';
 
 
 
@@ -14,7 +15,9 @@ ReactDOM.render(
     <HelmetProvider>
     <ReactBootstrapAlert>
           <AppProvider>
-        <App />
+            <BreadcrumbProvider>
+                <App />
+           </BreadcrumbProvider>
     </AppProvider>
     </ReactBootstrapAlert>
     </HelmetProvider>

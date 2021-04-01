@@ -25,7 +25,7 @@ const Dashboard = ({location}) => {
             <div><Sidebar {...{location}} /></div>
             <div className={`dashboard-page`}>
                 <Header {...{location}} />
-                <div className="dashboard-container" className={`dashboard-container ${location.state.title === "VS Code" ? 'p-0 full-h': ''}`}>
+                <div className="dashboard-container" className={`dashboard-container ${ location.state && location.state.title === "VS Code" ? 'p-0 full-h': ''}`}>
                     <Router>
                         <Home path="dashboard" />
                         <UserHome path="home"/>

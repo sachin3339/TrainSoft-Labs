@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Form } from 'react-bootstrap'
-import { Formik, Field, validateYupSchema } from 'formik';
-import { ICN_TRASH, ICN_EDIT, ICN_CLOSE, ICN_DELETE } from "../../Common/Icon";
+import { Formik } from 'formik';
+import { ICN_EDIT, ICN_CLOSE,ICN_DELETE } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
 import { TextInput, DateInput, SelectInput } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
@@ -14,20 +14,17 @@ import * as Yup from 'yup';
 import moment from 'moment'
 import useToast from "../../../Store/ToastHook";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
-import useFetch from "../../../Store/useFetch";
 import AppContext from "../../../Store/AppContext";
-import { SearchInputBox } from "react-bs-search";
-import './batches.css'
 import { getAllBatches } from "../../../Services/service";
+import BreadcrumbContext from "../../../Store/BreadcrumbContext";
+import './batches.css'
 
 
-
-const initialVal = {
-
-}
+const initialVal = {}
 
 const Batch = ({ location }) => {
     const { user, spinner, setBatches, ROLE } = useContext(AppContext)
+    const  breadcrumbContext  = useContext(BreadcrumbContext)
     const Toast = useToast();
     const [show, setShow] = useState(false);
     const [batchList, setBatchList] = useState([])
@@ -50,7 +47,7 @@ const Batch = ({ location }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
-                render: (data) => <Link to={'batches-details'} state={{ path: 'batches-details', sid: data.sid, row: data, title: 'Batches', subTitle: "Batch Details" }} className="dt-name">{data.name}</Link>
+                render: (data) => <Link to={'batches-details'} state={{ sid: data.sid, row: data  }} className="dt-name">{data.name}</Link>
 
             },
             "noOfLearners": {
@@ -301,7 +298,6 @@ const Batch = ({ location }) => {
     }
 
     // get batches by sid
-
     const getBatchCount = async () => {
         try {
             RestService.getCount("vw_batch").then(
@@ -342,6 +338,7 @@ const Batch = ({ location }) => {
     useEffect(() => {
         getBatchCount()
         getAllBatchByPage()
+        breadcrumbContext.update()
     }, [])
 
 

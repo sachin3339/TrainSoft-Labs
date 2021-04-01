@@ -98,7 +98,7 @@ const TableBody = ({ sourceData, configuration, onSelect }) => sourceData.map((d
         </div>
     </td>}
     {Object.keys(configuration.columns).map((key, rowIdx) => <td key={rowIdx} className={`${configuration.columns[key].tdCustomClass ? configuration.columns[key].tdCustomClass : "elps"} ${getTableData(configuration.columns[key], data, key) === "NA" ? "text-muted" : ""}`} onClick={() => { if (typeof configuration.columns[key].onClick === 'function') configuration.columns[key].onClick(data) }}>
-        {configuration.showTooltip ? <OverlayTrigger placement='auto' flip={true} overlay={<Tooltip>{data[key] || configuration.columns[key].title}</Tooltip>}><span>{getTableData(configuration.columns[key], data, key)}</span></OverlayTrigger> : <span>{getTableData(configuration.columns[key], data, key)}</span>}
+        {configuration.showTooltip ? <OverlayTrigger placement='auto' flip={true} overlay={<Tooltip>{data[key] || configuration.columns[key].title}</Tooltip>}><div>{getTableData(configuration.columns[key], data, key)}</div></OverlayTrigger> : <div>{getTableData(configuration.columns[key], data, key)}</div>}
     </td>)}
     {configuration.actions && configuration.actions.length > 0 && <td className="text-right">{!configuration.isHideEdit && <Action {...{ configuration, "row": data, index: idx }} />}</td>}
 </tr>)

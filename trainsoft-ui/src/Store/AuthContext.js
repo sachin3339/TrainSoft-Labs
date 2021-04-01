@@ -1,4 +1,4 @@
-import React, { useState,useReducer } from 'react';
+import React, { useReducer } from 'react';
 const AuthContext = React.createContext({});
 export default AuthContext;
 export const AuthConsumer = AuthContext.Consumer;

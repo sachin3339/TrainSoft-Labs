@@ -44,7 +44,6 @@ const LabContainer = ({location})=>{
 }
 
 const LabStore = ({location})=>{
-    console.log(location)
     return(
         <div className="table-shadow p-3">
         <CardHeader {...{location}}/>

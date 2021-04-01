@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { BtnPrimary, TabBtn } from "../../Common/Buttons/Buttons";
-import SearchBox from "../../Common/SearchBox/SearchBox"
+import {  TabBtn } from "../../Common/Buttons/Buttons";
 import { ICN_TRASH, ICN_EDIT } from "../../Common/Icon";
 import { navigate, Router,Link } from "../../Common/Router";
 import { Formik } from "formik"
@@ -18,10 +17,10 @@ const Support = ({location})=>{
     return(
         <div className="table-shadow p-3">
         <CardHeader {...{location}}/>
-          <div className="flx storeTab-shadow mb-3">
+          {location.state && <div className="flx storeTab-shadow mb-3">
               <TabBtn active={location.state.subPath === "support"} onClick={()=>navigate("/support",{state: { title: 'SUPPORT',subTitle:"", subPath:"support" }})}>Raise a ticket</TabBtn>
-              <TabBtn  active={location.state.subPath === "history"} onClick={()=>navigate("/support/history",{state: { title: 'SUPPORT',subTitle:"History", subPath:"history"  }})}>History</TabBtn> 
-          </div>
+              <TabBtn active={location.state.subPath === "history"} onClick={()=>navigate("/support/history",{state: { title: 'SUPPORT',subTitle:"History", subPath:"history"  }})}>History</TabBtn> 
+          </div>}
           <Router>
                 <SupportContainer path="/"/>
                 <SupportHistory path="history"/>

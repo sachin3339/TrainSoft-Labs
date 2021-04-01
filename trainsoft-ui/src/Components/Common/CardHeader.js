@@ -9,13 +9,13 @@ const CardHeader = ({ location, onChange=()=>{},onEnter,clearField = false,actio
     return (<>
         <div className="jcb aic py-2">
             <div className="flx1">
-            {location && location.state && <Breadcrumb>
+            {/* {location && location.state && <Breadcrumb>
                 <Breadcrumb.Item className=""><div>{location.state.title}</div></Breadcrumb.Item>
                 {location.state.subTitle && <Breadcrumb.Item active>
                     {location.state.subTitle}
                 </Breadcrumb.Item>}
-                {/* <Breadcrumb.Item active>Data</Breadcrumb.Item> */}
-            </Breadcrumb>}
+                <Breadcrumb.Item active>Data</Breadcrumb.Item>
+            </Breadcrumb>} */}
             </div>
             <div className="aic ">
             <SearchBox {...{onChange,onEnter,clearField}} />
