@@ -69,7 +69,7 @@ const RestService = {
   validateEmail: (email)=> AxiosService.get(GLOBELCONSTANT.PARTICIPANT.EMAIL_VALIDATION.replace("{email}",email)),
   changeUserRole: (role,vSid)=> AxiosService.get(GLOBELCONSTANT.PARTICIPANT.UPDATE_ROLE.replace("{role}",role).replace("{virtualAccountSid}",vSid)),
   changeAndDeleteStatus: (status,vSid)=> AxiosService.put(GLOBELCONSTANT.PARTICIPANT.STATUS_DELETE.replace("{status}",status).replace("{vASid}",vSid)),
-
+  changeDepartmentRole: (role,departmentVASid)=> AxiosService.put(GLOBELCONSTANT.PARTICIPANT.UPDATE_DEPARTMENT_ROLE.replace("{role}",role).replace("{departmentVASid}",departmentVASid)),
 
   // training
   getAllTrainingByPage: (pageNo,pageSize)=> AxiosService.get(GLOBELCONSTANT.TRAINING.GET_TRAINING + "/" + pageNo + "/" + pageSize),
