@@ -36,3 +36,15 @@
     box-shadow: 0px 0px 0px 0px black;
     outline: 0px;
 }
+.board-menu-top{
+    width: 250px;
+    padding: 0px 0px;
+    height: 100%;
+    border-radius: 2px;
+    background:#00000017;
+    padding: 0px 10px;
+
+}
+.bdLineW{
+    width: 40px;
+}
