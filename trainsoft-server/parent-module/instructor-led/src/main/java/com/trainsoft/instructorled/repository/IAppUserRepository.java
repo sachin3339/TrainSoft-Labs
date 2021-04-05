@@ -17,5 +17,9 @@ public interface IAppUserRepository extends JpaRepository<AppUser, Integer>{
 	@Query(value = "select va.appuser from VirtualAccount va where va.company.sid=:companySid and va.status<>:status")
 	List<AppUser> findAppUserByCompanySidAndStatus(@Param("companySid") byte[] companySid, @Param("status") InstructorEnum.Status status);
 
+	AppUser findAppUsersByTpToken(String tpToken);
+	AppUser findAppUserBySidAndTpToken(byte[] appUserSid, String token);
+	AppUser findAppUsersByEmailId(String email);
+
 
 }

@@ -17,4 +17,7 @@ public class AppUserTO extends BaseTO{
     private InstructorEnum.Status status;
     private InstructorEnum.AccessType accessType;
     private String password;
+    private String tpToken;
+    private long expiryDate;
+    private boolean resetPassword;
 }
