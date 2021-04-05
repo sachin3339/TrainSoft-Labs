@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
-import {  Form } from 'react-bootstrap'
+import {  Form , Dropdown} from 'react-bootstrap'
 import {  Formik } from 'formik';
 import { ICN_TRASH, ICN_EDIT } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
@@ -85,13 +85,45 @@ const User = ({ location }) => {
                 "sortEnabled": true,
                 isSearchEnabled: false
             },
+           "vaRole": {
+            "title": "Role",
+            "sortDirection": null,
+            "sortEnabled": true,
+            isSearchEnabled: false,
+            render: (data) =><>{user.vaRole === "ADMIN" ? <Dropdown>
+            <Dropdown.Toggle id="set-project-role" as="div">
+                {data.vaRole}
+            </Dropdown.Toggle>
+            <Dropdown.Menu size="sm">
+                <Dropdown.Item href="#" onClick={() => {changeVARole('ADMIN',data.vSid) }}>
+                   ADMIN
+                </Dropdown.Item>
+                <Dropdown.Item href="#" onClick={() => {changeDepartmentRole("USER",data.vSid) }}>
+                   USER
+                </Dropdown.Item>
+            </Dropdown.Menu>
+        </Dropdown>: data.role}
+        </>
+        },
             "role": {
-                "title": "Role",
+                "title": "Department Role",
                 "sortDirection": null,
                 "sortEnabled": true,
-                isSearchEnabled: false
-            }
-            ,
+                isSearchEnabled: false,
+                render: (data) =><>{user.vaRole === "ADMIN" ? <Dropdown>
+                <Dropdown.Toggle id="set-project-role" as="div">
+                    {data.role}
+                </Dropdown.Toggle>
+                <Dropdown.Menu size="sm">
+                    {
+                         GLOBELCONSTANT.DEPARTMENT_ROLE.map((r, idx) => <Dropdown.Item href="#" key={idx} onClick={() => {changeDepartmentRole(r.key,data.departmentVA.sid) }}>
+                            {r.name}
+                        </Dropdown.Item>)
+                    }
+                </Dropdown.Menu>
+            </Dropdown>: data.role}
+            </>
+            },
             "status": {
                 "title": "Status",
                 "sortDirection": null,
@@ -226,7 +258,9 @@ const User = ({ location }) => {
                         data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
                         data.department = res.departmentVA ? res.departmentVA.department.name : ''
                         data.vSid = res.sid
+                        data.vaRole = res.role
                         data.status = res.status
+                        data.departmentVA = res.departmentVA
                         return data
                     })
                     setParticipant(val)
@@ -252,7 +286,9 @@ const User = ({ location }) => {
                     let data = res.appuser
                     data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
                     data.vSid = res.sid
+                    data.vaRole = res.role
                     data.status = res.status
+                    data.departmentVA = res.departmentVA
                     data.department = res.departmentVA ? res.departmentVA.department.name : ''
                     return data
                 })
@@ -375,6 +411,48 @@ const User = ({ location }) => {
             console.error("Exception occurred in uploadAttachments -- ", err);
         }
     }
+
+          // change department role
+          const changeDepartmentRole = async (role,departmentVa) => {
+            try {
+                   spinner.hide();
+                    RestService.changeDepartmentRole(role,departmentVa).then(
+                        response => {
+                         getUsers()
+                         Toast.success({ message: `Department role change successfully ` });
+                        },
+                        err => {
+                            spinner.hide();
+                        }
+                    ).finally(() => {
+                        spinner.hide();
+                    });
+    
+            } catch (err) {
+                console.error("error occur on validateEmailId()", err)
+            }
+        }
+    
+          // change user role
+          const changeVARole = async (role,vSid) => {
+            try {
+                   spinner.hide();
+                    RestService.changeUserRole(role,vSid).then(
+                        response => {
+                         getUsers()
+                         Toast.success({ message: `Role changed successfully` });
+                        },
+                        err => {
+                            spinner.hide();
+                        }
+                    ).finally(() => {
+                        spinner.hide();
+                    });
+    
+            } catch (err) {
+                console.error("error occur on validateEmailId()", err)
+            }
+        }
 
     // initialize  component
     useEffect(() => {
