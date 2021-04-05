@@ -3,25 +3,28 @@ package com.trainsoft.instructorled.controller;
 import com.trainsoft.instructorled.commons.AWSUploadClient;
 import com.trainsoft.instructorled.commons.JWTDecode;
 import com.trainsoft.instructorled.commons.JWTTokenTO;
+import com.trainsoft.instructorled.commons.Utility;
 import com.trainsoft.instructorled.service.IBatchService;
 import com.trainsoft.instructorled.service.IBulkUploadService;
+import com.trainsoft.instructorled.service.ICompanyService;
 import com.trainsoft.instructorled.service.ITrainingService;
-import com.trainsoft.instructorled.to.BatchTO;
-import com.trainsoft.instructorled.to.CommonRes;
-import com.trainsoft.instructorled.to.FileTO;
-import com.trainsoft.instructorled.to.UserTO;
+import com.trainsoft.instructorled.to.*;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Slf4j
@@ -35,10 +38,11 @@ public class UserController {
     ITrainingService trainingService;
     IBulkUploadService bulkUploadService;
     AWSUploadClient awsUploadClient;
+    ICompanyService companyService;
 
     @PostMapping("user/create")
     @ApiOperation(value = "createUser", notes = "API to create new User.")
-    public ResponseEntity<?> createUser(
+    public ResponseEntity<?> createUser(HttpServletRequest request,
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Create User payload", required = true) @RequestBody UserTO userTO) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
@@ -48,8 +52,41 @@ public class UserController {
         }else {
             userTO.setRole(InstructorEnum.VirtualAccountRole.USER);
         }
-        UserTO createUser = bulkUploadService.createVirtualAccount(userTO);
+        UserTO createUser = bulkUploadService.createVirtualAccount(userTO,request);
         return ResponseEntity.ok(createUser);
+    }
+
+    @PostMapping("/forgot/password")
+    @ApiOperation(value = "forget password", notes = "API to forget password.")
+    public ResponseEntity<?> processForgotPassword(HttpServletRequest request,
+    @ApiParam(value = "Email Id", required = true) @PathVariable("email") String email,
+    @ApiParam(value = "User name", required = true) @PathVariable("name") String name)
+            throws UnsupportedEncodingException, MessagingException {
+        String token= companyService.generateTokenAndUpdateResetPassToken(email);
+        String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token;
+        companyService.sendEmail(email,name,resetPasswordLink);
+        log.info("We have sent a reset password link to your email. Please check.");
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset/{token}")
+    @ApiOperation(value = "reset password token", notes = "API to reset password token.")
+    public ResponseEntity<?> processResetPassword(HttpServletRequest request,
+        //@ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+        @ApiParam(value = " Reset Token sent in email", required = true) @PathVariable("token") String token){
+        AppUserTO user = companyService.getByResetPasswordToken(token);
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/update/password/token/{token}/user/{appUserSid}/pass/{password}")
+    @ApiOperation(value = "update password", notes = "API to reset password.")
+    public ResponseEntity<?> updatePassword(HttpServletRequest request,
+    //@ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String jwttoken,
+    @ApiParam(value = " Reset Token sent in email", required = true) @PathVariable("token") String token,
+    @ApiParam(value = " User Sid", required = true) @PathVariable("appUserSid") String appUserSid,
+    @ApiParam(value = " New password", required = true) @PathVariable("password") String password) {
+        boolean flag = companyService.updatePassword(token, appUserSid, password);
+        return ResponseEntity.ok(flag);
     }
 
     @PostMapping("update/user")
@@ -73,12 +110,12 @@ public class UserController {
 
     @PostMapping(value = "/upload/list/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "upload Participants excel file with Batch details. ", notes = "API to upload Participant list through excel file with Batch details.")
-    public ResponseEntity<?> uploadParticipantsWithBatch(
+    public ResponseEntity<?> uploadParticipantsWithBatch(HttpServletRequest request,
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "upload Participants excel file", required = true) @RequestParam("file") MultipartFile file,
             @RequestHeader("batchName")String batchName,@RequestHeader("instructorName")String instructorName){
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        bulkUploadService.uploadParticipantsWithBatch(file,batchName,instructorName,jwt.getCompanySid());
+        bulkUploadService.uploadParticipantsWithBatch(file,batchName,instructorName,jwt.getCompanySid(),request);
         return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: " + file.getOriginalFilename());
     }
 
@@ -90,11 +127,11 @@ public class UserController {
 
     @PostMapping(value = "upload/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "upload participants", notes = "API to upload Participant list through excel file.")
-    public ResponseEntity<?> uploadParticipants(
+    public ResponseEntity<?> uploadParticipants(HttpServletRequest request,
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "upload Participants excel file", required = true) @RequestParam("file") MultipartFile file){
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        bulkUploadService.uploadParticipants(file,jwt.getCompanySid());
+        bulkUploadService.uploadParticipants(file,jwt.getCompanySid(),request);
         return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: " + file.getOriginalFilename());
     }
 

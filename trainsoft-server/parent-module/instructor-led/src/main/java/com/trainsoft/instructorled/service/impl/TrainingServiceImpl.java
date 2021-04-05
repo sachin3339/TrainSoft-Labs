@@ -298,7 +298,7 @@ public class TrainingServiceImpl implements ITrainingService {
         Training training = trainingRepository.findTrainingBySidAndStatusNot(BaseEntity.hexStringToByteArray(trainingSid),Status.DELETED);
         try {
             if (StringUtils.isNotEmpty(training.getStringSid())) {
-                List<TrainingSession> trainingSessions = trainingSessionRepository.findTrainingSessionByTrainingAndCompanyAndStatusNot(training,getCompany(companySid),Status.DELETED);
+                List<TrainingSession> trainingSessions = trainingSessionRepository.findTrainingSessionByTrainingAndCompanyAndStatusNotOrderByCreatedOnDesc(training,getCompany(companySid),Status.DELETED);
                 return trainingSessions.stream().map(trainingSession -> {
                     TrainingSessionTO to = mapper.convert(trainingSession, TrainingSessionTO.class);
                     to.setCreatedByVASid(trainingSession.getCreatedBy() == null ? null : trainingSession.getCreatedBy().getStringSid());
@@ -344,7 +344,7 @@ public class TrainingServiceImpl implements ITrainingService {
             /*List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourseAndStatusNot(course,Status.DELETED)
                     .stream().filter(c->c.getStatus()!= Status.DELETED)
                     .collect(Collectors.toList());;*/
-            List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByTrainingAndCompanyAndStatusNot(training,getCompany(companySid),Status.DELETED);
+            List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByTrainingAndCompanyAndStatusNotOrderByCreatedOnDesc(training,getCompany(companySid),Status.DELETED);
             List<TrainingSessionTO> sessionsTO=mapper.convertList(trainingSessionList,TrainingSessionTO.class);
             if(sessionsTO!=null && sessionsTO.size()>0){
                 sessionTOList.addAll(sessionsTO);
