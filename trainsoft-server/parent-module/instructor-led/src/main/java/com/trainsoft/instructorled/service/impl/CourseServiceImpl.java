@@ -1,13 +1,11 @@
 package com.trainsoft.instructorled.service.impl;
 
 import com.trainsoft.instructorled.customexception.ApplicationException;
-import com.trainsoft.instructorled.customexception.InstructorException;
 import com.trainsoft.instructorled.customexception.RecordNotFoundException;
 import com.trainsoft.instructorled.dozer.DozerUtils;
 import com.trainsoft.instructorled.entity.*;
 import com.trainsoft.instructorled.repository.*;
 import com.trainsoft.instructorled.service.ICourseService;
-import com.trainsoft.instructorled.to.BatchTO;
 import com.trainsoft.instructorled.to.CourseSessionTO;
 import com.trainsoft.instructorled.to.CourseTO;
 import com.trainsoft.instructorled.to.CourseViewTO;
@@ -18,11 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,10 +53,10 @@ public class CourseServiceImpl implements ICourseService {
                 savedCourseTO.setCreatedByVASid(virtualAccount.getStringSid());
                 return savedCourseTO;
             } else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while creating the course",e.toString());
-            throw new ApplicationException("Something went wrong while creating the course");
+            throw new ApplicationException("Something went wrong while creating the course"+e.getMessage());
         }
     }
     private Company getCompany(String companySid){
@@ -85,7 +81,7 @@ public class CourseServiceImpl implements ICourseService {
                 savedCourse.setUpdatedByVASid(virtualAccount.getStringSid());
                 return savedCourse;
             }else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while updating the course",e.toString());
             throw new ApplicationException("Something went wrong while updating the course");
@@ -99,7 +95,7 @@ public class CourseServiceImpl implements ICourseService {
             if (course != null)
                 return mapper.convert(course, CourseTO.class);
             else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while fetching the course details by sid",e.toString());
             throw new ApplicationException("Something went wrong while fetching the course details by sid");
@@ -137,7 +133,7 @@ public class CourseServiceImpl implements ICourseService {
                 log.info(String.format("Course %s is deleted successfully by %s",courseSid, deletedBySid));
                 return true;
             } else
-               throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while deleting the Course details by sid",e.toString());
             throw new ApplicationException("Something went wrong while deleting the Course details by sid");
@@ -163,7 +159,7 @@ public class CourseServiceImpl implements ICourseService {
                 savedCourseSessionTO.setCreatedByVASid(virtualAccount.getStringSid());
                 return savedCourseSessionTO;
             } else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while updating the Course session details",e.toString());
             throw new ApplicationException("Something went wrong while updating the Course session details");
@@ -186,7 +182,7 @@ public class CourseServiceImpl implements ICourseService {
                 savedSession.setUpdatedByVASid(virtualAccount.getStringSid());
                 return savedSession;
             }else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while updating the course Session",e.toString());
             throw new ApplicationException("Something went wrong while updating the course Session");
@@ -206,7 +202,7 @@ public class CourseServiceImpl implements ICourseService {
                 courseSessionRepository.save(courseSession);
                 return true;
             } else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while deleting the Course Session details by sid",e.toString());
             throw new ApplicationException("Something went wrong while deleting the Course Session details by sid");
@@ -229,7 +225,7 @@ public class CourseServiceImpl implements ICourseService {
                     return to;
                 }).collect(Collectors.toList());
             } else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.info("throwing exception while fetching the Course session details");
             throw new ApplicationException("throwing exception while fetching the all course session details based on courseSid");
@@ -276,7 +272,7 @@ public class CourseServiceImpl implements ICourseService {
                     return to;
                 }).collect(Collectors.toList());
             } else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while fetching the Course session details",e.toString());
             throw new ApplicationException("throwing exception while fetching the all course session details based on courseSid");
