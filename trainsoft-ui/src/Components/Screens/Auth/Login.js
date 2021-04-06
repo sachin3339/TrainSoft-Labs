@@ -49,19 +49,21 @@ const Login = () => {
     // forgot password
     const forgetPwd = (value) => {
         try {
+            spinner.show();
             RestService.forgetPwd(value.email).then(
                 response => {
-                    Toast.error({message: 'Forget password link is successfully send to your email'})
+                    Toast.success({message: 'Forget password link is successfully send to your email'})
+                    setTabPanel("mailSend")
                     },
                 err => {
-                    Toast.error({message: 'Invalid User Name / Password!'})
+                    Toast.error({message: 'Email not exist!'})
                     spinner.hide();
                 }
             ).finally(() => {
                 spinner.hide();
             });
         } catch (err) {
-            Toast.error({message: 'Invalid User Name / Password!'})
+            Toast.error({message: 'Email not exist!'})
             console.error("Error occured on login page", err)
         }
     }
@@ -135,6 +137,29 @@ const Login = () => {
                     </>)}
                 </Formik>
                 </>}
+                {tabPanel === "mailSend" && <> 
+                <Formik
+                    initialValues={{
+                        "email": '',
+                    }}
+                   >
+                    {() => (<>
+                        <form  className="login-form">
+                        <div className="text-center mt-3 f13">
+                                Successfully Mail Send to email
+                            </div>
+                            <div className="text-center mt-2 f13 link" onClick={()=>setTabPanel("login")}>
+                               Login to your Account
+                             </div>
+                          
+                            <div>
+                                {/* <button className="btn btn-primary btn-am btn-block" type="submit" onClick={()=> navigate('/dashboard',{ replace: true })}>Login</button> */}
+                            </div>
+                        </form>
+                    </>)}
+                </Formik>
+                </>
+                }
 
             </div>
         
