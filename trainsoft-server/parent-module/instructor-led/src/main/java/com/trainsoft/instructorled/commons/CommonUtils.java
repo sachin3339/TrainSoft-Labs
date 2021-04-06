@@ -5,7 +5,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -20,9 +19,6 @@ public class CommonUtils {
 	private static final String REGEX = "^\\+(?:[0-9] ?){6,14}[0-9]$";
 	private static final String USA_DIALING_CODE = "+1";
 	private static final Logger logger = LoggerFactory.getLogger(CommonUtils.class);
-
-	private CommonUtils() {
-	}
 
 	/**
 	 * API to check whether String is empty or not.

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "appusers")
@@ -38,4 +39,13 @@ public class AppUser extends BaseEntity{
 
 	@Column(name = "password")
 	private String password;
+
+	@Column(name = "tp_token")
+	private String tpToken;
+
+	@Column(name = "expiry_date")
+	private Date expiryDate;
+
+	@Column(name = "is_reset")
+	private boolean resetPassword;
 }

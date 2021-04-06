@@ -3,6 +3,7 @@ package com.trainsoft.instructorled.service.impl;
 import com.trainsoft.instructorled.commons.CommonUtils;
 import com.trainsoft.instructorled.commons.JWTTokenGen;
 import com.trainsoft.instructorled.commons.JWTTokenTO;
+import com.trainsoft.instructorled.commons.Utility;
 import com.trainsoft.instructorled.customexception.ApplicationException;
 import com.trainsoft.instructorled.customexception.IncorrectEmailIdOrPasswordException;
 import com.trainsoft.instructorled.customexception.RecordNotFoundException;
@@ -10,15 +11,15 @@ import com.trainsoft.instructorled.dozer.DozerUtils;
 import com.trainsoft.instructorled.entity.*;
 import com.trainsoft.instructorled.repository.*;
 import com.trainsoft.instructorled.service.ICompanyService;
-import com.trainsoft.instructorled.to.CompanyTO;
-import com.trainsoft.instructorled.to.DepartmentTO;
-import com.trainsoft.instructorled.to.DepartmentVirtualAccountTO;
-import com.trainsoft.instructorled.to.UserTO;
+import com.trainsoft.instructorled.to.*;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.utility.RandomString;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -35,6 +36,11 @@ public class CompanyServiceImpl implements ICompanyService {
     private IDepartmentRepository departmentRepository;
     private IDepartmentVirtualAccountRepository departmentVARepo;
     private DozerUtils mapper;
+
+/*    @Value("spring.mail.username")
+    private String emailSenderAddress;*/
+
+    private final JavaMailSender mailSender;
 
     @Override
     public CompanyTO getCompanyBySid(String sid) {
@@ -162,5 +168,79 @@ public class CompanyServiceImpl implements ICompanyService {
         }catch (Exception e){
             throw new ApplicationException(e.getMessage());
         }
+    }
+
+    @Override
+    public void sendEmail(String email,String name,String link) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("trainsoft.ind@gmail.com");
+        message.setTo(email);
+        String subject = "Reset Password";
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append(System.lineSeparator())
+                .append("Your reset password link below:")
+                .append(System.lineSeparator())
+                .append("User Name : ")
+                .append(email)
+                .append(System.lineSeparator())
+                .append("Reset Password link: ")
+                .append("<a href=\"" + link + "\">");
+        emailContent.append(System.lineSeparator())
+                .append("Thanks,")
+                .append(System.lineSeparator())
+                .append(name);
+        message.setSubject(subject);
+        message.setText(emailContent.toString());
+        mailSender.send(message);
+
+    }
+
+    @Override
+    public AppUserTO getByResetPasswordToken(String token){
+        // Find user by token
+        AppUser user=appUserRepository.findAppUsersByTpToken(token);
+        if(user.getExpiryDate().toInstant().toEpochMilli()< Instant.now().toEpochMilli())
+            throw new ApplicationException("Token has expired or invalid,kindly try again");
+        else
+            return mapper.convert(user,AppUserTO.class);
+    }
+
+    @Override
+    public boolean updatePassword(String token,String appUserSid, String newPassword) {
+        AppUser appUser= appUserRepository.findAppUserBySidAndTpToken(BaseEntity.hexStringToByteArray(appUserSid),token);
+        if (appUser!=null && appUser.getTpToken().equals(token) && !StringUtils.isEmpty(newPassword)){
+            appUser.setPassword(newPassword);
+            appUser.setResetPassword(false);
+            appUserRepository.save(appUser);
+            return true;
+        }
+        else
+            throw  new ApplicationException("Incorrect data,please check the data which you provide");
+    }
+
+    @Override
+    public void updateResetPasswordToken(String token, String email){
+        AppUser appUser = appUserRepository.findAppUsersByEmailId(email);
+        if (appUser != null) {
+            appUser.setTpToken(token);
+            appUser.setResetPassword(true);
+            appUser.setExpiryDate(new Date(Instant.now().plusSeconds(3600).toEpochMilli()));
+            appUserRepository.save(appUser);
+        } else {
+            throw new ApplicationException("Could not find any user with the email ");
+        }
+    }
+    @Override
+    public  String generateTokenAndUpdateResetPassToken(String email)
+    {
+        String token1 = RandomString.make(30);
+        updateResetPasswordToken(token1,email);
+        return  token1;
+    }
+
+    @Override
+    public String getAppUserNameByEmail(String email) {
+        AppUser appUser = appUserRepository.findAppUsersByEmailId(email);
+        return appUser.getName();
     }
 }
