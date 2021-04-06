@@ -9,6 +9,7 @@ import Spinner from "./Components/Common/Spinner/Spinner";
 import AxiosService from './Services/axios.service';
 import AppContext from "./Store/AppContext";
 import LandingHome from "./Components/LandingPage/Home/LandingHome";
+import ResetPwd from "./Components/Screens/Auth/ResetPwd";
 
 
 
@@ -19,6 +20,7 @@ function App() {
       <Spinner value={spinner}/>
       <Router>
          <LandingHome path="/"/>
+         <ResetPwd path="/reset/:token"/>
          <Login path="/login"/>
          <Dashboard path="/*"/>
          <ClassLab path="class/*"/>

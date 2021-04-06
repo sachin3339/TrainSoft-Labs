@@ -12,6 +12,10 @@ const GLOBELCONSTANT = {
         GET_COUNT: API_HOST + "get/{classz}",
         AUTH: {
             LOGIN: API_HOST + "login",
+            FORGOT: API_HOST + "forgot/password/",
+            RESET: API_HOST + "reset/{token}",
+            UPDATE_PWD: API_HOST + "update/password/token/{token}/user/{appUserSid}/pass/{password}",
+
         },
         COURSE: {
             GET_COURSE: API_HOST + "courses",
