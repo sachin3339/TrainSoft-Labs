@@ -5,6 +5,7 @@ import com.trainsoft.instructorled.commons.JWTTokenGen;
 import com.trainsoft.instructorled.commons.JWTTokenTO;
 import com.trainsoft.instructorled.commons.Utility;
 import com.trainsoft.instructorled.customexception.ApplicationException;
+import com.trainsoft.instructorled.customexception.IncorrectEmailException;
 import com.trainsoft.instructorled.customexception.IncorrectEmailIdOrPasswordException;
 import com.trainsoft.instructorled.customexception.RecordNotFoundException;
 import com.trainsoft.instructorled.dozer.DozerUtils;
@@ -119,7 +120,7 @@ public class CompanyServiceImpl implements ICompanyService {
                 //send mail
                 return companyTO;
             }else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
 
         } catch (Exception e) {
             throw new ApplicationException("throwing error while creating company");
@@ -150,10 +151,10 @@ public class CompanyServiceImpl implements ICompanyService {
              return userTO;
             }
             else
-                throw new IncorrectEmailIdOrPasswordException();
+                throw new IncorrectEmailIdOrPasswordException("Incorrect email or password");
         } catch (Exception e) {
             log.error("throwing error while fetching  user details", e.toString());
-            throw new IncorrectEmailIdOrPasswordException();
+            throw new IncorrectEmailIdOrPasswordException(e.getMessage());
         }
     }
     @Override
@@ -215,7 +216,7 @@ public class CompanyServiceImpl implements ICompanyService {
             return true;
         }
         else
-            throw  new ApplicationException("Incorrect data,please check the data which you provide");
+            throw  new RecordNotFoundException("No Record Found");
     }
 
     @Override
@@ -227,12 +228,11 @@ public class CompanyServiceImpl implements ICompanyService {
             appUser.setExpiryDate(new Date(Instant.now().plusSeconds(3600).toEpochMilli()));
             appUserRepository.save(appUser);
         } else {
-            throw new ApplicationException("Could not find any user with the email ");
+            throw new IncorrectEmailException("Please enter the valid email_address");
         }
     }
     @Override
-    public  String generateTokenAndUpdateResetPassToken(String email)
-    {
+    public  String generateTokenAndUpdateResetPassToken(String email) {
         String token1 = RandomString.make(30);
         updateResetPasswordToken(token1,email);
         return  token1;

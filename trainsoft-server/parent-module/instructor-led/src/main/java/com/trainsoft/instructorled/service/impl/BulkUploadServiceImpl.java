@@ -84,7 +84,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
     public List<AppUserTO> getAllAppUsers(String companySid) {
         List<AppUser> appUserList= appUserRepository.findAppUserByCompanySidAndStatus(BaseEntity.hexStringToByteArray(companySid), InstructorEnum.Status.DELETED);
         if (appUserList.isEmpty())
-          throw new RecordNotFoundException();
+            throw new RecordNotFoundException("No record found");
         else
            return mapper.convertList(appUserList,AppUserTO.class);
     }

@@ -47,7 +47,7 @@ public class DepartmentServiceImpl implements IDepartmentService {
                 return savedDepartmentTO;
             }
             else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while creating the department",e.toString());
             throw new ApplicationException("Something went wrong while creating the department");
@@ -74,7 +74,7 @@ public class DepartmentServiceImpl implements IDepartmentService {
                 return savedDepartmentTO;
             }
             else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while creating the department",e.toString());
             throw new ApplicationException("Something went wrong while creating the department");
@@ -88,7 +88,7 @@ public class DepartmentServiceImpl implements IDepartmentService {
             if (!StringUtils.isEmpty(departmentSid) && dept!=null)
                 return mapper.convert(dept,DepartmentTO.class);
             else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         }
         catch (Exception e){
             log.error("throwing exception while fetching the department details by sid",e.toString());
@@ -127,7 +127,7 @@ public class DepartmentServiceImpl implements IDepartmentService {
                 return true;
             }
             else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         }catch (Exception e){
             log.error("throwing exception while deleting the department details by sid",e.toString());
             throw new ApplicationException("Something went wrong while deleting the department details by sid");
