@@ -48,8 +48,10 @@ const ResetPwd = ({ token }) => {
     // update password
     const updatePwd = (value) => {
         try {
+            spinner.show();
             RestService.updatePwd(token, userData.sid, value.password).then(
                 response => {
+                    spinner.hide();
                     Toast.success({ message: 'Password is successfully changed.' })
                     navigate('/login')
                 },
