@@ -149,7 +149,8 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                 }
             }
             String token1 = companyService.generateTokenAndUpdateResetPassToken(virtualAccount.getAppuser().getEmailId());
-            String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token1;
+            // String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token1;
+            String resetPasswordLink = Utility.getSiteURL(request)+ "/reset/" + token1;
             companyService.sendEmail(virtualAccount.getAppuser().getEmailId(),virtualAccount.getAppuser().getName(),resetPasswordLink);
             log.info("We have sent a reset password link to your email. Please check.");
         }else {
@@ -302,7 +303,8 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                 }
             }
             String token1 = companyService.generateTokenAndUpdateResetPassToken(virtualAccount.getAppuser().getEmailId());
-            String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token1;
+           // String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token1;
+            String resetPasswordLink = Utility.getSiteURL(request)+ "/reset/" + token1;
             companyService.sendEmail(virtualAccount.getAppuser().getEmailId(),virtualAccount.getAppuser().getName(),resetPasswordLink);
             log.info("We have sent a reset password link to your email. Please check.");
         } else {
