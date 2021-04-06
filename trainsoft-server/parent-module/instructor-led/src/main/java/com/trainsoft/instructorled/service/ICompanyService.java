@@ -10,5 +10,10 @@ public interface ICompanyService {
       CompanyTO createCompanyWithAppUser(CompanyTO companyTO);
       UserTO login(String email, String password);
       boolean validateCompany(String name);
-
+      void sendEmail(String email,String name,String link);
+      AppUserTO getByResetPasswordToken(String token);
+      boolean updatePassword(String token,String appUserSid, String newPassword);
+      void updateResetPasswordToken(String token, String email);
+      String generateTokenAndUpdateResetPassToken(String email);
+      String getAppUserNameByEmail(String email);
 }

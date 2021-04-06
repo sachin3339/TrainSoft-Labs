@@ -1,6 +1,6 @@
 package com.trainsoft.instructorled.service.impl;
-
 import com.trainsoft.instructorled.commons.ExcelHelper;
+import com.trainsoft.instructorled.commons.Utility;
 import com.trainsoft.instructorled.customexception.ApplicationException;
 import com.trainsoft.instructorled.customexception.RecordNotFoundException;
 import com.trainsoft.instructorled.dozer.DozerUtils;
@@ -8,6 +8,7 @@ import com.trainsoft.instructorled.entity.*;
 import com.trainsoft.instructorled.repository.*;
 import com.trainsoft.instructorled.service.IBatchService;
 import com.trainsoft.instructorled.service.IBulkUploadService;
+import com.trainsoft.instructorled.service.ICompanyService;
 import com.trainsoft.instructorled.to.AppUserTO;
 import com.trainsoft.instructorled.to.BatchTO;
 import com.trainsoft.instructorled.to.DepartmentVirtualAccountTO;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -42,9 +44,10 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
     IDepartmentVirtualAccountRepository departmentVARepo;
     DozerUtils mapper;
     IBatchService batchService;
+    ICompanyService companyService;
 
     @Override
-    public void uploadParticipantsWithBatch(MultipartFile file, String batchName, String instructorName,String companySid) {
+    public void uploadParticipantsWithBatch(MultipartFile file, String batchName, String instructorName,String companySid,HttpServletRequest request) {
         if (ExcelHelper.hasExcelFormat(file)) {
             try {
                  Batch batch=new Batch();
@@ -60,7 +63,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                  userTOList.forEach(userTO -> {
                      userTO.setCompanySid(companySid);
                    if(StringUtils.isNotEmpty(userTO.getAppuser().getEmailId()))
-                     createVirtualAccountByBatch(userTO,batchSid);
+                     createVirtualAccountByBatch(userTO,batchSid,request);
                  });
 
             } catch (IOException e) {
@@ -69,12 +72,14 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
             }
         }
     }
+
     private Company getCompany(String companySid){
         Company c=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Company company=new Company();
         company.setId(c.getId());
         return company;
     }
+
     @Override
     public List<AppUserTO> getAllAppUsers(String companySid) {
         List<AppUser> appUserList= appUserRepository.findAppUserByCompanySidAndStatus(BaseEntity.hexStringToByteArray(companySid), InstructorEnum.Status.DELETED);
@@ -85,7 +90,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
     }
 
     @Override
-    public UserTO createVirtualAccount(UserTO userTO) {
+    public UserTO createVirtualAccount(UserTO userTO,HttpServletRequest request) {
         DepartmentVirtualAccount savedDepartmentVA=null;
         Department savedDepartment=null;
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(userTO.getCompanySid()));
@@ -141,9 +146,12 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                         departmentVirtualAccount.setDepartmentRole(userTO.getDepartmentVA().getDepartmentRole());
                         savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
                     }
-
                 }
             }
+            String token1 = companyService.generateTokenAndUpdateResetPassToken(virtualAccount.getAppuser().getEmailId());
+            String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token1;
+            companyService.sendEmail(virtualAccount.getAppuser().getEmailId(),virtualAccount.getAppuser().getName(),resetPasswordLink);
+            log.info("We have sent a reset password link to your email. Please check.");
         }else {
             virtualAccount=virtualAccounts.get(0);
             if(!userTO.getCompanySid().equalsIgnoreCase(virtualAccount.getCompany().getStringSid())){
@@ -156,13 +164,28 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                 departmentVirtualAccount.setCompany(company);
                 departmentVirtualAccount.setDepartmentRole(userTO.getDepartmentVA().getDepartmentRole());
                 departmentVirtualAccount.setDepartment(departmentRepository.findDepartmentByNameAndStatusNotAndCompany(userTO.getDepartmentVA().getDepartment().getName(), InstructorEnum.Status.DELETED,company));
-                departmentVARepo.save(departmentVirtualAccount);
+                savedDepartmentVA=departmentVARepo.save(departmentVirtualAccount);
+                userTO.getAppuser().setSid(virtualAccount.getAppuser().getStringSid());
+                userTO.setSid(virtualAccount.getStringSid());
+                userTO.getDepartmentVA().setSid(savedDepartmentVA.getStringSid());
+                userTO.getDepartmentVA().getDepartment().setSid(savedDepartmentVA.getDepartment().getStringSid());
+            }else{
+                virtualAccount=virtualAccountRepository.findVirtualAccountBySid(virtualAccount.getSid());
+                DepartmentVirtualAccount departmentVirtualAccount=departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
+                userTO.getAppuser().setSid(virtualAccount.getAppuser().getStringSid());
+                userTO.setSid(virtualAccount.getStringSid());
+                userTO.getDepartmentVA().setSid(departmentVirtualAccount.getStringSid());
+                userTO.getDepartmentVA().getDepartment().setSid(departmentVirtualAccount.getDepartment().getStringSid());
             }
         }
         userTO.getAppuser().setSid(virtualAccount.getAppuser().getStringSid());
         userTO.setSid(virtualAccount.getStringSid());
-        userTO.getDepartmentVA().setSid(savedDepartmentVA.getStringSid());
-        userTO.getDepartmentVA().getDepartment().setSid(savedDepartmentVA.getDepartment().getStringSid());
+        if (savedDepartmentVA!= null) {
+            userTO.getDepartmentVA().setSid(savedDepartmentVA.getStringSid());
+        }
+        if (savedDepartmentVA!= null && savedDepartmentVA.getDepartment()!=null ) {
+            userTO.getDepartmentVA().getDepartment().setSid(savedDepartmentVA.getDepartment().getStringSid());
+        }
         return userTO;
     }
 
@@ -213,14 +236,14 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
         return list;
     }
 
-    private UserTO createVirtualAccountByBatch(UserTO userTO,String batchSid) {
-        DepartmentVirtualAccount savedDepartmentVA=null;
-        Department savedDepartment=null;
+    private UserTO createVirtualAccountByBatch(UserTO userTO,String batchSid,HttpServletRequest request){
+        DepartmentVirtualAccount savedDepartmentVA = null;
+        Department savedDepartment = null;
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(userTO.getCompanySid()));
-        Batch batch=batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(batchSid));
-        List<VirtualAccount> virtualAccounts=virtualAccountRepository.findVirtualAccountByEmailId(userTO.getAppuser().getEmailId());
-        VirtualAccount virtualAccount=null;
-        if(virtualAccounts==null || virtualAccounts.size()==0) {
+        Batch batch = batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(batchSid));
+        List<VirtualAccount> virtualAccounts = virtualAccountRepository.findVirtualAccountByEmailId(userTO.getAppuser().getEmailId());
+        VirtualAccount virtualAccount = null;
+        if (virtualAccounts == null || virtualAccounts.size() == 0) {
             virtualAccount = mapper.convert(userTO, VirtualAccount.class);
             virtualAccount.generateUuid();
             virtualAccount.setCompany(company);
@@ -235,36 +258,41 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
             virtualAccount.setRole(InstructorEnum.VirtualAccountRole.USER);
             virtualAccount.setStatus(InstructorEnum.Status.ENABLED);
             virtualAccount = virtualAccountRepository.save(virtualAccount);
-            if(userTO.getDepartmentVA()!=null){
-                if(userTO.getDepartmentVA().getDepartment()!=null && StringUtils.isNotEmpty(userTO.getDepartmentVA().getDepartment().getSid())){
-                    DepartmentVirtualAccount departmentVirtualAccount= new DepartmentVirtualAccount();
+            BatchParticipant participant= new BatchParticipant();
+            participant.generateUuid();
+            participant.setVirtualAccount(virtualAccount);
+            participant.setBatch(batch);
+            participant=batchParticipantRepository.save(participant);
+            if (userTO.getDepartmentVA() != null) {
+                if (userTO.getDepartmentVA().getDepartment() != null && StringUtils.isNotEmpty(userTO.getDepartmentVA().getDepartment().getSid())) {
+                    DepartmentVirtualAccount departmentVirtualAccount = new DepartmentVirtualAccount();
                     departmentVirtualAccount.generateUuid();
                     departmentVirtualAccount.setVirtualAccount(virtualAccount);
                     departmentVirtualAccount.setDepartment(departmentRepository.findDepartmentBySidAndStatusNot(BaseEntity.hexStringToByteArray(userTO.getDepartmentVA().getDepartment().getSid()), InstructorEnum.Status.DELETED));
                     departmentVirtualAccount.setDepartmentRole(userTO.getDepartmentVA().getDepartmentRole());
                     savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
-                }else if(userTO.getDepartmentVA().getDepartment()!=null &&
+                } else if (userTO.getDepartmentVA().getDepartment() != null &&
                         StringUtils.isEmpty(userTO.getDepartmentVA().getDepartment().getSid()) &&
-                        StringUtils.isNotEmpty(userTO.getDepartmentVA().getDepartment().getName())){
-                    Department department=departmentRepository.findDepartmentByNameAndStatusNotAndCompany(userTO.getDepartmentVA().getDepartment().getName(), InstructorEnum.Status.DELETED,company);
-                    if(department!=null) {
-                        DepartmentVirtualAccount departmentVirtualAccount= new DepartmentVirtualAccount();
+                        StringUtils.isNotEmpty(userTO.getDepartmentVA().getDepartment().getName())) {
+                    Department department = departmentRepository.findDepartmentByNameAndStatusNotAndCompany(userTO.getDepartmentVA().getDepartment().getName(), InstructorEnum.Status.DELETED, company);
+                    if (department != null) {
+                        DepartmentVirtualAccount departmentVirtualAccount = new DepartmentVirtualAccount();
                         departmentVirtualAccount.generateUuid();
                         departmentVirtualAccount.setVirtualAccount(virtualAccount);
                         departmentVirtualAccount.setDepartment(department);
                         departmentVirtualAccount.setDepartmentRole(userTO.getDepartmentVA().getDepartmentRole());
                         savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
-                    }else{
-                        Department departmentObj=new Department();
+                    } else {
+                        Department departmentObj = new Department();
                         departmentObj.generateUuid();
                         departmentObj.setCompany(company);
                         departmentObj.setName(userTO.getDepartmentVA().getDepartment().getName());
                         departmentObj.setDescription(userTO.getDepartmentVA().getDepartment().getDescription());
                         departmentObj.setStatus(InstructorEnum.Status.ENABLED);
-                        departmentObj.setEmailId(userTO.getDepartmentVA().getDepartment().getEmailId()==null?null:userTO.getDepartmentVA().getDepartment().getEmailId());
+                        departmentObj.setEmailId(userTO.getDepartmentVA().getDepartment().getEmailId() == null ? null : userTO.getDepartmentVA().getDepartment().getEmailId());
                         departmentObj.setLocation(userTO.getDepartmentVA().getDepartment().getLocation());
                         savedDepartment = departmentRepository.save(departmentObj);
-                        DepartmentVirtualAccount departmentVirtualAccount= new DepartmentVirtualAccount();
+                        DepartmentVirtualAccount departmentVirtualAccount = new DepartmentVirtualAccount();
                         departmentVirtualAccount.generateUuid();
                         departmentVirtualAccount.setVirtualAccount(virtualAccount);
                         departmentVirtualAccount.setDepartment(savedDepartment);
@@ -273,43 +301,68 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                     }
                 }
             }
-        }else{
-            virtualAccount=virtualAccounts.get(0);
-            if(!userTO.getCompanySid().equalsIgnoreCase(virtualAccount.getCompany().getStringSid())){
-                virtualAccount=virtualAccountRepository.findVirtualAccountBySid(virtualAccount.getSid());
+            String token1 = companyService.generateTokenAndUpdateResetPassToken(virtualAccount.getAppuser().getEmailId());
+            String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token1;
+            companyService.sendEmail(virtualAccount.getAppuser().getEmailId(),virtualAccount.getAppuser().getName(),resetPasswordLink);
+            log.info("We have sent a reset password link to your email. Please check.");
+        } else {
+            virtualAccount = virtualAccounts.get(0);
+            if (!userTO.getCompanySid().equalsIgnoreCase(virtualAccount.getCompany().getStringSid())) {
+                virtualAccount = virtualAccountRepository.findVirtualAccountBySid(virtualAccount.getSid());
                 virtualAccount.setStatus(InstructorEnum.Status.ENABLED);
                 virtualAccount.setCompany(company);
                 virtualAccount.setRole(InstructorEnum.VirtualAccountRole.USER);
-                virtualAccount=virtualAccountRepository.save(virtualAccount);
-                DepartmentVirtualAccount departmentVirtualAccount=departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
+                virtualAccount = virtualAccountRepository.save(virtualAccount);
+                BatchParticipant participant= new BatchParticipant();
+                participant.generateUuid();
+                participant.setVirtualAccount(virtualAccount);
+                participant.setBatch(batch);
+                participant=batchParticipantRepository.save(participant);
+                DepartmentVirtualAccount departmentVirtualAccount = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
                 departmentVirtualAccount.setCompany(company);
                 departmentVirtualAccount.setDepartmentRole(InstructorEnum.DepartmentRole.LEARNER);
-                departmentVirtualAccount.setDepartment(departmentRepository.findDepartmentByNameAndStatusNotAndCompany(userTO.getDepartmentVA().getDepartment().getName(), InstructorEnum.Status.DELETED,company));
-                departmentVARepo.save(departmentVirtualAccount);
+                departmentVirtualAccount.setDepartment(departmentRepository.findDepartmentByNameAndStatusNotAndCompany(userTO.getDepartmentVA().getDepartment().getName(), InstructorEnum.Status.DELETED, company));
+                savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
+                userTO.getAppuser().setSid(virtualAccount.getAppuser().getStringSid());
+                userTO.setSid(virtualAccount.getStringSid());
+                userTO.getDepartmentVA().setSid(savedDepartmentVA.getStringSid());
+                userTO.getDepartmentVA().getDepartment().setSid(savedDepartmentVA.getDepartment().getStringSid());
+            } else {
+                virtualAccount = virtualAccountRepository.findVirtualAccountBySid(virtualAccount.getSid());
+                BatchParticipant participant= new BatchParticipant();
+                participant.generateUuid();
+                participant.setVirtualAccount(virtualAccount);
+                participant.setBatch(batch);
+                participant=batchParticipantRepository.save(participant);
+                DepartmentVirtualAccount departmentVirtualAccount = departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
+                userTO.getAppuser().setSid(virtualAccount.getAppuser().getStringSid());
+                userTO.setSid(virtualAccount.getStringSid());
+                userTO.getDepartmentVA().setSid(departmentVirtualAccount.getStringSid());
+                userTO.getDepartmentVA().getDepartment().setSid(departmentVirtualAccount.getDepartment().getStringSid());
             }
         }
-        BatchParticipant participant= new BatchParticipant();
-        participant.generateUuid();
-        participant.setVirtualAccount(virtualAccount);
-        participant.setBatch(batch);
-        participant=batchParticipantRepository.save(participant);
         userTO.getAppuser().setSid(virtualAccount.getAppuser().getStringSid());
         userTO.setSid(virtualAccount.getStringSid());
-        userTO.getDepartmentVA().setSid(savedDepartmentVA.getStringSid());
-        userTO.getDepartmentVA().getDepartment().setSid(savedDepartmentVA.getDepartment().getStringSid());
+        if (savedDepartmentVA!= null) {
+            userTO.getDepartmentVA().setSid(savedDepartmentVA.getStringSid());
+        }
+        if (savedDepartmentVA!= null && savedDepartmentVA.getDepartment()!=null ) {
+            userTO.getDepartmentVA().getDepartment().setSid(savedDepartmentVA.getDepartment().getStringSid());
+        }
         return userTO;
     }
 
-    private BatchTO saveUserWithBatch(List<UserTO> userTOList,BatchTO batchTO){
+
+    private BatchTO saveUserWithBatch(List<UserTO> userTOList,BatchTO batchTO,HttpServletRequest request){
       BatchTO batchTO1=  batchService.createBatch(batchTO);
         userTOList.forEach(userTO -> {
-            createVirtualAccountByBatch(userTO,batchTO1.getSid());
+            createVirtualAccountByBatch(userTO,batchTO1.getSid(),request);
         });
       return batchTO1;
     }
 
     @Override
-    public void uploadParticipants(MultipartFile file, String companySid) {
+    public void uploadParticipants(MultipartFile file, String companySid, HttpServletRequest request) {
         if (ExcelHelper.hasExcelFormat(file)) {
             try {
                 List<UserTO> userTOList = ExcelHelper.excelToUserTO(file.getInputStream());
@@ -317,7 +370,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                     userTO.setCompanySid(companySid);
                     if(StringUtils.isNotEmpty(userTO.getAppuser().getEmailId())) {
                         userTO.setRole(InstructorEnum.VirtualAccountRole.USER);
-                        createVirtualAccount(userTO);
+                       createVirtualAccount(userTO,request);
                     }
                 });
 

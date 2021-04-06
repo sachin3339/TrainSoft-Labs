@@ -14,6 +14,6 @@ import java.util.List;
 public interface ITrainingSessionRepository extends JpaRepository<TrainingSession, Integer>{
     TrainingSession findTrainingSessionBySid(byte[] sid);
 	TrainingSession findTrainingSessionBySidAndStatusNot(byte[] sid, InstructorEnum.Status status);
-	List<TrainingSession> findTrainingSessionByTrainingAndCompanyAndStatusNot(Training training, Company company, InstructorEnum.Status status);
+	List<TrainingSession> findTrainingSessionByTrainingAndCompanyAndStatusNotOrderByCreatedOnDesc(Training training, Company company, InstructorEnum.Status status);
 	List<TrainingSession> findTrainingSessionByTrainingAndAgendaNameContainingAndCompanyAndStatusNot(Training training,String name,Company company,InstructorEnum.Status status);
 }
