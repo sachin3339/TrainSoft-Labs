@@ -15,4 +15,5 @@ public interface ICompanyService {
       boolean updatePassword(String token,String appUserSid, String newPassword);
       void updateResetPasswordToken(String token, String email);
       String generateTokenAndUpdateResetPassToken(String email);
+      String getAppUserNameByEmail(String email);
 }

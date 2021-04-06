@@ -56,14 +56,14 @@ public class UserController {
         return ResponseEntity.ok(createUser);
     }
 
-    @PostMapping("/forgot/password")
+    @PostMapping("/forgot/password/{email}")
     @ApiOperation(value = "forget password", notes = "API to forget password.")
     public ResponseEntity<?> processForgotPassword(HttpServletRequest request,
-    @ApiParam(value = "Email Id", required = true) @PathVariable("email") String email,
-    @ApiParam(value = "User name", required = true) @PathVariable("name") String name)
+    @ApiParam(value = "Email Id", required = true) @PathVariable("email") String email)
             throws UnsupportedEncodingException, MessagingException {
         String token= companyService.generateTokenAndUpdateResetPassToken(email);
         String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token;
+        String name=companyService.getAppUserNameByEmail(email);
         companyService.sendEmail(email,name,resetPasswordLink);
         log.info("We have sent a reset password link to your email. Please check.");
         return ResponseEntity.ok().build();

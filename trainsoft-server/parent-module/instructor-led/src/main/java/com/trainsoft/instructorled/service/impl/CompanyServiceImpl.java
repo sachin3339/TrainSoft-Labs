@@ -230,11 +230,17 @@ public class CompanyServiceImpl implements ICompanyService {
             throw new ApplicationException("Could not find any user with the email ");
         }
     }
-
+    @Override
     public  String generateTokenAndUpdateResetPassToken(String email)
     {
         String token1 = RandomString.make(30);
         updateResetPasswordToken(token1,email);
         return  token1;
+    }
+
+    @Override
+    public String getAppUserNameByEmail(String email) {
+        AppUser appUser = appUserRepository.findAppUsersByEmailId(email);
+        return appUser.getName();
     }
 }
