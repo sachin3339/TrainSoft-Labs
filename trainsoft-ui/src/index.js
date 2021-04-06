@@ -14,8 +14,8 @@ ReactDOM.render(
     <HelmetProvider>
     <ReactBootstrapAlert>
           <AppProvider>
-        <App />
-    </AppProvider>
+                <App />
+        </AppProvider>
     </ReactBootstrapAlert>
     </HelmetProvider>
   </React.StrictMode>,
