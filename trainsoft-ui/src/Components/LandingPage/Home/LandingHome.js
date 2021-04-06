@@ -11,31 +11,8 @@ import EDU from "../image/edu.png";
 import './landingPage.css'
 import { navigate } from '../../Common/Router'
 const LandingHome = () => {
-    const [active, setActive] = useState('home')
-
-    const scrollView = (id) => {
-        try {
-            setActive(id)
-            var element = document.getElementById(id);
-            element && element.scrollIntoView({ behavior: "smooth" });
-        } catch (err) {
-            console.error("error occur on scrollView()", err)
-        }
-    }
-
-    return (<div onScroll={(e) => console.log(e)}>
-        <div className="pg-header">
-            <div className="main-title pointer" onClick={() => scrollView('home')}>TrainSoft</div>
-            <div>
-                <div className="flx">
-                    <Nav.Link className={`${active === "home" ? 'nav-active' : ''}`} onClick={() => scrollView('home')}>Home</Nav.Link>
-                    <Nav.Link className={`${active === "features" ? 'nav-active' : ''}`} onClick={() => scrollView('features')}>Features</Nav.Link>
-                    <Nav.Link className={`${active === "about" ? 'nav-active' : ''}`} onClick={() => scrollView('about')}>About Us</Nav.Link>
-                    <Nav.Link className={`${active === "contact" ? 'nav-active' : ''}`} onClick={() => scrollView('contact')}>Contact</Nav.Link>
-                </div>
-            </div>
-
-        </div>
+    return (<div>
+            <Header/>
         <div className="mt-0 pt-0 section" id="home">
             <div className="row aic">
                 <div className="col-sm-5">
@@ -80,7 +57,7 @@ const LandingHome = () => {
                     </div>
                     </div>
                     <div className="page-card">
-                        <div className="page-card-title" onClick={() => window.open("https://test-engine.trainsoft.io")}>e-Assessment</div>
+                        <div className="page-card-title" >e-Assessment</div>
                         <div className="page-card-subTitle">Online Assessment / Screening</div>
                         <div className="page-card-body">
                             Trainsoft lets you create an online test to assess the progress of your class. With our online test generator tool, educators and corporate trainers can create, publish and conduct online tests<br />
@@ -88,7 +65,7 @@ const LandingHome = () => {
                         </div>
                     </div>
                     <div className="page-card">
-                        <div className="page-card-title" onClick={() => window.open("https://cloud-labs.trainsoft.io")}>e-Lab</div>
+                        <div className="page-card-title" >e-Lab</div>
                         <div className="page-card-subTitle">On Demand Cloud Labs</div>
                         <div className="page-card-body">
                             The best way to learn a thing is by doing the thing. That’s why our learning library is loaded with innovative hands-on technology. Our unique, experiential approach lets people safely experiment, make happy little accidents, and develop skills faster.
@@ -155,7 +132,7 @@ const LandingHome = () => {
                         <div className="mr-2">{ICN_EMAIL}</div>
                         <div>
                             <div>Email</div>
-                            <div className="pg-title3">niranjan.pandey@alchemyinfotech.com</div>
+                            <div className="pg-title3">info@trainsoft.io</div>
                         </div>
                     </div>
 

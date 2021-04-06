@@ -26,6 +26,9 @@ const  zoomAuth = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsI
 const RestService = {
   getCount:(name)=> AxiosService.get(GLOBELCONSTANT.GET_COUNT.replace("{classz}",name)),
   login:(payload)=> AxiosService.post(GLOBELCONSTANT.AUTH.LOGIN,{},{},payload),
+  forgetPwd:(email)=> AxiosService.post(GLOBELCONSTANT.AUTH.FORGOT + email),
+  validateToken:(token)=> AxiosService.post(GLOBELCONSTANT.AUTH.RESET.replace("{token}",token)),
+  updatePwd:(token,sid,pwd)=> AxiosService.put(GLOBELCONSTANT.AUTH.UPDATE_PWD.replace("{token}",token).replace("{appUserSid}",sid).replace("{password}",pwd,)),
 
   //  course
   getAllCourse: () => AxiosService.get(GLOBELCONSTANT.COURSE.GET_COURSE),
