@@ -57,7 +57,7 @@ const LandingHome = () => {
                     </div>
                     </div>
                     <div className="page-card">
-                        <div className="page-card-title" >e-Assessment</div>
+                        <div className="page-card-title" onClick={() => navigate('/assesment')}>e-Assessment</div>
                         <div className="page-card-subTitle">Online Assessment / Screening</div>
                         <div className="page-card-body">
                             Trainsoft lets you create an online test to assess the progress of your class. With our online test generator tool, educators and corporate trainers can create, publish and conduct online tests<br />
