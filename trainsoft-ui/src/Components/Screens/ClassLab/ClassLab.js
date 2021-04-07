@@ -21,7 +21,7 @@ const ClassLab = () => {
     const [show, setShow] = useState(false)
     const [tab, setTab] = useState([])
     const [selectedTab, setSelectedTab] = useState()
-    const [removedTag,setRemovedTag]  = useState('')
+    const [removedTag, setRemovedTag] = useState('')
     const [fromClose, setFromClose] = useState(false)
     const classTab = ['Online Media', 'Whiteboard', 'Content', 'Code editor', 'Development Env']
     return (<>
@@ -30,11 +30,11 @@ const ClassLab = () => {
         <div className="p-4 full-w full-h">
             <div className="flx full-w full-h ">
                 <div className="full-w full-h flx3 column">
-                    <div className="title-lg pointer" onClick={ ()=> navigate('/dashboard') }>TrainSoft - Instructor</div>
+                    <div className="title-lg pointer" onClick={() => navigate('/dashboard')}>TrainSoft - Instructor</div>
                     <div className="flx">
                         {tab.length !== 0 ?
                             tab.map((res, i) => <div key={i} className={`class-mode ${selectedTab === res && 'active-tab-class'}`} key={i}>
-                                <div className="" onClick={() => { setSelectedTab(res) }}>{res}</div><div className={`mode-close }`} onClick={() => { setTab(tab.filter(resp => resp !== res)); setFromClose(true);setRemovedTag(res) }}>{ICN_CLOSE}</div>
+                                <div className="" onClick={() => { setSelectedTab(res) }}>{res}</div><div className={`mode-close }`} onClick={() => { setTab(tab.filter(resp => resp !== res)); setFromClose(true); setRemovedTag(res) }}>{ICN_CLOSE}</div>
                             </div>)
                             : <div className="class-mode">New</div>}
                         <Dropdown className="dropdown-menus">
@@ -49,16 +49,16 @@ const ClassLab = () => {
                     <div className="class-lab vic">
                         {tab.length > 0 ? <>
                             {selectedTab === "Whiteboard" && <WhiteBoard className={`${selectedTab === "Whiteboard" ? 'd-block' : 'd-none'}`} />}
-                            <div className={`${selectedTab === "Content" ? 'd-block' : 'd-none'} full-h full-w`}><Content {...{fromClose,setFromClose,removedTag}} /> </div>
-                            <div className={`${selectedTab === "Code editor" ? 'column' : 'd-none'} full-h full-w `}><CodeEditor {...{fromClose,setFromClose,removedTag,themesColor:false}} /></div>
-                            <div className={`${selectedTab === "Online Media" ? 'd-block' : 'd-none'} full-h full-w`}><OnlineMedia {...{fromClose,setFromClose,removedTag}} /></div>
+                            <div className={`${selectedTab === "Content" ? 'd-block' : 'd-none'} full-h full-w`}><Content {...{ fromClose, setFromClose, removedTag }} /> </div>
+                            <div className={`${selectedTab === "Code editor" ? 'column' : 'd-none'} full-h full-w `}><CodeEditor {...{ fromClose, setFromClose, removedTag, themesColor: false }} /></div>
+                            <div className={`${selectedTab === "Online Media" ? 'd-block' : 'd-none'} full-h full-w`}><OnlineMedia {...{ fromClose, setFromClose, removedTag }} /></div>
                             {selectedTab === "Development Env" && <div>
-                                <DevelopmentEnv/>
+                                <DevelopmentEnv />
                             </div>}
                         </> : <div className="">
-                                <div className="title-md mb-3">You are currently not sharing anything </div>
-                                <div>Start sharing now!</div>
-                            </div>}
+                            <div className="title-md mb-3">You are currently not sharing anything </div>
+                            <div>Start sharing now!</div>
+                        </div>}
                     </div>
                 </div>
 
@@ -78,14 +78,17 @@ const ClassLab = () => {
                     </div>
                     <div>
                         <div className="video-container">
-                            <div className="video-action">
+                            {/* <div className="video-action">
                                     <img src={vid}/>
                                 <div></div>
                             </div>
                             <div className="footer-video-action">
                                 <BtnRound className="mr-3">{ICN_VIDEO}</BtnRound>
                                 <BtnRound>{ICN_MIC}</BtnRound>
-                            </div>
+                            </div> */}
+                            <object type="text/html" data="http://localhost:3000/zoom" style={{ width: "100%", height: "100%" }}>
+                                <p>backup content</p>
+                            </object>
                         </div>
                     </div>
                     <div className="flx mt-3 storeTab-shadow">

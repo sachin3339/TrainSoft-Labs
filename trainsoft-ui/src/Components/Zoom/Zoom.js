@@ -68,7 +68,7 @@ const Zoom = () => {
           apiKey: apiKey,
           userEmail: userEmail,
           passWord: passWord,
-          isSupportAV: true, // enable 2AV feature 
+          // isSupportAV: true, // enable 2AV feature 
           success: (success) => {
             console.log(success);
           },
@@ -92,7 +92,6 @@ const Zoom = () => {
 
   return <div className="App">
 
-    
   </div>;
 };
 
