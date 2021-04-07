@@ -10,7 +10,8 @@ const CardHeader = ({ location, onChange=()=>{},onEnter,clearField = false,actio
         <div className="jcb aic py-2">
             <div className="flx1">
             {location && location.state && <Breadcrumb>
-                <Breadcrumb.Item className=""><div>{location.state.title}</div></Breadcrumb.Item>
+             {console.log(location.state)}
+                <Breadcrumb.Item className=""><Link state={{title: location.state.title }} to={`${location.pathname.split('/').slice(0,2).join('/')}`}>{location.state.title}</Link></Breadcrumb.Item>
                 {location.state.subTitle && <Breadcrumb.Item active>
                     {location.state.subTitle}
                 </Breadcrumb.Item>}
