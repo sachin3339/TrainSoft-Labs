@@ -55,7 +55,7 @@ public class BatchServiceImpl implements IBatchService {
                 savedBatchTO.setCreatedByVASid(virtualAccount.getStringSid());
                 return savedBatchTO;
             } else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while creating the batch",e.toString());
             throw new ApplicationException("Something went wrong while creating the batch");
@@ -83,7 +83,7 @@ public class BatchServiceImpl implements IBatchService {
                 savedBatch.setUpdatedByVASid(virtualAccount.getStringSid());
                 return savedBatch;
             }else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while updating the batch",e.toString());
             throw new ApplicationException("Something went wrong while updating the batch");
@@ -103,7 +103,7 @@ public class BatchServiceImpl implements IBatchService {
                 batchTO.setCompanySid(batch.getCompany() == null ? null : batch.getCompany().getStringSid());
             return batchTO;
         }else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while fetching the batch details by sid",e.toString());
             throw new ApplicationException("Something went wrong while fetching the batch details by sid");
@@ -144,7 +144,7 @@ public class BatchServiceImpl implements IBatchService {
                 log.info(String.format("Batch %s is deleted successfully by %s",batchSid, deletedBySid));
                 return true;
             } else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while deleting the Batch details by sid",e.toString());
             throw new ApplicationException("Something went wrong while deleting the Batch details by sid");
@@ -191,7 +191,7 @@ public class BatchServiceImpl implements IBatchService {
                 participantRepository.delete(participant);
                 return true;
             } else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception exception) {
             log.error("throwing exception while deleting the BatchParticipants details by batch and VASid", exception.toString());
             throw new ApplicationException("Something went wrong while deleting the BatchParticipants details by batch and VASid");
