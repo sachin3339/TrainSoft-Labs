@@ -1,10 +1,11 @@
+import { navigate } from "../../../Common/Router";
 import { questions } from "../mock";
 import styles from "./Sidebar.module.css";
 
 const Sidebar = ({ setQuestion, selectedAnswers, activeQuestion }) => {
   return (
     <div style={{ flex: 3, background: "#49167E", padding: "35px 25px" }}>
-      <div className={styles.container}>Trainsoft</div>
+      <div className={`${styles.container} pointer`} onClick={()=>{navigate('/')}}>Trainsoft</div>
 
       {questions.map((_question) => (
         <div onClick={() => setQuestion(_question)}>
