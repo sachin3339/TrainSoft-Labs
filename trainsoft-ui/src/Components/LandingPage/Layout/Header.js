@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import {Navbar,Nav,Form,FormControl} from 'react-bootstrap'
+import { ICN_TRAINSOFT } from '../../Common/Icon';
 import { navigate } from '../../Common/Router';
 import  "./header.css";
 const Header = ({reset=false}) => {
@@ -16,7 +17,7 @@ const Header = ({reset=false}) => {
   }
     return(<>
          <div className="pg-header">
-            <div className="main-title pointer" onClick={() => {scrollView('home');navigate('/')}}>TrainSoft</div>
+            <div className="main-title pointer" onClick={() => {scrollView('home');navigate('/')}}>{ICN_TRAINSOFT}</div>
             <div>
                {!reset && <div className="flx">
                     <Nav.Link className={`${active === "home" ? 'nav-active' : ''}`} onClick={() => scrollView('home')}>Home</Nav.Link>
