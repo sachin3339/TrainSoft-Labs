@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState ,useContext} from 'react';
 import './classlab.css'
 import vid from '../../../Assets/Images/vid.jpg';
 import { ICN_ASSESSMENT, ICN_CLOSE, ICN_EXIT, ICN_MIC, ICN_PEOPLE, ICN_RECORD, ICN_SCREEN_SHARE, ICN_SEND, ICN_VIDEO } from '../../Common/Icon';
@@ -14,23 +14,23 @@ import WhiteBoard from './WhiteBoard/WhiteBoard';
 import NoDataFound from '../../Common/NoDataFound/NoDataFound';
 import { navigate } from '../../Common/Router';
 import DevelopmentEnv from './DevelopmentEnv/DevelopmentEnv';
-import Zoom from '../../Zoom/Zoom';
+import AppContext from '../../../Store/AppContext';
 
 
 const ClassLab = () => {
+    const { user, spinner ,ROLE } = useContext(AppContext)
     const [show, setShow] = useState(false)
     const [tab, setTab] = useState([])
     const [selectedTab, setSelectedTab] = useState()
     const [removedTag,setRemovedTag]  = useState('')
     const [fromClose, setFromClose] = useState(false)
-    const classTab = ['Online Media', 'Whiteboard', 'Content', 'Code editor', 'Development Env']
+    const classTab = ['Media Library', 'Whiteboard', 'Content', 'Code editor', 'Development Env']
     return (<>
 
-        {/* <Zoom/> */}
         <div className="p-4 full-w full-h">
             <div className="flx full-w full-h ">
                 <div className="full-w full-h flx3 column">
-                    <div className="title-lg pointer" onClick={ ()=> navigate('/dashboard') }>TrainSoft - Instructor</div>
+                    <div className="title-lg pointer" onClick={ ()=> navigate('/dashboard') }>TrainSoft - {user.role === ROLE.LEARNER ? 'Learner' : 'Instructor'}</div>
                     <div className="flx">
                         {tab.length !== 0 ?
                             tab.map((res, i) => <div key={i} className={`class-mode ${selectedTab === res && 'active-tab-class'}`} key={i}>
@@ -51,7 +51,7 @@ const ClassLab = () => {
                             {selectedTab === "Whiteboard" && <WhiteBoard className={`${selectedTab === "Whiteboard" ? 'd-block' : 'd-none'}`} />}
                             <div className={`${selectedTab === "Content" ? 'd-block' : 'd-none'} full-h full-w`}><Content {...{fromClose,setFromClose,removedTag}} /> </div>
                             <div className={`${selectedTab === "Code editor" ? 'column' : 'd-none'} full-h full-w `}><CodeEditor {...{fromClose,setFromClose,removedTag,themesColor:false}} /></div>
-                            <div className={`${selectedTab === "Online Media" ? 'd-block' : 'd-none'} full-h full-w`}><OnlineMedia {...{fromClose,setFromClose,removedTag}} /></div>
+                            <div className={`${selectedTab === "Media Library" ? 'd-block' : 'd-none'} full-h full-w`}><OnlineMedia {...{fromClose,setFromClose,removedTag}} /></div>
                             {selectedTab === "Development Env" && <div>
                                 <DevelopmentEnv/>
                             </div>}
