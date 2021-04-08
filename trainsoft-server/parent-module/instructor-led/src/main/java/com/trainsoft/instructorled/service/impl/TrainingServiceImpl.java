@@ -88,7 +88,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 savedTrainingTO.setCourseSid(course.getStringSid());
                 return savedTrainingTO;
             } else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while creating the training",e.toString());
             throw new ApplicationException("Something went wrong while creating the training");
@@ -192,7 +192,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 return savedTrainingTO;
             }
             else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             e.printStackTrace();
             log.info("throwing exception while fetching the training details by sid");
@@ -229,7 +229,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 return savedTrainingSessionTO;
             }
             else {
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
             }
         } catch (Exception exception) {
             log.error("throwing exception while creating the trainingSession",exception.toString());
@@ -264,7 +264,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 return savedTrainingSessionTO;
             }
             else {
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -286,7 +286,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 return savedTrainingSession;
             }
             else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.error("throwing exception while fetching the trainingSession details by sid",e.toString());
             throw new ApplicationException("Something went wrong while fetching the trainingSession details by sid");
@@ -308,7 +308,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 }).collect(Collectors.toList());
             }
             else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         }catch(Exception e){
                 log.error("throwing exception while fetching the all trainingSession details",e.toString());
                 throw new ApplicationException("Something went wrong while fetching the trainingSession details");
@@ -433,7 +433,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 log.info(String.format("Training %s is deleted successfully by %s",trainingSid, deletedBySid));
                 return true;
             } else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.info("throwing exception while deleting the Training details by sid");
             throw new ApplicationException("Something went wrong while deleting the Training details by sid");
@@ -454,7 +454,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 log.info(String.format("Training session %s is deleted successfully by %s",trainingSessionSid, deletedBySid));
                 return true;
             } else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             log.info("throwing exception while deleting the Training Session details by sid");
             throw new ApplicationException("Something went wrong while deleting the Training Session details by sid");
@@ -521,7 +521,7 @@ public class TrainingServiceImpl implements ITrainingService {
                 savedTrainingTO.setTrainingBatchs(trainingTO.getTrainingBatchs());
                 return savedTrainingTO;
             } else
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException("No record found");
         } catch (Exception e) {
             e.printStackTrace();
             log.error("throwing exception while updating the training",e.toString());

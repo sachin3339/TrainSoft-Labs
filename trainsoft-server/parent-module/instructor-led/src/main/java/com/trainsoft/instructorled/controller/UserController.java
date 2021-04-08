@@ -10,9 +10,7 @@ import com.trainsoft.instructorled.service.ICompanyService;
 import com.trainsoft.instructorled.service.ITrainingService;
 import com.trainsoft.instructorled.to.*;
 import com.trainsoft.instructorled.value.InstructorEnum;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
@@ -58,11 +56,13 @@ public class UserController {
 
     @PostMapping("/forgot/password/{email}")
     @ApiOperation(value = "forget password", notes = "API to forget password.")
+    @ApiResponses(value= {
+    @ApiResponse(code = 204, message = "Email address is not valid.")})
     public ResponseEntity<?> processForgotPassword(HttpServletRequest request,
     @ApiParam(value = "Email Id", required = true) @PathVariable("email") String email)
             throws UnsupportedEncodingException, MessagingException {
         String token= companyService.generateTokenAndUpdateResetPassToken(email);
-        String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token;
+        String resetPasswordLink = Utility.getSiteURL(request)+ "/reset/" + token;
         String name=companyService.getAppUserNameByEmail(email);
         companyService.sendEmail(email,name,resetPasswordLink);
         log.info("We have sent a reset password link to your email. Please check.");

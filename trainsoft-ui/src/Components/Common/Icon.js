@@ -39,7 +39,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
 import CallIcon from '@material-ui/icons/Call';
 import EmailIcon from '@material-ui/icons/Email';
+import TRAINSOFT from './../../Assets/Images/trainsoft.png'
 
+export const ICN_TRAINSOFT = <img src={TRAINSOFT}/>
 export const ICN_HOME = <HomeIcon/>
 export const ICN_CALL = <CallIcon/>
 export const ICN_EMAIL = <EmailIcon/>

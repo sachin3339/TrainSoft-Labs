@@ -84,7 +84,7 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
     public List<AppUserTO> getAllAppUsers(String companySid) {
         List<AppUser> appUserList= appUserRepository.findAppUserByCompanySidAndStatus(BaseEntity.hexStringToByteArray(companySid), InstructorEnum.Status.DELETED);
         if (appUserList.isEmpty())
-          throw new RecordNotFoundException();
+            throw new RecordNotFoundException("No record found");
         else
            return mapper.convertList(appUserList,AppUserTO.class);
     }
@@ -149,7 +149,8 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                 }
             }
             String token1 = companyService.generateTokenAndUpdateResetPassToken(virtualAccount.getAppuser().getEmailId());
-            String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token1;
+            // String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token1;
+            String resetPasswordLink = Utility.getSiteURL(request)+ "/reset/" + token1;
             companyService.sendEmail(virtualAccount.getAppuser().getEmailId(),virtualAccount.getAppuser().getName(),resetPasswordLink);
             log.info("We have sent a reset password link to your email. Please check.");
         }else {
@@ -302,7 +303,8 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                 }
             }
             String token1 = companyService.generateTokenAndUpdateResetPassToken(virtualAccount.getAppuser().getEmailId());
-            String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token1;
+           // String resetPasswordLink = Utility.getSiteURL(request).replace("/insled","") + "/reset/" + token1;
+            String resetPasswordLink = Utility.getSiteURL(request)+ "/reset/" + token1;
             companyService.sendEmail(virtualAccount.getAppuser().getEmailId(),virtualAccount.getAppuser().getName(),resetPasswordLink);
             log.info("We have sent a reset password link to your email. Please check.");
         } else {
