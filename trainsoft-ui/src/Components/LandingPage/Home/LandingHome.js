@@ -142,7 +142,7 @@ const LandingHome = () => {
                                 <Cancel className="">SEE HOW</Cancel>
                             </div>
                             <div className="">
-                                <BtnWarning onClick={()=> window.open("https://trainsoft.org")}>CONTACT US</BtnWarning>
+                                <BtnWarning onClick={()=> window.open("https://trainsoft.org/?source=trainsoft")}>CONTACT US</BtnWarning>
                             </div>
                         </div>
                     </div>
