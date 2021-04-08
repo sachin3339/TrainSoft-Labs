@@ -20,6 +20,9 @@ target/
 *.ipr
 *.iml
 
+
+
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -32,3 +35,13 @@ build/
 
 ### VS Code ###
 .vscode/
+/.idea/
+/.idea/libraries/
+/.idea/compiler.xml
+/.idea/encodings.xml
+/.idea/jarRepositories.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/parent-module.iml
+/.idea/vcs.xml
+/.idea/workspace.xml
