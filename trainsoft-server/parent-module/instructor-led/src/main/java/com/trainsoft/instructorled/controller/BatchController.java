@@ -7,9 +7,8 @@ import com.trainsoft.instructorled.service.ICourseService;
 import com.trainsoft.instructorled.to.BatchTO;
 import com.trainsoft.instructorled.to.CourseSessionTO;
 import com.trainsoft.instructorled.to.CourseTO;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import com.trainsoft.instructorled.to.UserTO;
+import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -100,5 +99,19 @@ public class BatchController {
             @ApiParam(value = "Batch sid", required = true) @PathVariable("batchSid") String batchSid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         return ResponseEntity.ok(batchService.deleteBatchBySid(batchSid, jwt.getVirtualAccountSid()));
+    }
+
+    @PostMapping("add/batch/{batchSid}/virtualAccount/{vASid}")
+    @ApiOperation(value = "addParticipantsWithBatch", notes = "API to add participant with batch.")
+    @ApiResponses(value= {
+            @ApiResponse(code = 204, message = "Batch Sid is not valid."),
+            @ApiResponse(code = 204, message = "Virtual Account Sid is not valid.")})
+    public ResponseEntity<?> addParticipantsWithBatch(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Batch sid", required = true) @PathVariable("batchSid") String batchSid,
+            @ApiParam(value = "VirtualAccount sid", required = true) @PathVariable("vASid") String vASid) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        UserTO addParticipants = batchService.createSingleUserWithBatch(batchSid,vASid, jwt.getCompanySid());
+        return ResponseEntity.ok(addParticipants);
     }
 }

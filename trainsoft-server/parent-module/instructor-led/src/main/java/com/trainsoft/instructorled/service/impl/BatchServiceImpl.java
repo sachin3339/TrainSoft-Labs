@@ -7,10 +7,7 @@ import com.trainsoft.instructorled.entity.*;
 import com.trainsoft.instructorled.repository.*;
 import com.trainsoft.instructorled.service.IBatchService;
 import com.trainsoft.instructorled.service.ICourseService;
-import com.trainsoft.instructorled.to.BatchTO;
-import com.trainsoft.instructorled.to.BatchViewTO;
-import com.trainsoft.instructorled.to.CourseSessionTO;
-import com.trainsoft.instructorled.to.CourseTO;
+import com.trainsoft.instructorled.to.*;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import javassist.bytecode.stackmap.BasicBlock;
 import lombok.AllArgsConstructor;
@@ -37,6 +34,7 @@ public class BatchServiceImpl implements IBatchService {
     private  IBatchParticipantRepository participantRepository;
     private DozerUtils mapper;
     private ICompanyRepository companyRepository;
+    IBatchParticipantRepository batchParticipantRepository;
 
     @Override
     public BatchTO createBatch(BatchTO batchTO) {
@@ -197,4 +195,24 @@ public class BatchServiceImpl implements IBatchService {
             throw new ApplicationException("Something went wrong while deleting the BatchParticipants details by batch and VASid");
         }
     }
-}
+
+    @Override
+    public UserTO createSingleUserWithBatch(String batchSid, String VASid, String companySid) {
+
+            if (StringUtils.isNotEmpty(batchSid) && StringUtils.isNotEmpty(VASid) && StringUtils.isNotEmpty(companySid)) {
+                VirtualAccount virtualAccount= virtualAccountRepository.findVirtualAccountBySidAndCompanyAndStatusNot(
+                        BaseEntity.hexStringToByteArray(VASid), getCompany(companySid), InstructorEnum.Status.DELETED);
+                Batch batch = batchRepository.findBatchBySidAndCompanyAndStatusNot(BaseEntity.hexStringToByteArray(batchSid),
+                        getCompany(companySid),InstructorEnum.Status.DELETED);
+                BatchParticipant participant= new BatchParticipant();
+                participant.generateUuid();
+                participant.setVirtualAccount(virtualAccount);
+                participant.setBatch(batch);
+                participant=batchParticipantRepository.save(participant);
+                return mapper.convert(virtualAccount,UserTO.class);
+            } else {
+                log.error("throwing exception while associating  the user with batch");
+                throw new RecordNotFoundException("No record found with given Sid");
+            }
+        }
+    }
