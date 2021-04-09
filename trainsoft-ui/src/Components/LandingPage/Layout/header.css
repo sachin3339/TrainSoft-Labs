@@ -1,16 +1,30 @@
-.main-title{
-    color: #2D62ED !important;
+h1 {
     font-size: 28px;
     font-weight: bold;
+    background: -webkit-linear-gradient( #250B3F ,#7e1edd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+.main-title{
+    font-weight: bold;
+    color: linear-gradient(to right, #250B3F ,#571A96)  !important;
 }
 .pg-header {
-    padding: 15px 40px;
+    padding: 10px 40px;
     display: flex;
     width: 100%;
+    align-items: center;
     justify-content: space-between;
+    background: white;
+    z-index: 1;
+    position: sticky;
+    top: 0px;
+    box-shadow: 0px 0px 4px 0px #4e4e4e46;
+}
+.pg-header img{
+    width: 126px;
 }
 .navbar-light .navbar-nav .nav-link {
-    color: #333333;
     text-align: left;
     font: normal normal 600 16px/22px Open Sans !important;
     letter-spacing: 0px;

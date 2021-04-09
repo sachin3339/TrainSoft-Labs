@@ -106,13 +106,13 @@ export const AdminConfig = [
         disabled: true,
         role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]
     },
-    {
-        icon: ICN_VSCODE,
-        title: "Class",
-        pathname: "class",
-        disabled: true,
-        role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]
-    },
+    // {
+    //     icon: ICN_VSCODE,
+    //     title: "Class",
+    //     pathname: "class",
+    //     disabled: true,
+    //     role: [GLOBELCONSTANT.ROLE.LEARNER]
+    // },
 ]
 
 export const userConfig = []
