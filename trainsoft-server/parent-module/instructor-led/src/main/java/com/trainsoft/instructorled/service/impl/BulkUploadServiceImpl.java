@@ -47,15 +47,20 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
     ICompanyService companyService;
 
     @Override
-    public void uploadParticipantsWithBatch(MultipartFile file, String batchName, String instructorName,String companySid,HttpServletRequest request) {
-        if (ExcelHelper.hasExcelFormat(file)) {
+    public void uploadParticipantsWithBatch(MultipartFile file, String batchName, String instructorName,String companySid,
+                                            HttpServletRequest request,String vASid) {
+       VirtualAccount virtualAccount= virtualAccountRepository.findVirtualAccountBySidAndCompanyAndStatusNot(BaseEntity.hexStringToByteArray(vASid),getCompany(companySid),
+                                                                       InstructorEnum.Status.DELETED);
+        if (file!=null && ExcelHelper.hasExcelFormat(file)) {
             try {
                  Batch batch=new Batch();
                  batch.setSid(BaseEntity.generateByteUuid());
                  batch.setName(batchName);
                  batch.setTrainingType(InstructorEnum.TrainingType.valueOf(instructorName));
                  batch.setStatus(InstructorEnum.Status.ENABLED);
+                 batch.setCreatedBy(virtualAccount);
                  batch.setCreatedOn(new Date(Instant.now().toEpochMilli()));
+                 batch.setUpdatedOn(null);
                  batch.setCompany(getCompany(companySid));
                  batch=batchRepository.save(batch);
                  List<UserTO> userTOList = ExcelHelper.excelToUserTO(file.getInputStream());
@@ -70,6 +75,19 @@ public class BulkUploadServiceImpl implements IBulkUploadService {
                 log.error("while creating batch and uploading participiant throwing error",e.toString());
                 throw new ApplicationException("fail to store excel data: " + e.getMessage());
             }
+        }
+        else {
+            Batch batch=new Batch();
+            batch.setSid(BaseEntity.generateByteUuid());
+            batch.setName(batchName);
+            batch.setTrainingType(InstructorEnum.TrainingType.valueOf(instructorName));
+            batch.setStatus(InstructorEnum.Status.ENABLED);
+            batch.setCreatedBy(virtualAccount);
+            batch.setCreatedOn(new Date(Instant.now().toEpochMilli()));
+            batch.setUpdatedOn(null);
+            batch.setCompany(getCompany(companySid));
+            batch=batchRepository.save(batch);
+            log.info("batch created without uploading participants list");
         }
     }
 

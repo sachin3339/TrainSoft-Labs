@@ -14,7 +14,8 @@ public interface IBulkUploadService {
      UserTO createVirtualAccount(UserTO userTO,HttpServletRequest request);
      UserTO getVirtualAccountByVASid(String virtualAccountSid);
      List<UserTO> getVirtualAccountByCompanySid(String companySid,String type,int pageNo,int record);
-     void uploadParticipantsWithBatch(MultipartFile file, String batchName, String instructorName,String companySid,HttpServletRequest request);
+     void uploadParticipantsWithBatch(MultipartFile file, String batchName, String instructorName,String companySid,
+                                      HttpServletRequest request,String vASid);
      void uploadParticipants(MultipartFile file,String companySid, HttpServletRequest request);
      UserTO updateUserDetails(UserTO userTO);
      int getUserCount(String companySid, String type);
