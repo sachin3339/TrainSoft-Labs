@@ -1,0 +1,44 @@
+package com.trainsoft.assessment.commons;
+
+import com.trainsoft.assessment.repository.ITrainsoftCustomRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
+import java.math.BigInteger;
+
+@Repository
+@Transactional
+public class CustomRepositoyImpl implements ITrainsoftCustomRepository {
+
+    private final Logger logger = LoggerFactory.getLogger(CustomRepositoyImpl.class);
+    @PersistenceContext
+    EntityManager entitymangager;
+
+    @Override
+    public Integer findIdBySid(String classz, String sid) {
+        String customQuery = "SELECT a.id from "+classz+" a where hex(a.sid)='"+sid+"'";
+        Query query = entitymangager.createQuery(customQuery);
+        return (Integer)query.getSingleResult();
+    }
+
+    @Override
+    public BigInteger noOfCountByClass(String classz,String companySid) {
+        String customQuery = "SELECT count(a.id) as noOfCount from "+classz+" a where a.status <> 'DELETED' and company_sid=:companySid";
+        Query query = entitymangager.createNativeQuery(customQuery);
+        query.setParameter("companySid",companySid);
+        return (BigInteger)query.getSingleResult();
+    }
+
+    /*@Override
+    public BigInteger noOfUserCountByClass(String classz,String companySid) {
+        String customQuery = "SELECT count(a.id) as noOfCount from "+classz+" a where a.status <> 'DELETED' and company_sid=:companySid";
+        Query query = entitymangager.createNativeQuery(customQuery);
+        query.setParameter("companySid",companySid);
+        return (BigInteger)query.getSingleResult();
+    }*/
+}
