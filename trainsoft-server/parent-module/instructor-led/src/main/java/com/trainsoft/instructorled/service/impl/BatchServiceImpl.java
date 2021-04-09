@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -196,23 +197,31 @@ public class BatchServiceImpl implements IBatchService {
         }
     }
 
-    @Override
-    public UserTO createSingleUserWithBatch(String batchSid, String VASid, String companySid) {
+    public List<UserTO> createMultipleUserWithBatch(String batchSid, List<String> VASid,String companySid) {
 
-            if (StringUtils.isNotEmpty(batchSid) && StringUtils.isNotEmpty(VASid) && StringUtils.isNotEmpty(companySid)) {
-                VirtualAccount virtualAccount= virtualAccountRepository.findVirtualAccountBySidAndCompanyAndStatusNot(
-                        BaseEntity.hexStringToByteArray(VASid), getCompany(companySid), InstructorEnum.Status.DELETED);
-                Batch batch = batchRepository.findBatchBySidAndCompanyAndStatusNot(BaseEntity.hexStringToByteArray(batchSid),
-                        getCompany(companySid),InstructorEnum.Status.DELETED);
-                BatchParticipant participant= new BatchParticipant();
-                participant.generateUuid();
-                participant.setVirtualAccount(virtualAccount);
-                participant.setBatch(batch);
-                participant=batchParticipantRepository.save(participant);
-                return mapper.convert(virtualAccount,UserTO.class);
-            } else {
-                log.error("throwing exception while associating  the user with batch");
-                throw new RecordNotFoundException("No record found with given Sid");
-            }
+        if (StringUtils.isNotEmpty(batchSid) && StringUtils.isNotEmpty(companySid) && VASid!=null && VASid.size()>0) {
+            Batch batch = batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(batchSid));
+         List<VirtualAccount> virtualAccounts=saveVirtualAccountBatch(batch,VASid,getCompany(companySid));
+            return mapper.convertList(virtualAccounts,UserTO.class);
+        } else {
+            log.error("throwing exception while associating  the user with batch");
+            throw new RecordNotFoundException("No record found with given Sid");
         }
     }
+
+    private List<VirtualAccount> saveVirtualAccountBatch(Batch batch, List<String> vASids, Company company) {
+        List<VirtualAccount> virtualAccountList= new ArrayList<>();
+        vASids.forEach(vASid-> {
+            VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySidAndCompanyAndStatusNot(
+                       BaseEntity.hexStringToByteArray(vASid),company, InstructorEnum.Status.DELETED);
+            BatchParticipant  batchParticipant = new BatchParticipant();
+            batchParticipant.generateUuid();
+            batchParticipant.setBatch(batch);
+            batchParticipant.setVirtualAccount(virtualAccount);
+            batchParticipantRepository.save(batchParticipant);
+            virtualAccountList.add(virtualAccount);
+        });
+        return virtualAccountList;
+    }
+
+}
