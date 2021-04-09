@@ -25,7 +25,7 @@ function generateSignature(apiKey, apiSecret, meetingNumber, role) {
 
 
 const Zoom = () => {
-  const  {user} = useContext(AppContext)
+  const  {user,ROLE} = useContext(AppContext)
    // call the generateInstantToken function
 
   var apiKey = "tGcuTNjdQUS3jkTw_eaz9g";
@@ -61,14 +61,14 @@ const Zoom = () => {
              apiKey,
              apiSecret,
              meetingNumber,
-             user.role === 'TRAINER' ? 1 : 0
+             user.role === ROLE.INSTRUCTOR ? 1 : 0
           ),
           meetingNumber: meetingNumber,
           userName: userName,
           apiKey: apiKey,
           userEmail: userEmail,
           passWord: passWord,
-          isSupportAV: true, // enable 2AV feature 
+          // isSupportAV: true, // enable 2AV feature 
           success: (success) => {
             console.log(success);
           },
@@ -92,7 +92,6 @@ const Zoom = () => {
 
   return <div className="App">
 
-    
   </div>;
 };
 

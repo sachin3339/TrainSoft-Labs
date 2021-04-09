@@ -1,10 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import { Form } from 'react-bootstrap'
-import { Formik, Field, validateYupSchema } from 'formik';
-import { ICN_TRASH, ICN_EDIT, ICN_CLOSE, ICN_DELETE } from "../../Common/Icon";
+import { Formik} from 'formik';
+import {  ICN_EDIT,  ICN_DELETE } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
-import { TextInput, DateInput, SelectInput } from "../../Common/InputField/InputField";
+import { TextInput, SelectInput } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
 import BatchesDetails from "./BatchDetails";
 import { BsModal, Toggle } from "../../Common/BsUtils";
@@ -14,18 +14,14 @@ import * as Yup from 'yup';
 import moment from 'moment'
 import useToast from "../../../Store/ToastHook";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
-import useFetch from "../../../Store/useFetch";
 import AppContext from "../../../Store/AppContext";
-import { SearchInputBox } from "react-bs-search";
-import './batches.css'
 import { getAllBatches } from "../../../Services/service";
+import './batches.css'
 
 
 
-const initialVal = {
 
-}
-
+const initialVal = {}
 const Batch = ({ location }) => {
     const { user, spinner, setBatches, ROLE } = useContext(AppContext)
     const Toast = useToast();
@@ -132,10 +128,9 @@ const Batch = ({ location }) => {
             });
             xhr.open("POST", GLOBELCONSTANT.PARTICIPANT.UPLOAD_PARTICIPANT);
             xhr.setRequestHeader("batchName", val.name);
-            xhr.setRequestHeader("instructorName", val.trainingType);
-
+            xhr.setRequestHeader("trainingType", val.trainingType);
             xhr.setRequestHeader("Authorization", user.jwtToken);
-            xhr.send(data);
+            val.file.length> 0 ? xhr.send(data) : xhr.send()
         })
     }
 
@@ -374,7 +369,7 @@ const Batch = ({ location }) => {
                                         <TextInput label="Batch Name" isNotValid={isBatch} onBlur={(e)=> validateBatch(e.target.value)} name="name" />
                                     </div>
                                     <div className="col-6">
-                                        <SelectInput label="Training Type" value={values.trainingType} option={['INSTRUCTOR_LED', 'SELF', 'OFFLINE']} name="trainingType" />
+                                        <SelectInput label="Training Type" value={values.trainingType} option={['INSTRUCTOR_LED', 'SELF_PACED', 'LAB_ONLY']} name="trainingType" />
                                     </div>
                                 </Form.Group>
                                 <div>

@@ -196,6 +196,12 @@
 .edu-img img{
     width: 100%;
 }
+.card-footer-action svg{
+    font-size: 16px;
+    color: #00000073;
+    margin-right: 4px;
+    margin-bottom: 3px;
+}
 @media only screen and (max-width: 600px) {
     .context-body{
         width: 100%;

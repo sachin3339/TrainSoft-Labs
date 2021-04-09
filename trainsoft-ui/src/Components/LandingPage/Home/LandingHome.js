@@ -1,11 +1,10 @@
 import { Formik } from 'formik'
 import React, { useState } from 'react'
 import { Form } from 'react-bootstrap'
-import { Navbar, Nav, FormControl } from 'react-bootstrap'
 import { BtnWarning, Cancel,BtnInfo } from '../../Common/Buttons/Buttons'
 import { TextArea, TextInput } from '../../Common/InputField/InputField'
 import Header from '../Layout/Header'
-import { ICN_CALL, ICN_EMAIL, ICN_TRAINSOFT } from '../../Common/Icon'
+import { ICN_CALL, ICN_EMAIL, ICN_NAV_NEXT, ICN_PLAY_CIRCLE, ICN_TRAINSOFT } from '../../Common/Icon'
 import PG from "../image/pg.png";
 import EDU from "../image/edu.png";
 import TRAINING from "../image/training.png";
@@ -16,19 +15,27 @@ import LEARNING from "../image/learning.png";
 import './landingPage.css'
 import { navigate } from '../../Common/Router'
 import Dialog from '@material-ui/core/Dialog';
-import Button from '@material-ui/core/Button';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
+import * as Yup from 'yup';
+
 
 const LandingHome = () => {
     const [open, setOpen] = useState(false);
+    const [contact,setContact] = useState({})
+    const [submited,setSubmited] = useState(false)
+
+    // field validation
+    const schema = Yup.object().shape({
+        name: Yup.string().min(2, 'Too Short!').required("Required!"),
+        phoneNo: Yup.string().min(2, 'Too Short!').required("Required!"),
+    });
+
+    const onSubmit =(value)=> {
+        setContact(value)
+        setSubmited(true)
+    }
     return (<><div>
         <Header />
         <div className="mt-0 pt-0 section landing-bg" id="home">
@@ -78,7 +85,7 @@ const LandingHome = () => {
                         </div>
                         <div className="card-footer-action">
                             <div className="">
-                                <Cancel className="">SEE HOW</Cancel>
+                               <Cancel className=""><span>{ICN_PLAY_CIRCLE}</span>SEE HOW</Cancel>
                             </div>
                             <div className="">
                                 <BtnWarning onClick={()=>setOpen(true)}>CONTACT US</BtnWarning>
@@ -99,7 +106,7 @@ const LandingHome = () => {
                         </div>
                         <div className="card-footer-action">
                             <div className="">
-                                <Cancel className="">SEE HOW</Cancel>
+                               <Cancel className=""><span>{ICN_PLAY_CIRCLE}</span>SEE HOW</Cancel>
                             </div>
                             <div className="">
                                 <BtnWarning onClick={()=>navigate('/assesment')}>TRY NOW</BtnWarning>
@@ -119,10 +126,10 @@ const LandingHome = () => {
                         </div>
                         <div className="card-footer-action">
                             <div className="">
-                                <Cancel className="">SEE HOW</Cancel>
+                               <Cancel className=""><span>{ICN_PLAY_CIRCLE}</span>SEE HOW</Cancel>
                             </div>
                             <div className="">
-                                <BtnWarning className="" className="">CONTACT US</BtnWarning>
+                                <BtnWarning onClick={()=>setOpen(true)}>CONTACT US</BtnWarning>
                             </div>
                         </div>
                     </div>
@@ -131,7 +138,7 @@ const LandingHome = () => {
                             <div className="card-img">
                                 <img src={LEARNING} />
                             </div>
-                            <div className="page-card-title">e-Learning</div>
+                            <div className="page-card-title"  onClick={()=> window.open("https://trainsoft.org/?source=trainsoft")}>e-Learning</div>
                             <div className="page-card-subTitle">Self Paced Online Learning</div>
                             <div className="page-card-body">
                                 Start growing your teams immediately with access to a growing library of ready-made courses covering all the soft and technical skills they need for success at work
@@ -139,10 +146,10 @@ const LandingHome = () => {
                         </div>
                         <div className="card-footer-action">
                             <div className="">
-                                <Cancel className="">SEE HOW</Cancel>
+                                <Cancel className=""><span>{ICN_PLAY_CIRCLE}</span>SEE HOW</Cancel>
                             </div>
                             <div className="">
-                                <BtnWarning onClick={()=> window.open("https://trainsoft.org/?source=trainsoft")}>CONTACT US</BtnWarning>
+                                <BtnWarning onClick={()=>setOpen(true)}>CONTACT US</BtnWarning>
                             </div>
                         </div>
                     </div>
@@ -159,10 +166,10 @@ const LandingHome = () => {
                         </div>
                         <div className="card-footer-action">
                             <div className="">
-                                <Cancel className="">SEE HOW</Cancel>
+                               <Cancel className=""><span>{ICN_PLAY_CIRCLE}</span>SEE HOW</Cancel>
                             </div>
                             <div className="">
-                                <BtnWarning className="" className="">CONTACT US</BtnWarning>
+                                <BtnWarning onClick={()=>setOpen(true)}>CONTACT US</BtnWarning>
                             </div>
                         </div>
                     </div>
@@ -271,29 +278,30 @@ const LandingHome = () => {
         </div>
 
     </div>
-     <Dialog fullScreen open={open} onClose={()=>setOpen(false)} >
+     <Dialog fullScreen open={open} onClose={()=>{setOpen(false);setSubmited(false)}} >
    
        <div className="jcb">
            <div></div>
            <div>
-           <IconButton edge="start" color="inherit" onClick={()=>setOpen(false)} aria-label="close">
+           <IconButton edge="start" color="inherit" onClick={()=>{setOpen(false);setSubmited(false)}} aria-label="close">
            <CloseIcon />
             </IconButton>
            </div>
           </div>
-        <div className="row jcc dialog-pg">
+        <div className="container-fluid row jcc dialog-pg">
             <div className="col-6">
                 <div className="text-center mb-4">{ICN_TRAINSOFT}</div>
                 <div className="pg-title2 text-center mb-2">Thank you for your interest in our e-Training tool</div>
                 <div className="text-center">Please tell us about you more. Our sales team will get back to you ASAP</div>
                 <div className="context-body">
-            <Formik
-                            onSubmit={(value) => console.log(value)}
+            {!submited ?<Formik
+                            onSubmit={(value) => onSubmit(value)}
                             initialValues={{
                                 name: '',
                                 phoneNo: '',
                                 email: '',
                             }}
+                            validationSchema={schema}
                         >
                             {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
                                 <div>
@@ -311,12 +319,15 @@ const LandingHome = () => {
                                 <footer className="mt-4">
                                     <div> </div>
                                     <div>
-                                        <BtnInfo className="btn-block btn-block" >LET’S BEGIN! IT’S FREE</BtnInfo>
+                                        <BtnInfo type="submit" className="btn-block btn-block" >LET’S BEGIN! IT’S FREE</BtnInfo>
                                     </div>
                                 </footer>
                             </form>
                             }
-                        </Formik>
+                        </Formik>: <div>
+                              <div className="text-center title-ss text-success">Hi, {contact.name} Our sales team will get back to you ASAP</div>
+
+                            </div>}
                         </div>
             </div>
         </div>
