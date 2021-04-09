@@ -148,6 +148,10 @@
 	font-size: 13px;
    border-right: 1px solid #ddd;
 }
+.disable{
+	opacity: 0.5;
+    pointer-events: none;
+}
 .tab-btn.bg-primary {
 	color: #fff;
   }

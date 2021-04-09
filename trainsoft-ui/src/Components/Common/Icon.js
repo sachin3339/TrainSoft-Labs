@@ -40,8 +40,14 @@ import EditIcon from '@material-ui/icons/Edit';
 import CallIcon from '@material-ui/icons/Call';
 import EmailIcon from '@material-ui/icons/Email';
 import TRAINSOFT from './../../Assets/Images/trainsoft.png'
+import PauseIcon from '@material-ui/icons/Pause';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 export const ICN_TRAINSOFT = <img src={TRAINSOFT}/>
+export const ICN_PUSHED = <PauseIcon/>
+export const ICN_NAV_BEFORE = <NavigateBeforeIcon/>
+export const ICN_NAV_NEXT = <NavigateNextIcon/>
 export const ICN_HOME = <HomeIcon/>
 export const ICN_CALL = <CallIcon/>
 export const ICN_EMAIL = <EmailIcon/>

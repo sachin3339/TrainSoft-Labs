@@ -29,6 +29,12 @@ import CloseIcon from '@material-ui/icons/Close';
 
 const LandingHome = () => {
     const [open, setOpen] = useState(false);
+    const [contact,setContact] = useState({})
+    const [submited,setSubmited] = useState(false)
+    const onSubmit =(value)=> {
+        setContact(value)
+        setSubmited(true)
+    }
     return (<><div>
         <Header />
         <div className="mt-0 pt-0 section landing-bg" id="home">
@@ -122,7 +128,7 @@ const LandingHome = () => {
                                 <Cancel className="">SEE HOW</Cancel>
                             </div>
                             <div className="">
-                                <BtnWarning className="" className="">CONTACT US</BtnWarning>
+                                <BtnWarning onClick={()=>setOpen(true)}>CONTACT US</BtnWarning>
                             </div>
                         </div>
                     </div>
@@ -131,7 +137,7 @@ const LandingHome = () => {
                             <div className="card-img">
                                 <img src={LEARNING} />
                             </div>
-                            <div className="page-card-title">e-Learning</div>
+                            <div className="page-card-title"  onClick={()=> window.open("https://trainsoft.org/?source=trainsoft")}>e-Learning</div>
                             <div className="page-card-subTitle">Self Paced Online Learning</div>
                             <div className="page-card-body">
                                 Start growing your teams immediately with access to a growing library of ready-made courses covering all the soft and technical skills they need for success at work
@@ -142,7 +148,7 @@ const LandingHome = () => {
                                 <Cancel className="">SEE HOW</Cancel>
                             </div>
                             <div className="">
-                                <BtnWarning onClick={()=> window.open("https://trainsoft.org/?source=trainsoft")}>CONTACT US</BtnWarning>
+                                <BtnWarning onClick={()=>setOpen(true)}>CONTACT US</BtnWarning>
                             </div>
                         </div>
                     </div>
@@ -162,7 +168,7 @@ const LandingHome = () => {
                                 <Cancel className="">SEE HOW</Cancel>
                             </div>
                             <div className="">
-                                <BtnWarning className="" className="">CONTACT US</BtnWarning>
+                                <BtnWarning onClick={()=>setOpen(true)}>CONTACT US</BtnWarning>
                             </div>
                         </div>
                     </div>
@@ -271,12 +277,12 @@ const LandingHome = () => {
         </div>
 
     </div>
-     <Dialog fullScreen open={open} onClose={()=>setOpen(false)} >
+     <Dialog fullScreen open={open} onClose={()=>{setOpen(false);setSubmited(false)}} >
    
        <div className="jcb">
            <div></div>
            <div>
-           <IconButton edge="start" color="inherit" onClick={()=>setOpen(false)} aria-label="close">
+           <IconButton edge="start" color="inherit" onClick={()=>{setOpen(false);setSubmited(false)}} aria-label="close">
            <CloseIcon />
             </IconButton>
            </div>
@@ -287,8 +293,8 @@ const LandingHome = () => {
                 <div className="pg-title2 text-center mb-2">Thank you for your interest in our e-Training tool</div>
                 <div className="text-center">Please tell us about you more. Our sales team will get back to you ASAP</div>
                 <div className="context-body">
-            <Formik
-                            onSubmit={(value) => console.log(value)}
+            {!submited ?<Formik
+                            onSubmit={(value) => onSubmit(value)}
                             initialValues={{
                                 name: '',
                                 phoneNo: '',
@@ -311,12 +317,15 @@ const LandingHome = () => {
                                 <footer className="mt-4">
                                     <div> </div>
                                     <div>
-                                        <BtnInfo className="btn-block btn-block" >LET’S BEGIN! IT’S FREE</BtnInfo>
+                                        <BtnInfo type="submit" className="btn-block btn-block" >LET’S BEGIN! IT’S FREE</BtnInfo>
                                     </div>
                                 </footer>
                             </form>
                             }
-                        </Formik>
+                        </Formik>: <div>
+                              <div className="text-center title-ss text-success">Hi, {contact.name} Our sales team will get back to you ASAP</div>
+
+                            </div>}
                         </div>
             </div>
         </div>

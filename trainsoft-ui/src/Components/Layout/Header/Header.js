@@ -10,7 +10,7 @@ import { TokenService } from '../../../Services/storage.service';
 
 
 
-const Header = ({location}) => {
+const Header = ({location,children}) => {
     const {user,setUserValue} = useContext(AppContext)
 
     // get user name
@@ -41,6 +41,7 @@ const Header = ({location}) => {
             <div className="page-title">
                 <div className="title-lg mb-0">
                     {location.state && location.state.title}
+                    {children}
                 </div>
                 {/* <div class="breadcrumb-wrap"><a href="#">Summary</a><a href="#">Level1</a><a href="#">Level2</a></div> */}
             </div>

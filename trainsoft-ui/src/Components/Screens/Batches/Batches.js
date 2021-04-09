@@ -132,10 +132,9 @@ const Batch = ({ location }) => {
             });
             xhr.open("POST", GLOBELCONSTANT.PARTICIPANT.UPLOAD_PARTICIPANT);
             xhr.setRequestHeader("batchName", val.name);
-            xhr.setRequestHeader("instructorName", val.trainingType);
-
+            xhr.setRequestHeader("trainingType", val.trainingType);
             xhr.setRequestHeader("Authorization", user.jwtToken);
-            xhr.send(data);
+            val.file.length> 0 ? xhr.send(data) : xhr.send()
         })
     }
 
@@ -374,7 +373,7 @@ const Batch = ({ location }) => {
                                         <TextInput label="Batch Name" isNotValid={isBatch} onBlur={(e)=> validateBatch(e.target.value)} name="name" />
                                     </div>
                                     <div className="col-6">
-                                        <SelectInput label="Training Type" value={values.trainingType} option={['INSTRUCTOR_LED', 'SELF', 'OFFLINE']} name="trainingType" />
+                                        <SelectInput label="Training Type" value={values.trainingType} option={['INSTRUCTOR_LED', 'SELF_PACED', 'LAB_ONLY']} name="trainingType" />
                                     </div>
                                 </Form.Group>
                                 <div>

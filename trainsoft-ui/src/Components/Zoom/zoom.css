@@ -6,3 +6,98 @@
 .gallery-video-container__main-view {
     margin-top: 0px;
 }
+.join-audio-container__btn {
+    float: left;
+    width: 48px;
+    height: 52px;
+    border-radius: 0;
+    border: none;
+    padding: 4px 0 0 0;
+    background-color: transparent;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    word-break: break-all;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.5);
+}
+.send-video-container__btn {
+    float: left;
+    width: 60px;
+    height: 52px;
+    border-radius: 0;
+    border: none;
+    padding: 4px 0 0 0;
+    background-color: transparent;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    word-break: break-all;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.5)
+}
+.security-option-menu {
+    float: left;
+    background-color: transparent;
+    display: none;
+}
+.more-button{
+    display: none !important;
+}
+.sharer-controlbar-container__caption {
+    display: inline-block;
+    margin: 0;
+    padding: 10px 0;
+    vertical-align: middle;
+    font-weight: 600;
+    font-size: 12px;
+    -webkit-box-flex: 1
+}
+.sharer-button {
+    display: inline-block;
+    margin-right: 9px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    font-size: 12px;
+    background: none;
+    color: #FFFFFF;
+    vertical-align: middle;
+    border: 1px solid #FFFFFF;
+}
+.audio-option-menu {
+    float: left;
+    display: none;
+    background-color: transparent;
+}
+.video-option-menu__button {
+    height: 100%;
+    cursor: pointer;
+    float: left;
+    background-color: transparent;
+    /* width: 20px; */
+    border: none;
+    display: none;
+    border-radius: 0;
+}

@@ -25,7 +25,7 @@ function generateSignature(apiKey, apiSecret, meetingNumber, role) {
 
 
 const Zoom = () => {
-  const  {user} = useContext(AppContext)
+  const  {user,ROLE} = useContext(AppContext)
    // call the generateInstantToken function
 
   var apiKey = "tGcuTNjdQUS3jkTw_eaz9g";
@@ -61,7 +61,7 @@ const Zoom = () => {
              apiKey,
              apiSecret,
              meetingNumber,
-             user.role === 'TRAINER' ? 1 : 0
+             user.role === ROLE.INSTRUCTOR ? 1 : 0
           ),
           meetingNumber: meetingNumber,
           userName: userName,

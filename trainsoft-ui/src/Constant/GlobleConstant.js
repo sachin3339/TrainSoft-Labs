@@ -10,6 +10,7 @@ let API_HOST = HOSTNAME +"/insled/v1/"
 const GLOBELCONSTANT = {
         BASE_URL: API_HOST,
         GET_COUNT: API_HOST + "get/{classz}",
+        ZOOM_PATH:  window.location.origin + '/zoom',
         AUTH: {
             LOGIN: API_HOST + "login",
             FORGOT: API_HOST + "forgot/password/",
@@ -95,6 +96,21 @@ const GLOBELCONSTANT = {
             INSTRUCTOR:"INSTRUCTOR",
             LEARNER:"LEARNER",
         },
-        SAMPLE_TEMPLATE: "https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx"
+        SAMPLE_TEMPLATE: "https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx",
+        QUILL: {
+                toolbar: [
+                    [{ font: [] }, { 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ align: [] }], // 'direction'
+                    ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+                    [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+                    // [{ script: 'super' }, { script: 'sub' }], // superscript/subscript
+                    ['code-block', 'blockquote'],
+                    [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }], // outdent/indent
+                    ['link', 'image'], // embeds
+                    ['emoji'],
+                    // ['clean'] // remove formatting button
+                ],
+        },
     }
+
 export default GLOBELCONSTANT;
