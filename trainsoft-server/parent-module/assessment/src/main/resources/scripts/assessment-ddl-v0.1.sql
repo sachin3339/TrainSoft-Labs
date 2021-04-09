@@ -27,7 +27,7 @@ CREATE TABLE `question_point` (
                                   `created_on` datetime NOT NULL,
                                   `created_by` int NOT NULL,
                                   `technology_name` varchar(255) NOT NULL,
-                                  `status` enum('ENABLED','DISABLED','DELETED','APPROVAL_RECIEVED') DEFAULT NULL,
+                                  `status` enum('ENABLED','DISABLED','DELETED','APPROVAL_RECEIVED') DEFAULT NULL,
                                   `question_type` enum('MCQ','SINGLE_VALUE','DESCRIPTIVE','FILL_IN_THE_BLANKS') DEFAULT NULL,
                                   `company_id` int NOT NULL,
                                   PRIMARY KEY (`id`),
@@ -312,7 +312,7 @@ CREATE TABLE `virtual_account_has_question_answer_details` (
                                                                KEY `fk_ virtual_account_has_question_answer_details_3_idx` (`company_id`),
                                                                KEY `fk_ virtual_account_has_question_answer_details_4_idx` (`created_by`),
                                                                CONSTRAINT `fk_ virtual_account_has_question_answer_details_1` FOREIGN KEY (`virtual_account_id`) REFERENCES `virtual_account` (`id`),
-                                                               CONSTRAINT `fk_ virtual_account_has_question_answer_details_2` FOREIGN KEY (`question_id`) REFERENCES `question_point` (`id`),
+                                                               CONSTRAINT `fk_ virtual_account_has_question_answer_details_2` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`),
                                                                CONSTRAINT `fk_ virtual_account_has_question_answer_details_3` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`),
                                                                CONSTRAINT `fk_ virtual_account_has_question_answer_details_4` FOREIGN KEY (`created_by`) REFERENCES `virtual_account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
