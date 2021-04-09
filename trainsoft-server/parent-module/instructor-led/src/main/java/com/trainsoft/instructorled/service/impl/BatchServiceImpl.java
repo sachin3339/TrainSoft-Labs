@@ -7,10 +7,7 @@ import com.trainsoft.instructorled.entity.*;
 import com.trainsoft.instructorled.repository.*;
 import com.trainsoft.instructorled.service.IBatchService;
 import com.trainsoft.instructorled.service.ICourseService;
-import com.trainsoft.instructorled.to.BatchTO;
-import com.trainsoft.instructorled.to.BatchViewTO;
-import com.trainsoft.instructorled.to.CourseSessionTO;
-import com.trainsoft.instructorled.to.CourseTO;
+import com.trainsoft.instructorled.to.*;
 import com.trainsoft.instructorled.value.InstructorEnum;
 import javassist.bytecode.stackmap.BasicBlock;
 import lombok.AllArgsConstructor;
@@ -22,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +35,7 @@ public class BatchServiceImpl implements IBatchService {
     private  IBatchParticipantRepository participantRepository;
     private DozerUtils mapper;
     private ICompanyRepository companyRepository;
+    IBatchParticipantRepository batchParticipantRepository;
 
     @Override
     public BatchTO createBatch(BatchTO batchTO) {
@@ -197,4 +196,32 @@ public class BatchServiceImpl implements IBatchService {
             throw new ApplicationException("Something went wrong while deleting the BatchParticipants details by batch and VASid");
         }
     }
+
+    public List<UserTO> createMultipleUserWithBatch(String batchSid, List<String> VASid,String companySid) {
+
+        if (StringUtils.isNotEmpty(batchSid) && StringUtils.isNotEmpty(companySid) && VASid!=null && VASid.size()>0) {
+            Batch batch = batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(batchSid));
+         List<VirtualAccount> virtualAccounts=saveVirtualAccountBatch(batch,VASid,getCompany(companySid));
+            return mapper.convertList(virtualAccounts,UserTO.class);
+        } else {
+            log.error("throwing exception while associating  the user with batch");
+            throw new RecordNotFoundException("No record found with given Sid");
+        }
+    }
+
+    private List<VirtualAccount> saveVirtualAccountBatch(Batch batch, List<String> vASids, Company company) {
+        List<VirtualAccount> virtualAccountList= new ArrayList<>();
+        vASids.forEach(vASid-> {
+            VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySidAndCompanyAndStatusNot(
+                       BaseEntity.hexStringToByteArray(vASid),company, InstructorEnum.Status.DELETED);
+            BatchParticipant  batchParticipant = new BatchParticipant();
+            batchParticipant.generateUuid();
+            batchParticipant.setBatch(batch);
+            batchParticipant.setVirtualAccount(virtualAccount);
+            batchParticipantRepository.save(batchParticipant);
+            virtualAccountList.add(virtualAccount);
+        });
+        return virtualAccountList;
+    }
+
 }

@@ -17,6 +17,7 @@ import net.bytebuddy.utility.RandomString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -108,15 +109,16 @@ public class UserController {
         return ResponseEntity.ok(password);
     }
 
-    @PostMapping(value = "/upload/list/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/upload/list/participants",consumes = {MediaType.ALL_VALUE,MediaType.APPLICATION_JSON_VALUE,MediaType.MULTIPART_FORM_DATA_VALUE})
     @ApiOperation(value = "upload Participants excel file with Batch details. ", notes = "API to upload Participant list through excel file with Batch details.")
     public ResponseEntity<?> uploadParticipantsWithBatch(HttpServletRequest request,
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "upload Participants excel file", required = true) @RequestParam("file") MultipartFile file,
-            @RequestHeader("batchName")String batchName,@RequestHeader("instructorName")String instructorName){
+            @ApiParam(value = "upload Participants excel file", required = false) @RequestParam("file") @Nullable MultipartFile file,
+            @ApiParam(value = "Batch Name", required = true) @RequestHeader("batchName")String batchName,
+            @ApiParam(value = "Training type", required = true) @RequestHeader("trainingType")String trainingType){
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        bulkUploadService.uploadParticipantsWithBatch(file,batchName,instructorName,jwt.getCompanySid(),request);
-        return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: " + file.getOriginalFilename());
+        bulkUploadService.uploadParticipantsWithBatch(file,batchName,trainingType,jwt.getCompanySid(),request,jwt.getVirtualAccountSid());
+        return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: ");
     }
 
     // API's for file handling
