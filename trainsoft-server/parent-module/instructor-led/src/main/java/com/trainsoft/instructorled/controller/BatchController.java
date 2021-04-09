@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @AllArgsConstructor
 @RestController
@@ -101,7 +103,7 @@ public class BatchController {
         return ResponseEntity.ok(batchService.deleteBatchBySid(batchSid, jwt.getVirtualAccountSid()));
     }
 
-    @PostMapping("add/batch/{batchSid}/virtualAccount/{vASid}")
+    @PostMapping("add/participants/batch/{batchSid}")
     @ApiOperation(value = "addParticipantsWithBatch", notes = "API to add participant with batch.")
     @ApiResponses(value= {
             @ApiResponse(code = 204, message = "Batch Sid is not valid."),
@@ -109,9 +111,9 @@ public class BatchController {
     public ResponseEntity<?> addParticipantsWithBatch(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Batch sid", required = true) @PathVariable("batchSid") String batchSid,
-            @ApiParam(value = "VirtualAccount sid", required = true) @PathVariable("vASid") String vASid) {
+            @ApiParam(value = "List of virtualAccount sid", required = true) @RequestBody List<String> vASid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        UserTO addParticipants = batchService.createSingleUserWithBatch(batchSid,vASid, jwt.getCompanySid());
+        List<UserTO> addParticipants = batchService.createMultipleUserWithBatch(batchSid,vASid, jwt.getCompanySid());
         return ResponseEntity.ok(addParticipants);
     }
 }
