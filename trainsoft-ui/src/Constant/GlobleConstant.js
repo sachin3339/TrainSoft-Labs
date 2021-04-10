@@ -1,5 +1,5 @@
 
-let HOSTNAME = "http://trainsoft.io"; // Storing  a  Host  Name in global variable
+let HOSTNAME = window.location.origin; // Storing  a  Host  Name in global variable
 if (HOSTNAME !== null && ((HOSTNAME.indexOf('localhost') !== -1) || (HOSTNAME.indexOf('127.0.0.1') !== -1)))
     // HOSTNAME = "https://www.eservecloud.com"; 
     HOSTNAME = "http://52.66.232.107:8089"; // Local development sever will be used from now onwards.
