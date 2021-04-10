@@ -12,30 +12,50 @@ CREATE TABLE `answer` (
                           `question_id` int NOT NULL,
                           `is_correct` tinyint(1) DEFAULT NULL,
                           PRIMARY KEY (`id`),
+                          UNIQUE KEY `sid_UNIQUE` (`sid`),
                           KEY `fk_answer_2_idx` (`created_by`),
                           CONSTRAINT `fk_answer_2` FOREIGN KEY (`created_by`) REFERENCES `virtual_account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-#--=================  question_point   ==================--
-DROP TABLE IF EXISTS question_point;
 
-CREATE TABLE `question_point` (
-                                  `id` int NOT NULL AUTO_INCREMENT,
-                                  `sid` binary(32) NOT NULL,
-                                  `name` varchar(255) NOT NULL,
-                                  `description` varchar(255) DEFAULT NULL,
-                                  `created_on` datetime NOT NULL,
-                                  `created_by` int NOT NULL,
-                                  `technology_name` varchar(255) NOT NULL,
-                                  `status` enum('ENABLED','DISABLED','DELETED','APPROVAL_RECEIVED') DEFAULT NULL,
-                                  `question_type` enum('MCQ','SINGLE_VALUE','DESCRIPTIVE','FILL_IN_THE_BLANKS') DEFAULT NULL,
-                                  `company_id` int NOT NULL,
-                                  PRIMARY KEY (`id`),
-                                  KEY `fk_question_point_1_idx` (`company_id`),
-                                  KEY `fk_question_point_2_idx` (`created_by`),
-                                  CONSTRAINT `fk__question_point_2_` FOREIGN KEY (`created_by`) REFERENCES `virtual_account` (`id`),
-                                  CONSTRAINT `fk_question_point_1` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+#--=================  batch_has_participants   ==================--
+DROP TABLE IF EXISTS batch_has_participants;
+
+CREATE TABLE `batch_has_participants` (
+                                          `id` int NOT NULL AUTO_INCREMENT,
+                                          `sid` binary(32) NOT NULL,
+                                          `batch_id` int NOT NULL,
+                                          `virtual_account_id` int NOT NULL,
+                                          PRIMARY KEY (`id`),
+                                          KEY `fk_batch_has_participants_1_idx` (`batch_id`),
+                                          KEY `fk_batch_has_participants_2_idx` (`virtual_account_id`),
+                                          CONSTRAINT `fk_batch_has_participants_1` FOREIGN KEY (`batch_id`) REFERENCES `batch` (`id`),
+                                          CONSTRAINT `fk_batch_has_participants_2` FOREIGN KEY (`virtual_account_id`) REFERENCES `virtual_account` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=latin1;
+
+
+#--=================  question   ==================--
+DROP TABLE IF EXISTS question;
+
+CREATE TABLE `question` (
+                            `id` int NOT NULL AUTO_INCREMENT,
+                            `sid` binary(32) NOT NULL,
+                            `name` varchar(1000) NOT NULL,
+                            `description` varchar(1000) DEFAULT NULL,
+                            `created_on` datetime NOT NULL,
+                            `created_by` int NOT NULL,
+                            `technology_name` varchar(255) NOT NULL,
+                            `status` enum('ENABLED','DISABLED','DELETED','APPROVAL_RECEIVED') DEFAULT NULL,
+                            `question_type` enum('MCQ','SINGLE_VALUE','DESCRIPTIVE','FILL_IN_THE_BLANKS') DEFAULT NULL,
+                            `company_id` int NOT NULL,
+                            `question_point` int NOT NULL,
+                            PRIMARY KEY (`id`),
+                            UNIQUE KEY `sid_UNIQUE` (`sid`),
+                            KEY `fk_question_point_1_idx` (`company_id`),
+                            KEY `fk_question_point_2_idx` (`created_by`),
+                            CONSTRAINT `fk__question_point_2_` FOREIGN KEY (`created_by`) REFERENCES `virtual_account` (`id`),
+                            CONSTRAINT `fk_question_point_1` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 #--=================  question_type   ==================--
@@ -44,16 +64,23 @@ DROP TABLE IF EXISTS question_type;
 CREATE TABLE `question_type` (
                                  `id` int NOT NULL AUTO_INCREMENT,
                                  `sid` binary(32) NOT NULL,
-                                 `name` varchar(255) DEFAULT NULL,
+                                 `name` varchar(1000) NOT NULL,
                                  `status` enum('ENABLED','DISABLED','DELETED') DEFAULT NULL,
-                                 PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+                                 `value` varchar(1000) NOT NULL,
+                                 PRIMARY KEY (`id`),
+                                 UNIQUE KEY `sid_UNIQUE` (`sid`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+#--=================  quiz   ==================--
+DROP TABLE IF EXISTS quiz;
+
 
 CREATE TABLE `quiz` (
                         `id` int NOT NULL AUTO_INCREMENT,
                         `sid` binary(32) NOT NULL,
-                        `name` varchar(255) NOT NULL,
-                        `description` varchar(255) DEFAULT NULL,
+                        `name` varchar(1000) NOT NULL,
+                        `description` varchar(1000) DEFAULT NULL,
                         `status` enum('ENABLED','DISABLED','DELETED') DEFAULT NULL,
                         `created_by` int NOT NULL,
                         `created_on` datetime NOT NULL,
@@ -63,6 +90,7 @@ CREATE TABLE `quiz` (
                         `is_payment_recieved` tinyint(1) DEFAULT NULL,
                         `price` decimal(15,2) DEFAULT NULL,
                         PRIMARY KEY (`id`),
+                        UNIQUE KEY `sid_UNIQUE` (`sid`),
                         KEY `fk_quiz_1_idx` (`company_id`),
                         KEY `fk_quiz_2_idx` (`created_by`),
                         KEY `fk_quiz_3_idx` (`updated_by`),
@@ -75,6 +103,7 @@ CREATE TABLE `quiz` (
 #--=================  quiz_has_batch   ==================--
 DROP TABLE IF EXISTS quiz_has_batch;
 
+
 CREATE TABLE `quiz_has_batch` (
                                   `id` int NOT NULL AUTO_INCREMENT,
                                   `sid` binary(32) NOT NULL,
@@ -85,6 +114,7 @@ CREATE TABLE `quiz_has_batch` (
                                   `status` varchar(45) DEFAULT NULL,
                                   `company_id` int NOT NULL,
                                   PRIMARY KEY (`id`),
+                                  UNIQUE KEY `sid_UNIQUE` (`sid`),
                                   KEY `fk_ quiz_has_batch_1_idx` (`quiz_id`),
                                   KEY `fk_ quiz_has_batch_2_idx` (`batch_id`),
                                   KEY `fk_ quiz_has_batch_3_idx` (`created_by`),
@@ -94,7 +124,6 @@ CREATE TABLE `quiz_has_batch` (
                                   CONSTRAINT `fk_ quiz_has_batch_3` FOREIGN KEY (`created_by`) REFERENCES `virtual_account` (`id`),
                                   CONSTRAINT `fk_ quiz_has_batch_4` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 
 #--=================  quiz_has_training   ==================--
@@ -110,6 +139,7 @@ CREATE TABLE `quiz_has_training` (
                                      `status` varchar(45) DEFAULT NULL,
                                      `company_id` int NOT NULL,
                                      PRIMARY KEY (`id`),
+                                     UNIQUE KEY `sid_UNIQUE` (`sid`),
                                      KEY `fk_ quiz_has_training_1_idx` (`quiz_id`),
                                      KEY `fk_ quiz_has_training_2_idx` (`training_id`),
                                      KEY `fk_ quiz_has_training_3_idx` (`created_by`),
@@ -124,11 +154,12 @@ CREATE TABLE `quiz_has_training` (
 #--=================  quiz_set   ==================--
 DROP TABLE IF EXISTS quiz_set;
 
+
 CREATE TABLE `quiz_set` (
                             `id` int NOT NULL AUTO_INCREMENT,
                             `sid` binary(32) NOT NULL,
-                            `name` varchar(255) NOT NULL,
-                            `description` varchar(255) DEFAULT NULL,
+                            `name` varchar(1000) NOT NULL,
+                            `description` varchar(1000) DEFAULT NULL,
                             `status` enum('ENABLED','DISABLED','DELETED') DEFAULT NULL,
                             `created_by` int NOT NULL,
                             `created_on` datetime NOT NULL,
@@ -148,6 +179,7 @@ CREATE TABLE `quiz_set` (
                             `is_auto_submitted` tinyint(1) DEFAULT NULL,
                             `is_next_enabled` tinyint(1) DEFAULT NULL,
                             PRIMARY KEY (`id`),
+                            UNIQUE KEY `sid_UNIQUE` (`sid`),
                             KEY `fk_quiz_set_1_idx` (`company_id`),
                             KEY `fk_quiz_set_2_idx` (`created_by`),
                             KEY `fk_quiz_set_3_idx` (`updated_by`),
@@ -177,6 +209,7 @@ CREATE TABLE `quiz_set_has_question` (
                                          `question_point` int NOT NULL,
                                          `quiz_set_id` int NOT NULL,
                                          PRIMARY KEY (`id`),
+                                         UNIQUE KEY `sid_UNIQUE` (`sid`),
                                          KEY `fk_quiz_set_has_question_2_idx` (`quiz_set_id`),
                                          CONSTRAINT `fk_quiz_set_has_question_2` FOREIGN KEY (`quiz_set_id`) REFERENCES `quiz_set` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -190,25 +223,9 @@ CREATE TABLE `tags` (
                         `sid` binary(32) NOT NULL,
                         `name` varchar(255) NOT NULL,
                         `status` enum('ENABLED','DISABLED','DELETED') DEFAULT NULL,
-                        PRIMARY KEY (`id`)
+                        PRIMARY KEY (`id`),
+                        UNIQUE KEY `sid_UNIQUE` (`sid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
-#--=================  training_has_batch   ==================--
-DROP TABLE IF EXISTS training_has_batch;
-
-CREATE TABLE `training_has_batch` (
-                                      `id` int NOT NULL AUTO_INCREMENT,
-                                      `sid` binary(32) NOT NULL,
-                                      `training_id` int NOT NULL,
-                                      `batch_id` int NOT NULL,
-                                      `created_on` datetime DEFAULT NULL,
-                                      PRIMARY KEY (`id`),
-                                      KEY `fk_course_has_batch_2_idx` (`batch_id`),
-                                      KEY `fk_course_has_batch_1_idx` (`training_id`),
-                                      CONSTRAINT `fk_course_has_batch_1` FOREIGN KEY (`training_id`) REFERENCES `training` (`id`),
-                                      CONSTRAINT `fk_course_has_batch_2` FOREIGN KEY (`batch_id`) REFERENCES `batch` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=205 DEFAULT CHARSET=latin1;
 
 
 #--=================  training_session_has_quiz   ==================--
@@ -225,6 +242,7 @@ CREATE TABLE `training_session_has_quiz` (
                                              ` created_by` int DEFAULT NULL,
                                              `created_on` datetime DEFAULT NULL,
                                              PRIMARY KEY (`id`),
+                                             UNIQUE KEY `sid_UNIQUE` (`sid`),
                                              KEY `fk_ training_session_has_quiz_1_idx` (`quiz_id`),
                                              KEY `fk_ training_session_has_quiz_2_idx` (`training_session_id`),
                                              KEY `fk_ training_session_has_quiz_3_idx` (`training_id`),
@@ -235,7 +253,6 @@ CREATE TABLE `training_session_has_quiz` (
                                              CONSTRAINT `fk_ training_session_has_quiz_4` FOREIGN KEY (`id`) REFERENCES `company` (`id`),
                                              CONSTRAINT `fk_ training_session_has_quiz_5` FOREIGN KEY (` created_by`) REFERENCES `virtual_account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 
 #--=================  transaction_details   ==================--
@@ -253,6 +270,7 @@ CREATE TABLE `transaction_details` (
                                        `transaction_generated_id` varchar(255) NOT NULL,
                                        `mode_of_transaction` enum('CREDIT','DEBIT','NETBANKING') NOT NULL,
                                        PRIMARY KEY (`id`),
+                                       UNIQUE KEY `sid_UNIQUE` (`sid`),
                                        KEY `fk_ transaction_details_1_idx` (`vitrual_account_id`),
                                        KEY `fk_ transaction_details_2_idx` (`company_id`),
                                        KEY `fk_ transaction_details_3_idx` (`created_by`),
@@ -280,6 +298,7 @@ CREATE TABLE `virtual_account_has_invoice` (
                                                `amount` decimal(15,2) NOT NULL,
                                                `generated_invoice_id` int NOT NULL,
                                                PRIMARY KEY (`id`),
+                                               UNIQUE KEY `sid_UNIQUE` (`sid`),
                                                KEY `fk_ virtual_account_has_invoice_1_idx` (`virtual_account_id`),
                                                KEY `fk_ virtual_account_has_invoice_2_idx` (`company_id`),
                                                KEY `fk_ virtual_account_has_invoice_3_idx` (`created_by`),
@@ -307,6 +326,7 @@ CREATE TABLE `virtual_account_has_question_answer_details` (
                                                                `created_by` int NOT NULL,
                                                                `created_on` datetime NOT NULL,
                                                                PRIMARY KEY (`id`),
+                                                               UNIQUE KEY `sid_UNIQUE` (`sid`),
                                                                KEY `fk_ virtual_account_has_question_answer_details_1_idx` (`virtual_account_id`),
                                                                KEY `fk_ virtual_account_has_question_answer_details_2_idx` (`question_id`),
                                                                KEY `fk_ virtual_account_has_question_answer_details_3_idx` (`company_id`),
@@ -316,6 +336,7 @@ CREATE TABLE `virtual_account_has_question_answer_details` (
                                                                CONSTRAINT `fk_ virtual_account_has_question_answer_details_3` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`),
                                                                CONSTRAINT `fk_ virtual_account_has_question_answer_details_4` FOREIGN KEY (`created_by`) REFERENCES `virtual_account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 #--=================  virtual_account_has_quiz_set_assesment   ==================--
 DROP TABLE IF EXISTS virtual_account_has_quiz_set_assesment;
@@ -336,6 +357,7 @@ CREATE TABLE `virtual_account_has_quiz_set_assesment` (
                                                           `updated_by` int DEFAULT NULL,
                                                           `updated_on` datetime DEFAULT NULL,
                                                           PRIMARY KEY (`id`),
+                                                          UNIQUE KEY `sid_UNIQUE` (`sid`),
                                                           KEY `fk_ virtual_account_has_quiz_set_assesment_1_idx` (`quiz_id`),
                                                           KEY `fk_ virtual_account_has_quiz_set_assesment_2_idx` (`quiz_set_id`),
                                                           KEY `fk_ virtual_account_has_quiz_set_assesment_3_idx` (`company_id`),
@@ -362,6 +384,7 @@ CREATE TABLE `virtual_account_has_quiz_set_session_timing` (
                                                                `end_time` datetime NOT NULL,
                                                                `company_id` int NOT NULL,
                                                                PRIMARY KEY (`id`),
+                                                               UNIQUE KEY `sid_UNIQUE` (`sid`),
                                                                KEY `fk_ virtual_account_has_quiz_set_session_timing_1_idx` (`virtual_account_id`),
                                                                KEY `fk_ virtual_account_has_quiz_set_session_timing_2_idx` (`quiz_set_id`),
                                                                KEY `fk_ virtual_account_has_quiz_set_session_timing_3_idx` (`quiz_id`),
