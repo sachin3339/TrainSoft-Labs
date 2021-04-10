@@ -43,7 +43,10 @@ const VsCode = ()=>{
     }, [])
 
     return(<>
-       { link && <iframe  src={link} height="100%" width="100%" title="Iframe Example"> </iframe> }
+                     <object type="text/html" data={link} style={{ width: "100%", height: "100%" }}>
+                                <p>backup content</p>
+                            </object>
+       {/* { link && <iframe  src={link} height="100%" width="100%" title="Iframe Example"> </iframe> } */}
     </>)
 }
 
