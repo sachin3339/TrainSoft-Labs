@@ -11,6 +11,8 @@ const GLOBELCONSTANT = {
         BASE_URL: API_HOST,
         GET_COUNT: API_HOST + "get/{classz}",
         ZOOM_PATH:  window.location.origin + '/zoom',
+        VSCODE_PATH:  window.location.origin + '/vscode',
+
         AUTH: {
             LOGIN: API_HOST + "login",
             FORGOT: API_HOST + "forgot/password/",
