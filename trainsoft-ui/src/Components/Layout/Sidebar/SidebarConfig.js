@@ -95,7 +95,7 @@ export const AdminConfig = [
     {
         icon: ICN_VSCODE,
         title: "VS Code",
-        pathname: "vscode",
+        pathname: "vs-code",
         disabled: true,
         role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR]
     },

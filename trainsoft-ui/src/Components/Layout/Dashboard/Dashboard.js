@@ -17,6 +17,8 @@ import UserHome from "../../Screens/Home/UserHome";
 import CodeEditor from '../../Screens/ClassLab/CodeEditor/CodeEditor'
 import Zoom from "../../Zoom/Zoom";
 import VsCode from "../../Screens/VsCode/VsCode";
+import VsCodePage from "../../Screens/VsCode/VsCodePage";
+
 import {Helmet} from "react-helmet";
 
 
@@ -48,7 +50,7 @@ const Dashboard = ({location}) => {
                         <LabStore path="labstore/*"/>
                         <CodeEditor path="compiler/*"/>
                         <Zoom path="zoom"/>
-                        <VsCode path="vscode"/>
+                        <VsCodePage path="vs-code"/>
                     </Router>
                   
                 </div>
