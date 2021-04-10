@@ -11,6 +11,7 @@ import AppContext from "./Store/AppContext";
 import LandingHome from "./Components/LandingPage/Home/LandingHome";
 import ResetPwd from "./Components/Screens/Auth/ResetPwd";
 import Assesment from "./Components/Screens/Assesment/Assesment";
+import { TrainingProvider } from "./Store/TrainingContext";
 
 
 
@@ -20,15 +21,16 @@ function App() {
    const {spinner} = useContext(AppContext)
   return (<>
       <Spinner value={spinner}/>
-      <Router>
-         <LandingHome path="/"/>
-         <ResetPwd path="/reset/:token"/>
-         <Login path="/login"/>
-         <Assesment path="/assesment"/>
-         <Dashboard path="/*"/>
-         <ClassLab path="class/*"/>
-
-      </Router>
+      <TrainingProvider>
+         <Router>
+            <LandingHome path="/"/>
+            <ResetPwd path="/reset/:token"/>
+            <Login path="/login"/>
+            <Assesment path="/assesment"/>
+            <Dashboard path="/*"/>
+            <ClassLab path="class/*"/>
+         </Router>
+      </TrainingProvider>
  </> );
 }
 
