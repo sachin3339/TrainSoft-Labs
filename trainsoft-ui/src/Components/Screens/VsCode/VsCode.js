@@ -25,7 +25,7 @@ const VsCode = ()=>{
             let use= user.role === ROLE.INSTRUCTOR ? "learner1" : "learner2"
             axios.get(`http://ec2-65-1-145-196.ap-south-1.compute.amazonaws.com/run/lab?id=`+use)
             .then(({ data }) => {
-                setLink(createPortal(data))
+                setLink("http://ec2-65-1-145-196.ap-south-1.compute.amazonaws.com:9046")
                  spinner.hide()
                 // window.open(createPortal(data))
             })
