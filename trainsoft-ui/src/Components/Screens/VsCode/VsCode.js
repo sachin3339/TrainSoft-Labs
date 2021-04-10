@@ -23,15 +23,17 @@ const VsCode = ()=>{
         try{
             spinner.show()
             let use= user.role === ROLE.INSTRUCTOR ? "learner1" : "learner2"
-            axios.get(`http://ec2-65-1-145-196.ap-south-1.compute.amazonaws.com/run/lab?id=`+use)
-            .then(({ data }) => {
-                setLink("http://ec2-65-1-145-196.ap-south-1.compute.amazonaws.com:9046")
-                 spinner.hide()
-                // window.open(createPortal(data))
-            })
+
+            // axios.get(`http://ec2-65-1-145-196.ap-south-1.compute.amazonaws.com/run/lab?id=`+use)
+            // .then(({ data }) => {
+            //     // setLink(createPortal(data))
+            //      spinner.hide()
+            //     // window.open(createPortal(data))
+            // })
+            setLink("http://ec2-65-1-145-196.ap-south-1.compute.amazonaws.com:9046/")
+            spinner.hide()
             
         }catch(err){
-            spinner.hide()
             console.error("error occur getDevelopmentLink()",err)
         }
     }
@@ -41,7 +43,7 @@ const VsCode = ()=>{
     }, [])
 
     return(<>
-       { link && <iframe src="demo_iframe.htm" src={link} height="100%" width="100%" title="Iframe Example"> </iframe> }
+       { link && <iframe  src={link} height="100%" width="100%" title="Iframe Example"> </iframe> }
     </>)
 }
 
