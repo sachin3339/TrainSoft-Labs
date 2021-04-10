@@ -46,6 +46,8 @@ const Session = ({ location }) => {
             RestService.getTrainingSession(training.sid, training.courseSid).then(
                 response => {
                     setTrainingSession(response.data);
+                    spinner.hide();
+
                 },
                 err => {
                     spinner.hide();
@@ -54,6 +56,7 @@ const Session = ({ location }) => {
                 spinner.hide();
             });
         } catch (err) {
+            spinner.hide();
             console.error("error occur on getSession()", err)
         }
     }

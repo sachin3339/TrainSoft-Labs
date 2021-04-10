@@ -288,12 +288,12 @@ const Trainings = ({ location }) => {
 
 const Training = () => {
     return (
-        <TrainingProvider>
+        
             <Router>
                 <Trainings path="/" />
                 <TrainingDetails path="training-details/*" />
             </Router>
-        </TrainingProvider>
+      
     )
 
 }
