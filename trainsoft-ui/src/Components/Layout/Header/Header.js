@@ -36,7 +36,7 @@ const Header = ({location,children}) => {
     }
 
     return (<>
-    { location.state && ( location.state.title !== "Compiler" && location.state.title !== "VS Code" ) &&
+    { location.state && ( location.state.title !== "Compiler" ) &&
     <div className="header">
             <div className="page-title">
                 <div className="title-lg mb-0">

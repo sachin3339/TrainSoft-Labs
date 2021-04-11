@@ -4,16 +4,11 @@ import ReactPlayer from 'react-player/lazy'
 import { Button,BtnSquare } from '../../../Common/Buttons/Buttons'
 import { ICN_NAV_BEFORE, ICN_NAV_NEXT, ICN_PLAY } from '../../../Common/Icon';
 import AppContext from '../../../../Store/AppContext';
-const OnlineMedia = ({ fromClose, setFromClose, removedTag }) => {
+const OnlineMedia = () => {
     const { user, spinner, ROLE } = useContext(AppContext)
-    const [mediaLink, setMediaLink] = useState( "https://youtu.be/xk4_1vDrzzo")
+    const [mediaLink, setMediaLink] = useState("https://youtu.be/xk4_1vDrzzo")
 
-    useEffect(() => {
-        if (fromClose && removedTag === "Online Media") {
-            setFromClose(false)
-            setMediaLink(null)
-        }
-    }, [fromClose])
+
 
     return (
         <div className="full-h column">
