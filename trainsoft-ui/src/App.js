@@ -13,6 +13,7 @@ import ResetPwd from "./Components/Screens/Auth/ResetPwd";
 import Assesment from "./Components/Screens/Assesment/Assesment";
 import { TrainingProvider } from "./Store/TrainingContext";
 import VsCode from "./Components/Screens/VsCode/VsCode";
+import MeetingClose from "./Components/Zoom/MeetingClose";
 
 
 
@@ -31,6 +32,7 @@ function App() {
             <Dashboard path="/*"/>
             <ClassLab path="class/*"/>
             <VsCode path="vscode"/>
+            <MeetingClose path="zoomclose"/>
 
          </Router>
       </TrainingProvider>
