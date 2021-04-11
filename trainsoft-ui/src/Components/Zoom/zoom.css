@@ -101,3 +101,13 @@
     display: none;
     border-radius: 0;
 }
+
+.meeting-close{
+    height: 100%;
+    width: 100%;
+    padding-left: 16%;
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    background: #222020;
+}
