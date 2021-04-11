@@ -28,8 +28,6 @@ const ClassLab = () => {
     const menuTab = isTrainer ? classTab : learnerTab
     const [tab, setTab] = useState(isTrainer ? [] : ['Notes'])
     const [selectedTab, setSelectedTab] = useState(isTrainer ? "" : "Notes")
-    const [removedTag, setRemovedTag] = useState('')
-    const [fromClose, setFromClose] = useState(false)
 
 
     return (<>
@@ -41,7 +39,7 @@ const ClassLab = () => {
                     <div className="flx">
                         {tab.length !== 0 ?
                             tab.map((res, i) => <div key={i} className={`class-mode ${selectedTab === res && 'active-tab-class'}`} key={i}>
-                                <div className="" onClick={() => { setSelectedTab(res) }}>{res}</div><div className={`mode-close }`} onClick={() => { setTab(tab.filter(resp => resp !== res)); setFromClose(true); setRemovedTag(res) }}>{ICN_CLOSE}</div>
+                                <div className="" onClick={() => { setSelectedTab(res) }}>{res}</div><div className={`mode-close }`} onClick={() => { setTab(tab.filter(resp => resp !== res)); setSelectedTab(tab[i-1]) }}>{ICN_CLOSE}</div>
                             </div>)
                             : <div className="class-mode">New</div>}
                         <Dropdown className="dropdown-menus">
@@ -56,10 +54,10 @@ const ClassLab = () => {
                     <div className="class-lab vic">
                         {tab.length > 0 ? <>
                             {selectedTab === "Whiteboard" && <WhiteBoard className={`${selectedTab === "Whiteboard" ? 'd-block' : 'd-none'}`} />}
-                            <div className={`${selectedTab === "Content" ? 'd-block' : 'd-none'} full-h full-w`}><Content {...{fromClose,setFromClose,removedTag}} /> </div>
-                            <div className={`${selectedTab === "Code editor" ? 'column' : 'd-none'} full-h full-w `}><CodeEditor {...{fromClose,setFromClose,removedTag,themesColor:false}} /></div>
-                            <div className={`${selectedTab === "Media Library" ? 'd-block' : 'd-none'} full-h full-w`}><OnlineMedia {...{fromClose,setFromClose,removedTag}} /></div>
-                            <div className={`${selectedTab === "Notes" ? 'd-block' : 'd-none'} full-h full-w`}><ClassNotes {...{fromClose,setFromClose,removedTag}} /></div>
+                            <div className={`${selectedTab === "Content" ? 'd-block' : 'd-none'} full-h full-w`}><Content  /> </div>
+                            <div className={`${selectedTab === "Code editor" ? 'column' : 'd-none'} full-h full-w `}><CodeEditor {...{themesColor:false}} /></div>
+                            <div className={`${selectedTab === "Media Library" ? 'd-block' : 'd-none'} full-h full-w`}><OnlineMedia /></div>
+                            <div className={`${selectedTab === "Notes" ? 'd-block' : 'd-none'} full-h full-w`}><ClassNotes /></div>
 
                             {selectedTab === "Development Env" && <div>
                                 <DevelopmentEnv />
