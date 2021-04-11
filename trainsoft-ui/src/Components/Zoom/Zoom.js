@@ -31,7 +31,7 @@ const Zoom = () => {
   var apiKey = "tGcuTNjdQUS3jkTw_eaz9g";
   var apiSecret = "yaoH9H4cBmh1wgxXTkGqmGR8a65Qrwpu3sju";
   var meetingNumber = 9329001255;
-  var leaveUrl = "https://www.trainsoft.io/dashboard"; // our redirect url
+  var leaveUrl = "https://www.trainsoft.io/zoomclose"; // our redirect url
   var userName =  user.appuser.name;
   var userEmail =  user.appuser.emailId;
   var passWord = "kkd";
