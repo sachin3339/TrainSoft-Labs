@@ -17,10 +17,10 @@ import { BsCheckbox } from '../../Common/BsUtils';
 
 const Support = ({location})=>{
     return(<>
-             {/* <Helmet>
+             <Helmet>
                 <title>Support</title>
                  <script type='text/javascript' id='myscript_58'>var d=document,c='createElement',ac='appendChild',b=d.body;const eschatInitiatedBy = 'ES_EMBEDDED';const vcSid='DA8DCE0753D14EABAC4E60121C808D906E5E8D472A8249AF9DAA6C415155B2A4';var glcp = (('https:' == document.location.protocol) ? 'https://' : 'http://');const esHst ='https://www.eservecloud.com';var v1 = Math.random();var s = d[c]('script');s.type = 'text/javascript';s.async = true;var scriptId = 'myscript_58';s.src = esHst + '/clientchat/apps/js/visualconnect.loader.min.js?' + 'v=' + v1;var script = d.getElementsByTagName('script')[0];script.parentNode.insertBefore(s, script);</script>
-            </Helmet> */}
+            </Helmet>
         <div className="table-shadow p-3">
         <CardHeader {...{location}}/>
           <div className="flx storeTab-shadow mb-3">
