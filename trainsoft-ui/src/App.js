@@ -32,8 +32,7 @@ function App() {
             <Dashboard path="/*"/>
             <ClassLab path="class/*"/>
             <VsCode path="vscode"/>
-            <MeetingClose path="zoomclose"/>
-
+            <MeetingClose path="/zoomclose"/>
          </Router>
       </TrainingProvider>
  </> );
