@@ -66,7 +66,7 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public List<QuestionTypeTo> getAllQuestionTypes(String companySid) {
+    public List<QuestionTypeTo> getAllQuestionTypes() {
         try {
             List<QuestionType> questionTypeList = questionTypeRepository.findAll();
             if(CollectionUtils.isNotEmpty(questionTypeList)) {

@@ -40,6 +40,6 @@ public class AssessmentController {
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token)
     {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(questionService.getAllQuestionTypes(jwt.getCompanySid()));
+        return ResponseEntity.ok(questionService.getAllQuestionTypes());
     }
 }
