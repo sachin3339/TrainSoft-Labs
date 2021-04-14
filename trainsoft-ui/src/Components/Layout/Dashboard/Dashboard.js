@@ -17,15 +17,23 @@ import UserHome from "../../Screens/Home/UserHome";
 import CodeEditor from '../../Screens/ClassLab/CodeEditor/CodeEditor'
 import Zoom from "../../Zoom/Zoom";
 import VsCode from "../../Screens/VsCode/VsCode";
+import VsCodePage from "../../Screens/VsCode/VsCodePage";
+
+import {Helmet} from "react-helmet";
 
 
 const Dashboard = ({location}) => {
     return (
+        <>
+         {/* <Helmet>
+                <title>Support</title>
+                 <script type='text/javascript' id='myscript_58'>var d=document,c='createElement',ac='appendChild',b=d.body;const eschatInitiatedBy = 'ES_EMBEDDED';const vcSid='DA8DCE0753D14EABAC4E60121C808D906E5E8D472A8249AF9DAA6C415155B2A4';var glcp = (('https:' == document.location.protocol) ? 'https://' : 'http://');const esHst ='https://www.eservecloud.com';var v1 = Math.random();var s = d[c]('script');s.type = 'text/javascript';s.async = true;var scriptId = 'myscript_58';s.src = esHst + '/clientchat/apps/js/visualconnect.loader.min.js?' + 'v=' + v1;var script = d.getElementsByTagName('script')[0];script.parentNode.insertBefore(s, script);</script>
+            </Helmet> */}
         <div className="main-page">
             <div><Sidebar {...{location}} /></div>
             <div className={`dashboard-page`}>
                 <Header {...{location}} />
-                <div className="dashboard-container" className={`dashboard-container ${location.state.title === "VS Code" ? 'p-0 full-h': ''}`}>
+                <div className="dashboard-container" className={`dashboard-container ${location.state && location.state.title === "VSCode" ? 'p-0 full-h': ''}`}>
                     <Router>
                         <Home path="dashboard" />
                         <UserHome path="home"/>
@@ -42,11 +50,12 @@ const Dashboard = ({location}) => {
                         <LabStore path="labstore/*"/>
                         <CodeEditor path="compiler/*"/>
                         <Zoom path="zoom"/>
-                        <VsCode path="vscode"/>
+                        <VsCodePage path="vs-code"/>
                     </Router>
+                  
                 </div>
             </div>
-        </div>)
+        </div></>)
 }
 
 export default Dashboard

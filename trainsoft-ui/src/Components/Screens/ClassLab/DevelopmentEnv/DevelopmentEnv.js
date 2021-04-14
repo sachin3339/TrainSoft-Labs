@@ -32,7 +32,7 @@ const DevelopmentEnv =()=>{
 
     return(<>
         
-         <Button className="mr-2" onClick={()=>getDevelopmentLink("learner1")}>Login user 1</Button><Button onClick={()=>getDevelopmentLink("learner2")}>Login user 2</Button>
+         <Button className="mr-2" onClick={()=>window.open("http://ec2-65-1-145-196.ap-south-1.compute.amazonaws.com:9011/#/home/project")}>Login user 1</Button><Button onClick={()=>window.open("http://ec2-65-1-145-196.ap-south-1.compute.amazonaws.com:9046/#/home/project")}>Login user 2</Button>
 
     </>)
 }

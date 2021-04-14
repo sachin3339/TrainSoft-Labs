@@ -1,34 +1,14 @@
-.main-title{
-    color: #2D62ED !important;
-    font-size: 28px;
-    font-weight: bold;
+
+.landing-bg{
+    background:linear-gradient(to right, #250B3F ,#571A96)  !important;
 }
-.pg-header {
-    padding: 10px 40px;
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    background: white;
-    z-index: 999999;
-    position: sticky;
-    top: 0px;
-    box-shadow: 0px 0px 4px 0px #4e4e4e46;
+.landing-bg .pg-title, .landing-bg .pg-title2, .landing-bg .pg-title-sm, .landing-bg .pg-desc{
+    color: rgba(255, 255, 255, 0.808) !important;
 }
-.navbar-light .navbar-nav .nav-link {
-    color: #333333;
-    text-align: left;
-    font: normal normal 600 16px/22px Open Sans !important;
-    letter-spacing: 0px;
-    color: #333333;
-    opacity: 1;
-    font-weight: bold;
-}
-.pg-header a{
-    color: #333333;
-    font-weight: bold;
-}
+
+
 .nav-active{
-    color: #2D62ED !important;
+    color: #49167E !important;
 }
 
 .section{
@@ -90,57 +70,79 @@
     color: #555555;
     opacity: 1;
 }
+.title-ss{
+    color: #49167E;
+    font-weight: 400;
+    font-size: 30px;
+}
 .sec-about{
     text-align: center;
 }
-.edu-img img{
-    width: 100%;
-}
 .contact-info svg{
-    color: #2D62ED;
+    color: #49167E;
 }
 .contact-info .MuiSvgIcon-root{
     font-size: 2.5rem;
+}
+.context-body{
+    width: 500px;
+    margin: auto;
+    margin-top: 35px;
+    /* display: flex; */
+    align-items: center;
+    justify-content: center;
+    
+}
+.dialog-pg img{
+    width: 146px;
 }
 /* ..........page-card........ */
 .page-card-container{
     display: inline-flex;
     flex-wrap: wrap;
-    gap: 20px;
+    grid-gap: 20px;
+    justify-content: center;
+    gap: 35px;
     padding: 0px 80px;
 }
 .page-card{
-    width: 380px;
+    width: 350px;
     background: white;
-    padding: 30px;
+    padding: 30px 20px;
     border-radius: 4px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .page-card-title{
-    text-align: left;
     font: normal normal bold 18px/22px Open Sans;
     letter-spacing: 0px;
-    color: #2D62ED;
+    color: #49167E;
     opacity: 1;
     cursor: pointer;
+    margin-top: 10px;
 }
 .page-card-subTitle{
-    text-align: left;
-    font: normal normal normal 14px/22px Open Sans;
+    font: normal bold normal 14px Open Sans ;
     letter-spacing: 0px;
     color: #111111;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #ddd;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 .page-card-body{
-    text-align: left;
     font: normal normal normal 12px/22px Open Sans;
     letter-spacing: 0px;
     color: #333333;
-    text-align: justify;
 }
 .page-input .input-wrapper{
     width: 100%;
+}
+.card-footer-action{
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
 }
 .page-input .input-field {
     border-radius: 0px;
@@ -154,7 +156,7 @@
     padding: .25rem 0rem;
 }
 .pg-footer{
-    background: #2F63ED;
+    background: #333333;
 }
 .pg-footer{
     display: flex;
@@ -183,12 +185,46 @@
     color:white;
     cursor: pointer;
 }
+.edu-img{
+    width: 100%;
+    height: 344px;
+    display: grid;
+    background: #F1E3FF;
+    align-items: center;
+    justify-content: center;
+}
+.edu-img img{
+    width: 100%;
+}
+.card-footer-action svg{
+    font-size: 16px;
+    color: #00000073;
+    margin-right: 4px;
+    margin-bottom: 3px;
+}
 @media only screen and (max-width: 600px) {
+    .context-body{
+        width: 100%;
+        margin: auto;
+        margin-top: 35px;
+        /* display: flex; */
+        align-items: center;
+        justify-content: center;
+        
+    }
+    .page-card-container{
+        display: inline-flex;
+        flex-wrap: wrap;
+        grid-gap: 20px;
+        grid-gap: 20px;
+        gap: 20px;
+        padding: 0px 1px;
+    }
     .section {
         padding: 10px;
         min-height: 100%;
     }
-    .pg-img img,.edu-img img {
+    .pg-img img {
         width: 300px;
     }
     .pg-title{

@@ -1,19 +1,44 @@
 import { Formik } from 'formik'
 import React, { useState } from 'react'
 import { Form } from 'react-bootstrap'
-import { Navbar, Nav, FormControl } from 'react-bootstrap'
-import { Button } from '../../Common/Buttons/Buttons'
+import { BtnWarning, Cancel,BtnInfo } from '../../Common/Buttons/Buttons'
 import { TextArea, TextInput } from '../../Common/InputField/InputField'
 import Header from '../Layout/Header'
-import { ICN_CALL, ICN_EMAIL } from '../../Common/Icon'
+import { ICN_CALL, ICN_EMAIL, ICN_NAV_NEXT, ICN_PLAY_CIRCLE, ICN_TRAINSOFT } from '../../Common/Icon'
 import PG from "../image/pg.png";
 import EDU from "../image/edu.png";
+import TRAINING from "../image/training.png";
+import ASSESSMENT from "../image/assessment.png";
+import CURATOR from "../image/e-curator.png";
+import LAB from "../image/lab.png";
+import LEARNING from "../image/learning.png";
 import './landingPage.css'
 import { navigate } from '../../Common/Router'
+import Dialog from '@material-ui/core/Dialog';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import CloseIcon from '@material-ui/icons/Close';
+import * as Yup from 'yup';
+
+
 const LandingHome = () => {
-    return (<div>
-            <Header/>
-        <div className="mt-0 pt-0 section" id="home">
+    const [open, setOpen] = useState(false);
+    const [contact,setContact] = useState({})
+    const [submited,setSubmited] = useState(false)
+
+    // field validation
+    const schema = Yup.object().shape({
+        name: Yup.string().min(2, 'Too Short!').required("Required!"),
+        phoneNo: Yup.string().min(2, 'Too Short!').required("Required!"),
+    });
+
+    const onSubmit =(value)=> {
+        setContact(value)
+        setSubmited(true)
+    }
+    return (<><div>
+        <Header />
+        <div className="mt-0 pt-0 section landing-bg" id="home">
             <div className="row aic">
                 <div className="col-sm-5">
                     <div className="pg-title-sm">We Provided</div>
@@ -25,7 +50,7 @@ const LandingHome = () => {
                         changing training demands for Corporate companies, Schools, Universities and Individual learners.
                     </div>
                     <div className="mt-3">
-                        <div className="btn-mesR">Register</div>
+                        {/* <div className="btn-mesR">Register</div> */}
                     </div>
                 </div>
                 <div className="col-md-7">
@@ -48,42 +73,105 @@ const LandingHome = () => {
             <div className="jcc">
                 <div className="page-card-container">
                     <div className="page-card">
-                        <div className="page-card-title" onClick={() => navigate('/login')}>e-Training</div>
-                        <div className="page-card-subTitle">Online Training Management</div>
-                        <div className="page-card-body">
-                            Deploy Trainsoft to take your tutoring operations online and expand into new markets with minimum investment.<br />
-                     Create branded learning portal with Trainsoft  to train your customers on new software via online tutorials or live classes
-
-                    </div>
-                    </div>
-                    <div className="page-card">
-                        <div className="page-card-title" onClick={() => navigate('/assesment')}>e-Assessment</div>
-                        <div className="page-card-subTitle">Online Assessment / Screening</div>
-                        <div className="page-card-body">
-                            Trainsoft lets you create an online test to assess the progress of your class. With our online test generator tool, educators and corporate trainers can create, publish and conduct online tests<br />
-
+                        <div>
+                            <div className="card-img">
+                                <img src={TRAINING} />
+                            </div>
+                            <div className="page-card-title" onClick={() => navigate('/login')}>e-Training</div>
+                            <div className="page-card-subTitle">Online Training Management</div>
+                            <div className="page-card-body">
+                            Deploy Trainsoft to take your tutoring operations online and expand into new markets with minimum investment. Create branded learning portal with Trainsoft to train your customers on new software via online tutorials or live classes
+                            </div>
+                        </div>
+                        <div className="card-footer-action">
+                            <div className="">
+                               <Cancel className=""><span>{ICN_PLAY_CIRCLE}</span>SEE HOW</Cancel>
+                            </div>
+                            <div className="">
+                                <BtnWarning onClick={()=>setOpen(true)}>CONTACT US</BtnWarning>
+                            </div>
                         </div>
                     </div>
                     <div className="page-card">
-                        <div className="page-card-title" >e-Lab</div>
-                        <div className="page-card-subTitle">On Demand Cloud Labs</div>
-                        <div className="page-card-body">
-                            The best way to learn a thing is by doing the thing. That’s why our learning library is loaded with innovative hands-on technology. Our unique, experiential approach lets people safely experiment, make happy little accidents, and develop skills faster.
-                    </div>
+                        <div>
+                            <div className="card-img">
+                                <img src={ASSESSMENT} />
+                            </div>
+                            <div className="page-card-title" onClick={() => navigate('/assesment')}>e-Assessment</div>
+                            <div className="page-card-subTitle">Online Assessment / Screening</div>
+                            <div className="page-card-body">
+                                Trainsoft lets you create an online test to assess the progress of your class. With our online test generator tool, educators and corporate trainers can create, publish and conduct online tests<br />
+
+                            </div>
+                        </div>
+                        <div className="card-footer-action">
+                            <div className="">
+                               <Cancel className=""><span>{ICN_PLAY_CIRCLE}</span>SEE HOW</Cancel>
+                            </div>
+                            <div className="">
+                                <BtnWarning onClick={()=>navigate('/assesment')}>TRY NOW</BtnWarning>
+                            </div>
+                        </div>
                     </div>
                     <div className="page-card">
-                        <div className="page-card-title">e-Learning</div>
-                        <div className="page-card-subTitle">Self Paced Online Learning</div>
-                        <div className="page-card-body">
-                            Start growing your teams immediately with access to a growing library of ready-made courses covering all the soft and technical skills they need for success at work
+                        <div>
+                            <div className="card-img">
+                                <img src={LAB} />
+                            </div>
+                            <div className="page-card-title" >e-Lab</div>
+                            <div className="page-card-subTitle">On Demand Cloud Labs</div>
+                            <div className="page-card-body">
+                                The best way to learn a thing is by doing the thing. That’s why our learning library is loaded with innovative hands-on technology. Our unique, experiential approach lets people safely experiment, make happy little accidents, and develop skills faster.
                     </div>
+                        </div>
+                        <div className="card-footer-action">
+                            <div className="">
+                               <Cancel className=""><span>{ICN_PLAY_CIRCLE}</span>SEE HOW</Cancel>
+                            </div>
+                            <div className="">
+                                <BtnWarning onClick={()=>setOpen(true)}>CONTACT US</BtnWarning>
+                            </div>
+                        </div>
                     </div>
                     <div className="page-card">
-                        <div className="page-card-title">e-Curator</div>
-                        <div className="page-card-subTitle">Online Content Curation</div>
-                        <div className="page-card-body">
-                            Our content curation tool organizes information relevant to a particular topic. Curating is often done manually, but Trainsoft e-content curation makes it possible to do it automatically via recommendation engines, semantic analysis or social rating
+                        <div>
+                            <div className="card-img">
+                                <img src={LEARNING} />
+                            </div>
+                            <div className="page-card-title"  onClick={()=> window.open("https://trainsoft.org/?source=trainsoft")}>e-Learning</div>
+                            <div className="page-card-subTitle">Self Paced Online Learning</div>
+                            <div className="page-card-body">
+                                Start growing your teams immediately with access to a growing library of ready-made courses covering all the soft and technical skills they need for success at work
                     </div>
+                        </div>
+                        <div className="card-footer-action">
+                            <div className="">
+                                <Cancel className=""><span>{ICN_PLAY_CIRCLE}</span>SEE HOW</Cancel>
+                            </div>
+                            <div className="">
+                                <BtnWarning onClick={()=>setOpen(true)}>CONTACT US</BtnWarning>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="page-card">
+                        <div>
+                            <div className="card-img">
+                                <img src={CURATOR} />
+                            </div>
+                            <div className="page-card-title">e-Curator</div>
+                            <div className="page-card-subTitle">Online Content Curation</div>
+                            <div className="page-card-body">
+                                Our content curation tool organizes information relevant to a particular topic. Curating is often done manually, but Trainsoft e-content curation makes it possible to do it automatically via recommendation engines, semantic analysis or social rating
+                    </div>
+                        </div>
+                        <div className="card-footer-action">
+                            <div className="">
+                               <Cancel className=""><span>{ICN_PLAY_CIRCLE}</span>SEE HOW</Cancel>
+                            </div>
+                            <div className="">
+                                <BtnWarning onClick={()=>setOpen(true)}>CONTACT US</BtnWarning>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -97,7 +185,7 @@ const LandingHome = () => {
                     </div>
                 </div>
                 <div className="col-md-7">
-                    <div className="pg-title text-primary">
+                    <div className="title-ss">
                         WHO WE ARE
                     </div>
                     <div className="pg-title2">
@@ -189,7 +277,62 @@ const LandingHome = () => {
             </div>
         </div>
 
-    </div>)
+    </div>
+     <Dialog fullScreen open={open} onClose={()=>{setOpen(false);setSubmited(false)}} >
+   
+       <div className="jcb">
+           <div></div>
+           <div>
+           <IconButton edge="start" color="inherit" onClick={()=>{setOpen(false);setSubmited(false)}} aria-label="close">
+           <CloseIcon />
+            </IconButton>
+           </div>
+          </div>
+        <div className="container-fluid row jcc dialog-pg">
+            <div className="col-6">
+                <div className="text-center mb-4">{ICN_TRAINSOFT}</div>
+                <div className="pg-title2 text-center mb-2">Thank you for your interest in our e-Training tool</div>
+                <div className="text-center">Please tell us about you more. Our sales team will get back to you ASAP</div>
+                <div className="context-body">
+            {!submited ?<Formik
+                            onSubmit={(value) => onSubmit(value)}
+                            initialValues={{
+                                name: '',
+                                phoneNo: '',
+                                email: '',
+                            }}
+                            validationSchema={schema}
+                        >
+                            {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => <form onSubmit={handleSubmit} className="create-batch" >
+                                <div>
+                                    <Form.Group >
+                                        <TextInput label="Enter your name" placeholder="Name" name="name" />
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <TextInput label="Your Phone Number" placeholder="Phone Number" name="phoneNo" />
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <TextInput label="Your Email" placeholder="Email" name="email" />
+                                    </Form.Group>
+                                   
+                                </div>
+                                <footer className="mt-4">
+                                    <div> </div>
+                                    <div>
+                                        <BtnInfo type="submit" className="btn-block btn-block" >LET’S BEGIN! IT’S FREE</BtnInfo>
+                                    </div>
+                                </footer>
+                            </form>
+                            }
+                        </Formik>: <div>
+                              <div className="text-center title-ss text-success">Hi, {contact.name} Our sales team will get back to you ASAP</div>
+
+                            </div>}
+                        </div>
+            </div>
+        </div>
+   </Dialog>
+    </>)
 }
 
 export default LandingHome

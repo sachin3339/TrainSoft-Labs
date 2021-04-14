@@ -1,23 +1,29 @@
-import { useState,useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Formik, Field, Form } from 'formik';
 import ReactPlayer from 'react-player/lazy'
-import { Button } from '../../../Common/Buttons/Buttons'
-import { ICN_PLAY } from '../../../Common/Icon';
-const OnlineMedia = ({ fromClose, setFromClose,removedTag}) => {
-    const [mediaLink, setMediaLink] = useState(null)
+import { Button,BtnSquare } from '../../../Common/Buttons/Buttons'
+import { ICN_NAV_BEFORE, ICN_NAV_NEXT, ICN_PLAY } from '../../../Common/Icon';
+import AppContext from '../../../../Store/AppContext';
+const OnlineMedia = () => {
+    const { user, spinner, ROLE } = useContext(AppContext)
+    const [mediaLink, setMediaLink] = useState("https://youtu.be/xk4_1vDrzzo")
 
-    useEffect(() => {
-        if (fromClose && removedTag === "Online Media") {
-            setFromClose(false)
-            setMediaLink(null)
-        }
-    }, [fromClose])
 
-    return (<div className="media-link">
+
+    return (
+        <div className="full-h column">
+            <div className="jce py-2 px-2">
+                <div className="disable flx">
+                <BtnSquare>{ICN_NAV_BEFORE}</BtnSquare>
+                <BtnSquare className="mx-3"> {ICN_PLAY}</BtnSquare>
+                 <BtnSquare>{ICN_NAV_NEXT}</BtnSquare>
+                </div>
+            </div>
+    <div className="media-link">
         {mediaLink && <ReactPlayer
-        width='100%'
-        height='100%'
-        url={mediaLink} controls={true}/>}
+            width='100%'
+            height='100%'
+            url={mediaLink} controls={true} />}
 
         {!mediaLink && <div>
             <Formik
@@ -38,6 +44,6 @@ const OnlineMedia = ({ fromClose, setFromClose,removedTag}) => {
             </Formik>
         </div>}
 
-    </div>)
+    </div></div>)
 }
 export default OnlineMedia

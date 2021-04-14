@@ -107,6 +107,18 @@
   border: 0px;
 }
 
+.btn-info {
+  color: #fff;
+  background-color: #49167E;
+  border-color: #49167E;
+}
+
+.btn-info:hover {
+  color: #fff;
+  background-color: #49167E;
+  border-color: #49167E;
+}
+
 .page-item.active .page-link {
   z-index: 3;
   color: #ffffff !important;
@@ -419,7 +431,6 @@
 
 .elps {
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -432,6 +443,14 @@
   padding-bottom: 10px !important;
 }
 
+.round {
+  border-radius: 30px;
+}
+
+.bold-ft {
+  font-weight: 600;
+}
+
 .checkbox-div {
   width: 15px;
   height: 15px;
@@ -439,6 +458,10 @@
   border: 1px solid rgba(0, 0, 0, 0.308);
   cursor: pointer;
   margin: 0px 5px;
+}
+
+.f13 {
+  font-size: 13px;
 }
 
 .tab-btn {
