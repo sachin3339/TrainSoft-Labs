@@ -16,5 +16,5 @@ public interface ITrainingViewRepository extends JpaRepository<TrainingView,Inte
     TrainingView findTrainingViewBySid(byte[] sid);
     List<TrainingView> findTrainingViewsByNameContainingAndCompanySidAndStatusNot(String name,String companySid,InstructorEnum.Status status);
     Page<TrainingView> findAllByStatusNotAndCompanySid(InstructorEnum.Status status,String companySid, Pageable paging);
-
+    Page<TrainingView> findAllByStatusNotAndCompanySidAndVirtualAccountSid(InstructorEnum.Status status,String companySid,String vASid, Pageable paging);
 }

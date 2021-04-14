@@ -35,5 +35,6 @@ public interface ITrainingService {
     boolean validateEmail(String email);
     boolean validateBatch(String batchName, String companySid);
     void updateVirtualAccountStatus(String virtualAccountSid, String status);
+    public List<TrainingViewTO> getTrainingsOnRoleWithPagination(int pageNo, int pageSize,String companySid,String vASid);
 
 }

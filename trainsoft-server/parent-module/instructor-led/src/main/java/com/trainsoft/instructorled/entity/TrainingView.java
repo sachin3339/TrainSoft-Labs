@@ -58,5 +58,8 @@ public class TrainingView extends BaseEntity {
     @JoinColumn(name = "updated_by", referencedColumnName = "id")
     private VirtualAccount updatedBy;
 
+    @Column(name="virual_account_sid")
+    private String virtualAccountSid;
+
 
 }
