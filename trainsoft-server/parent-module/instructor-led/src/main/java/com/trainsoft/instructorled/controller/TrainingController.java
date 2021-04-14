@@ -181,4 +181,14 @@ public class TrainingController {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         trainingService.updateTrainingSessionStatus(sessionSid,status,jwt.getVirtualAccountSid());
     }
+
+    @GetMapping("/trainings/role/{pageNo}/{pageSize}")
+    @ApiOperation(value = "getTrainingsOnRole", notes = "Get list of training by role")
+    public ResponseEntity<?> getTrainingsOnRole(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
+            @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(trainingService.getTrainingsOnRoleWithPagination(pageNo-1,pageSize,jwt.getCompanySid(),jwt.getVirtualAccountSid()));
+    }
 }
