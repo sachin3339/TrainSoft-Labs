@@ -127,3 +127,9 @@ input:checked + .gen-slider:before {
 	background-color: #9f9f9f;
 	border-radius: 50%;
 }
+
+@media (min-width: 1200px){
+.modal-xl {
+    max-width: 90%;
+}
+}

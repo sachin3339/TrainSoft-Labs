@@ -1,11 +1,8 @@
 import { useState, useContext, useEffect } from "react";
 import '../Batches/batches.css'
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
-import { Modal, Form } from 'react-bootstrap'
-import { Formik } from 'formik';
 import { ICN_TRASH, ICN_EDIT, ICN_CLOSE } from '../../Common/Icon';
 import { Button } from "../../Common/Buttons/Buttons";
-import { TextInput, DateInput, SelectInput, MultiSelectInput } from "../../Common/InputField/InputField";
 import { Link, Router } from "../../Common/Router";
 import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 import TrainingDetails from "./TrainingDetails";
@@ -192,7 +189,7 @@ const Trainings = ({ location }) => {
         try {
             let pageSize = 10;
             spinner.show();
-            RestService.getAllTrainingByPage(pagination, pageSize).then(
+            RestService.getAllTrainingByPage(user.role === ROLE.SUPERVISOR,pagination, pageSize).then(
                 response => {
                     setTrainingList(response.data);
                 },
@@ -272,6 +269,7 @@ const Trainings = ({ location }) => {
         <div className="table-shadow">
             <div className="p-3">
                 <CardHeader {...{
+                    hideSearch: user.role === ROLE.SUPERVISOR ? false : true,
                     location,
                     onChange: (e) => e.length === 0 && getTrainings(),
                     onEnter: (e) => searchTraining(e),
