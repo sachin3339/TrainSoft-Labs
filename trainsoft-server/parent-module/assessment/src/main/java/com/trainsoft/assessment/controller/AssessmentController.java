@@ -30,16 +30,13 @@ public class AssessmentController {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         questionTo.setCreatedByVirtualAccountSid(jwt.getVirtualAccountSid());
         questionTo.setCompanySid(jwt.getCompanySid());
-        QuestionTo createQuestionTo = questionService.createQuestion(questionTo);
-        return ResponseEntity.ok(createQuestionTo);
+        return ResponseEntity.ok(questionService.createQuestionAndAnswer(questionTo));
     }
 
     @GetMapping("question/types")
     @ApiOperation(value = "getQuestionType", notes = "API to get Question Types.")
-    public ResponseEntity<?> getQuestionType(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token)
+    public ResponseEntity<?> getQuestionType()
     {
-        JWTTokenTO jwt = JWTDecode.parseJWT(token);
         return ResponseEntity.ok(questionService.getAllQuestionTypes());
     }
 }

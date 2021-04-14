@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import javax.persistence.*;
-import java.util.Date;
+import java.util.*;
 
 @Entity
 @Table(name = "question")
@@ -36,6 +36,11 @@ public class Question extends BaseEntity{
     @Column(name = "question_type")
     @Enumerated(EnumType.STRING)
     private AssessmentEnum.QuestionType questionType;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "questionId")
+    private List<Answer> answers = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "created_by", referencedColumnName = "id")

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.trainsoft.assessment.value.AssessmentEnum;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,11 +13,11 @@ public class QuestionTo  extends BaseTO
 {
    private String name;
    private String description;
-   private long createdOn;
    private String createdByVirtualAccountSid;
    private String technologyName;
    private int questionPoint;
    private AssessmentEnum.Status status;
    private AssessmentEnum.QuestionType questionType;
    private String CompanySid;
+   private List<AnswerTo> answer;
 }
