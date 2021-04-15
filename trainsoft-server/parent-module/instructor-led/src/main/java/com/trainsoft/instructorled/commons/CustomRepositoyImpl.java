@@ -41,13 +41,15 @@ public class CustomRepositoyImpl implements ITrainsoftCustomRepository {
 
     @Override
     public List<VirtualAccount> findActiveVirtualAccountWithBatch(String batchSid,String companySid) {
-        String customQuery ="select v from VirtualAccount v inner join DepartmentVirtualAccount dv on dv.virtualAccount.id=v.id where dv.departmentRole='LEARNER'\n" +
+        String customQuery ="select v from VirtualAccount v " +
+                "inner join DepartmentVirtualAccount dv " +
+                "on dv.virtualAccount.id=v.id where dv.departmentRole='LEARNER' and v.company.sid=unhex(:companySid)\n" +
                 "and v.id not in (select  v.id from VirtualAccount v \n" +
                 "inner  join BatchParticipant  bhp on bhp.virtualAccount.id=v.id\n" +
                 "inner  join Batch b on b.id=bhp.batch.id\n" +
                 "inner join Company c on c.id=v.company.id\n"+
                 "inner  join DepartmentVirtualAccount dv on dv.virtualAccount.id=v.id where v.status='ENABLED' and dv.departmentRole='LEARNER'\n" +
-                "and b.sid=unhex(:batchSid) and c.company.sid=unhex(:companySid))";
+                "and b.sid=unhex(:batchSid) and c.sid=unhex(:companySid))";
         Query query = entitymangager.createQuery(customQuery);
         query.setParameter("batchSid",batchSid);
         query.setParameter("companySid",companySid);
