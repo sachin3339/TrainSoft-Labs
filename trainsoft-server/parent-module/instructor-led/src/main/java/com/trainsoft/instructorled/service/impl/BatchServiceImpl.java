@@ -224,9 +224,9 @@ public class BatchServiceImpl implements IBatchService {
     }
 
     @Override
-    public List<UserTO> getActiveVirtualAccountWithBatch(String batchSid){
+    public List<UserTO> getActiveVirtualAccountWithBatch(String batchSid,String companySid){
 
-        List<VirtualAccount> virtualAccounts= customRepository.findActiveVirtualAccountWithBatch(batchSid);
+        List<VirtualAccount> virtualAccounts= customRepository.findActiveVirtualAccountWithBatch(batchSid,companySid);
         return mapper.convertList(virtualAccounts,UserTO.class);
     }
 

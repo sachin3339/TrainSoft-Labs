@@ -192,6 +192,6 @@ public class TrainingController {
 /*            @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
             @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize)*/ {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingsForLeaner(jwt.getVirtualAccountSid()));
+     return ResponseEntity.ok(trainingService.getTrainingsForLeaner(jwt.getVirtualAccountSid(), jwt.getCompanySid()));
     }
 }
