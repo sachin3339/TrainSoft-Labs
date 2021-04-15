@@ -16,7 +16,7 @@ public interface IBatchService {
     List<BatchViewTO> getBatchesWithPagination(int pageNo, int pageSize,String companySid);
     boolean deleteParticipantsByBatchSid(String batchSid, String  vASid);
     List<UserTO> createMultipleUserWithBatch(String batchSid, List<String> VASid,String companySid);
-   // List<UserTO> getActiveVirtualAccountWithBatch();
-    List<UserTO> getActiveVirtualAccountWithBatch(String batchSid,String companySid);
+    List<UserTO> getActiveVirtualAccountWithBatch(String batchSid);
+   // List<UserTO> getActiveVirtualAccountWithBatch(String batchSid,String companySid);
 
 }

@@ -51,6 +51,7 @@ public class TrainingServiceImpl implements ITrainingService {
     ITrainingCourseRepository trainingCourseRepository;
     CustomRepositoyImpl customRepositoy;
     AWSUploadClient awsUploadClient;
+    ITrainsoftCustomRepository customRepository;
 
 
     @Override
@@ -647,24 +648,20 @@ public class TrainingServiceImpl implements ITrainingService {
         }
     }
 
-/*    @Override
-    public List<TrainingViewTO> getTrainingsForLeanerWithPagination(int pageNo, int pageSize,String companySid,String vASid) {
+    @Override
+    public List<TrainingViewTO> getTrainingsForLeaner(String vASid) {
         try {
-            Pageable paging = PageRequest.of(pageNo, pageSize);
-            Page<TrainingView> pagedResult = trainingViewRepository.findAllByStatusNotAndCompanySidAndBatchParticipantsSid(Status.DELETED,companySid,vASid,paging);
-            List<TrainingView> trainingViews = pagedResult.toList();
-            return trainingViews.stream().map(trainingView -> {
-                TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
-                to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
-                to.setCreatedByVASid(trainingView.getCreatedBy() == null ? null : trainingView.getCreatedBy().getStringSid());
-                to.setUpdatedByVASid(trainingView.getUpdatedBy() == null ? null : trainingView.getUpdatedBy().getStringSid());
-                return to;
-            }).collect(Collectors.toList());
+           // Pageable paging = PageRequest.of(pageNo, pageSize);
+           // Page<Training> pagedResult= customRepository.findTrainingsForLeaner(vASid);
+            //List<Training> trainingList = pagedResult.toList();
+            List<TrainingView> trainingList = customRepository.findTrainingsForLeaner(vASid);
+            return mapper.convertList(trainingList,TrainingViewTO.class);
+
         } catch (Exception e) {
             log.error("throwing exception while fetching the all training details based on learners",e.toString());
             throw new ApplicationException("throwing exception while fetching the all training details based on roles");
         }
-    }*/
+    }
 
 
 
