@@ -229,11 +229,34 @@ CREATE TABLE `course_session` (
 DROP VIEW IF EXISTS vw_training;
 create view vw_training
 as
-select tr.id,tr.sid,tr.name,count(trbh.sid) as no_of_batches,cr.name as course_name,
-       tr.instructor_name,tr.start_date,tr.end_date,tr.status,tr.created_by,tr.updated_by,tr.created_on,tr.updated_on from training tr
-                                                                                                                               inner join training_has_course thc on thc.training_id=tr.id
-                                                                                                                               inner join course cr on thc.course_id=cr.id
-                                                                                                                               inner join training_has_batch trbh on tr.id=trbh.training_id group by tr.id order by created_on desc
+SELECT
+    `tr`.`id` AS `id`,
+    `tr`.`sid` AS `sid`,
+    `tr`.`name` AS `name`,
+    COUNT(`trbh`.`sid`) AS `no_of_batches`,
+    `cr`.`name` AS `course_name`,
+    HEX(`cr`.`sid`) AS `course_sid`,
+    `a`.`name` AS `instructor_name`,
+    `tr`.`start_date` AS `start_date`,
+    `tr`.`end_date` AS `end_date`,
+    `tr`.`status` AS `status`,
+    `tr`.`created_by` AS `created_by`,
+    `tr`.`updated_by` AS `updated_by`,
+    `tr`.`created_on` AS `created_on`,
+    `tr`.`updated_on` AS `updated_on`,
+    HEX(`c`.`sid`) AS `company_sid`,
+    HEX(`v`.`sid`) AS `virual_account_sid`
+
+FROM
+    ((((((`training` `tr`
+        JOIN `training_has_course` `thc` ON ((`thc`.`training_id` = `tr`.`id`)))
+        JOIN `course` `cr` ON ((`thc`.`course_id` = `cr`.`id`)))
+        JOIN `training_has_batch` `trbh` ON ((`tr`.`id` = `trbh`.`training_id`)))
+        LEFT JOIN `virtual_account` `v` ON ((`v`.`id` = `tr`.`instructor`)))
+        LEFT JOIN `appusers` `a` ON ((`a`.`id` = `v`.`appuser_id`)))
+        LEFT JOIN `company` `c` ON ((`c`.`id` = `tr`.`company_id`)))
+GROUP BY `tr`.`id`
+ORDER BY `tr`.`created_on` DESC                                                                                                                               inner join training_has_batch trbh on tr.id=trbh.training_id group by tr.id order by created_on desc
 
 #--================= vw_batch ==================--
 
