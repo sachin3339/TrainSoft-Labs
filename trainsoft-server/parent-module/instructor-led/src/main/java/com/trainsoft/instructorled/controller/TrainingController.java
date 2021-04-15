@@ -7,21 +7,13 @@ import com.trainsoft.instructorled.service.IBatchService;
 import com.trainsoft.instructorled.service.IBulkUploadService;
 import com.trainsoft.instructorled.service.ITrainingService;
 import com.trainsoft.instructorled.to.*;
-import com.trainsoft.instructorled.value.InstructorEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
@@ -182,7 +174,7 @@ public class TrainingController {
         trainingService.updateTrainingSessionStatus(sessionSid, status, jwt.getVirtualAccountSid());
     }
 
-    @GetMapping("/trainings/role/{pageNo}/{pageSize}")
+    @GetMapping("/trainer/trainings/{pageNo}/{pageSize}")
     @ApiOperation(value = "getTrainingsOnRole", notes = "Get list of training by role")
     public ResponseEntity<?> getTrainingsOnRole(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
@@ -192,13 +184,14 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getTrainingsOnRoleWithPagination(pageNo - 1, pageSize, jwt.getCompanySid(), jwt.getVirtualAccountSid()));
     }
 
-/*    @GetMapping("/trainings/learner/{pageNo}/{pageSize}")
+   // @GetMapping("/trainings/learner/{pageNo}/{pageSize}")
+   @GetMapping("/learner/trainings")
     @ApiOperation(value = "getLearnersTrainings", notes = "Get list of training by leaners")
     public ResponseEntity<?> getLearnersTrainings(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
-            @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token)
+/*            @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
+            @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize)*/ {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingsForLeanerWithPagination(pageNo - 1, pageSize, jwt.getCompanySid(), jwt.getVirtualAccountSid()));
-    }*/
+        return ResponseEntity.ok(trainingService.getTrainingsForLeaner(jwt.getVirtualAccountSid()));
+    }
 }

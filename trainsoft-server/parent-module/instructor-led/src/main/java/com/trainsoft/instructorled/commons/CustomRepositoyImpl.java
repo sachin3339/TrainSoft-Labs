@@ -1,9 +1,12 @@
 package com.trainsoft.instructorled.commons;
 
+import com.trainsoft.instructorled.entity.Training;
+import com.trainsoft.instructorled.entity.TrainingView;
 import com.trainsoft.instructorled.entity.VirtualAccount;
 import com.trainsoft.instructorled.repository.ITrainsoftCustomRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -37,13 +40,29 @@ public class CustomRepositoyImpl implements ITrainsoftCustomRepository {
     }
 
     @Override
-    public List<VirtualAccount> findActiveVA() {
-        String customQuery ="select  v from VirtualAccount v left join BatchParticipant bhp on v.id=bhp.virtualAccount.id \n" +
-                "left join Company  c on c.id=v.company.id \n" +
-                "where v.status='ENABLED' and bhp.id is null";
+    public List<VirtualAccount> findActiveVirtualAccountWithBatch(String batchSid) {
+        String customQuery ="select v from VirtualAccount v inner join DepartmentVirtualAccount dv on dv.virtualAccount.id=v.id where dv.departmentRole='LEARNER'\n" +
+                "and v.id not in (select  v.id from VirtualAccount v \n" +
+                "inner  join BatchParticipant  bhp on bhp.virtualAccount.id=v.id\n" +
+                "inner  join Batch b on b.id=bhp.batch.id\n" +
+                "inner  join DepartmentVirtualAccount dv on dv.virtualAccount.id=v.id where v.status='ENABLED' and dv.departmentRole='LEARNER'\n" +
+                "and hex(b.sid)=:batchSid)";
         Query query = entitymangager.createQuery(customQuery);
+        query.setParameter("batchSid",batchSid);
         return query.getResultList();
-
     }
 
+    @Override
+   // public Page<Training> findTrainingsForLeaner(String vASid)
+    public List<TrainingView> findTrainingsForLeaner(String vASid) {
+        String customQuery ="select t from TrainingView  t \n" +
+                "inner  join TrainingBatch thb on thb.training.id=t.id\n" +
+                "inner  join BatchParticipant bhp on bhp.batch.id=thb.batch.id\n" +
+                "inner  join VirtualAccount v on v.id=bhp.virtualAccount.id\n" +
+                "inner  join DepartmentVirtualAccount dhva on dhva.virtualAccount.id=v.id\n" +
+                "where dhva.departmentRole='LEARNER' and hex(v.sid)=:vASid";
+        Query query = entitymangager.createQuery(customQuery);
+        query.setParameter("vASid",vASid);
+        return  query.getResultList();
+    }
 }

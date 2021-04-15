@@ -223,27 +223,11 @@ public class BatchServiceImpl implements IBatchService {
         return virtualAccountList;
     }
 
-/*    @Override
-    public List<UserTO> getActiveVirtualAccountWithBatch(){
+    @Override
+    public List<UserTO> getActiveVirtualAccountWithBatch(String batchSid){
 
-        List<VirtualAccount> virtualAccounts= customRepository.findActiveVA();
-        return mapper.convertList(virtualAccounts,UserTO.class);
-    }*/
-
-     @Override
-    public List<UserTO> getActiveVirtualAccountWithBatch(String batchSid,String companySid) {
-        List<VirtualAccount> virtualAccounts= new ArrayList<>();
-        Batch batch = batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(batchSid));
-       List<BatchParticipant> participants= batchParticipantRepository.findBatchParticipantByBatch(batch);
-       List<VirtualAccount> virtualAccountList=virtualAccountRepository.findVirtualAccountByCompanyAndStatus(getCompany(companySid), InstructorEnum.Status.ENABLED);
-         if(virtualAccountList!=null && virtualAccountList.size()>0) {
-             virtualAccountList.forEach(virtualAccount -> {
-                 participants.forEach(participant -> {
-                     if (participant.getId() != virtualAccount.getId())
-                         virtualAccounts.add(virtualAccount);
-                 });
-             });
-         }
+        List<VirtualAccount> virtualAccounts= customRepository.findActiveVirtualAccountWithBatch(batchSid);
         return mapper.convertList(virtualAccounts,UserTO.class);
     }
+
 }

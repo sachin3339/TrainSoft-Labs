@@ -123,6 +123,6 @@ public class BatchController {
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Batch sid", required = true) @PathVariable("batchSid") String batchSid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(batchService.getActiveVirtualAccountWithBatch(batchSid, jwt.getCompanySid()));
+        return ResponseEntity.ok(batchService.getActiveVirtualAccountWithBatch(batchSid));
     }
 }
