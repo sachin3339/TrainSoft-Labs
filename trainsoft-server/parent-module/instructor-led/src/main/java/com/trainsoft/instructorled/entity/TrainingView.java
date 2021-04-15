@@ -61,8 +61,6 @@ public class TrainingView extends BaseEntity {
     @Column(name="virual_account_sid")
     private String virtualAccountSid;
 
-    @Column(name="batch_participants_sid")
-    private String batchParticipantsSid;
-
-
+/*    @Column(name="batch_participants_sid")
+    private String batchParticipantsSid;*/
 }
