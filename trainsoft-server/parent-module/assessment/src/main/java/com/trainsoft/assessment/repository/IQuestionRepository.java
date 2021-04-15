@@ -6,5 +6,6 @@ import org.springframework.data.repository.Repository;
 
 @org.springframework.stereotype.Repository
 public interface IQuestionRepository extends JpaRepository<Question, Repository> {
-    
+
+    Question findQuestionBySid(byte[] hexStringToByteArray);
 }

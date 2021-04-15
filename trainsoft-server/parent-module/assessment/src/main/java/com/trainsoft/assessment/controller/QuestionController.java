@@ -17,15 +17,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Api(value = "Assessment related API's")
 @RequestMapping("/v1")
-public class AssessmentController {
+public class QuestionController {
 
     IQuestionService questionService;
 
-    @PostMapping("create/question/individual")
-    @ApiOperation(value = "createIndividualQuestion", notes = "API to create new Course.")
+    @PostMapping("/create/question/individual")
+    @ApiOperation(value = "createIndividualQuestion", notes = "API to create new Question.")
     public ResponseEntity<?> createIndividualQuestion(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Create Course payload", required = true) @RequestBody QuestionTo questionTo)
+            @ApiParam(value = "Create Question payload", required = true) @RequestBody QuestionTo questionTo)
     {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         questionTo.setCreatedByVirtualAccountSid(jwt.getVirtualAccountSid());
@@ -33,10 +33,26 @@ public class AssessmentController {
         return ResponseEntity.ok(questionService.createQuestionAndAnswer(questionTo));
     }
 
-    @GetMapping("question/types")
+    @GetMapping("/question/types")
     @ApiOperation(value = "getQuestionType", notes = "API to get Question Types.")
     public ResponseEntity<?> getQuestionType()
     {
         return ResponseEntity.ok(questionService.getAllQuestionTypes());
     }
+
+    @PostMapping("/questions")
+    @ApiOperation(value = "getAllQuestions", notes = "API to get all Questions.")
+    public ResponseEntity<?> getAllQuestions()
+    {
+        return ResponseEntity.ok(questionService.getAllQuestions());
+    }
+
+    @PostMapping("/question/{questionSid}")
+    @ApiOperation(value = "getQuestionAndAssociatedAnswers", notes = "API to get Question and Associated Answers based on selected Question.")
+    public ResponseEntity<?> getQuestionAndAssociatedAnswers(
+            @ApiParam(value = "Question Sid", required = true) @PathVariable("questionSid") String questionSid)
+    {
+        return ResponseEntity.ok(questionService.getQuestionBySid(questionSid));
+    }
+
 }

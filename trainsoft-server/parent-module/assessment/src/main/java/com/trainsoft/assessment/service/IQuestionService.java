@@ -5,7 +5,9 @@ import com.trainsoft.assessment.to.QuestionTypeTo;
 import java.util.List;
 
 public interface IQuestionService {
-   /* QuestionTo createQuestion(QuestionTo questionTo);*/
+
     List<QuestionTypeTo> getAllQuestionTypes();
     QuestionTo createQuestionAndAnswer(QuestionTo questionTo);
+    List<QuestionTo> getAllQuestions();
+    QuestionTo getQuestionBySid(String questionSid);
 }

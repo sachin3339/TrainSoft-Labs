@@ -10,4 +10,8 @@ public class AssessmentEnum
         MCQ,SINGLE_VALUE,DESCRIPTIVE,FILL_IN_THE_BLANKS;
     }
 
+    public enum QuestionLevel {
+        BEGINNER,INTERMEDIATE,ADVANCED;
+    }
+
 }

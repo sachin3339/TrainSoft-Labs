@@ -7,6 +7,7 @@ import com.trainsoft.assessment.entity.*;
 import com.trainsoft.assessment.repository.*;
 import com.trainsoft.assessment.service.IQuestionService;
 import com.trainsoft.assessment.to.AnswerTo;
+import com.trainsoft.assessment.to.BaseTO;
 import com.trainsoft.assessment.to.QuestionTo;
 import com.trainsoft.assessment.to.QuestionTypeTo;
 import com.trainsoft.assessment.value.AssessmentEnum;
@@ -74,6 +75,45 @@ public class QuestionServiceImpl implements IQuestionService {
         }
     }
 
+    @Override
+    public List<QuestionTo> getAllQuestions()
+    {
+        try
+        {
+            List<Question> questionsList = questionRepository.findAll();
+            if (CollectionUtils.isNotEmpty(questionsList)) {
+                return mapper.convertList(questionsList, QuestionTo.class);
+            }
+            else
+                throw new RecordNotFoundException("No record found");
+        } catch (Exception exp)
+        {
+            log.error("throwing exception while getting all Questions", exp.toString());
+            throw new ApplicationException("Something went wrong while getting all Question" + exp.getMessage());
+        }
+    }
+
+    @Override
+    public QuestionTo getQuestionBySid(String questionSid)
+    {
+        try
+        {
+            if (questionSid != null)
+            {
+               Question question=questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid));
+               QuestionTo questionTo=mapper.convert(question,QuestionTo.class);
+               questionTo.setAnswer(mapper.convertList(question.getAnswers(),AnswerTo.class));
+               return questionTo;
+            }
+            else
+                throw new RecordNotFoundException("No record found");
+        }catch (Exception exp)
+        {
+            log.error("throwing exception while getting Question and Answer details", exp.toString());
+            throw new ApplicationException("Something went wrong while getting Question and Answer details" + exp.getMessage());
+        }
+    }
+
     private Company getCompany(String companySid){
         Company c=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Company company=new Company();
@@ -86,7 +126,7 @@ public class QuestionServiceImpl implements IQuestionService {
         try {
             List<QuestionType> questionTypeList = questionTypeRepository.findAll();
             if(CollectionUtils.isNotEmpty(questionTypeList)) {
-                return mapper.convertList(questionTypeList, QuestionTypeTo.class,null);
+                return mapper.convertList(questionTypeList, QuestionTypeTo.class);
             }
         }catch (Exception e) {
             log.error("throwing exception while fetching the all QuestionTypes",e.toString());
