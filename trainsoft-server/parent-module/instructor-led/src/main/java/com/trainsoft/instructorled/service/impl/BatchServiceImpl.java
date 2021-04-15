@@ -34,6 +34,7 @@ public class BatchServiceImpl implements IBatchService {
     private DozerUtils mapper;
     private ICompanyRepository companyRepository;
     IBatchParticipantRepository batchParticipantRepository;
+    IDepartmentVirtualAccountRepository departmentVARepo;
 
     @Override
     public BatchTO createBatch(BatchTO batchTO) {
@@ -222,10 +223,27 @@ public class BatchServiceImpl implements IBatchService {
         return virtualAccountList;
     }
 
-    @Override
+/*    @Override
     public List<UserTO> getActiveVirtualAccountWithBatch(){
 
         List<VirtualAccount> virtualAccounts= customRepository.findActiveVA();
+        return mapper.convertList(virtualAccounts,UserTO.class);
+    }*/
+
+     @Override
+    public List<UserTO> getActiveVirtualAccountWithBatch(String batchSid,String companySid) {
+        List<VirtualAccount> virtualAccounts= new ArrayList<>();
+        Batch batch = batchRepository.findBatchBySid(BaseEntity.hexStringToByteArray(batchSid));
+       List<BatchParticipant> participants= batchParticipantRepository.findBatchParticipantByBatch(batch);
+       List<VirtualAccount> virtualAccountList=virtualAccountRepository.findVirtualAccountByCompanyAndStatus(getCompany(companySid), InstructorEnum.Status.ENABLED);
+         if(virtualAccountList!=null && virtualAccountList.size()>0) {
+             virtualAccountList.forEach(virtualAccount -> {
+                 participants.forEach(participant -> {
+                     if (participant.getId() != virtualAccount.getId())
+                         virtualAccounts.add(virtualAccount);
+                 });
+             });
+         }
         return mapper.convertList(virtualAccounts,UserTO.class);
     }
 }
