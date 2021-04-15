@@ -74,7 +74,7 @@ public class TrainingController {
             @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
             @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingsWithPagination(pageNo-1,pageSize,jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.getTrainingsWithPagination(pageNo - 1, pageSize, jwt.getCompanySid()));
     }
 
     @GetMapping("/trainings")
@@ -91,10 +91,10 @@ public class TrainingController {
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Training sid", required = true) @PathVariable("trainingSid") String trainingSid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.deleteTrainingBySid(trainingSid, jwt.getVirtualAccountSid(),jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.deleteTrainingBySid(trainingSid, jwt.getVirtualAccountSid(), jwt.getCompanySid()));
     }
 
-    @PostMapping(value="trainingSession/create")
+    @PostMapping(value = "trainingSession/create")
     @ApiOperation(value = "createTrainingSession", notes = "API to create new TrainingSession.")
     public ResponseEntity<?> createTrainingSession(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
@@ -131,7 +131,7 @@ public class TrainingController {
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Training Sid", required = true) @PathVariable("trainingSid") String trainingSid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSid(trainingSid,jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSid(trainingSid, jwt.getCompanySid()));
     }
 
     @GetMapping("/trainingsession/training/{trainingSid}/course/{courseSid}")
@@ -139,9 +139,9 @@ public class TrainingController {
     public ResponseEntity<?> getTrainingSessionByTrainingAndCourseSid(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Training Sid", required = true) @PathVariable("trainingSid") String trainingSid,
-    @ApiParam(value = "Course Sid", required = true) @PathVariable("courseSid") String courseSid) {
+            @ApiParam(value = "Course Sid", required = true) @PathVariable("courseSid") String courseSid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSidAndCourseSid(trainingSid,courseSid,jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSidAndCourseSid(trainingSid, courseSid, jwt.getCompanySid()));
     }
 
     @GetMapping("trainings/{name}")
@@ -150,7 +150,7 @@ public class TrainingController {
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Training name", required = true) @PathVariable("name") String name) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingsByName(name,jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.getTrainingsByName(name, jwt.getCompanySid()));
     }
 
     @GetMapping("trainingsessions/training/{trainingSid}/session/{name}")
@@ -160,7 +160,7 @@ public class TrainingController {
             @ApiParam(value = "Training sid", required = true) @PathVariable("trainingSid") String trainingSid,
             @ApiParam(value = "Training Session name", required = true) @PathVariable("name") String name) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingSessionsByName(trainingSid,name,jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.getTrainingSessionsByName(trainingSid, name, jwt.getCompanySid()));
     }
 
     @DeleteMapping("delete/trainingsession/{trainingSesssionSid}")
@@ -179,7 +179,7 @@ public class TrainingController {
             @ApiParam(value = "session sid", required = true) @PathVariable("sessionSid") String sessionSid,
             @ApiParam(value = "status", required = true) @PathVariable("status") String status) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        trainingService.updateTrainingSessionStatus(sessionSid,status,jwt.getVirtualAccountSid());
+        trainingService.updateTrainingSessionStatus(sessionSid, status, jwt.getVirtualAccountSid());
     }
 
     @GetMapping("/trainings/role/{pageNo}/{pageSize}")
@@ -189,6 +189,16 @@ public class TrainingController {
             @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
             @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingsOnRoleWithPagination(pageNo-1,pageSize,jwt.getCompanySid(),jwt.getVirtualAccountSid()));
+        return ResponseEntity.ok(trainingService.getTrainingsOnRoleWithPagination(pageNo - 1, pageSize, jwt.getCompanySid(), jwt.getVirtualAccountSid()));
     }
+
+/*    @GetMapping("/trainings/learner/{pageNo}/{pageSize}")
+    @ApiOperation(value = "getLearnersTrainings", notes = "Get list of training by leaners")
+    public ResponseEntity<?> getLearnersTrainings(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
+            @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(trainingService.getTrainingsForLeanerWithPagination(pageNo - 1, pageSize, jwt.getCompanySid(), jwt.getVirtualAccountSid()));
+    }*/
 }

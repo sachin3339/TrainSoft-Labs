@@ -647,4 +647,25 @@ public class TrainingServiceImpl implements ITrainingService {
         }
     }
 
+/*    @Override
+    public List<TrainingViewTO> getTrainingsForLeanerWithPagination(int pageNo, int pageSize,String companySid,String vASid) {
+        try {
+            Pageable paging = PageRequest.of(pageNo, pageSize);
+            Page<TrainingView> pagedResult = trainingViewRepository.findAllByStatusNotAndCompanySidAndBatchParticipantsSid(Status.DELETED,companySid,vASid,paging);
+            List<TrainingView> trainingViews = pagedResult.toList();
+            return trainingViews.stream().map(trainingView -> {
+                TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
+                to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
+                to.setCreatedByVASid(trainingView.getCreatedBy() == null ? null : trainingView.getCreatedBy().getStringSid());
+                to.setUpdatedByVASid(trainingView.getUpdatedBy() == null ? null : trainingView.getUpdatedBy().getStringSid());
+                return to;
+            }).collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("throwing exception while fetching the all training details based on learners",e.toString());
+            throw new ApplicationException("throwing exception while fetching the all training details based on roles");
+        }
+    }*/
+
+
+
 }
