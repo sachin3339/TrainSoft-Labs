@@ -215,7 +215,7 @@ const BatchesDetails = ({location}) => {
         </div>
         </div>
         <DynamicTable {...{configuration,sourceData: participant}}/>
-        {show && <AddParticipant {...{show, setShow,sid:location.state.sid,getParticipant}}/>}
+        {show && <AddParticipant {...{show, setShow,sid:location.state.sid,getParticipant,participant}}/>}
     </div>)
 }
 export default BatchesDetails

@@ -104,7 +104,7 @@ const AddParticipant = ({ show, setShow, sid, getParticipant }) => {
         try {
             let pageSize = 500
             spinner.show();
-            RestService.getAllUserByPage("LEARNER", pagination, pageSize).then(
+            RestService.getBatchLearner(sid).then(
                 response => {
                     let val = response.data.map(res => {
                         let data = res.appuser

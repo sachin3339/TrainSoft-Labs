@@ -55,7 +55,7 @@ const RestService = {
   getBatchParticipant: (batchSid)=> AxiosService.get(GLOBELCONSTANT.BATCHES.GET_BATCH_PARTICIPANT.replace("{batchSid}",batchSid)),
   validateBatches: (name)=> AxiosService.get(GLOBELCONSTANT.BATCHES.BATCH_VALIDATION.replace("{batchName}",name)),
   associateParticipant: (batchSid,participant) => AxiosService.post(GLOBELCONSTANT.BATCHES.ASSOCIATE_PARTICIPANT.replace("{batchSid}",batchSid), participant),
-
+  getBatchLearner: (sid)=> AxiosService.get(GLOBELCONSTANT.BATCHES.GET_LEARNER.replace("{batchSid}",sid)),
 
 
   CreateBatch: (payload) => AxiosService.post(GLOBELCONSTANT.BATCHES.CREATE_BATCHES, payload),
