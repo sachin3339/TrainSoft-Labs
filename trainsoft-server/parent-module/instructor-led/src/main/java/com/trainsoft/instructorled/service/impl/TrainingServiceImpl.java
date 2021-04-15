@@ -649,12 +649,12 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public List<TrainingViewTO> getTrainingsForLeaner(String vASid) {
+    public List<TrainingViewTO> getTrainingsForLeaner(String vASid,String companySid) {
         try {
            // Pageable paging = PageRequest.of(pageNo, pageSize);
            // Page<Training> pagedResult= customRepository.findTrainingsForLeaner(vASid);
             //List<Training> trainingList = pagedResult.toList();
-            List<TrainingView> trainingList = customRepository.findTrainingsForLeaner(vASid);
+            List<TrainingView> trainingList = customRepository.findTrainingsForLeaner(vASid,companySid);
             return mapper.convertList(trainingList,TrainingViewTO.class);
 
         } catch (Exception e) {
