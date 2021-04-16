@@ -44,7 +44,9 @@ const GLOBELCONSTANT = {
             EDIT_BATCHES: API_HOST +  'update/batch',
             SEARCH_BATCHES: API_HOST + "batches/",
             BATCH_VALIDATION: API_HOST + "validate/batch/{batchName}",
-            DELETE_BATCH_PARTICIPANT: API_HOST + "delete/batchparticipant/{batchSid}/{vASid}"
+            DELETE_BATCH_PARTICIPANT: API_HOST + "delete/batchparticipant/{batchSid}/{vASid}",
+            ASSOCIATE_PARTICIPANT: API_HOST + "add/participants/batch/{batchSid}",
+            GET_LEARNER: API_HOST + "batch/accounts/{batchSid}"
         },
         PARTICIPANT: {
             GET_PARTICIPANT_ID: API_HOST + "virtualaccount/{VASid}",
@@ -60,7 +62,7 @@ const GLOBELCONSTANT = {
             UPDATE_PARTICIPANT: API_HOST + 'update/user',
             UPDATE_DEPARTMENT_ROLE: API_HOST + 'update/department/role/{role}/{departmentVASid}',
             GET_USER_COUNT: API_HOST + 'get/user/count/{type}',
-            EMAIL_VALIDATION: API_HOST + "validate/email/{email}",
+            EMAIL_VALIDATION: API_HOST + "validate/email/{email}"
         },  
         TRAINING: {
             GET_TRAINING: API_HOST +  "trainings",
@@ -75,7 +77,11 @@ const GLOBELCONSTANT = {
             UPDATE_TRAINING_SESSION: API_HOST + "update/trainingsession",
             SEARCH_TRAINING_SESSION: API_HOST + "trainingsessions/training/{trainingSid}/session/{name}",
             UPLOAD_ASSETS: API_HOST + "upload",
-            UNSCHEDULE_SESSION: API_HOST + "update/session/{sessionSid}/{status}"
+            UNSCHEDULE_SESSION: API_HOST + "update/session/{sessionSid}/{status}",
+            GET_INSTRUCTOR_TRAINING: API_HOST +  "trainer/trainings/{pageNo}/{pageSize}",
+            GET_LEARNER_TRAINING: API_HOST +  "learner/trainings"
+
+
         },
         INSTRUCTOR: {
             GET_INSTRUCTOR: API_HOST +  'depatments'

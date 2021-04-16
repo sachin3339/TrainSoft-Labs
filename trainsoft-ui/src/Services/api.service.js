@@ -54,6 +54,8 @@ const RestService = {
   searchBatches : (name) => AxiosService.get(GLOBELCONSTANT.BATCHES.SEARCH_BATCHES + name),
   getBatchParticipant: (batchSid)=> AxiosService.get(GLOBELCONSTANT.BATCHES.GET_BATCH_PARTICIPANT.replace("{batchSid}",batchSid)),
   validateBatches: (name)=> AxiosService.get(GLOBELCONSTANT.BATCHES.BATCH_VALIDATION.replace("{batchName}",name)),
+  associateParticipant: (batchSid,participant) => AxiosService.post(GLOBELCONSTANT.BATCHES.ASSOCIATE_PARTICIPANT.replace("{batchSid}",batchSid), participant),
+  getBatchLearner: (sid)=> AxiosService.get(GLOBELCONSTANT.BATCHES.GET_LEARNER.replace("{batchSid}",sid)),
 
 
   CreateBatch: (payload) => AxiosService.post(GLOBELCONSTANT.BATCHES.CREATE_BATCHES, payload),
@@ -75,7 +77,11 @@ const RestService = {
   changeDepartmentRole: (role,departmentVASid)=> AxiosService.put(GLOBELCONSTANT.PARTICIPANT.UPDATE_DEPARTMENT_ROLE.replace("{role}",role).replace("{departmentVASid}",departmentVASid)),
 
   // training
-  getAllTrainingByPage: (pageNo,pageSize)=> AxiosService.get(GLOBELCONSTANT.TRAINING.GET_TRAINING + "/" + pageNo + "/" + pageSize),
+  getAllTrainingByPage: (type,pageNo,pageSize)=> AxiosService
+  .get(type === "SUPERVISOR" ? GLOBELCONSTANT.TRAINING.GET_TRAINING + "/" + pageNo + "/" + pageSize :
+  (type ===  "INSTRUCTOR" ? GLOBELCONSTANT.TRAINING.GET_INSTRUCTOR_TRAINING.replace("{pageNo}",pageNo).replace("{pageSize}",pageSize) 
+  : GLOBELCONSTANT.TRAINING.GET_LEARNER_TRAINING)),
+  
   getTrainingSession: (trainingSid,courseSid)=> AxiosService.get(GLOBELCONSTANT.TRAINING.GET_TRAINING_SESSION.replace("{trainingSid}",trainingSid).replace("{courseSid}",courseSid)),
   createTraining: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.CREATE_TRAINING,payload),
   editTraining: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.EDIT_TRAINING,payload),
@@ -87,7 +93,8 @@ const RestService = {
   deleteTrainingSession: (trainingId)=> AxiosService.delete(GLOBELCONSTANT.TRAINING.DELETE_TRAIN_SESSION.replace("{trainingSesssionSid}",trainingId) ),
   searchTrainingSession:(trainingSid,name)=> AxiosService.get(GLOBELCONSTANT.TRAINING.SEARCH_TRAINING_SESSION.replace("{trainingSid}",trainingSid).replace("{name}",name)),
   unScheduleSession:  (sessionSid,status)=> AxiosService.post(GLOBELCONSTANT.TRAINING.UNSCHEDULE_SESSION.replace("{sessionSid}",sessionSid).replace("{status}",status)),
-  zoomParticipant: ()=> AxiosService.get('https://api.zoom.us/v2/users/kumarkanhiya21@gmail.com/meetings?page_size=30&type=live',zoomAuth)
+  zoomParticipant: ()=> AxiosService.get('https://api.zoom.us/v2/users/kumarkanhiya21@gmail.com/meetings?page_size=30&type=live',zoomAuth),
+  // getTrainingByRole: (pageNo,pageSize) => AxiosService.get(GLOBELCONSTANT.TRAINING.PARTICIPANT_BY_ROLE.replace("{pageNo}",pageNo).replace("{pageSize}",pageSize)),
 
 
   // instructor

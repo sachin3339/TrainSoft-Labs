@@ -21,3 +21,8 @@
     align-items: center;
     justify-content: center;
 }
+.partiContainer{
+    height: 72vh;
+    overflow-y: auto;
+    width: 99%;
+}

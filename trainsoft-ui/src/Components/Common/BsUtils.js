@@ -6,7 +6,7 @@ import { ICN_CLOSE, ICN_EXPAND } from './Icon'
 import "./bsUtils.css";
 
 // model
-export const BsModal = ({ children, setShow, show, headerTitle, size = "md" }) => {
+export const BsModal = ({ children, setShow, show, headerTitle, size = "md",headerAction=null }) => {
     return (
         <Modal
             size={size}
@@ -18,9 +18,14 @@ export const BsModal = ({ children, setShow, show, headerTitle, size = "md" }) =
             <Modal.Body className="px-5 py-4">
                 <div className="jcb mb-3 aic">
                     <div className="title-md mb-0">{headerTitle}</div>
-                    <div><div className="circle-md" onClick={() => setShow(false)}>
+                    <div className="flx">
+                      <div className="mx-2">
+                            {headerAction}
+                        </div>
+                    <div className="circle-md" onClick={() => setShow(false)}>
                         {ICN_CLOSE}
                     </div>
+                        
                     </div>
                 </div>
                 {children}
