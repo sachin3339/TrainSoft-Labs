@@ -10,10 +10,13 @@ import moment from 'moment'
 import AppContext from "../../../Store/AppContext";
 import RestService from "../../../Services/api.service";
 import useToast from "../../../Store/ToastHook";
+import { Button } from "../../Common/Buttons/Buttons";
+import AddParticipant from "./AddParticipant";
 
 
 const BatchesDetails = ({location}) => {
     const {spinner} = useContext(AppContext)
+    const [show, setShow] = useState(false);
     const Toast = useToast()
     const [participant, setParticipant]= useState([])
 
@@ -179,7 +182,9 @@ const BatchesDetails = ({location}) => {
               <CardHeader {...{ location, 
                onChange: (e) => e.length === 0 && console.log(''),
                onEnter:(e)=> console.log(e)
-            }} />
+            }}>
+                    <Button className="mx-2" onClick={()=>setShow(true)}>Add Participant</Button>
+         </CardHeader>
         <div className="bDetail-action">
             <div className="full-w ">
             <div className="batch-info">
@@ -210,6 +215,7 @@ const BatchesDetails = ({location}) => {
         </div>
         </div>
         <DynamicTable {...{configuration,sourceData: participant}}/>
+        {show && <AddParticipant {...{show, setShow,sid:location.state.sid,getParticipant,participant}}/>}
     </div>)
 }
 export default BatchesDetails
