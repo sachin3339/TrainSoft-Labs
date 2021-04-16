@@ -22,6 +22,7 @@
     justify-content: center;
 }
 .partiContainer{
-    height: 73vh;
-    overflow-y: scroll;
+    height: 72vh;
+    overflow-y: auto;
+    width: 99%;
 }
