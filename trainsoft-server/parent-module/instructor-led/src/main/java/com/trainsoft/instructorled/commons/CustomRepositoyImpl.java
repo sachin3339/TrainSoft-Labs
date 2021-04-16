@@ -59,7 +59,7 @@ public class CustomRepositoyImpl implements ITrainsoftCustomRepository {
     @Override
    // public Page<Training> findTrainingsForLeaner(String vASid)
     public List<TrainingView> findTrainingsForLeaner(String vASid,String companySid) {
-        String customQuery ="select t from TrainingView  t \n" +
+        String customQuery ="select distinct (t) from TrainingView  t \n" +
                 "inner  join TrainingBatch thb on thb.training.id=t.id\n" +
                 "inner  join BatchParticipant bhp on bhp.batch.id=thb.batch.id\n" +
                 "inner  join VirtualAccount v on v.id=bhp.virtualAccount.id\n" +

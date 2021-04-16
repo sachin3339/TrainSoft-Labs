@@ -157,7 +157,6 @@ public class TrainingServiceImpl implements ITrainingService {
             List<TrainingView> trainingViews = pagedResult.toList();
             return trainingViews.stream().map(trainingView -> {
                 TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
-                to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
                 to.setCreatedByVASid(trainingView.getCreatedBy() == null ? null : trainingView.getCreatedBy().getStringSid());
                 to.setUpdatedByVASid(trainingView.getUpdatedBy() == null ? null : trainingView.getUpdatedBy().getStringSid());
                 return to;
@@ -637,7 +636,6 @@ public class TrainingServiceImpl implements ITrainingService {
             List<TrainingView> trainingViews = pagedResult.toList();
             return trainingViews.stream().map(trainingView -> {
                 TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
-                to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
                 to.setCreatedByVASid(trainingView.getCreatedBy() == null ? null : trainingView.getCreatedBy().getStringSid());
                 to.setUpdatedByVASid(trainingView.getUpdatedBy() == null ? null : trainingView.getUpdatedBy().getStringSid());
                 return to;
@@ -651,9 +649,6 @@ public class TrainingServiceImpl implements ITrainingService {
     @Override
     public List<TrainingViewTO> getTrainingsForLeaner(String vASid,String companySid) {
         try {
-           // Pageable paging = PageRequest.of(pageNo, pageSize);
-           // Page<Training> pagedResult= customRepository.findTrainingsForLeaner(vASid);
-            //List<Training> trainingList = pagedResult.toList();
             List<TrainingView> trainingList = customRepository.findTrainingsForLeaner(vASid,companySid);
             return mapper.convertList(trainingList,TrainingViewTO.class);
 
