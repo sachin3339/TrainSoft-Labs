@@ -15,5 +15,6 @@
 
     <modules>
         <module>instructor-led</module>
+        <module>assessment</module>
     </modules>
 </project>
