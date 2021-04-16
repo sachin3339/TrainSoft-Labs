@@ -189,7 +189,7 @@ const Trainings = ({ location }) => {
         try {
             let pageSize = 10;
             spinner.show();
-            RestService.getAllTrainingByPage(user.role === ROLE.SUPERVISOR,pagination, pageSize).then(
+            RestService.getAllTrainingByPage(user.role, pagination, pageSize).then(
                 response => {
                     setTrainingList(response.data);
                 },

@@ -77,7 +77,11 @@ const RestService = {
   changeDepartmentRole: (role,departmentVASid)=> AxiosService.put(GLOBELCONSTANT.PARTICIPANT.UPDATE_DEPARTMENT_ROLE.replace("{role}",role).replace("{departmentVASid}",departmentVASid)),
 
   // training
-  getAllTrainingByPage: (type,pageNo,pageSize)=> AxiosService.get(type ? GLOBELCONSTANT.TRAINING.GET_TRAINING + "/" + pageNo + "/" + pageSize : GLOBELCONSTANT.TRAINING.PARTICIPANT_BY_ROLE.replace("{pageNo}",pageNo).replace("{pageSize}",pageSize)),
+  getAllTrainingByPage: (type,pageNo,pageSize)=> AxiosService
+  .get(type === "SUPERVISOR" ? GLOBELCONSTANT.TRAINING.GET_TRAINING + "/" + pageNo + "/" + pageSize :
+  (type ===  "INSTRUCTOR" ? GLOBELCONSTANT.TRAINING.GET_INSTRUCTOR_TRAINING.replace("{pageNo}",pageNo).replace("{pageSize}",pageSize) 
+  : GLOBELCONSTANT.TRAINING.GET_LEARNER_TRAINING)),
+  
   getTrainingSession: (trainingSid,courseSid)=> AxiosService.get(GLOBELCONSTANT.TRAINING.GET_TRAINING_SESSION.replace("{trainingSid}",trainingSid).replace("{courseSid}",courseSid)),
   createTraining: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.CREATE_TRAINING,payload),
   editTraining: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.EDIT_TRAINING,payload),
