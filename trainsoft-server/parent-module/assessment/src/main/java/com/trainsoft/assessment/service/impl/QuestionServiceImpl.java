@@ -7,7 +7,6 @@ import com.trainsoft.assessment.entity.*;
 import com.trainsoft.assessment.repository.*;
 import com.trainsoft.assessment.service.IQuestionService;
 import com.trainsoft.assessment.to.AnswerTo;
-import com.trainsoft.assessment.to.BaseTO;
 import com.trainsoft.assessment.to.QuestionTo;
 import com.trainsoft.assessment.to.QuestionTypeTo;
 import com.trainsoft.assessment.value.AssessmentEnum;

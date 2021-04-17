@@ -19,6 +19,6 @@ public class QuestionTo  extends BaseTO
    private AssessmentEnum.Status status;
    private AssessmentEnum.QuestionType questionType;
    private String CompanySid;
-   private AssessmentEnum.QuestionLevel questionLevel;
+   private AssessmentEnum.QuestionDifficulty difficulty;
    private List<AnswerTo> answer;
 }
