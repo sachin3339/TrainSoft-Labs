@@ -1,5 +1,6 @@
 package com.trainsoft.instructorled.config;
 
+import com.google.common.collect.ImmutableList;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.HttpMethod.*;
@@ -68,7 +71,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         config.setAllowCredentials(true);
         config.addAllowedOrigin("*");
         config.addAllowedOrigin("/**");
-        config.addAllowedHeader(ORIGIN);
+/*        config.addAllowedHeader(ORIGIN);
         config.addAllowedHeader(CONTENT_TYPE);
         config.addAllowedHeader(ACCEPT);
         config.addAllowedHeader(AUTHORIZATION);
@@ -77,8 +80,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         config.addAllowedMethod(POST);
         config.addAllowedMethod(OPTIONS);
         config.addAllowedMethod(DELETE);
-        config.addAllowedMethod(PATCH);
+        config.addAllowedMethod(PATCH);*/
         config.setMaxAge(3600L);
+        config.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type","Accept","ORIGIN"));
+        config.setAllowedMethods(Arrays.asList("GET","POST","PATCH","PUT","DELETE","OPTIONS","HEAD"));
 
         source.registerCorsConfiguration("/insled/v1", config);
         source.registerCorsConfiguration("/**", config);
