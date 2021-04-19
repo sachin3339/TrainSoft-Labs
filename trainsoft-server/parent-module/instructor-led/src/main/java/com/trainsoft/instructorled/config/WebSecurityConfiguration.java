@@ -82,11 +82,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         config.addAllowedMethod(DELETE);
         config.addAllowedMethod(PATCH);*/
         config.setMaxAge(3600L);
-        config.setAllowedHeaders(ImmutableList.of("Authorization", "Cache-Control", "Content-Type","Accept","ORIGIN"));
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type","Accept","ORIGIN"));
         config.setAllowedMethods(Arrays.asList("GET","POST","PATCH","PUT","DELETE","OPTIONS","HEAD"));
 
         source.registerCorsConfiguration("/insled/v1", config);
         source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("*", config);
 
         return new CorsFilter();
     }
