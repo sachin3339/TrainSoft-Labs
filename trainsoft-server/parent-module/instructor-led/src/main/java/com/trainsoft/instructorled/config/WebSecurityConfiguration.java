@@ -67,6 +67,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("*");
+        config.addAllowedOrigin("/**");
         config.addAllowedHeader(ORIGIN);
         config.addAllowedHeader(CONTENT_TYPE);
         config.addAllowedHeader(ACCEPT);
@@ -79,7 +80,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         config.addAllowedMethod(PATCH);
         config.setMaxAge(3600L);
 
-        source.registerCorsConfiguration("/api", config);
+        source.registerCorsConfiguration("/v1", config);
         source.registerCorsConfiguration("/**", config);
 
         return new CorsFilter();
