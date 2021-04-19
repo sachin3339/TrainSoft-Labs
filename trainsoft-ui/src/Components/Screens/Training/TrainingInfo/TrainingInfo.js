@@ -155,9 +155,9 @@ const TrainingInfo = ({location}) => {
                             </div>
                         </div>
                         {trainingSession.map(res => <div className="activity-card" key={res.sid}>
-                            <div className="cat-title-md">{res.agendaName}</div>
-                            <div className="cat-title-sm">{ moment(res.updatedOn).format("DD/MM/YYYY")}</div>
-                            <div className="mt-3">{res.agendaDescription}</div>
+                            <div className="cat-title-md">{res.topic}</div>
+                            <div className="cat-title-sm">{ moment(res.createdOn).format("DD/MM/YYYY")}</div>
+                            <div className="mt-3">{res.agenda}</div>
                         </div>)}
                     </div>
                 </div>

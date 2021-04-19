@@ -19,15 +19,19 @@ const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => 
     // create Training session
     const createTrainingSession = (data) => {
         try {
+            spinner.show();
+            let endTime = setTimes(data.sessionDate,data.endTime)
+            let startTime = setTimes(data.sessionDate,data.startTime)
             let payload = {
-                "agendaDescription": data.agendaDescription,
-                "agendaName": data.agendaName,
+                "agenda": data.agenda,
+                "topic": data.topic,
                 "assets": data.assets,
                 "courseSid": training.courseSid,
-                "endTime": data.endTime,
+                "endTime": endTime,
+                "duration": (endTime - startTime)/(1000*60),
                 "recording": "",
                 "sessionDate": data.sessionDate,
-                "startTime": data.startTime,
+                "startTime": startTime,
                 "trainingSid": training.sid,
             }
             payload.status = "ENABLED"
@@ -35,10 +39,12 @@ const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => 
                 Toast.success({ message: `Agenda is Successfully Created` });
                 getSessionByPage()
                 setShow(false)
-            }, err => console.log(err)
+                spinner.hide();
+            }, err => {console.log(err);spinner.hide();}
             );
         }
         catch (err) {
+            spinner.hide();
             console.error('error occur on createTrainingSession', err)
             Toast.error({ message: `Something wrong!!` });
         }
@@ -47,30 +53,42 @@ const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => 
         // edit Training session
         const editTrainingSession = (data) => {
             try {
-                let payload = {
-                    "sid":data.sid,
-                    "agendaDescription": data.agendaDescription,
-                    "agendaName": data.agendaName,
-                    "assets": data.assets,
-                    "courseSid": training.courseSid,
-                    "endTime": data.endTime,
-                    "recording": "",
-                    "sessionDate": data.sessionDate,
-                    "startTime": data.startTime,
-                    "trainingSid": training.sid,
-                }
-                RestService.editTrainingSession(payload).then(res => {
+                spinner.show();
+                let meetingId = data.meetingInfo.meetingId
+                let endTime = setTimes(data.sessionDate,data.endTime)
+                let startTime = setTimes(data.sessionDate,data.startTime)
+                let val = data
+                val.agenda = data.agenda
+                val.topic = data.topic
+                val.assets = data.assets
+                val.courseSid = training.courseSid
+                val.duration = (endTime - startTime)/(1000*60)
+                val.trainingSid = training.sid
+                val.endTime =  endTime
+                val.startTime =  startTime
+                val.meetingInfo = JSON.stringify(data.meetingInfo)
+                RestService.editTrainingSession(val,meetingId).then(res => {
                     Toast.success({ message: `Session updated successfully ` });
                     getSessionByPage()
                     setShow(false)
-                }, err => console.log(err)
+                    spinner.hide();
+                }, err => {console.log(err);spinner.hide();}
                 );
             }
             catch (err) {
-                console.error('error occur on editTrainingSession', err)
+                spinner.show();
+                console.hide('error occur on editTrainingSession', err)
                 Toast.error({ message: `Something wrong!!` });
             }
         }
+
+        const setTimes =(date,timeDate)=>{
+                let val = new Date(date)
+                let times= new Date(timeDate)
+                val.setHours(times.getHours(),times.getMinutes(),times.getSeconds())
+                return val.getTime()
+        }
+
    // upload attachment
    const UploadAttachmentsAPI = async (val) => {
     return new Promise((resolve, reject) => {
@@ -123,8 +141,8 @@ const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => 
                 <div>
                     <Formik
                         initialValues={!isEdit ?{
-                            agendaDescription: '',
-                            agendaName: "",
+                            agenda: '',
+                            topic: "",
                             assets: "",
                             endTime: '',
                             sessionDate: '',
@@ -136,10 +154,10 @@ const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => 
                             <form onSubmit={handleSubmit}>
                                 <div className="row">
                                     <div className="col-md-12">
-                                       {!isEdit  && <TextInput name="agendaName" label="Agenda" />}
+                                       {!isEdit  && <TextInput name="topic" label="Agenda" />}
                                     </div>
                                     <div className="col-md-12 mb-3">
-                                        <TextArea name="agendaDescription" label="Description" />
+                                        <TextArea name="agenda" label="Description" />
                                     </div>
 
                                     <div className="col-md-4 ">
@@ -152,7 +170,7 @@ const AddSession = ({ show, setShow,getSessionByPage, isEdit,initialValue }) => 
                                         <TimeInput name="endTime" placeholder="Select Time" label="End Time" />
                                     </div>
                                     <div className="col-md-12">
-                                    {/* <TextInput name="assets"  label="Assets" /> */}
+                                    {/* <TextInput name="assets" label="Assets" /> */}
 
                                     {<div className="col-6 pl-0">
                                     <div><span className="title-sm ">Assets</span></div> <div><input multiple placeholder="Browse File" onChange={(e) => { uploadAttachments(e.target.files,setFieldValue) }} type="file" /></div>
