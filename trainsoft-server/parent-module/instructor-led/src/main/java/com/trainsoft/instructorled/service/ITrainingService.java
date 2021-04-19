@@ -17,13 +17,13 @@ public interface ITrainingService {
 
 
     TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO);
-    TrainingSessionTO updateTrainingSession(TrainingSessionTO trainingSessionTO);
+    TrainingSessionTO updateTrainingSession(TrainingSessionTO trainingSessionTO,String meetingId);
     TrainingSessionTO getTrainingSessionBySid(String trainingSessionSid);
     List<TrainingSessionTO> getTrainingSessionByTrainingSid(String trainingSid,String companySid);
     List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid,String companySid);
     List<TrainingSessionTO> getTrainingSessionsByName(String trainingSid,String name,String companySid);
     boolean deleteTrainingSessionBySid(String trainingSessionSid, String deletedBySid);
-    void updateTrainingSessionStatus(String sessionSid,String status,String updatedBy);
+    void updateTrainingSessionStatus(String sessionSid,String status,String updatedBy,String meetingId);
 
 
     String generatePassword();

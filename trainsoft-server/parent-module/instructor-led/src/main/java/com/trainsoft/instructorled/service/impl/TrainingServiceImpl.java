@@ -3,6 +3,7 @@ package com.trainsoft.instructorled.service.impl;
 import com.trainsoft.instructorled.commons.AWSUploadClient;
 import com.trainsoft.instructorled.commons.CommonUtils;
 import com.trainsoft.instructorled.commons.CustomRepositoyImpl;
+import com.trainsoft.instructorled.commons.JsonUtils;
 import com.trainsoft.instructorled.customexception.ApplicationException;
 import com.trainsoft.instructorled.customexception.RecordNotFoundException;
 import com.trainsoft.instructorled.dozer.DozerUtils;
@@ -11,10 +12,14 @@ import com.trainsoft.instructorled.repository.*;
 import com.trainsoft.instructorled.service.ITrainingService;
 import com.trainsoft.instructorled.to.*;
 import com.trainsoft.instructorled.value.InstructorEnum;
+import com.trainsoft.instructorled.zoom.helper.ZoomMeetingResponse;
+import com.trainsoft.instructorled.zoom.helper.ZoomServiceImpl;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,27 +36,39 @@ import java.util.stream.Collectors;
 import static com.trainsoft.instructorled.value.InstructorEnum.*;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class TrainingServiceImpl implements ITrainingService {
+    @Value("${app.zoom.accessToken}")
+    private  String accessToken;
+    @Value("${app.zoom.userId}")
+    private  String userId;
+    @Value("${app.zoom.password}")
+    private  String password;
+    @Value("${app.zoom.type}")
+    private  Integer type;
+    @Value("${app.zoom.zoomSettingSid}")
+    private  String zoomSettingSid;
 
-    private IVirtualAccountRepository virtualAccountRepository;
-    private IBatchRepository batchRepository;
-    private ICourseRepository courseRepository;
-    private ITrainingRepository trainingRepository;
-    private ITrainingSessionRepository trainingSessionRepository;
-    private ITrainingBatchRepository trainingBatchRepository;
-    private ITrainingViewRepository trainingViewRepository;
-    private ICourseSessionRepository courseSessionRepository;
-    private DozerUtils mapper;
-    private ICompanyRepository companyRepository;
-    IDepartmentVirtualAccountRepository departmentVARepo;
-    IBatchParticipantRepository participantRepository;
-    IAppUserRepository appUserRepository;
-    ITrainingCourseRepository trainingCourseRepository;
-    CustomRepositoyImpl customRepositoy;
-    AWSUploadClient awsUploadClient;
-    ITrainsoftCustomRepository customRepository;
+    private final IVirtualAccountRepository virtualAccountRepository;
+    private final IBatchRepository batchRepository;
+    private final ICourseRepository courseRepository;
+    private final ITrainingRepository trainingRepository;
+    private final ITrainingSessionRepository trainingSessionRepository;
+    private final ITrainingBatchRepository trainingBatchRepository;
+    private final ITrainingViewRepository trainingViewRepository;
+    private final ICourseSessionRepository courseSessionRepository;
+    private final DozerUtils mapper;
+    private final ICompanyRepository companyRepository;
+    private final  IDepartmentVirtualAccountRepository departmentVARepo;
+    private final IBatchParticipantRepository participantRepository;
+    private final IAppUserRepository appUserRepository;
+    private final ITrainingCourseRepository trainingCourseRepository;
+    private final CustomRepositoyImpl customRepositoy;
+    private final AWSUploadClient awsUploadClient;
+    private final ITrainsoftCustomRepository customRepository;
+    private final ZoomServiceImpl zoomService;
+    private final ISettingRepository settingRepository;
 
 
     @Override
@@ -109,8 +126,8 @@ public class TrainingServiceImpl implements ITrainingService {
                             training.setId(trainerId);
                             TrainingSession trainingSession = new TrainingSession();
                             trainingSession.generateUuid();
-                            trainingSession.setAgendaName(courseSession.getTopicName());
-                            trainingSession.setAgendaDescription(courseSession.getTopicDescription());
+                            trainingSession.setTopic(courseSession.getTopicName());
+                            trainingSession.setAgenda(courseSession.getTopicDescription());
                             trainingSession.setTraining(training);
                             trainingSession.setStatus(Status.DISABLED);
                             trainingSession.setCourse(course);
@@ -202,6 +219,7 @@ public class TrainingServiceImpl implements ITrainingService {
 
     @Override
     public TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO) {
+        ZoomMeetingResponse response = null;
         try {
             if (trainingSessionTO != null) {
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(
@@ -210,19 +228,40 @@ public class TrainingServiceImpl implements ITrainingService {
                         BaseEntity.hexStringToByteArray(trainingSessionTO.getTrainingSid()),Status.DELETED);
                 Course course = courseRepository.findCourseBySid
                         (BaseEntity.hexStringToByteArray(trainingSessionTO.getCourseSid()));
+                Settings zoomSettings=settingRepository.findSettingBySid(BaseEntity.hexStringToByteArray(zoomSettingSid));
+                Long startDate=trainingSessionTO.getStartTime();
+                Long endDate=trainingSessionTO.getEndTime();
+                trainingSessionTO.setStartTime(null);
+                trainingSessionTO.setEndTime(null);
                 TrainingSession trainingSession = mapper.convert(trainingSessionTO, TrainingSession.class);
                 trainingSession.generateUuid();
+                trainingSession.setStartTime(Instant.ofEpochMilli(startDate));
+                trainingSession.setEndTime(Instant.ofEpochMilli(endDate));
+                trainingSession.setUpdatedOn(null);
+                trainingSession.setCreatedOn(new Date(Instant.now().toEpochMilli()));
+                trainingSession.setPassword(password);
+                trainingSession.setUserId(userId);
+                trainingSession.setType(type);
+                trainingSession.setAssets(trainingSessionTO.getAssets());
+                if(trainingSession.getDuration()!=null) {
+                    trainingSession.setStatus(Status.ENABLED);
+                    trainingSession.setSettings(zoomSettings);
+                    trainingSession.setStart_time(Instant.ofEpochMilli(startDate).toString());
+                    response = zoomService.createMeetingWithAccessToken(trainingSession, accessToken);
+                    trainingSession.setMeetingInfo(JsonUtils.toJsonString(response));
+                }
                 trainingSession.setTraining(training);
                 trainingSession.setCourse(course);
                 trainingSession.setCreatedBy(virtualAccount);
                 trainingSession.setCompany(getCompany(trainingSessionTO.getCompanySid()));
-                trainingSession.setUpdatedOn(null);
-                trainingSession.setCreatedOn(new Date(Instant.now().toEpochMilli()));
-                trainingSession.setStartTime(new Date(trainingSessionTO.getStartTime()));
-                trainingSession.setEndTime(new Date(trainingSessionTO.getEndTime()));
-                trainingSession.setSessionDate(new Date(trainingSessionTO.getSessionDate()));
-                trainingSession.setAssets(trainingSessionTO.getAssets());
-                TrainingSessionTO savedTrainingSessionTO = mapper.convert(trainingSessionRepository.save(trainingSession), TrainingSessionTO.class);
+                TrainingSession savedTraining=trainingSessionRepository.save(trainingSession);
+                Instant startTime=savedTraining.getStartTime();
+                Instant endTime=savedTraining.getEndTime();
+                savedTraining.setStartTime(null);
+                savedTraining.setEndTime(null);
+                TrainingSessionTO savedTrainingSessionTO = mapper.convert(savedTraining, TrainingSessionTO.class);
+                savedTrainingSessionTO.setStartTime(convertTo(startTime));
+                savedTrainingSessionTO.setEndTime(convertTo(endTime));
                 savedTrainingSessionTO.setCreatedByVASid(virtualAccount.getStringSid());
                 savedTrainingSessionTO.setCourseSid(course.getStringSid());
                 savedTrainingSessionTO.setTrainingSid(training.getStringSid());
@@ -238,26 +277,58 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public TrainingSessionTO updateTrainingSession(TrainingSessionTO trainingSessionTO) {
+    public TrainingSessionTO updateTrainingSession(TrainingSessionTO trainingSessionTO,String meetingId) {
+        ZoomMeetingResponse response = null;
+
         try {
             if (trainingSessionTO != null) {
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(
                         BaseEntity.hexStringToByteArray(trainingSessionTO.getUpdatedByVASid()));
-                /*Training training = trainingRepository.findTrainingBySidAndStatusNot(
-                        BaseEntity.hexStringToByteArray(trainingSessionTO.getTrainingSid()),Status.DELETED);
-                Course course = courseRepository.findCourseBySid
-                        (BaseEntity.hexStringToByteArray(trainingSessionTO.getCourseSid()));*/
-                TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(trainingSessionTO.getSid()));
-                trainingSession.setUpdatedBy(virtualAccount);
-                trainingSession.setAgendaDescription(trainingSessionTO.getAgendaDescription());
-                trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
-                if(trainingSessionTO.getStartTime()!=0 && trainingSessionTO.getEndTime()!=0)
-                    trainingSession.setStatus(Status.ENABLED);
-                trainingSession.setStartTime(new Date(trainingSessionTO.getStartTime()));
-                trainingSession.setEndTime(new Date(trainingSessionTO.getEndTime()));
-                trainingSession.setSessionDate(new Date(trainingSessionTO.getSessionDate()));
+                TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(
+                        BaseEntity.hexStringToByteArray(trainingSessionTO.getSid()));
+                Settings zoomSettings=settingRepository.findSettingBySid(BaseEntity.hexStringToByteArray(zoomSettingSid));
+
+                trainingSession.setAgenda(trainingSessionTO.getAgenda());
+                trainingSession.setTopic(trainingSessionTO.getTopic());
+                trainingSession.setDuration(trainingSessionTO.getDuration());
                 trainingSession.setAssets(trainingSessionTO.getAssets());
-                TrainingSessionTO savedTrainingSessionTO = mapper.convert(trainingSessionRepository.save(trainingSession), TrainingSessionTO.class);
+                trainingSession.setRecording(trainingSessionTO.getRecording());
+                trainingSession.setCreatedBy(null);
+                trainingSession.getCompany().setCreatedBy(null);
+                trainingSession.getTraining().setCourse(null);
+                trainingSession.getCourse().setTrainingCourses(null);
+
+                if( meetingId!=null && trainingSession.getDuration()!=null) {
+                    trainingSession.setStart_time(Instant.ofEpochMilli(trainingSessionTO.getStartTime()).toString());
+                    response = zoomService.updateMeetingWithAccessToken(trainingSession,meetingId, accessToken);
+                    trainingSession.setMeetingInfo(JsonUtils.toJsonString(response));
+                }
+                else if(trainingSession.getDuration()!=null){
+                    trainingSession.setStatus(Status.ENABLED);
+                    trainingSession.setSettings(zoomSettings);
+                    trainingSession.setPassword(password);
+                    trainingSession.setUserId(userId);
+                    trainingSession.setType(type);
+                    trainingSession.setStartTime(Instant.ofEpochMilli(trainingSessionTO.getStartTime()));
+                    trainingSession.setEndTime(Instant.ofEpochMilli(trainingSessionTO.getEndTime()));
+                    trainingSession.setStart_time(Instant.ofEpochMilli(trainingSessionTO.getStartTime()).toString());
+                    response = zoomService.createMeetingWithAccessToken(trainingSession, accessToken);
+                    trainingSession.setMeetingInfo(JsonUtils.toJsonString(response));
+                }else{
+                    trainingSession.setStart_time(Instant.ofEpochMilli(trainingSessionTO.getStartTime()).toString());
+                    zoomService.deleteMeetingWithAccessToken(meetingId, accessToken);
+                    trainingSession.setMeetingInfo(JsonUtils.toJsonString(null));
+                }
+                trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+                trainingSession.setUpdatedBy(virtualAccount);
+                TrainingSession savedUpdatedSession=trainingSessionRepository.save(trainingSession);
+                Instant startTime=savedUpdatedSession.getStartTime();
+                Instant endTime=savedUpdatedSession.getEndTime();
+                savedUpdatedSession.setStartTime(null);
+                savedUpdatedSession.setEndTime(null);
+                TrainingSessionTO savedTrainingSessionTO = mapper.convert(savedUpdatedSession, TrainingSessionTO.class);
+                savedTrainingSessionTO.setStartTime(convertTo(startTime));
+                savedTrainingSessionTO.setEndTime(convertTo(endTime));
                 savedTrainingSessionTO.setCreatedByVASid(virtualAccount.getStringSid());
                 savedTrainingSessionTO.setCourseSid(trainingSession.getCourse().getStringSid());
                 savedTrainingSessionTO.setTrainingSid(trainingSession.getTraining().getStringSid());
@@ -267,7 +338,6 @@ public class TrainingServiceImpl implements ITrainingService {
                 throw new RecordNotFoundException("No record found");
             }
         } catch (Exception exception) {
-            exception.printStackTrace();
             log.info("throwing exception while updating the trainingSession",exception);
             throw new ApplicationException("Something went wrong while updating the trainingSession");
         }
@@ -338,34 +408,30 @@ public class TrainingServiceImpl implements ITrainingService {
     @Override
     public List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid,String companySid) {
         List<TrainingSessionTO> sessionTOList= new ArrayList<>();
+        List<Instant> startDateList= new ArrayList<>();
+        List<Instant> endDateList= new ArrayList<>();
         try {
             Training training = trainingRepository.findTrainingBySidAndStatusNot(BaseEntity.hexStringToByteArray(trainingSid),Status.DELETED);
-            //Course course = courseRepository.findCourseBySid(BaseEntity.hexStringToByteArray(courseSid));
-            /*List<CourseSession> courseSessionList = courseSessionRepository.findCourseSessionByCourseAndStatusNot(course,Status.DELETED)
-                    .stream().filter(c->c.getStatus()!= Status.DELETED)
-                    .collect(Collectors.toList());;*/
             List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByTrainingAndCompanyAndStatusNotOrderByCreatedOnDesc(training,getCompany(companySid),Status.DELETED);
+            trainingSessionList.forEach(trainingSession->{
+                Instant startDate=trainingSession.getStartTime();
+                Instant endDate=trainingSession.getEndTime();
+                startDateList.add(startDate);
+                endDateList.add(endDate);
+                trainingSession.setStartTime(null);
+                trainingSession.setEndTime(null);
+            });
             List<TrainingSessionTO> sessionsTO=mapper.convertList(trainingSessionList,TrainingSessionTO.class);
             if(sessionsTO!=null && sessionsTO.size()>0){
-                sessionTOList.addAll(sessionsTO);
-            }
-            /*if(courseSessionList!=null && courseSessionList.size()>0){
-                courseSessionList.forEach(courseSession -> {
-                    TrainingSessionTO trainingSessionTO=new TrainingSessionTO();
-                    trainingSessionTO.setSid(courseSession.getStringSid());
-                    trainingSessionTO.setAgendaDescription(courseSession.getTopicDescription());
-                    trainingSessionTO.setAgendaName(courseSession.getTopicName());
-                    if(courseSession.getCreatedBy()!=null)
-                    trainingSessionTO.setCreatedByVASid(courseSession.getCreatedBy().getStringSid());
-                    trainingSessionTO.setCourseSid(courseSession.getCourse().getStringSid());
-                    trainingSessionTO.setCreatedOn(courseSession.getCreatedOn().getTime());
-                    if(courseSession.getUpdatedOn()!=null)
-                        trainingSessionTO.setUpdatedOn(courseSession.getUpdatedOn().getTime());
-                    if(courseSession.getUpdatedBy()!=null)
-                        trainingSessionTO.setUpdatedByVASid(courseSession.getUpdatedBy().getStringSid());
-                    sessionTOList.add(trainingSessionTO);
+                sessionsTO.forEach(sessionTO->{
+                    int index =0;
+                   sessionTO.setStartTime(convertTo(startDateList.get(index)));
+                   sessionTO.setEndTime(convertTo(endDateList.get(index)));
+                    sessionTOList.add(sessionTO);
+                    index++;
                 });
-            }*/
+
+            }
         }catch(Exception e){
             log.error("throwing exception while fetching the all trainingSession details",e.toString());
             throw new ApplicationException("Something went wrong while fetching the trainingSession details");
@@ -411,7 +477,7 @@ public class TrainingServiceImpl implements ITrainingService {
         try {
             Training training =trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
             List<TrainingSession> trainingSessionList= trainingSessionRepository.
-                    findTrainingSessionByTrainingAndAgendaNameContainingAndCompanyAndStatusNot(training,name,getCompany(companySid),Status.DELETED);
+                    findTrainingSessionByTrainingAndTopicContainingAndCompanyAndStatusNot(training,name,getCompany(companySid),Status.DELETED);
             return mapper.convertList(trainingSessionList,TrainingSessionTO.class);
         }catch (Exception e) {
             log.error("throwing exception while fetching the training sessions details by name",e.toString());
@@ -613,18 +679,24 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public void updateTrainingSessionStatus(String sessionSid, String status, String updatedBy) {
+    public void updateTrainingSessionStatus(String sessionSid, String status, String updatedBy,String meetingId) {
         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
                 (BaseEntity.hexStringToByteArray(updatedBy));
-        try {
-            TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(sessionSid));
+        TrainingSession trainingSession = trainingSessionRepository.findTrainingSessionBySid(BaseEntity.hexStringToByteArray(sessionSid));
+        if(trainingSession!=null && meetingId!=null && status.equals("DISABLED") ||status.equals("DELETED")){
+            zoomService.deleteMeetingWithAccessToken(meetingId, accessToken);
+            trainingSession.setMeetingInfo(JsonUtils.toJsonString(null));
             trainingSession.setStatus(InstructorEnum.Status.valueOf(status));
             trainingSession.setUpdatedBy(virtualAccount);
             trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
             trainingSessionRepository.save(trainingSession);
-        } catch (Exception e) {
-            log.error("while updating session status, throwing errors", e);
-        }
+        }else if(trainingSession!=null) {
+            trainingSession.setStatus(InstructorEnum.Status.valueOf(status));
+            trainingSession.setUpdatedBy(virtualAccount);
+            trainingSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+            trainingSessionRepository.save(trainingSession);
+        }else
+            throw new RecordNotFoundException("there is no record with given sid");
     }
 
 
@@ -658,6 +730,13 @@ public class TrainingServiceImpl implements ITrainingService {
         }
     }
 
-
-
+    private Long convertTo(Object source) {
+        if (source==null) return null;
+        if(source instanceof Instant){
+            Instant instant=(Instant) source;
+            return instant.toEpochMilli();
+        }else{
+            return null;
+        }
+    }
 }
