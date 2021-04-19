@@ -80,7 +80,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         config.addAllowedMethod(PATCH);
         config.setMaxAge(3600L);
 
-        source.registerCorsConfiguration("/v1", config);
+        source.registerCorsConfiguration("/insled/v1", config);
         source.registerCorsConfiguration("/**", config);
 
         return new CorsFilter();
