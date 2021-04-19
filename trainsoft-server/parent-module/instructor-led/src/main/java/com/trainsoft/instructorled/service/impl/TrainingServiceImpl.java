@@ -300,7 +300,8 @@ public class TrainingServiceImpl implements ITrainingService {
 
                 if( meetingId!=null && trainingSession.getDuration()!=null) {
                     trainingSession.setStart_time(Instant.ofEpochMilli(trainingSessionTO.getStartTime()).toString());
-                    response = zoomService.updateMeetingWithAccessToken(trainingSession,meetingId, accessToken);
+                    zoomService.updateMeetingWithAccessToken(trainingSession,meetingId, accessToken);
+                    response =zoomService.getMeetingDetails(meetingId,accessToken);
                     trainingSession.setMeetingInfo(JsonUtils.toJsonString(response));
                 }
                 else if(trainingSession.getDuration()!=null){
