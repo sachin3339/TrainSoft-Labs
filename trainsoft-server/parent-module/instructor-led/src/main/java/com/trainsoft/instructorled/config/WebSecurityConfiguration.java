@@ -1,3 +1,4 @@
+/*
 package com.trainsoft.instructorled.config;
 
 import com.google.common.collect.ImmutableList;
@@ -18,9 +19,11 @@ import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.HttpMethod.*;
 
 
+*/
 /**
  * WebsecurityConfiguration
- */
+ *//*
+
 @Configuration
 @EnableWebSecurity
 @EnableTransactionManagement
@@ -28,9 +31,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     public WebSecurityConfiguration() {
-        /*
+        */
+/*
          * Ignores the default configuration, useless in our case (session management, etc..)
-         */
+         *//*
+
         super(true);
     }
 
@@ -45,10 +50,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
-        /*
+        */
+/*
           Overloaded to expose Authenticationmanager's bean created by configure(AuthenticationManagerBuilder).
            This bean is used by the UserManagementController.
-         */
+         *//*
+
         return super.authenticationManagerBean();
     }
 
@@ -59,18 +66,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private CorsFilter corsFilter() {
-        /*
+        */
+/*
          CORS requests are managed only if headers Origin and Access-Control-Request-Method are available on OPTIONS requests
          (this filter is simply ignored in other cases).
 
          This filter can be used as a replacement for the @Cors annotation.
-        */
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        *//*
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("*");
         config.addAllowedOrigin("/**");
+*/
 /*        config.addAllowedHeader(ORIGIN);
         config.addAllowedHeader(CONTENT_TYPE);
         config.addAllowedHeader(ACCEPT);
@@ -80,7 +89,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         config.addAllowedMethod(POST);
         config.addAllowedMethod(OPTIONS);
         config.addAllowedMethod(DELETE);
-        config.addAllowedMethod(PATCH);*/
+        config.addAllowedMethod(PATCH);*//*
+
         config.setMaxAge(3600L);
         config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type","Accept","ORIGIN"));
         config.setAllowedMethods(Arrays.asList("GET","POST","PATCH","PUT","DELETE","OPTIONS","HEAD"));
@@ -95,3 +105,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
 	
+*/
