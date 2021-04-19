@@ -1,3 +1,4 @@
+/*
 package com.trainsoft.instructorled.config;
 
 import com.trainsoft.instructorled.customexception.ResourceNotFoundException;
@@ -29,3 +30,4 @@ public class CorsFilter implements Filter {
     public void destroy() {
     }
 }
+*/

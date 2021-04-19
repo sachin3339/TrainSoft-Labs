@@ -22,17 +22,16 @@ public class CorsConfig implements WebMvcConfigurer {
     	String mappingPattern = "/**";
     	registry
                 .addMapping(mappingPattern)
-                .allowedOrigins("*")
                 .allowedMethods("HEAD","PUT","POST","GET","DELETE","OPTIONS","PATCH");
     	log.info(String.format("CORS configuration set to %s for mapping %s", corsOrigins, mappingPattern));
     }
 
     // CORS response headers.
-    public static HttpServletResponse addResponseHeaders(ServletResponse res) {
+/*    public static HttpServletResponse addResponseHeaders(ServletResponse res) {
         HttpServletResponse httpResponse = (HttpServletResponse) res;
         httpResponse.setHeader("Access-Control-Max-Age", "3600");
         httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
         httpResponse.setHeader("Access-Control-Allow-Headers", "content-type,Authorization");
         return httpResponse;
-    }
+    }*/
 }
