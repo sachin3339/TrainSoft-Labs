@@ -55,4 +55,11 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getQuestionBySid(questionSid));
     }
 
+    @PostMapping("display/assessment/question")
+    @ApiOperation(value = "displayQuestionsForAssessment", notes = "API to get all Questions which are not associated to any Assessments.")
+    public ResponseEntity<?> displayQuestionsForAssessment()
+    {
+        return ResponseEntity.ok(questionService.displayQuestionsForAssessment());
+    }
+
 }
