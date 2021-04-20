@@ -26,7 +26,13 @@ const Session = ({ location }) => {
         try {
             spinner.show();
             RestService.searchTrainingSession(training.sid, name).then(res => {
-                setTrainingSession(res.data)
+                let data = res.data.map(resp=> {
+                    let a = resp
+                    a.meetingInfo = JSON.parse(a.meetingInfo)
+                    a.sessionDate = a.startTime
+                    return a
+                })
+                setTrainingSession(data)
                 spinner.hide();
             }, err => {
                 spinner.hide();
@@ -45,7 +51,15 @@ const Session = ({ location }) => {
             spinner.show();
             RestService.getTrainingSession(training.sid, training.courseSid).then(
                 response => {
-                    setTrainingSession(response.data);
+                    let data = response.data.map(res=> {
+                        let a = res
+                        a.meetingInfo = JSON.parse(a.meetingInfo)
+                        a.sessionDate = a.startTime
+
+                        return a
+                    })
+                    
+                    setTrainingSession(data);
                     spinner.hide();
 
                 },
@@ -62,10 +76,10 @@ const Session = ({ location }) => {
     }
 
     // delete course
-    const deleteTraining = (trainingId) => {
+    const deleteTraining = (e) => {
         try {
             spinner.show();
-            RestService.deleteTrainingSession(trainingId).then(res => {
+            RestService.unScheduleSession(e.sid,"DELETED",e.meetingInfo.meetingId).then(res => {
                 spinner.hide();
                 getSessionByPage()
                 Toast.success({ message: `Training is Deleted Successfully ` });
@@ -80,13 +94,13 @@ const Session = ({ location }) => {
     }
 
         // delete course
-        const unSchedule = (sessionSid) => {
+        const unSchedule = (e) => {
             try {
                 spinner.show();
-                RestService.unScheduleSession(sessionSid,"DISABLED").then(res => {
+                RestService.unScheduleSession(e.sid,"DISABLED",e.meetingInfo.meetingId).then(res => {
                     spinner.hide();
                     getSessionByPage()
-                    Toast.success({ message: `Session schedule successfully` });
+                    Toast.success({ message: `Session unschedule successfully` });
                 }, err => { spinner.hide(); }
                 )
             }

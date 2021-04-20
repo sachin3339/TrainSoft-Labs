@@ -77,10 +77,10 @@ const GLOBELCONSTANT = {
             UPDATE_TRAINING_SESSION: API_HOST + "update/trainingsession",
             SEARCH_TRAINING_SESSION: API_HOST + "trainingsessions/training/{trainingSid}/session/{name}",
             UPLOAD_ASSETS: API_HOST + "upload",
-            UNSCHEDULE_SESSION: API_HOST + "update/session/{sessionSid}/{status}",
+            UNSCHEDULE_SESSION: API_HOST + "update/session/{sessionSid}/{status}/{meetingId}",
             GET_INSTRUCTOR_TRAINING: API_HOST +  "trainer/trainings/{pageNo}/{pageSize}",
-            GET_LEARNER_TRAINING: API_HOST +  "learner/trainings"
-
+            GET_LEARNER_TRAINING: API_HOST +  "learner/trainings",
+            UPDATE_SE_TRAINING : API_HOST + "update/session/{sessionSid}/{status}/{meetingId}"
 
         },
         INSTRUCTOR: {
