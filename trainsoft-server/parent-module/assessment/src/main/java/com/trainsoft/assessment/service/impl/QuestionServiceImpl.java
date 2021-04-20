@@ -1,15 +1,13 @@
 package com.trainsoft.assessment.service.impl;
 
 import com.trainsoft.assessment.customexception.ApplicationException;
+import com.trainsoft.assessment.customexception.InvalidSidException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
 import com.trainsoft.assessment.entity.*;
 import com.trainsoft.assessment.repository.*;
 import com.trainsoft.assessment.service.IQuestionService;
-import com.trainsoft.assessment.to.AnswerTo;
-import com.trainsoft.assessment.to.BaseTO;
-import com.trainsoft.assessment.to.QuestionTo;
-import com.trainsoft.assessment.to.QuestionTypeTo;
+import com.trainsoft.assessment.to.*;
 import com.trainsoft.assessment.value.AssessmentEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +27,10 @@ public class QuestionServiceImpl implements IQuestionService {
     private final ICompanyRepository companyRepository;
     private final IQuestionRepository questionRepository;
     private final IQuestionTypeRepository questionTypeRepository;
+
+    private final ICategoryRepository iCategoryRepository;
+
+    private final IQuizSetRepository iQuizSetRepository;
 
     @Override
     public QuestionTo createQuestionAndAnswer(QuestionTo questionTo) {
@@ -114,6 +116,7 @@ public class QuestionServiceImpl implements IQuestionService {
         }
     }
 
+
     private Company getCompany(String companySid){
         Company c=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Company company=new Company();
@@ -133,5 +136,19 @@ public class QuestionServiceImpl implements IQuestionService {
             throw new ApplicationException("Something went wrong while fetching the QuestionTypes");
         }
         return null;
+    }
+
+    @Override
+    public QuizSetTO getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO) {
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(instructionsRequestTO.getCompanySid()));
+        if (company==null) throw new InvalidSidException("invalid company sid");
+         VirtualAccount virtualAccount=virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(instructionsRequestTO.getCreatedBySid()));
+        if (virtualAccount==null) throw new InvalidSidException("invalid Virtual Account Sid.");
+        Category category = iCategoryRepository.findBySid(BaseEntity.hexStringToByteArray(instructionsRequestTO.getCategorySid()));
+        if (category==null) throw new InvalidSidException("Invalid Category Sid.");
+        QuizSet quizSet = iQuizSetRepository.findByCategoryAndDifficulty(virtualAccount.getId(),company.getId(),
+                category.getId(),instructionsRequestTO.getDifficulty());
+         QuizSetTO convert = mapper.convert(quizSet, QuizSetTO.class);
+        return convert;
     }
 }

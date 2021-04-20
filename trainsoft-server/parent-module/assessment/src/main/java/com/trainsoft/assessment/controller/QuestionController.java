@@ -3,7 +3,9 @@ package com.trainsoft.assessment.controller;
 import com.trainsoft.assessment.commons.JWTDecode;
 import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.service.IQuestionService;
+import com.trainsoft.assessment.to.InstructionsRequestTO;
 import com.trainsoft.assessment.to.QuestionTo;
+import com.trainsoft.assessment.to.QuizSetTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -53,6 +55,13 @@ public class QuestionController {
             @ApiParam(value = "Question Sid", required = true) @PathVariable("questionSid") String questionSid)
     {
         return ResponseEntity.ok(questionService.getQuestionBySid(questionSid));
+    }
+
+    @PostMapping("get/assessment/instructions")
+    @ApiOperation(value = "get Assessment Instructions",notes = "API to get Instructions for the Assessment.")
+    public ResponseEntity<QuizSetTO>getInstructionsForAssessment(
+            @ApiParam("Instructions Payload")@RequestBody InstructionsRequestTO instructionsRequestTO){
+        return  ResponseEntity.ok(questionService.getInstructionsForAssessment(instructionsRequestTO));
     }
 
 }
