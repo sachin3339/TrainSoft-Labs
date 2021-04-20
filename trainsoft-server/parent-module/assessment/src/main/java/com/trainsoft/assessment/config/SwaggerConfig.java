@@ -29,8 +29,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         @SuppressWarnings("deprecation")
-        ApiInfo apiInfo = new ApiInfo("Instructor Led training Management",
-                "API documentation for Instructor Led training.",
+        ApiInfo apiInfo = new ApiInfo("Assessment Management",
+                "API documentation for Assessment Management.",
                 "V 0.0.1", "", "",
                 "@Copyright Trainsoft 2020.", "");
         return apiInfo;

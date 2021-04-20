@@ -28,7 +28,7 @@ public class Answer extends BaseEntity{
     @Column(name = "created_on")
     private Date createdOn;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "question_id", referencedColumnName = "id",nullable = false)
     private Question questionId;
 

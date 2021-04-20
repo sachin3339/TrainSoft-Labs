@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@Api(value = "Assessment related API's")
+@Api(value = "Question and Answer related API's")
 @RequestMapping("/v1")
 public class QuestionController {
 

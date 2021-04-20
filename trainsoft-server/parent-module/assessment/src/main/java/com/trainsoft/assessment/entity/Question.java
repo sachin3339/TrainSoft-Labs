@@ -37,9 +37,9 @@ public class Question extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private AssessmentEnum.QuestionType questionType;
 
-    @Column(name = "question_level")
+    @Column(name = "difficulty")
     @Enumerated(EnumType.STRING)
-    private AssessmentEnum.QuestionLevel questionLevel;
+    private AssessmentEnum.QuestionDifficulty difficulty;
 
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
