@@ -93,7 +93,7 @@ const ClassLab = ({location}) => {
                                 <BtnRound className="mr-3">{ICN_VIDEO}</BtnRound>
                                 <BtnRound>{ICN_MIC}</BtnRound>
                             </div> */}
-                           <object type="text/html" data={GLOBELCONSTANT.ZOOM_PATH} style={{ width: "100%", height: "100%" }}>
+                           <object type="text/html" data={GLOBELCONSTANT.ZOOM_PATH + '/'+ zoomInfo.meetingId} style={{ width: "100%", height: "100%" }}>
                                 <p>backup content</p>
                             </object> 
                         </div>

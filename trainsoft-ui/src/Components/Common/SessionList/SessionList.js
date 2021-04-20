@@ -32,7 +32,7 @@ const SessionList = ({ sessionList = [], role = "SUPERVISOR",onSchedule=()=>{}, 
                         {sessionType === 'training' && user.role === ROLE.SUPERVISOR && <>
                             {res.status === "ENABLED" ? <div className="batch-pri" onClick={()=>onSchedule(res)}> Scheduled</div> : <div   className="batch-sec">Not Scheduled</div>}
                         </>}
-                        {sessionType === 'training' && user.role !== ROLE.SUPERVISOR && <div onClick={() => {setZoomInfo(res.meetingInfo);navigate('/class')}} className="batch-sec">{user.role === ROLE.INSTRUCTOR ? 'Start Now' : 'Join Now'} </div>}
+                        {sessionType === 'training' && user.role !== ROLE.SUPERVISOR && (res.status === "ENABLED" ? <div onClick={() => {setZoomInfo(res.meetingInfo);navigate('/class')}} className="batch-sec">{user.role === ROLE.INSTRUCTOR ? 'Start Now' : 'Join Now'} </div> : <div   className="batch-sec">Not Scheduled</div>)}
                         <div>{moment(res.createdOn).format("DD/MM/YYYY")}</div>
                         <div className="ml-3">
                        {user.role === ROLE.SUPERVISOR &&  <Dropdown  className="session-list-dropDown">
