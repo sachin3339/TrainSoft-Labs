@@ -9,7 +9,7 @@ import { CustomToggle } from '../../../Services/MethodFactory';
 import { ICN_DELETE, ICN_EDIT, ICN_MORE } from '../Icon';
 
 const SessionList = ({ sessionList = [], role = "SUPERVISOR",onSchedule=()=>{}, sessionType = 'course', onDelete=()=>{},onEdit=()=>{} }) => {
-    const { user, ROLE } = useContext(AppContext)
+    const { user, ROLE,setZoomInfo } = useContext(AppContext)
     const [open, setOpen] = useState(null);
 
     const onClickToggle = (e) => {
@@ -32,7 +32,7 @@ const SessionList = ({ sessionList = [], role = "SUPERVISOR",onSchedule=()=>{}, 
                         {sessionType === 'training' && user.role === ROLE.SUPERVISOR && <>
                             {res.status === "ENABLED" ? <div className="batch-pri" onClick={()=>onSchedule(res)}> Scheduled</div> : <div   className="batch-sec">Not Scheduled</div>}
                         </>}
-                        {sessionType === 'training' && user.role !== ROLE.SUPERVISOR && <div onClick={() => navigate('/class')} className="batch-sec">{user.role === ROLE.INSTRUCTOR ? 'Start Now' : 'Join Now'} </div>}
+                        {sessionType === 'training' && user.role !== ROLE.SUPERVISOR && <div onClick={() => {setZoomInfo(res.meetingInfo);navigate('/class')}} className="batch-sec">{user.role === ROLE.INSTRUCTOR ? 'Start Now' : 'Join Now'} </div>}
                         <div>{moment(res.createdOn).format("DD/MM/YYYY")}</div>
                         <div className="ml-3">
                        {user.role === ROLE.SUPERVISOR &&  <Dropdown  className="session-list-dropDown">

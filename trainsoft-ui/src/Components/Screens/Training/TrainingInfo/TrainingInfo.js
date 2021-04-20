@@ -4,12 +4,12 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { ICN_TRASH, ICN_EDIT, ICN_BATCHES, ICN_ON_GOING, ICN_PROGRESS, ICN_COMPLETED, ICN_PASSED, ICN_EMAIL_W, ICN_TEXT_W } from '../../../Common/Icon';
 import TrainingContext from '../../../../Store/TrainingContext';
 import moment from 'moment'
-
-import '../training.css'
 import TrainingRoute from '../TrainingRoute';
 import CardHeader from '../../../Common/CardHeader';
 import RestService from '../../../../Services/api.service';
 import AppContext from '../../../../Store/AppContext';
+import '../training.css'
+
 
 const TrainingInfo = ({location}) => {
      const {user, spinner} = useContext(AppContext)

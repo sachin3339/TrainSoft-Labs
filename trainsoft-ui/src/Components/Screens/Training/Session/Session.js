@@ -26,9 +26,12 @@ const Session = ({ location }) => {
         try {
             spinner.show();
             RestService.searchTrainingSession(training.sid, name).then(res => {
-                let data = res.data
-                data.meetingInfo = JSON.parse(res.data.meetingInfo)
-                data.sessionDate = data.startTime
+                let data = res.data.map(resp=> {
+                    let a = resp
+                    a.meetingInfo = JSON.parse(a.meetingInfo)
+                    a.sessionDate = a.startTime
+                    return a
+                })
                 setTrainingSession(data)
                 spinner.hide();
             }, err => {
@@ -51,6 +54,8 @@ const Session = ({ location }) => {
                     let data = response.data.map(res=> {
                         let a = res
                         a.meetingInfo = JSON.parse(a.meetingInfo)
+                        a.sessionDate = a.startTime
+
                         return a
                     })
                     
