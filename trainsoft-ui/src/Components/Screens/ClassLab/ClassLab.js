@@ -21,14 +21,13 @@ import ClassNotes from './ClassNotes/ClassNotes';
 const classTab = ['Media Library', 'Whiteboard', 'Content', 'Code editor', 'Development Env']
 const learnerTab = ['Media Library', 'Code editor',"Notes"]
 
-const ClassLab = () => {
-    const { user, spinner ,ROLE } = useContext(AppContext)
+const ClassLab = ({location}) => {
+    const { user, spinner ,ROLE,zoomInfo } = useContext(AppContext)
     const [show, setShow] = useState(false)
     const isTrainer = user.role === ROLE.INSTRUCTOR ? true : false 
     const menuTab = isTrainer ? classTab : learnerTab
     const [tab, setTab] = useState(isTrainer ? [] : ['Notes'])
     const [selectedTab, setSelectedTab] = useState(isTrainer ? "" : "Notes")
-
 
     return (<>
 
@@ -94,9 +93,9 @@ const ClassLab = () => {
                                 <BtnRound className="mr-3">{ICN_VIDEO}</BtnRound>
                                 <BtnRound>{ICN_MIC}</BtnRound>
                             </div> */}
-                            <object type="text/html" data={GLOBELCONSTANT.ZOOM_PATH} style={{ width: "100%", height: "100%" }}>
+                           <object type="text/html" data={GLOBELCONSTANT.ZOOM_PATH} style={{ width: "100%", height: "100%" }}>
                                 <p>backup content</p>
-                            </object>
+                            </object> 
                         </div>
                     </div>
                     {/* <div className="flx mt-3 ">

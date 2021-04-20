@@ -102,7 +102,7 @@ const User = ({ location }) => {
                    USER
                 </Dropdown.Item>
             </Dropdown.Menu>
-        </Dropdown>: data.role}
+        </Dropdown>: data.vaRole}
         </>
         },
             "role": {
@@ -181,19 +181,21 @@ const User = ({ location }) => {
     // create participant
     const createParticipant = (data) => {
         try {
-
+            spinner.show();
             let val = data
             val.appuser.accessType = data.appuser.accessType.key
             val.departmentVA.department.name = data.departmentVA.department.name
             val.departmentVA.departmentRole = data.departmentVA.departmentRole.key
             RestService.createParticipant(data).then(resp => {
                 setShow(false)
+                spinner.show();
                 getUsers()
                 Toast.success({ message: `User is Successfully Created` });
             }, err => console.log(err)
             );
         }
         catch (err) {
+            spinner.show();
             console.error('error occur on createCourse', err)
         }
     }
@@ -277,7 +279,7 @@ const User = ({ location }) => {
         }
     }
 
-    // search batches by name 
+    // search user by name/email
     const searchUser = (name) => {
         try {
             spinner.show();

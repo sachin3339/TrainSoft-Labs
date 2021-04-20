@@ -42,6 +42,7 @@ export const AppProvider = (props) => {
     const [course,setCourse] = useState([])
     const [batches,setBatches] = useState([])
     const [department,setDepartment] = useState([])
+    const [zoomInfo,setZoomInfo] = useState(null)
 
 
     const setUserValue = (type, value) => {
@@ -52,6 +53,8 @@ export const AppProvider = (props) => {
         ROLE: GLOBELCONSTANT.ROLE,
         spinner,
         ...authState,
+        zoomInfo,
+        setZoomInfo,
         setUserValue,
         course,
         setCourse,

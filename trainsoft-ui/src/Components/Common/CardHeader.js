@@ -5,7 +5,7 @@ import SearchBox from "./SearchBox/SearchBox"
 import { Button } from "./Buttons/Buttons";
 
 
-const CardHeader = ({ location, onChange=()=>{},onEnter,clearField = false,actionClick ,showAction, children}) => {
+const CardHeader = ({ location, onChange=()=>{},onEnter,clearField = false,actionClick ,showAction, children, hideSearch = false}) => {
     return (<>
         <div className="jcb aic py-2">
             <div className="flx1">
@@ -18,7 +18,7 @@ const CardHeader = ({ location, onChange=()=>{},onEnter,clearField = false,actio
             </Breadcrumb>}
             </div>
             <div className="aic ">
-            <SearchBox {...{onChange,onEnter,clearField}} />
+            {!hideSearch && <SearchBox {...{onChange,onEnter,clearField}} />}
                 {children}
             <div>{showAction && actionClick && <Button className="ml-2" onClick={actionClick}>+ Add New</Button> }</div>
          </div>
