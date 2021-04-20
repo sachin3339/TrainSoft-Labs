@@ -49,7 +49,7 @@ const Dashboard = ({location}) => {
                         <Support path="support/*"/>
                         <LabStore path="labstore/*"/>
                         <CodeEditor path="compiler/*"/>
-                        <Zoom path="zoom"/>
+                        <Zoom path="zoom/:id"/>
                         <VsCodePage path="vs-code"/>
                     </Router>
                   

@@ -24,13 +24,14 @@ function generateSignature(apiKey, apiSecret, meetingNumber, role) {
 
 
 
-const Zoom = () => {
+const Zoom = ({id}) => {
   const  {user,ROLE} = useContext(AppContext)
    // call the generateInstantToken function
+  //  console.log(location)
 
   var apiKey = "tGcuTNjdQUS3jkTw_eaz9g";
   var apiSecret = "yaoH9H4cBmh1wgxXTkGqmGR8a65Qrwpu3sju";
-  var meetingNumber = 9329001255;
+  var meetingNumber = id;
   var leaveUrl = "https://www.trainsoft.io/zoomclose"; // our redirect url
   var userName =  user.appuser.name;
   var userEmail =  user.appuser.emailId;
