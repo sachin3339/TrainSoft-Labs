@@ -409,30 +409,19 @@ public class TrainingServiceImpl implements ITrainingService {
     @Override
     public List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid,String companySid) {
         List<TrainingSessionTO> sessionTOList= new ArrayList<>();
-        List<Instant> startDateList= new ArrayList<>();
-        List<Instant> endDateList= new ArrayList<>();
         try {
             Training training = trainingRepository.findTrainingBySidAndStatusNot(BaseEntity.hexStringToByteArray(trainingSid),Status.DELETED);
             List<TrainingSession> trainingSessionList= trainingSessionRepository.findTrainingSessionByTrainingAndCompanyAndStatusNotOrderByCreatedOnDesc(training,getCompany(companySid),Status.DELETED);
             trainingSessionList.forEach(trainingSession->{
-                Instant startDate=trainingSession.getStartTime();
-                Instant endDate=trainingSession.getEndTime();
-                startDateList.add(startDate);
-                endDateList.add(endDate);
-                trainingSession.setStartTime(null);
-                trainingSession.setEndTime(null);
-            });
-            List<TrainingSessionTO> sessionsTO=mapper.convertList(trainingSessionList,TrainingSessionTO.class);
-            if(sessionsTO!=null && sessionsTO.size()>0){
-                sessionsTO.forEach(sessionTO->{
-                    int index =0;
-                   sessionTO.setStartTime(convertTo(startDateList.get(index)));
-                   sessionTO.setEndTime(convertTo(endDateList.get(index)));
-                    sessionTOList.add(sessionTO);
-                    index++;
+                    Instant startTime = trainingSession.getStartTime();
+                    Instant endTime = trainingSession.getEndTime();
+                    trainingSession.setStartTime(null);
+                    trainingSession.setEndTime(null);
+                    TrainingSessionTO trainingSessionTO = mapper.convert(trainingSession, TrainingSessionTO.class);
+                    trainingSessionTO.setStartTime(convertTo(startTime));
+                    trainingSessionTO.setEndTime(convertTo(endTime));
+                    sessionTOList.add(trainingSessionTO);
                 });
-
-            }
         }catch(Exception e){
             log.error("throwing exception while fetching the all trainingSession details",e.toString());
             throw new ApplicationException("Something went wrong while fetching the trainingSession details");
@@ -475,15 +464,26 @@ public class TrainingServiceImpl implements ITrainingService {
 
     @Override
     public List<TrainingSessionTO> getTrainingSessionsByName(String trainingSid,String name,String companySid) {
+        List<TrainingSessionTO> sessionTOList= new ArrayList<>();
         try {
             Training training =trainingRepository.findTrainingBySid(BaseEntity.hexStringToByteArray(trainingSid));
             List<TrainingSession> trainingSessionList= trainingSessionRepository.
                     findTrainingSessionByTrainingAndTopicContainingAndCompanyAndStatusNot(training,name,getCompany(companySid),Status.DELETED);
-            return mapper.convertList(trainingSessionList,TrainingSessionTO.class);
+            trainingSessionList.forEach(trainingSession->{
+                Instant startTime=trainingSession.getStartTime();
+                Instant endTime=trainingSession.getEndTime();
+                trainingSession.setStartTime(null);
+                trainingSession.setEndTime(null);
+                TrainingSessionTO trainingSessionTO=mapper.convert(trainingSession,TrainingSessionTO.class);
+                trainingSessionTO.setStartTime(convertTo(startTime));
+                trainingSessionTO.setEndTime(convertTo(endTime));
+                sessionTOList.add(trainingSessionTO);
+            });
         }catch (Exception e) {
             log.error("throwing exception while fetching the training sessions details by name",e.toString());
             throw new ApplicationException("Something went wrong while fetching the training sessions details by name ");
         }
+        return sessionTOList;
     }
 
     @Override
