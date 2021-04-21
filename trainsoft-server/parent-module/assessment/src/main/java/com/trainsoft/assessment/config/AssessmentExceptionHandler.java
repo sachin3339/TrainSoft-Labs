@@ -22,7 +22,8 @@ public class AssessmentExceptionHandler extends ResponseEntityExceptionHandler {
             RecordNotFoundException.class,
             IncorrectEmailException.class,
             UserNotFoundException.class,
-            IncorrectEmailIdOrPasswordException.class
+            IncorrectEmailIdOrPasswordException.class,
+            InvalidSidException.class
     })
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         if (ex instanceof UserNotFoundException) {
@@ -60,7 +61,13 @@ public class AssessmentExceptionHandler extends ResponseEntityExceptionHandler {
                     .status(HttpStatus.BAD_REQUEST)
                     .message(((UserNotFoundException) ex).devMessage)
                     .error(ex.getLocalizedMessage()).build();
-            return new ResponseEntity<Object>(errors,new HttpHeaders(),errors.getStatus());
+            return new ResponseEntity<Object>(errors, new HttpHeaders(), errors.getStatus());
+        }else if(ex instanceof InvalidSidException) {
+                ErrorResponse errors = ErrorResponse.builder()
+                        .status(HttpStatus.UNAUTHORIZED)
+                        .message(((InvalidSidException) ex).devMessage)
+                        .error(ex.getLocalizedMessage()).build();
+                return new ResponseEntity<>(errors, new HttpHeaders(), errors.getStatus());
         } else {
             ErrorResponse errors = ErrorResponse.builder()
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

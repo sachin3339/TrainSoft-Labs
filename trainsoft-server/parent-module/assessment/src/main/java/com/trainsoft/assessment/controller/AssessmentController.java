@@ -5,11 +5,15 @@ import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.service.IAssessmentService;
 import com.trainsoft.assessment.to.AssessmentQuestionTo;
 import com.trainsoft.assessment.to.AssessmentTo;
+import com.trainsoft.assessment.to.InstructionsRequestTO;
+import com.trainsoft.assessment.to.VirtualAccountHasQuestionAnswerDetailsTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,4 +83,30 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.getAssessmentQuestionsBySid(assessmentSid));
     }
 
+    @PostMapping("get/instructions")
+    @ApiOperation(value = "get instruction for Assessment",notes = "API to get Assessment instructions.")
+    public ResponseEntity<?>getInstructionForAssessment(
+            @Param("instructions payload")@RequestBody InstructionsRequestTO instructionsRequestTO){
+        return ResponseEntity.ok(assessmentService.getInstructionsForAssessment(instructionsRequestTO));
+    }
+
+    @GetMapping("start/assessment/{sid}")
+    @ApiOperation(value = "start Assessment",notes = "API to get questions and answers for starting Assessment.")
+    public ResponseEntity<?> startAssessment(
+            @ApiParam("Quiz Set Sid")@PathVariable("sid") String quizSetSid){
+      return ResponseEntity.ok(assessmentService.startAssessment(quizSetSid));
+    }
+    @PostMapping("submit/answer")
+    @ApiOperation(value = "submit Assessment question answer",notes =" API to Submit question answer")
+  public ResponseEntity<?> submitAnswer(
+          @Param ("submit answer payload")@RequestBody VirtualAccountHasQuestionAnswerDetailsTO request){
+       return ResponseEntity.ok(assessmentService.submitAnswer(request));
+  }
+
+  @GetMapping("review/response/{sid}")
+  @ApiOperation(value = "review responses",notes = "API to get review for the Assessment.")
+  public ResponseEntity<?> reviewQuestionsAndAnswers(
+          @Param("Virtual Account Sid")@PathVariable("sid") String virtualAccountSid){
+        return ResponseEntity.ok(assessmentService.reviewQuestionsAndAnswers(virtualAccountSid));
+  }
 }

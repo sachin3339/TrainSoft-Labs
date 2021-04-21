@@ -1,9 +1,7 @@
 package com.trainsoft.assessment.service;
 
-import com.trainsoft.assessment.to.AssessmentQuestionTo;
-import com.trainsoft.assessment.to.AssessmentTo;
-import com.trainsoft.assessment.to.CategoryTo;
-import com.trainsoft.assessment.to.QuestionTo;
+import com.trainsoft.assessment.to.*;
+
 import java.util.List;
 
 public interface IAssessmentService
@@ -14,4 +12,12 @@ public interface IAssessmentService
     List<QuestionTo> associateSelectedQuestionsToAssessment(AssessmentQuestionTo  assessmentQuestionTo);
     AssessmentTo getAssessmentBySid(String assessmentSid);
     List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid);
+
+    AssessmentTo getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
+
+    List<AssessmentQuestionTo> startAssessment(String quizSetSid);
+
+     VirtualAccountHasQuestionAnswerDetailsTO submitAnswer(VirtualAccountHasQuestionAnswerDetailsTO request);
+
+     List<VirtualAccountHasQuestionAnswerDetailsTO> reviewQuestionsAndAnswers(String virtualAccountSid);
 }

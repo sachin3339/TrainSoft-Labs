@@ -1,6 +1,7 @@
 package com.trainsoft.assessment.to;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.trainsoft.assessment.entity.Question;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,4 +20,5 @@ public class AssessmentQuestionTo extends BaseTO
     private String virtualAccountSid;
     private List<String> questionSidList;
     private String topicSid;
+    private Question questionId;
 }

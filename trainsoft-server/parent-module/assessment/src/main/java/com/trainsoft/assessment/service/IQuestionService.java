@@ -1,6 +1,5 @@
 package com.trainsoft.assessment.service;
-import com.trainsoft.assessment.to.QuestionTo;
-import com.trainsoft.assessment.to.QuestionTypeTo;
+import com.trainsoft.assessment.to.*;
 
 import java.util.List;
 
