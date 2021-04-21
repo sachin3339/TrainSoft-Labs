@@ -54,7 +54,7 @@ public class QuestionController {
     public ResponseEntity<?> getQuestionAndAssociatedAnswers(
             @ApiParam(value = "Question Sid", required = true) @PathVariable("questionSid") String questionSid)
     {
-        return ResponseEntity.ok(questionService.getQuestionBySid(questionSid));
+        return ResponseEntity.ok(questionService.getAnswersQuestionBySid(questionSid));
     }
 
     @PostMapping("display/assessment/question")

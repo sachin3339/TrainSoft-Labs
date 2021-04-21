@@ -35,7 +35,7 @@ public class QuestionServiceImpl implements IQuestionService {
     public QuestionTo createQuestionAndAnswer(QuestionTo questionTo) {
 
         try {
-            if (questionTo != null)
+            if (questionTo != null && CollectionUtils.isNotEmpty(questionTo.getAnswer()))
             {
                 // get Virtual Account
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
@@ -102,11 +102,12 @@ public class QuestionServiceImpl implements IQuestionService {
         {
            return mapper.convertList(questionList,QuestionTo.class);
         }
+        log.warn("No Questions available");
         return Collections.EMPTY_LIST;
     }
 
     @Override
-    public QuestionTo getQuestionBySid(String questionSid)
+    public QuestionTo getAnswersQuestionBySid(String questionSid)
     {
         try
         {
@@ -122,16 +123,8 @@ public class QuestionServiceImpl implements IQuestionService {
         }catch (Exception exp)
         {
             log.error("throwing exception while getting Question and Answer details", exp.toString());
-            throw new ApplicationException("Something went wrong while getting Question and Answer details" + exp.getMessage());
+            throw new ApplicationException("No record found while fetching Question and Answer details" + exp.getMessage());
         }
-    }
-
-
-    private Company getCompany(String companySid){
-        Company c=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
-        Company company=new Company();
-        company.setId(c.getId());
-        return company;
     }
 
     @Override
@@ -141,11 +134,12 @@ public class QuestionServiceImpl implements IQuestionService {
             if(CollectionUtils.isNotEmpty(questionTypeList)) {
                 return mapper.convertList(questionTypeList, QuestionTypeTo.class);
             }
+            else
+                throw new RecordNotFoundException("No record found");
         }catch (Exception e) {
             log.error("throwing exception while fetching the all QuestionTypes",e.toString());
             throw new ApplicationException("Something went wrong while fetching the QuestionTypes");
         }
-        return null;
     }
 
 }
