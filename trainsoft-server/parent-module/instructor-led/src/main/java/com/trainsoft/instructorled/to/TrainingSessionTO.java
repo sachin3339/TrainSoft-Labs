@@ -29,4 +29,5 @@ public class TrainingSessionTO extends BaseTO {
     private String courseSessionSid;
     private String meetingInfo;
     private Integer duration;
+    private String  schedule_for;
 }

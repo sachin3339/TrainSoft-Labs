@@ -27,7 +27,7 @@ public class ZoomApiIntegrationServiceImpl {
         WebClient webClient = getWebClient();
         String authorizationToken = "Bearer " + accessToken;
         String zoomCreateMeetingUrl = zoomDetails.createMeetingUrl;
-        zoomCreateMeetingUrl = zoomCreateMeetingUrl.replace("{userId}", trainingSession.getUserId());
+        zoomCreateMeetingUrl = zoomCreateMeetingUrl.replace("{userId}", trainingSession.getSchedule_for());
         ClientResponse clientResponse = webClient.post()
                 .uri(zoomCreateMeetingUrl)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

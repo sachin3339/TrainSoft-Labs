@@ -86,4 +86,7 @@ public class TrainingSession extends BaseEntity {
 	@OneToOne
 	@JoinColumn(name = "zoom_setting_id", referencedColumnName = "id")
 	private Settings settings;
+
+	@Column(name="schedule_for")
+	private String schedule_for;
 }
