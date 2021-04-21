@@ -6,17 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name = "category")
+@Table(name = "tags")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Category extends BaseEntity{
-
-
+public class Tag extends BaseEntity
+{
     @Column(name = "name",nullable = false)
     private String name;
 
@@ -24,9 +21,7 @@ public class Category extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private AssessmentEnum.Status status;
 
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "categoryId")
-    private List<Tag>  tags = new ArrayList<>();
-
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id", referencedColumnName = "id",nullable = false)
+    private Category categoryId;
 }

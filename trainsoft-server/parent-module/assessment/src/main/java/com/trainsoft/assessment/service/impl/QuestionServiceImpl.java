@@ -99,6 +99,17 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
+    public List<QuestionTo> displayQuestionsForAssessment()
+    {
+        List<Question> questionList=questionRepository.findQuestionBySidNotInAssessments();
+        if(CollectionUtils.isNotEmpty(questionList))
+        {
+           return mapper.convertList(questionList,QuestionTo.class);
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+    @Override
     public QuestionTo getQuestionBySid(String questionSid)
     {
         try

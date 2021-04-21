@@ -57,6 +57,13 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getQuestionBySid(questionSid));
     }
 
+    @PostMapping("display/assessment/question")
+    @ApiOperation(value = "displayQuestionsForAssessment", notes = "API to get all Questions which are not associated to any Assessments.")
+    public ResponseEntity<?> displayQuestionsForAssessment()
+    {
+        return ResponseEntity.ok(questionService.displayQuestionsForAssessment());
+    }
+
     @PostMapping("get/assessment/instructions")
     @ApiOperation(value = "get Assessment Instructions",notes = "API to get Instructions for the Assessment.")
     public ResponseEntity<QuizSetTO>getInstructionsForAssessment(
