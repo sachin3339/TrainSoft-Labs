@@ -7,7 +7,7 @@ import java.util.List;
 public interface IAssessmentService
 {
     AssessmentTo createAssessment(AssessmentTo assessmentTo);
-    List<CategoryTo> getAllCategories();
+    List<CategoryTO> getAllCategories();
     List<AssessmentTo> getAssessmentsByTopic(String topicSid);
     List<QuestionTo> associateSelectedQuestionsToAssessment(AssessmentQuestionTo  assessmentQuestionTo);
     AssessmentTo getAssessmentBySid(String assessmentSid);

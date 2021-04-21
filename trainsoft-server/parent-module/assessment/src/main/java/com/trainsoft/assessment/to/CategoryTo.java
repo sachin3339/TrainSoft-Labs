@@ -8,11 +8,10 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Getter
-@Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class CategoryTo extends BaseTO
-{
+@Setter @Getter
+public class CategoryTO extends BaseTO{
+    private static final long serialVersionUID = 5139359445642795894L;
+
     private String name;
     private AssessmentEnum.Status status;
     private List<Tag> tags;

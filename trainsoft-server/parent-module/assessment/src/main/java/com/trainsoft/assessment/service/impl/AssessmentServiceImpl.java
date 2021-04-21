@@ -66,14 +66,14 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<CategoryTo> getAllCategories()
+    public List<CategoryTO> getAllCategories()
     {
         try {
             List<Category> categoryList = categoryRepository.findAll();
             if (CollectionUtils.isNotEmpty(categoryList)) {
-                List<CategoryTo> categoryToList = mapper.convertList(categoryList, CategoryTo.class);
+                List<CategoryTO> categoryToList = mapper.convertList(categoryList, CategoryTO.class);
                 Iterator<Category> categoryIterator = categoryList.iterator();
-                Iterator<CategoryTo> categoryToIterator = categoryToList.iterator();
+                Iterator<CategoryTO> categoryToIterator = categoryToList.iterator();
                 while (categoryIterator.hasNext() && categoryToIterator.hasNext()) {
                     categoryToIterator.next().setTags(categoryIterator.next().getTags());
                 }
