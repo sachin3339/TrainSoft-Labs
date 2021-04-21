@@ -9,6 +9,5 @@ public interface IQuestionService {
     QuestionTo createQuestionAndAnswer(QuestionTo questionTo);
     List<QuestionTo> getAllQuestions();
     QuestionTo getQuestionBySid(String questionSid);
-
     QuizSetTO getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
 }

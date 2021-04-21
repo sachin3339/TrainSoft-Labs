@@ -151,7 +151,6 @@ public class QuestionServiceImpl implements IQuestionService {
         if (category==null) throw new InvalidSidException("Invalid Category Sid.");
         QuizSet quizSet = iQuizSetRepository.findByCategoryAndDifficulty(virtualAccount.getId(),company.getId(),
                 category.getId(),instructionsRequestTO.getDifficulty());
-         QuizSetTO convert = mapper.convert(quizSet, QuizSetTO.class);
-        return convert;
+         return mapper.convert(quizSet, QuizSetTO.class);
     }
 }
