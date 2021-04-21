@@ -14,6 +14,6 @@ public class CategoryTO extends BaseTO{
 
     private String name;
     private AssessmentEnum.Status status;
-    private List<Tag> tags;
+    private List<TagTo> tags;
 
 }

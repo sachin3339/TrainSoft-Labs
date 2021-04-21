@@ -68,43 +68,30 @@ public class AssessmentServiceImpl implements IAssessmentService
     @Override
     public List<CategoryTO> getAllCategories()
     {
-        try {
+
             List<Category> categoryList = categoryRepository.findAll();
             if (CollectionUtils.isNotEmpty(categoryList)) {
-                List<CategoryTO> categoryToList = mapper.convertList(categoryList, CategoryTO.class);
-                Iterator<Category> categoryIterator = categoryList.iterator();
-                Iterator<CategoryTO> categoryToIterator = categoryToList.iterator();
-                while (categoryIterator.hasNext() && categoryToIterator.hasNext()) {
-                    categoryToIterator.next().setTags(categoryIterator.next().getTags());
-                }
-                return categoryToList;
+               return mapper.convertList(categoryList, CategoryTO.class);
             }
-            return Collections.EMPTY_LIST;
-        }catch (Exception exp)
-        {
-            log.error("throwing exception while getting all Categories", exp.toString());
-            throw new ApplicationException("Something went wrong while getting all Categories" + exp.getMessage());
-        }
+            else throw new RecordNotFoundException("No records found");
     }
 
     @Override
     public List<AssessmentTo> getAssessmentsByTopic(String topicSid)
     {
-       Topic topic=topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
-       if(topic!=null)
-       {
-          List<Assessment> assessmentList = topic.getAssessments();
-          if(CollectionUtils.isNotEmpty(assessmentList))
-          {
-              List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList,AssessmentTo.class);
-              assessmentToList.forEach(assessmentTo ->
-              {
-                  assessmentTo.setTopicSid(BaseEntity.bytesToHexStringBySid(topic.getSid()));
-              });
-              return assessmentToList;
-          }
-       }
-           return Collections.EMPTY_LIST;
+            Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
+            if (topic != null) {
+                List<Assessment> assessmentList = topic.getAssessments();
+                if (CollectionUtils.isNotEmpty(assessmentList)) {
+                    List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList, AssessmentTo.class);
+                    assessmentToList.forEach(assessmentTo ->
+                    {
+                        assessmentTo.setTopicSid(BaseEntity.bytesToHexStringBySid(topic.getSid()));
+                    });
+                    return assessmentToList;
+                }
+            }
+            throw new InvalidSidException("Invalid Topic Sid.");
     }
 
     @Override

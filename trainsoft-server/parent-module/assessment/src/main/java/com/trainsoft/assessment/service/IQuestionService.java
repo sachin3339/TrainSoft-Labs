@@ -8,6 +8,6 @@ public interface IQuestionService {
     List<QuestionTypeTo> getAllQuestionTypes();
     QuestionTo createQuestionAndAnswer(QuestionTo questionTo);
     List<QuestionTo> getAllQuestions();
-    QuestionTo getQuestionBySid(String questionSid);
+    QuestionTo getAnswersQuestionBySid(String questionSid);
     List<QuestionTo> displayQuestionsForAssessment();
 }
