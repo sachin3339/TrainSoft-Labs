@@ -10,5 +10,4 @@ public interface IQuestionService {
     List<QuestionTo> getAllQuestions();
     QuestionTo getQuestionBySid(String questionSid);
     List<QuestionTo> displayQuestionsForAssessment();
-    QuizSetTO getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
 }

@@ -10,7 +10,6 @@ public class InstructionsRequestTO implements Serializable {
     private static final long serialVersionUID = -6494702257196057187L;
 
     private String createdBySid;
-    private String companySid;
     private  String difficulty;
     private String categorySid;
 }

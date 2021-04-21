@@ -31,10 +31,6 @@ public class QuestionServiceImpl implements IQuestionService {
     private final IQuestionRepository questionRepository;
     private final IQuestionTypeRepository questionTypeRepository;
 
-    private final ICategoryRepository iCategoryRepository;
-
-    private final IQuizSetRepository iQuizSetRepository;
-
     @Override
     public QuestionTo createQuestionAndAnswer(QuestionTo questionTo) {
 
@@ -152,16 +148,4 @@ public class QuestionServiceImpl implements IQuestionService {
         return null;
     }
 
-    @Override
-    public QuizSetTO getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO) {
-        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(instructionsRequestTO.getCompanySid()));
-        if (company==null) throw new InvalidSidException("invalid company sid");
-         VirtualAccount virtualAccount=virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(instructionsRequestTO.getCreatedBySid()));
-        if (virtualAccount==null) throw new InvalidSidException("invalid Virtual Account Sid.");
-        Category category = iCategoryRepository.findBySid(BaseEntity.hexStringToByteArray(instructionsRequestTO.getCategorySid()));
-        if (category==null) throw new InvalidSidException("Invalid Category Sid.");
-        QuizSet quizSet = iQuizSetRepository.findByCategoryAndDifficulty(virtualAccount.getId(),company.getId(),
-                category.getId(),instructionsRequestTO.getDifficulty());
-         return mapper.convert(quizSet, QuizSetTO.class);
-    }
 }
