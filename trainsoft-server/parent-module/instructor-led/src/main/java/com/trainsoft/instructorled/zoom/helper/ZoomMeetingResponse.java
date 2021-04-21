@@ -58,4 +58,8 @@ public class ZoomMeetingResponse implements Serializable {
     private String agenda;
     @JsonProperty("personal_meeting_url")
     private String personalMeetingUrl;
+    @JsonProperty("password")
+    private String password;
+    @JsonProperty("schedule_for")
+    private String schedule_for;
 }

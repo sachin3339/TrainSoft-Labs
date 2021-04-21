@@ -88,15 +88,16 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.deleteTrainingBySid(trainingSid, jwt.getVirtualAccountSid(), jwt.getCompanySid()));
     }
 
-    @PostMapping(value = "trainingSession/create")
+    @PostMapping(value = "trainingSession/create/{instructorSid}")
     @ApiOperation(value = "createTrainingSession", notes = "API to create new TrainingSession.")
     public ResponseEntity<?> createTrainingSession(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Create TrainingSession payload", required = true) @RequestBody TrainingSessionTO trainingSessionTO) {
+            @ApiParam(value = "Create TrainingSession payload", required = true) @RequestBody TrainingSessionTO trainingSessionTO,
+            @ApiParam(value = "Instructor sid", required = true) @PathVariable("instructorSid") String instructorSid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         trainingSessionTO.setCreatedByVASid(jwt.getVirtualAccountSid());
         trainingSessionTO.setCompanySid(jwt.getCompanySid());
-        TrainingSessionTO createTrainingSessionTO = trainingService.createTrainingSession(trainingSessionTO);
+        TrainingSessionTO createTrainingSessionTO = trainingService.createTrainingSession(trainingSessionTO,instructorSid);
         return ResponseEntity.ok(createTrainingSessionTO);
     }
 

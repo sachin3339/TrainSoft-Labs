@@ -16,7 +16,8 @@ public interface ITrainingService {
     boolean deleteTrainingBySid(String trainingSid, String deletedBySid,String companySid);
 
 
-    TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO);
+    //TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO);
+    TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO,String instructorSid);
     TrainingSessionTO updateTrainingSession(TrainingSessionTO trainingSessionTO,String meetingId);
     TrainingSessionTO getTrainingSessionBySid(String trainingSessionSid);
     List<TrainingSessionTO> getTrainingSessionByTrainingSid(String trainingSid,String companySid);
