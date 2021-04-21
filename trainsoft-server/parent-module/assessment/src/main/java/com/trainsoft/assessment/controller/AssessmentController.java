@@ -17,6 +17,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.internet.InternetAddress;
+import javax.naming.Context;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 
 
 @Slf4j
@@ -96,12 +100,13 @@ public class AssessmentController {
             @ApiParam("Quiz Set Sid")@PathVariable("sid") String quizSetSid){
       return ResponseEntity.ok(assessmentService.startAssessment(quizSetSid));
     }
+
     @PostMapping("submit/answer")
     @ApiOperation(value = "submit Assessment question answer",notes =" API to Submit question answer")
-  public ResponseEntity<?> submitAnswer(
+    public ResponseEntity<?> submitAnswer(
           @Param ("submit answer payload")@RequestBody VirtualAccountHasQuestionAnswerDetailsTO request){
        return ResponseEntity.ok(assessmentService.submitAnswer(request));
-  }
+    }
 
   @GetMapping("review/response/{sid}")
   @ApiOperation(value = "review responses",notes = "API to get review for the Assessment.")
@@ -117,4 +122,13 @@ public class AssessmentController {
     {
        return ResponseEntity.ok(assessmentService.removeAssociatedQuestionFromAssessment(questionSid));
     }
+
+    @PostMapping("generate/assessment/url")
+    @ApiOperation(value = "Generate assessment URL",notes =" API to generate assessment URL")
+    public ResponseEntity<?> generateAssessmentURL(
+            @Param ("Assessment Sid")@RequestBody String  assessmentSid,HttpServletRequest request)
+    {
+        return ResponseEntity.ok(assessmentService.generateAssessmentURL(assessmentSid,request));
+    }
+
 }

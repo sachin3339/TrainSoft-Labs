@@ -100,4 +100,7 @@ public class Assessment extends BaseEntity{
     @JoinColumn(name = "quiz_id", referencedColumnName = "id",nullable = false)
     private Topic topicId;
 
+    @Column(name = "url")
+    private String url;
+
 }

@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.*;
 
@@ -260,5 +261,22 @@ public class AssessmentServiceImpl implements IAssessmentService
               throw new RuntimeException("Record not found to delete");
         }
         else throw new InvalidSidException("Invalid Question Sid");
+    }
+
+    @Override
+    public String generateAssessmentURL(String assessmentSid, HttpServletRequest request)
+    {
+        if(assessmentSid!=null)
+        {
+            String URL = request.getRequestURL().toString();
+            String URI = request.getRequestURI();
+            String Host = URL.replace(URI, "");
+            String generatedUrl=Host.concat("/assessment?assessmentSid="+assessmentSid);
+            Assessment assessment=assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
+            assessment.setUrl(generatedUrl);
+            assessmentRepository.save(assessment);
+            return "generated Assessment URL successfully and Saved";
+        }
+        else throw new InvalidSidException("Assessment Sid is not valid");
     }
 }
