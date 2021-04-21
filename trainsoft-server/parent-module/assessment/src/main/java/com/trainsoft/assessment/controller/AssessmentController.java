@@ -13,8 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Slf4j
 @AllArgsConstructor
@@ -63,4 +62,21 @@ public class AssessmentController {
         assessmentQuestionTo.setCompanySid(jwt.getCompanySid());
         return ResponseEntity.ok(assessmentService.associateSelectedQuestionsToAssessment(assessmentQuestionTo));
     }
+
+    @PostMapping("/assessment")
+    @ApiOperation(value = "", notes = "API to get Assessment.")
+    public ResponseEntity<?> getAssessmentBySid(
+            @ApiParam(value = "Assessment Sid", required = true) @RequestBody String assessmentSid)
+    {
+        return ResponseEntity.ok(assessmentService.getAssessmentBySid(assessmentSid));
+    }
+
+    @PostMapping("/assessment/Questions")
+    @ApiOperation(value = "", notes = "API to get Assessment.")
+    public ResponseEntity<?> getAssessmentQuestions(
+            @ApiParam(value = "Assessment Sid", required = true) @RequestBody String assessmentSid)
+    {
+        return ResponseEntity.ok(assessmentService.getAssessmentQuestionsBySid(assessmentSid));
+    }
+
 }

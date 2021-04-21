@@ -1,6 +1,5 @@
 package com.trainsoft.assessment.service.impl;
 
-import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.customexception.ApplicationException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
@@ -14,6 +13,7 @@ import com.trainsoft.assessment.to.QuestionTo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.math3.analysis.function.Exp;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -53,7 +53,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                return mapper.convert(assessmentRepository.save(assessment),AssessmentTo.class);
             }
             else
-            throw new RecordNotFoundException("Record not saved");
+            throw new RuntimeException("Record not saved");
         }catch (Exception exp)
         {
             log.error("throwing exception while creating the Assessment", exp.toString());
@@ -106,40 +106,86 @@ public class AssessmentServiceImpl implements IAssessmentService
     @Override
     public List<QuestionTo> associateSelectedQuestionsToAssessment(AssessmentQuestionTo assessmentQuestionTo)
     {
-        if(assessmentQuestionTo!=null)
-        {
-            List<Question>questionList = new ArrayList<>();
-            for (String questionSid:assessmentQuestionTo.getQuestionSidList())
-            {
-                questionList.add(questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid)));
-            }
-            Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(assessmentQuestionTo.getTopicSid()));
-            //get Virtual Account
-            VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
-                    (BaseEntity.hexStringToByteArray(assessmentQuestionTo.getVirtualAccountSid()));
+        try {
+            if (assessmentQuestionTo != null) {
+                List<Question> questionList = new ArrayList<>();
+                for (String questionSid : assessmentQuestionTo.getQuestionSidList()) {
+                    questionList.add(questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid)));
+                }
+                Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(assessmentQuestionTo.getTopicSid()));
+                //get Virtual Account
+                VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
+                        (BaseEntity.hexStringToByteArray(assessmentQuestionTo.getVirtualAccountSid()));
 
-            List<AssessmentQuestion> assessmentQuestionList = new ArrayList<>();
-            questionList.forEach(question -> {
-                AssessmentQuestion assessmentQuestion = new AssessmentQuestion();
-                assessmentQuestion.generateUuid();
-                assessmentQuestion.setCreatedBy(virtualAccount);
-                assessmentQuestion.setCompany(virtualAccount.getCompany());
-                assessmentQuestion.setCreatedOn(new Date(Instant.now().toEpochMilli()));
-                assessmentQuestion.setQuestionId(question);
-                assessmentQuestion.setTopicId(topic);
-                assessmentQuestionList.add(assessmentQuestion);
-            });
-            List<AssessmentQuestion> savedAssessmentQuestions = assessmentQuestionRepository.saveAll(assessmentQuestionList);
-            Set<Question> questionSet = new HashSet<>();
-            if(CollectionUtils.isNotEmpty(savedAssessmentQuestions))
-            {
-                savedAssessmentQuestions.forEach(savedAssessmentQuestion ->{
-                    questionSet.add(savedAssessmentQuestion.getQuestionId());
+                List<AssessmentQuestion> assessmentQuestionList = new ArrayList<>();
+                questionList.forEach(question -> {
+                    AssessmentQuestion assessmentQuestion = new AssessmentQuestion();
+                    assessmentQuestion.generateUuid();
+                    assessmentQuestion.setCreatedBy(virtualAccount);
+                    assessmentQuestion.setCompany(virtualAccount.getCompany());
+                    assessmentQuestion.setCreatedOn(new Date(Instant.now().toEpochMilli()));
+                    assessmentQuestion.setQuestionId(question);
+                    assessmentQuestion.setTopicId(topic);
+                    assessmentQuestionList.add(assessmentQuestion);
                 });
-                questionList= new ArrayList<>(questionSet);
+                List<AssessmentQuestion> savedAssessmentQuestions = assessmentQuestionRepository.saveAll(assessmentQuestionList);
+                Set<Question> questionSet = new HashSet<>();
+                if (CollectionUtils.isNotEmpty(savedAssessmentQuestions)) {
+                    savedAssessmentQuestions.forEach(savedAssessmentQuestion -> {
+                        questionSet.add(savedAssessmentQuestion.getQuestionId());
+                    });
+                    questionList = new ArrayList<>(questionSet);
+                }
+                return mapper.convertList(questionList, QuestionTo.class);
             }
-            return mapper.convertList(questionList,QuestionTo.class);
+            return Collections.EMPTY_LIST;
+        }catch (Exception exp)
+        {
+            log.error("throwing exception while associating questions to Assessments", exp.toString());
+            throw new ApplicationException("Something went wrong while associating questions to Assessment" + exp.getMessage());
+
         }
-        return Collections.EMPTY_LIST;
+    }
+
+    @Override
+    public AssessmentTo getAssessmentBySid(String assessmentSid) {
+        try {
+            if (assessmentSid != null) {
+                Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
+                return mapper.convert(assessment, AssessmentTo.class);
+            } else
+                throw new RecordNotFoundException("No records found");
+        } catch (Exception exp) {
+            log.error("throwing exception while fetching Assessment with Sid :{}",assessmentSid,exp.toString());
+            throw new ApplicationException("Something went wrong while fetching Assessment" + exp.getMessage());
+        }
+    }
+
+    @Override
+    public List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid) {
+        try {
+            if (assessmentSid != null) {
+                Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
+                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByTopicId(assessment.getTopicId());
+                List<Question> questionList = new ArrayList<>();
+                if(CollectionUtils.isNotEmpty(assessmentQuestionList))
+                {
+                    for (AssessmentQuestion assessmentQuestion:assessmentQuestionList)
+                    {
+                      questionList.add(assessmentQuestion.getQuestionId());
+                    }
+
+                    if(CollectionUtils.isNotEmpty(questionList))
+                    {
+                        return  mapper.convertList(questionList,QuestionTo.class);
+                    }
+                }
+                return Collections.EMPTY_LIST;
+            } else
+                throw new RecordNotFoundException("No records found");
+        } catch (Exception exp) {
+            log.error("throwing exception while fetching Assessment Questions",exp.toString());
+            throw new ApplicationException("Something went wrong while fetching Assessment Questions" + exp.getMessage());
+        }
     }
 }

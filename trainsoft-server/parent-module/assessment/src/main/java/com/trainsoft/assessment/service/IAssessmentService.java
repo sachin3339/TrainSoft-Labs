@@ -1,6 +1,5 @@
 package com.trainsoft.assessment.service;
 
-import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.to.AssessmentQuestionTo;
 import com.trainsoft.assessment.to.AssessmentTo;
 import com.trainsoft.assessment.to.CategoryTo;
@@ -13,4 +12,6 @@ public interface IAssessmentService
     List<CategoryTo> getAllCategories();
     List<AssessmentTo> getAssessmentsByTopic(String topicSid);
     List<QuestionTo> associateSelectedQuestionsToAssessment(AssessmentQuestionTo  assessmentQuestionTo);
+    AssessmentTo getAssessmentBySid(String assessmentSid);
+    List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid);
 }
