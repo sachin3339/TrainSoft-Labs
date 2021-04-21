@@ -243,4 +243,22 @@ public class AssessmentServiceImpl implements IAssessmentService
         }
         return null;
     }
+
+    @Override
+    public String removeAssociatedQuestionFromAssessment(String questionSid)
+    {
+        if(questionSid!=null)
+        {
+            Question question=questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid));
+            Optional<AssessmentQuestion> assessmentQuestion = assessmentQuestionRepository.findAssessmentQuestionByQuestionId(question);
+            if(assessmentQuestion.isPresent())
+            {
+                assessmentQuestionRepository.delete(assessmentQuestion.get());
+                return "Removed associated question successfully";
+            }
+            else
+              throw new RuntimeException("Record not found to delete");
+        }
+        else throw new InvalidSidException("Invalid Question Sid");
+    }
 }

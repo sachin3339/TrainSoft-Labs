@@ -109,4 +109,12 @@ public class AssessmentController {
           @Param("Virtual Account Sid")@PathVariable("sid") String virtualAccountSid){
         return ResponseEntity.ok(assessmentService.reviewQuestionsAndAnswers(virtualAccountSid));
   }
+
+    @DeleteMapping("/remove/associated/question")
+    @ApiOperation(value = "Delete associated question",notes = "API to delete associated question based on given question sid.")
+    public ResponseEntity<?> removeAssociatedQuestionFromAssessment(
+            @ApiParam(value = "Question Sid", required = true) @RequestBody String questionSid)
+    {
+       return ResponseEntity.ok(assessmentService.removeAssociatedQuestionFromAssessment(questionSid));
+    }
 }

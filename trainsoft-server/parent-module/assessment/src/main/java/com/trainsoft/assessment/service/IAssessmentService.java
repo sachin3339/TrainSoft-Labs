@@ -20,4 +20,5 @@ public interface IAssessmentService
      VirtualAccountHasQuestionAnswerDetailsTO submitAnswer(VirtualAccountHasQuestionAnswerDetailsTO request);
 
      List<VirtualAccountHasQuestionAnswerDetailsTO> reviewQuestionsAndAnswers(String virtualAccountSid);
+    String removeAssociatedQuestionFromAssessment(String questionSid);
 }
