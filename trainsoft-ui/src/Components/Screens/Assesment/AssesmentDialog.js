@@ -1,10 +1,14 @@
 import { Dialog, IconButton } from "@material-ui/core";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import CloseIcon from "@material-ui/icons/Close";
 import { ICN_TRAINSOFT } from "../../Common/Icon";
 import { Formik } from "formik";
 import { Form } from "react-bootstrap";
-import { TextInput } from "../../Common/InputField/InputField";
+import {
+  RadioBox,
+  SelectInput,
+  TextInput,
+} from "../../Common/InputField/InputField";
 import { BtnInfo } from "../../Common/Buttons/Buttons";
 import { AssesmentContext } from "./AssesementContext";
 import { navigate } from "../../Common/Router";
@@ -75,6 +79,28 @@ export const AssesmnetDialog = () => {
                           label="Your Email"
                           placeholder="Email"
                           name="email"
+                        />
+                      </Form.Group>
+                      <Form.Group>
+                        <SelectInput
+                          label="Select Category"
+                          option={["Technology", "Technology"]}
+                          name="trainingBatchs"
+                        />
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label className="label">
+                          Select Difficulty
+                        </Form.Label>
+                        <div>
+                          <RadioBox name="hi" options={["Java", "Not Java"]} />
+                        </div>
+                      </Form.Group>
+                      <Form.Group>
+                        <SelectInput
+                          label="Select Topic"
+                          option={["Java", "Not Java"]}
+                          name="trainingBatchs"
                         />
                       </Form.Group>
                     </div>
