@@ -1,10 +1,9 @@
-const Submit = ({ children, assesment = false, ...props }) => {
+const Submit = ({ children, assesment = false, style, ...props }) => {
   return (
     <div
-      {...props}
       style={{
-        backgroundColor: assesment ? "#66D179" : "#49167E",
-        padding: "12px 30px",
+        backgroundColor: assesment ? "#1C9030" : "#49167E",
+        padding: "12px 40px",
         display: "inline-flex",
         justifyContent: "center",
         alignItems: "center",
@@ -13,7 +12,9 @@ const Submit = ({ children, assesment = false, ...props }) => {
         borderRadius: "100px",
         textTransform: "uppercase",
         cursor: "pointer",
+        ...style,
       }}
+      {...props}
     >
       {children}
     </div>

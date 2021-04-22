@@ -1,17 +1,20 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { navigate } from "../../../Common/Router";
+import { AssesmentContext } from "../AssesementContext";
 import Submit from "../common/SubmitButton";
+import { IntroDialog } from "../IntroDialog";
 import { questions } from "../mock";
 import styles from "./AssesmentBody.module.css";
+import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 
-const AssesmentBody = ({ selectedAnswers, ...props }) => {
+const AssesmentBody = () => {
+  const [introDialog, setIntroDialog] = useState(true);
+
   return (
     <div className={styles.container}>
+      <IntroDialog open={introDialog} setOpen={setIntroDialog} />
       <Header title={"Introduction to Java"} />
-      <Main
-        selectedAnswer={selectedAnswers[props.question?.id]}
-        assesmentDone={Object.keys(selectedAnswers).length === questions.length}
-        {...props}
-      />
+      <Main />
     </div>
   );
 };
@@ -24,6 +27,9 @@ const Header = ({ title, startTime = 9, timeLimit = 2500 }) => {
         <div>
           <AssesmentTimer startTime={startTime} timeLimit={timeLimit} />
         </div>
+      </div>
+      <div className={styles.exitButton} onClick={() => navigate("/")}>
+        Exit
       </div>
     </div>
   );
@@ -39,7 +45,6 @@ const AssesmentTimer = ({ startTime = 0, timeLimit = 0 }) => {
   };
 
   const updateTime = () => {
-    console.log("hey");
     if (time > 0) {
       setTime(time - 1);
     }
@@ -59,73 +64,124 @@ const AssesmentTimer = ({ startTime = 0, timeLimit = 0 }) => {
   return <div className={styles.timer}>{formatTime()}</div>;
 };
 
-const Main = ({ title, setAnswer, ...props }) => {
+const Main = () => {
+  const {
+    questionIndex,
+    activeQuestion,
+    selectedAnswers,
+    setFinished,
+    finished,
+  } = useContext(AssesmentContext);
+
   return (
     <div className={styles.main}>
-      {title && <div className={styles.title}>{title}</div>}
-
-      <AssesmentCard setAnswer={setAnswer} {...props} />
+      {finished ? (
+        <FinishScreen />
+      ) : (
+        <>
+          {Object.keys(selectedAnswers).length === questions.length &&
+            !finished && (
+              <div className={styles.doneBox}>
+                <div>
+                  <div
+                    style={{ font: "normal normal 600 14px/26px Montserrat" }}
+                  >
+                    Awesome! You have attended {questions.length}/
+                    {questions.length} questions in your assessment!
+                  </div>
+                  <div>
+                    You can either Submit your assessment now or review your
+                    answers & then submit
+                  </div>
+                </div>
+                <Submit onClick={() => setFinished(true)}>
+                  Submit Assesment
+                </Submit>
+              </div>
+            )}
+          {/* {title && <div className={styles.title}>{title}</div>} */}
+          {questionIndex === -1 ? (
+            questions.map((_question, index) => (
+              <AssesmentCard question={_question} index={index} review />
+            ))
+          ) : (
+            <AssesmentCard question={activeQuestion} />
+          )}
+        </>
+      )}
     </div>
   );
 };
 
-const AssesmentCard = ({
-  question,
-  selectedAnswer,
-  setAnswer,
-  assesmentDone,
-  setFinished,
-  finished,
-}) => {
-  const [activeOption, setActiveOption] = useState(selectedAnswer);
+const FinishScreen = () => {
+  return (
+    <div className={styles.finishScreen}>
+      <div className={styles.check} />
+      <div className={styles.title}>
+        Congratulations! You have completed the assessment.
+      </div>
+      <div></div>
+    </div>
+  );
+};
+const AssesmentCard = ({ question, review = false, index }) => {
+  const {
+    setAnswer,
+    selectedAnswers,
+    finished,
+    setquestionIndex,
+    questionIndex,
+  } = useContext(AssesmentContext);
+  const [activeOption, setActiveOption] = useState(
+    selectedAnswers[question?.id]
+  );
 
   useEffect(() => {
-    setActiveOption(selectedAnswer);
-  }, [question, selectedAnswer]);
+    setActiveOption(selectedAnswers[question?.id]);
+  }, [question, selectedAnswers]);
 
   return (
     <div className={styles.assesmentCard}>
-      {!finished ? (
-        <>
-          <div className={styles.number}>
-            Question {question?.number} / {question?.total}
+      <div className={styles.number}>
+        Question {question?.number} / {question?.total}
+        {review && (
+          <div
+            className={styles.editButton}
+            onClick={() => {
+              setquestionIndex(index);
+            }}
+          >
+            <CreateOutlinedIcon
+              style={{ fontSize: "12px", marginRight: "5px" }}
+            />
+            Edit
           </div>
-          <div className={styles.title}>{question?.title}</div>
-          {question?.options?.map((_option, index) => (
-            <div onClick={() => setActiveOption(_option?.id)}>
-              <AnswerOption
-                {..._option}
-                key={_option?.id}
-                index={index}
-                active={activeOption === _option?.id}
-              />
-            </div>
-          ))}
-          <div className={styles.divider} />
-          <div className={styles.button}>
-            <Submit
-              onClick={() => {
-                if (assesmentDone) {
-                  setFinished(true);
-                } else {
-                  setAnswer(question.id, activeOption);
-                }
-              }}
-              assesment={!assesmentDone}
-            >
-              {assesmentDone ? "Finish AssignMent" : "Submit"}
-            </Submit>
-          </div>
-        </>
-      ) : (
-        <div className={styles.finishScreen}>
-          <div className={styles.check} />
-          <div className={styles.title}>
-            Congratulations! You have completed the assessment.
-          </div>
-          <div className={styles.pointsTitle}>Your Score Is</div>
-          <div className={styles.points}>8.5</div>
-          <Submit>SIGN UP TO GET THE DETAILED REPORT</Submit>
+        )}
+      </div>
+      <div className={styles.title}>{question?.title}</div>
+      {question?.options?.map((_option, index) => (
+        <div onClick={() => setActiveOption(_option?.id)}>
+          <AnswerOption
+            {..._option}
+            key={_option?.id}
+            index={index}
+            active={activeOption === _option?.id}
+          />
+        </div>
+      ))}
+      <div className={styles.divider} />
+      {!review && (
+        <div className={styles.button}>
+          <Submit
+            onClick={() => {
+              setAnswer(question.id, activeOption);
+              setquestionIndex(questionIndex + 1);
+            }}
+            // assesment={!assesmentDone}
+            assesment={true}
+          >
+            Submit
+          </Submit>
         </div>
       )}
     </div>
