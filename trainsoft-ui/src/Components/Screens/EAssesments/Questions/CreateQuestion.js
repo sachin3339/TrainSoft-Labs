@@ -4,13 +4,13 @@ import {
   SelectInput,
   RadioBox,
   TextArea,
-} from "../../Common/InputField/InputField";
+} from "../../../Common/InputField/InputField";
 import { Form } from "react-bootstrap";
 import { useState } from "react";
 import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
 import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
-import CardHeader from "../../Common/CardHeader";
-import Submit from "../Assesment/common/SubmitButton";
+import CardHeader from "../../../Common/CardHeader";
+import Submit from "../../Assesment/common/SubmitButton";
 
 const CreateQuestion = ({ location }) => {
   return (
