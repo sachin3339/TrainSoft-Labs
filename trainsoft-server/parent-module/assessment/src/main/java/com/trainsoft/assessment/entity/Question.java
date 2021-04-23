@@ -27,7 +27,7 @@ public class Question extends BaseEntity{
     private String technologyName;
 
     @Column(name = "question_point")
-    private int questionPoint;
+    private Integer questionPoint;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

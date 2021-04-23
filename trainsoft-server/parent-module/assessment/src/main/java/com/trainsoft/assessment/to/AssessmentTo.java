@@ -25,10 +25,12 @@ public class AssessmentTo extends BaseTO{
     private String category;
     private AssessmentEnum.QuizSetDifficulty difficulty;
     private Date validUpto;
-    private int duration;
+    private Integer duration;
     private boolean isMultipleSitting;
     private boolean isMandatory;
     private String createdByVirtualAccountSid;
     private String topicSid;
     private String tagSid;
+    private Integer noOfQuestions;
+    private String url;
 }

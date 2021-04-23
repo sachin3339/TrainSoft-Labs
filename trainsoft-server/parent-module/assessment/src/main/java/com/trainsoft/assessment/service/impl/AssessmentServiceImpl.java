@@ -16,6 +16,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.*;
 
@@ -39,6 +41,8 @@ public class AssessmentServiceImpl implements IAssessmentService
     private final IVirtualAccountHasQuizSetSessionTimingRepository virtualAccountHasQuizSetSessionTimingRepository;
     private final ITagRepository tagRepository;
     private final IVirtualAccountHasQuizSetAssessmentRepository virtualAccountHasQuizSetAssessmentRepository;
+
+
     @Override
     public AssessmentTo createAssessment(AssessmentTo assessmentTo)
     {
@@ -56,8 +60,8 @@ public class AssessmentServiceImpl implements IAssessmentService
                 assessment.setCreatedOn(new Date(Instant.now().toEpochMilli()));
                 assessment.setTopicId(topicRepository.findTopicBySid
                         (BaseEntity.hexStringToByteArray(assessmentTo.getTopicSid())));
-                AssessmentTo savedAssessmentTo=mapper.convert(assessmentRepository.save(assessment),AssessmentTo.class);
-                return savedAssessmentTo;
+                assessment.setTagId(tagRepository.findBySid(BaseEntity.hexStringToByteArray(assessmentTo.getTagSid())));
+                return mapper.convert(assessmentRepository.save(assessment),AssessmentTo.class);
             }
             else
             throw new RuntimeException("Record not saved");
@@ -69,45 +73,36 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<CategoryTo> getAllCategories()
+    public List<CategoryTO> getAllCategories()
     {
-        try {
+
             List<Category> categoryList = categoryRepository.findAll();
             if (CollectionUtils.isNotEmpty(categoryList)) {
-                List<CategoryTo> categoryToList = mapper.convertList(categoryList, CategoryTo.class);
-                Iterator<Category> categoryIterator = categoryList.iterator();
-                Iterator<CategoryTo> categoryToIterator = categoryToList.iterator();
-                while (categoryIterator.hasNext() && categoryToIterator.hasNext()) {
-                    categoryToIterator.next().setTags(categoryIterator.next().getTags());
-                }
-                return categoryToList;
+               return mapper.convertList(categoryList, CategoryTO.class);
             }
-            return Collections.EMPTY_LIST;
-        }catch (Exception exp)
-        {
-            log.error("throwing exception while getting all Categories", exp.toString());
-            throw new ApplicationException("Something went wrong while getting all Categories" + exp.getMessage());
-        }
+            else throw new RecordNotFoundException("No records found");
     }
 
     @Override
     public List<AssessmentTo> getAssessmentsByTopic(String topicSid)
     {
-       Topic topic=topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
-       if(topic!=null)
-       {
-          List<Assessment> assessmentList = topic.getAssessments();
-          if(CollectionUtils.isNotEmpty(assessmentList))
-          {
-              List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList,AssessmentTo.class);
-              assessmentToList.forEach(assessmentTo ->
-              {
-                  assessmentTo.setTopicSid(BaseEntity.bytesToHexStringBySid(topic.getSid()));
-              });
-              return assessmentToList;
-          }
-       }
-           return Collections.EMPTY_LIST;
+            Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
+            if (topic != null) {
+                List<Assessment> assessmentList = topic.getAssessments();
+                if (CollectionUtils.isNotEmpty(assessmentList)) {
+                    List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList, AssessmentTo.class);
+                    assessmentToList.forEach(assessmentTo ->
+                    {
+                        assessmentTo.setTopicSid(BaseEntity.bytesToHexStringBySid(topic.getSid()));
+                        assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessmentTo.getSid()));
+
+                    });
+                    return assessmentToList;
+                }
+                log.warn("No Assessments are present for this Topic");
+                return Collections.EMPTY_LIST;
+            }
+            throw new InvalidSidException("Invalid Topic Sid.");
     }
 
     @Override
@@ -119,7 +114,6 @@ public class AssessmentServiceImpl implements IAssessmentService
                 for (String questionSid : assessmentQuestionTo.getQuestionSidList()) {
                     questionList.add(questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid)));
                 }
-               // Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(assessmentQuestionTo.getTopicSid()));
                 Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentQuestionTo.getAssessmentSid()));
                 //get Virtual Account
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
@@ -151,7 +145,6 @@ public class AssessmentServiceImpl implements IAssessmentService
         {
             log.error("throwing exception while associating questions to Assessments", exp.toString());
             throw new ApplicationException("Something went wrong while associating questions to Assessment" + exp.getMessage());
-
         }
     }
 
@@ -174,7 +167,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         try {
             if (assessmentSid != null) {
                 Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
-                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByTopicId(assessment.getTopicId());
+                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAndAssessmentId(assessment);
                 List<Question> questionList = new ArrayList<>();
                 if(CollectionUtils.isNotEmpty(assessmentQuestionList))
                 {
@@ -182,7 +175,6 @@ public class AssessmentServiceImpl implements IAssessmentService
                     {
                       questionList.add(assessmentQuestion.getQuestionId());
                     }
-
                     if(CollectionUtils.isNotEmpty(questionList))
                     {
                         return  mapper.convertList(questionList,QuestionTo.class);
@@ -190,11 +182,21 @@ public class AssessmentServiceImpl implements IAssessmentService
                 }
                 return Collections.EMPTY_LIST;
             } else
-                throw new RecordNotFoundException("No records found");
+                throw new InvalidSidException("Assessment Sid is Invalid");
         } catch (Exception exp) {
             log.error("throwing exception while fetching Assessment Questions",exp.toString());
             throw new ApplicationException("Something went wrong while fetching Assessment Questions" + exp.getMessage());
         }
+    }
+
+    private Integer getNoOfQuestionByAssessmentSid(String assessmentSid)
+    {
+        if(assessmentSid!=null)
+        {
+            Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
+            return assessmentQuestionRepository.countAssessmentQuestionByAssessmentId(assessment);
+        }
+        throw new InvalidSidException("Invalid Assessment Sid");
     }
 
     @Override
@@ -282,18 +284,19 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     private Integer[] findCountsForAssessmentGiven(Integer quizSetId,Integer virtualAccountId){
-        Integer[] integers = new Integer[5];
+        Integer[] counts = new Integer[5];
         Integer totalMarks= assessmentQuestionRepository.findTotalMarksForAQuizSet(quizSetId);
         Integer totalQuestion = assessmentQuestionRepository.findTotalQuestion(quizSetId);
         Integer correctAnswers = virtualAccountHasQuestionAnswerDetailsRepository.findCountOfCorrectAnswers(virtualAccountId);
         Integer wrongAnswers = virtualAccountHasQuestionAnswerDetailsRepository.findCountOfWrongAnswers(virtualAccountId);
         Integer attemptedQuestions = virtualAccountHasQuestionAnswerDetailsRepository.findCountsOfAttemptedQuestions(virtualAccountId);
-        integers[0]=totalQuestion;
-        integers[1]=totalMarks;
-        integers[3]=correctAnswers;
-        integers[4]=wrongAnswers;
-        integers[5]=attemptedQuestions;
-        return integers;
+        counts[0]=totalQuestion;
+        counts[1]=totalMarks;
+        counts[2]=correctAnswers;
+        counts[3]=wrongAnswers;
+        counts[4]=attemptedQuestions;
+        return counts;
+
     }
 
 
@@ -317,10 +320,10 @@ public class AssessmentServiceImpl implements IAssessmentService
         VirtualAccount virtualAccount3 = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(request.getVirtualAccountSid()));
         if (virtualAccount3!=null)virtualAccountHasQuizSetAssessment.setVirtualAccountId(virtualAccount3);
         Integer[] counts = findCountsForAssessmentGiven(assessment.getId(), virtualAccount3.getId());
-            virtualAccountHasQuizSetAssessment.setTotalMarks(counts[0]);
-            virtualAccountHasQuizSetAssessment.setTotalNumberOfCorrectAnswer(counts[3]);
-            virtualAccountHasQuizSetAssessment.setTotalNumberOfWrongAnswer(counts[4]);
-            virtualAccountHasQuizSetAssessment.setNumberOfAttemptedQuestion(counts[5]);
+            virtualAccountHasQuizSetAssessment.setTotalMarks(counts[1]);
+            virtualAccountHasQuizSetAssessment.setTotalNumberOfCorrectAnswer(counts[2]);
+            virtualAccountHasQuizSetAssessment.setTotalNumberOfWrongAnswer(counts[3]);
+            virtualAccountHasQuizSetAssessment.setNumberOfAttemptedQuestion(counts[4]);
         List<VirtualAccountHasQuestionAnswerDetails> list = virtualAccountHasQuestionAnswerDetailsRepository.findListOfCorrectResponse(virtualAccount3.getId());
         Integer gainMarks=0;
         for (VirtualAccountHasQuestionAnswerDetails va:list){
@@ -328,8 +331,59 @@ public class AssessmentServiceImpl implements IAssessmentService
         }
         virtualAccountHasQuizSetAssessment.setGainMarks(gainMarks);
        virtualAccountHasQuizSetAssessmentRepository.save(virtualAccountHasQuizSetAssessment);
-      return   mapper.convert(virtualAccountHasQuizSetAssessment,VirtualAccountHasQuizSetAssessmentTO.class);
+        VirtualAccountHasQuizSetAssessmentTO vto = new VirtualAccountHasQuizSetAssessmentTO();
+        vto.setSid(virtualAccountHasQuizSetAssessment.getStringSid());
+        vto.setQuizSid(topic.getStringSid());
+        vto.setQuizSetSid(assessment.getStringSid());
+        vto.setTotalMarks(virtualAccountHasQuizSetAssessment.getTotalMarks());
+        vto.setGainMarks(virtualAccountHasQuizSetAssessment.getGainMarks());
+        vto.setTotalNumberOfCorrectAnswer(virtualAccountHasQuizSetAssessment.getTotalNumberOfCorrectAnswer());
+        vto.setTotalNumberOfWrongAnswer(virtualAccountHasQuizSetAssessment.getTotalNumberOfWrongAnswer());
+        vto.setNumberOfAttemptedQuestion(virtualAccountHasQuizSetAssessment.getNumberOfAttemptedQuestion());
+        vto.setCompanySid(company.getStringSid());
+        vto.setCreatedOn(virtualAccountHasQuizSetAssessment.getCreatedOn());
+        vto.setCreatedBySid(virtualAccount1.getStringSid());
+       // vto.setUpdatedBySid(virtualAccount2.getStringSid());
+        vto.setUpdatedOn(virtualAccountHasQuizSetAssessment.getUpdatedOn());
+        vto.setVirtualAccountSid(virtualAccount3.getStringSid());
+        return vto;
     }
 
 
+
+    @Override
+    public String removeAssociatedQuestionFromAssessment(String questionSid)
+    {
+        if(questionSid!=null)
+        {
+            Question question=questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid));
+            Optional<AssessmentQuestion> assessmentQuestion = assessmentQuestionRepository.findAssessmentQuestionByQuestionId(question);
+            if(assessmentQuestion.isPresent())
+            {
+                assessmentQuestionRepository.delete(assessmentQuestion.get());
+                return "Removed associated question successfully";
+            }
+            else
+              throw new RuntimeException("Record not found to delete");
+        }
+        else throw new InvalidSidException("Invalid Question Sid");
+    }
+
+    @Override
+    public String generateAssessmentURL(String assessmentSid, HttpServletRequest request)
+    {
+        if(assessmentSid!=null)
+        {
+            String URL = request.getRequestURL().toString();
+            String URI = request.getRequestURI();
+            int port = request.getServerPort();
+            String Host = URL.replace(":"+port+URI, "");
+            String generatedUrl=Host.concat("/assessment?assessmentSid="+assessmentSid);
+            Assessment assessment=assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
+            assessment.setUrl(generatedUrl);
+            assessmentRepository.save(assessment);
+            return "generated Assessment URL successfully and Saved";
+        }
+        else throw new InvalidSidException("Assessment Sid is not valid");
+    }
 }

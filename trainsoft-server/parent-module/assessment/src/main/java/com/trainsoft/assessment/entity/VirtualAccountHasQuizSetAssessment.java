@@ -45,7 +45,7 @@ public class VirtualAccountHasQuizSetAssessment extends BaseEntity{
     private Date createdOn;
 
     @ManyToOne
-    @JoinColumn(name = "updated_by",referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "updated_by",referencedColumnName = "id")
     private VirtualAccount updatedBy;
 
     @Column(name = "updated_on")
