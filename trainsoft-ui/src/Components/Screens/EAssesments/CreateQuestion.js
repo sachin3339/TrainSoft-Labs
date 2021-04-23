@@ -5,11 +5,12 @@ import {
   RadioBox,
   TextArea,
 } from "../../Common/InputField/InputField";
-import { Form, Col } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { useState } from "react";
 import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
 import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
 import CardHeader from "../../Common/CardHeader";
+import Submit from "../Assesment/common/SubmitButton";
 
 const CreateQuestion = ({ location }) => {
   return (
@@ -75,9 +76,26 @@ const CreateQuestion = ({ location }) => {
                     <TextArea label="Tags" name="name" />
                   </Form.Group>
                 </div>
-                <footer className="mt-4">
-                  <div> </div>
-                </footer>
+                <div
+                  style={{
+                    borderTop: "1px solid #0000003E",
+                    paddingTop: "20px",
+                    marginTop: "40px",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <Submit
+                    style={{
+                      background: "#0000003E",
+                      color: "black",
+                      marginRight: "10px",
+                    }}
+                  >
+                    Cancel
+                  </Submit>
+                  <Submit>Create</Submit>
+                </div>
               </form>
             )}
           </Formik>

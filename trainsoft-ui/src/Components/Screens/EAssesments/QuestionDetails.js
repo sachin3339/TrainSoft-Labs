@@ -10,6 +10,7 @@ import { useState } from "react";
 import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
 import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
 import CardHeader from "../../Common/CardHeader";
+import Submit from "../Assesment/common/SubmitButton";
 
 const QuestionDetails = ({ location }) => {
   return (
@@ -62,6 +63,24 @@ const QuestionDetails = ({ location }) => {
             ad minim veniam
           </Form.Label>
         </Form.Group>
+        <div
+          style={{
+            borderTop: "1px solid #0000003E",
+            paddingTop: "20px",
+            marginTop: "40px",
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Submit
+            style={{
+              background: "#0000003E",
+              color: "black",
+            }}
+          >
+            Close
+          </Submit>
+        </div>
       </div>
     </>
   );

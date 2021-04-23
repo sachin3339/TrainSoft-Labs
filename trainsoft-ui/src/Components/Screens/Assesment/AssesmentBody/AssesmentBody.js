@@ -287,6 +287,7 @@ const FinishScreen = () => {
           </div>
         </div>
       </div>
+
       <div className={styles.divider} />
 
       <div style={{ width: "100%" }}>
@@ -332,6 +333,7 @@ const FinishScreen = () => {
     </div>
   );
 };
+
 const AssesmentCard = ({ question, review = false, index, correct }) => {
   const {
     setAnswer,

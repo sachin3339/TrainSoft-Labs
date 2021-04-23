@@ -2,6 +2,7 @@ import CardHeader from "../../Common/CardHeader";
 import { Link, navigate, Router } from "../../Common/Router";
 import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import CheckIcon from "@material-ui/icons/Check";
+import { Form, Col } from "react-bootstrap";
 import CloseIcon from "@material-ui/icons/Close";
 import FlagOutlinedIcon from "@material-ui/icons/FlagOutlined";
 import GroupOutlinedIcon from "@material-ui/icons/GroupOutlined";
@@ -284,6 +285,258 @@ const Assesments = ({ location }) => {
 };
 
 const AssesmentDetails = ({ location }) => {
+  const [active, setActive] = useState("Dashboard");
+  return (
+    <>
+      <CardHeader
+        location={{
+          ...location,
+        }}
+      ></CardHeader>
+      <div style={{ paddingTop: "30px" }}>
+        <Tabs
+          setActive={setActive}
+          tabs={[
+            {
+              title: "Dashboard",
+            },
+            { title: "Assesment Details" },
+            { title: "Questions" },
+          ]}
+          active={active}
+        />
+        {active === "Dashboard" && <Dashboard />}
+        {active === "Assesment Details" && <DetailsTab />}
+        {active === "Questions" && <QuestionsTab />}
+      </div>
+    </>
+  );
+};
+
+const TopicAssesment = () => {
+  return (
+    <Router>
+      <Topics path="/" />
+      <Assesments path="topic-details" />
+      <AssesmentDetails path="topic-details/assesment-details" />
+    </Router>
+  );
+};
+
+const Headers = () => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        marginTOp: "70px",
+        width: "100%",
+        justifyContent: "space-between",
+        marginBottom: "30px",
+      }}
+    >
+      <div
+        style={{
+          width: "190px",
+          height: "120px",
+          background: "white",
+          boxShadow: "0px 0px 5px #0000003E",
+          borderRadius: "10px",
+          padding: "20px",
+          display: "flex",
+          justifyContent: "space-evenly",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            Assesment <br />
+            Started on
+          </div>
+          <div>
+            <FlagOutlinedIcon style={{ fontSize: "36px" }} />
+          </div>
+        </div>
+        <div
+          style={{
+            font: "normal normal 600 26px/16px Montserrat",
+            color: "#49167E",
+          }}
+        >
+          5 Apr 2021
+        </div>
+      </div>
+
+      <div
+        style={{
+          width: "190px",
+          height: "120px",
+          background: "white",
+          boxShadow: "0px 0px 5px #0000003E",
+          borderRadius: "10px",
+          padding: "20px",
+          display: "flex",
+          justifyContent: "space-between",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            Total <br />
+            Submitted
+          </div>
+          <div>
+            <FlagOutlinedIcon style={{ fontSize: "36px" }} />
+          </div>
+        </div>
+        <div
+          style={{
+            font: "normal normal 600 26px/16px Montserrat",
+            color: "#49167E",
+          }}
+        >
+          13{" "}
+          <span
+            style={{
+              font: " normal normal 600 16px/16px Montserrat",
+              color: "#333333",
+            }}
+          >
+            {" "}
+            / 13
+          </span>
+        </div>
+      </div>
+
+      <div
+        style={{
+          width: "190px",
+          height: "120px",
+          background: "white",
+          boxShadow: "0px 0px 5px #0000003E",
+          borderRadius: "10px",
+          padding: "20px",
+          display: "flex",
+          justifyContent: "space-between",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            Assensee <br />
+            Attendance
+          </div>
+          <div>
+            <FlagOutlinedIcon style={{ fontSize: "36px" }} />
+          </div>
+        </div>
+        <div
+          style={{
+            font: "normal normal 600 26px/16px Montserrat",
+            color: "#49167E",
+          }}
+        >
+          100%
+        </div>
+      </div>
+
+      <div
+        style={{
+          width: "190px",
+          height: "120px",
+          background: "white",
+          boxShadow: "0px 0px 5px #0000003E",
+          borderRadius: "10px",
+          padding: "20px",
+          display: "flex",
+          justifyContent: "space-between",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            Total <br />
+            Questions
+          </div>
+          <div>
+            <FlagOutlinedIcon style={{ fontSize: "36px" }} />
+          </div>
+        </div>
+        <div
+          style={{
+            font: "normal normal 600 26px/16px Montserrat",
+            color: "#49167E",
+          }}
+        >
+          20
+        </div>
+      </div>
+
+      <div
+        style={{
+          width: "190px",
+          height: "120px",
+          background: "white",
+          boxShadow: "0px 0px 5px #0000003E",
+          borderRadius: "10px",
+          padding: "20px",
+          display: "flex",
+          justifyContent: "space-between",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            Batch <br />
+            Avg Score
+          </div>
+          <div>
+            <FlagOutlinedIcon style={{ fontSize: "36px" }} />
+          </div>
+        </div>
+        <div
+          style={{
+            font: "normal normal 600 26px/16px Montserrat",
+            color: "#49167E",
+          }}
+        >
+          98%
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Dashboard = () => {
   const [count, setCount] = useState(0);
   const [questions, setQuestions] = useState([
     {
@@ -355,26 +608,6 @@ const AssesmentDetails = ({ location }) => {
         configuration.columns[sortKey].sortDirection;
       setConfiguration({ ...configuration });
     },
-    // actions: [
-    //   {
-    //     title: "Edit",
-    //     icon: ICN_EDIT,
-    //     onClick: (data, i) => {
-    //       setIsEdit(true);
-    //       setShow(true);
-    //       setInitialValues({
-    //         name: data.name,
-    //         description: data.description,
-    //         sid: data.sid,
-    //       });
-    //     },
-    //   },
-    //   {
-    //     title: "Delete",
-    //     icon: ICN_TRASH,
-    //     onClick: (data) => deleteCourse(data.sid),
-    //   },
-    // ],
     actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
     actionVariant: "", // user can pass action button variant like primary, dark, light,
     actionAlignment: true, // user can pass alignment property of dropdown menu by default it is alignLeft
@@ -382,17 +615,12 @@ const AssesmentDetails = ({ location }) => {
     // this search is working for search enable fields(column) eg. isSearchEnabled: true, in tale column configuration
     searchQuery: "",
     tableCustomClass: "ng-table sort-enabled", // table custom class
-    // showCheckbox: true,
+
     clearSelection: false,
   });
   return (
     <>
-      <CardHeader
-        location={{
-          ...location,
-        }}
-      ></CardHeader>
-      <div style={{ paddingTop: "80px" }}>
+      <div style={{ paddingTop: "30px" }}>
         <Headers />
       </div>
       <div className="table-shadow">
@@ -409,228 +637,200 @@ const AssesmentDetails = ({ location }) => {
   );
 };
 
-const TopicAssesment = () => {
-  return (
-    <Router>
-      <Topics path="/" />
-      <Assesments path="topic-details" />
-      <AssesmentDetails path="topic-details/assesment-details" />
-    </Router>
-  );
-};
-
-const Headers = () => {
+const Tabs = ({ tabs, active, setActive }) => {
   return (
     <div
       style={{
-        display: "flex",
-        marginTOp: "70px",
-
         width: "100%",
-        justifyContent: "space-between",
-        marginBottom: "30px",
+        borderBottom: "1px solid rgba(0,0,0,0.2)",
+        display: "flex",
       }}
     >
-      <div
-        style={{
-          width: "190px",
-          height: "120px",
-          background: "white",
-          boxShadow: "0px 0px 5px #0000003E",
-          borderRadius: "5px",
-          padding: "20px",
-          display: "flex",
-          justifyContent: "space-between",
-          flexDirection: "column",
-        }}
-      >
+      {tabs.map((_tab) => (
         <div
+          onClick={() => setActive(_tab?.title)}
           style={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
+            borderBottom: `3px solid ${
+              active === _tab?.title ? "#FECD48" : "transparent"
+            }`,
+            padding: "5px 30px",
+            color: "#111111",
+            font:
+              active === _tab?.title
+                ? "normal normal 600 13px/16px Montserrat"
+                : " normal normal normal 13px/16px Montserrat",
+            cursor: "pointer",
           }}
         >
-          <div>
-            Assesment <br />
-            Started on
-          </div>
-          <div>
-            <FlagOutlinedIcon style={{ fontSize: "36px" }} />
-          </div>
+          {_tab?.title}
         </div>
-        <div
-          style={{
-            font: "normal normal 600 26px/16px Montserrat",
-            color: "#49167E",
-          }}
-        >
-          5 Apr 2021
-        </div>
-      </div>
-
-      <div
-        style={{
-          width: "190px",
-          height: "120px",
-          background: "white",
-          boxShadow: "0px 0px 5px #0000003E",
-          borderRadius: "5px",
-          padding: "20px",
-          display: "flex",
-          justifyContent: "space-between",
-          flexDirection: "column",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-        >
-          <div>
-            Total <br />
-            Submitted
-          </div>
-          <div>
-            <FlagOutlinedIcon style={{ fontSize: "36px" }} />
-          </div>
-        </div>
-        <div
-          style={{
-            font: "normal normal 600 26px/16px Montserrat",
-            color: "#49167E",
-          }}
-        >
-          13{" "}
-          <span
-            style={{
-              font: " normal normal 600 16px/16px Montserrat",
-              color: "#333333",
-            }}
-          >
-            {" "}
-            / 13
-          </span>
-        </div>
-      </div>
-
-      <div
-        style={{
-          width: "190px",
-          height: "120px",
-          background: "white",
-          boxShadow: "0px 0px 5px #0000003E",
-          borderRadius: "5px",
-          padding: "20px",
-          display: "flex",
-          justifyContent: "space-between",
-          flexDirection: "column",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-        >
-          <div>
-            Assensee <br />
-            Attendance
-          </div>
-          <div>
-            <FlagOutlinedIcon style={{ fontSize: "36px" }} />
-          </div>
-        </div>
-        <div
-          style={{
-            font: "normal normal 600 26px/16px Montserrat",
-            color: "#49167E",
-          }}
-        >
-          100%
-        </div>
-      </div>
-
-      <div
-        style={{
-          width: "190px",
-          height: "120px",
-          background: "white",
-          boxShadow: "0px 0px 5px #0000003E",
-          borderRadius: "5px",
-          padding: "20px",
-          display: "flex",
-          justifyContent: "space-between",
-          flexDirection: "column",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-        >
-          <div>
-            Total <br />
-            Questions
-          </div>
-          <div>
-            <FlagOutlinedIcon style={{ fontSize: "36px" }} />
-          </div>
-        </div>
-        <div
-          style={{
-            font: "normal normal 600 26px/16px Montserrat",
-            color: "#49167E",
-          }}
-        >
-          20
-        </div>
-      </div>
-
-      <div
-        style={{
-          width: "190px",
-          height: "120px",
-          background: "white",
-          boxShadow: "0px 0px 5px #0000003E",
-          borderRadius: "5px",
-          padding: "20px",
-          display: "flex",
-          justifyContent: "space-between",
-          flexDirection: "column",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-        >
-          <div>
-            Batch <br />
-            Avg Score
-          </div>
-          <div>
-            <FlagOutlinedIcon style={{ fontSize: "36px" }} />
-          </div>
-        </div>
-        <div
-          style={{
-            font: "normal normal 600 26px/16px Montserrat",
-            color: "#49167E",
-          }}
-        >
-          98%
-        </div>
-      </div>
+      ))}
     </div>
   );
 };
 
+const DetailsTab = () => {
+  return (
+    <>
+      <div
+        className="table-shadow"
+        style={{ padding: "20px", marginTop: "20px" }}
+      >
+        <Form.Group>
+          <diV style={{ fontWeight: 600, fontSize: "18px" }}>
+            Assesment Info
+          </diV>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Assesment Title</Form.Label>
+          <br />
+          <Form.Label style={{ fontWeight: 600 }}>JAVA Fundamentals</Form.Label>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Type</Form.Label>
+          <br />
+          <Form.Label style={{ fontWeight: 600 }}>Premium</Form.Label>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Category</Form.Label>
+          <br />
+          <Form.Label style={{ fontWeight: 600 }}>Technology</Form.Label>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Difficulty</Form.Label>
+          <br />
+          <Form.Label style={{ fontWeight: 600 }}>Beginner</Form.Label>
+        </Form.Group>
+      </div>
+      <div
+        className="table-shadow"
+        style={{ padding: "20px", marginTop: "20px" }}
+      >
+        <Form.Group>
+          <diV style={{ fontWeight: 600, fontSize: "18px" }}>
+            Assesment Rules
+          </diV>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Assesment Title</Form.Label>
+          <br />
+          <Form.Label style={{ fontWeight: 600 }}>JAVA Fundamentals</Form.Label>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Type</Form.Label>
+          <br />
+          <Form.Label style={{ fontWeight: 600 }}>Premium</Form.Label>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Category</Form.Label>
+          <br />
+          <Form.Label style={{ fontWeight: 600 }}>Technology</Form.Label>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Difficulty</Form.Label>
+          <br />
+          <Form.Label style={{ fontWeight: 600 }}>Beginner</Form.Label>
+        </Form.Group>
+      </div>
+    </>
+  );
+};
+
+const QuestionsTab = () => {
+  const [count, setCount] = useState(0);
+  const [questions, setQuestions] = useState([
+    {
+      name: "JRaymond",
+      type: "Submitted",
+      sid: "1",
+    },
+  ]);
+  const [configuration, setConfiguration] = useState({
+    columns: {
+      name: {
+        title: "QUESTION",
+        sortDirection: null,
+        sortEnabled: true,
+        isSearchEnabled: false,
+        render: (data) => (
+          <div style={{ display: "flex", alginItems: "center" }}>
+            <div className="dt-name">{data.name}</div>
+          </div>
+        ),
+      },
+      type: {
+        title: "TYPE",
+        sortDirection: null,
+        sortEnabled: true,
+        isSearchEnabled: false,
+      },
+      difficulty: {
+        title: "DIFFICULTY",
+        sortDirection: null,
+        sortEnabled: true,
+        isSearchEnabled: false,
+        render: (data) => (
+          <div
+            style={{
+              background: "#E8E8E8",
+              width: "79px",
+              height: "24px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "25px",
+            }}
+          >
+            {data.difficulty}
+          </div>
+        ),
+      },
+    },
+    headerTextColor: "#454E50", // user can change table header text color
+    sortBy: null, // by default sort table by name key
+    sortDirection: false, // sort direction by default true
+    updateSortBy: (sortKey) => {
+      configuration.sortBy = sortKey;
+      Object.keys(configuration.columns).map(
+        (key) =>
+          (configuration.columns[key].sortDirection =
+            key === sortKey ? !configuration.columns[key].sortDirection : false)
+      );
+      configuration.sortDirection =
+        configuration.columns[sortKey].sortDirection;
+      setConfiguration({ ...configuration });
+    },
+    actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
+    actionVariant: "", // user can pass action button variant like primary, dark, light,
+    actionAlignment: true, // user can pass alignment property of dropdown menu by default it is alignLeft
+    // call this callback function onSearch method in input field on onChange handler eg: <input type="text" onChange={(e) => onSearch(e.target.value)}/>
+    // this search is working for search enable fields(column) eg. isSearchEnabled: true, in tale column configuration
+    searchQuery: "",
+    tableCustomClass: "ng-table sort-enabled", // table custom class
+
+    clearSelection: false,
+  });
+  return (
+    <>
+      <div className="table-shadow" style={{ marginTop: "20px" }}>
+        <DynamicTable
+          {...{
+            configuration,
+            sourceData: questions,
+            // onPageChange: (e) => getCourse(e),
+            count,
+          }}
+        />
+      </div>
+    </>
+  );
+};
 export default TopicAssesment;
