@@ -92,11 +92,15 @@
 }
 
 .finishScreen .check {
-  border: 2px solid #66d179;
+  border: 3px solid #66d179;
   height: 60px;
   width: 60px;
   border-radius: 30px;
   margin: 25px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #66d179;
 }
 
 .finishScreen .title {
@@ -161,4 +165,7 @@
   margin-left: 15px;
   cursor: pointer;
   text-transform: uppercase;
+}
+
+.result {
 }
