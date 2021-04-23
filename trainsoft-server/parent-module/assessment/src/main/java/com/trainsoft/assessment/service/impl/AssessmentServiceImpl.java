@@ -94,6 +94,8 @@ public class AssessmentServiceImpl implements IAssessmentService
                     });
                     return assessmentToList;
                 }
+                log.warn("No Assessments are present for this Topic");
+                return Collections.EMPTY_LIST;
             }
             throw new InvalidSidException("Invalid Topic Sid.");
     }
