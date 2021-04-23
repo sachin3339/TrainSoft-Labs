@@ -52,8 +52,8 @@ public class AssessmentController {
     }
 
     @PostMapping("/assessments")
-    @ApiOperation(value = "getAssessments", notes = "API to get Assessments based on Topic.")
-    public ResponseEntity<?> getAssessments(
+    @ApiOperation(value = "getAssessmentsByTopic", notes = "API to get Assessments based on Topic.")
+    public ResponseEntity<?> getAssessmentsByTopic(
             @ApiParam(value = "Topic Sid", required = true) @RequestBody String topicSid)
     {
         return ResponseEntity.ok(assessmentService.getAssessmentsByTopic(topicSid));

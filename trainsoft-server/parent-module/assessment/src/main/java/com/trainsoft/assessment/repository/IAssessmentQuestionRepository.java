@@ -1,5 +1,6 @@
 package com.trainsoft.assessment.repository;
 
+import com.trainsoft.assessment.entity.Assessment;
 import com.trainsoft.assessment.entity.AssessmentQuestion;
 import com.trainsoft.assessment.entity.Question;
 import com.trainsoft.assessment.entity.Topic;
@@ -13,9 +14,9 @@ import java.util.Optional;
 
 public interface IAssessmentQuestionRepository extends JpaRepository<AssessmentQuestion, Integer>
 {
-      List<AssessmentQuestion> getAssessmentQuestionsByTopicId(Topic topic);
-      AssessmentQuestion findBySid(byte [] sid);
+      List<AssessmentQuestion> getAssessmentQuestionsByAndAssessmentId(Assessment assessmentId);
       @Query(value = "select * from quiz_set_has_question where quiz_set_id=:id",nativeQuery = true)
       List<AssessmentQuestion> findByTopicId(@Param("id") Integer quizSetId);
       Optional<AssessmentQuestion> findAssessmentQuestionByQuestionId(Question question);
+      Integer countAssessmentQuestionByAssessmentId(Assessment assessmentId);
 }

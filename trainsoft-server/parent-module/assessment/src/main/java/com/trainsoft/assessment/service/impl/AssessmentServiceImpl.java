@@ -36,6 +36,7 @@ public class AssessmentServiceImpl implements IAssessmentService
     private final IAnswerRepository answerRepository;
     private final IVirtualAccountHasQuestionAnswerDetailsRepository virtualAccountHasQuestionAnswerDetailsRepository;
     private final ICategoryRepository iCategoryRepository;
+    private final ITagRepository tagRepository;
 
     @Override
     public AssessmentTo createAssessment(AssessmentTo assessmentTo)
@@ -54,8 +55,8 @@ public class AssessmentServiceImpl implements IAssessmentService
                 assessment.setCreatedOn(new Date(Instant.now().toEpochMilli()));
                 assessment.setTopicId(topicRepository.findTopicBySid
                         (BaseEntity.hexStringToByteArray(assessmentTo.getTopicSid())));
-                AssessmentTo savedAssessmentTo=mapper.convert(assessmentRepository.save(assessment),AssessmentTo.class);
-                return savedAssessmentTo;
+                assessment.setTagId(tagRepository.findBySid(BaseEntity.hexStringToByteArray(assessmentTo.getTagSid())));
+                return mapper.convert(assessmentRepository.save(assessment),AssessmentTo.class);
             }
             else
             throw new RuntimeException("Record not saved");
@@ -88,6 +89,8 @@ public class AssessmentServiceImpl implements IAssessmentService
                     assessmentToList.forEach(assessmentTo ->
                     {
                         assessmentTo.setTopicSid(BaseEntity.bytesToHexStringBySid(topic.getSid()));
+                        assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessmentTo.getSid()));
+
                     });
                     return assessmentToList;
                 }
@@ -104,7 +107,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                 for (String questionSid : assessmentQuestionTo.getQuestionSidList()) {
                     questionList.add(questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid)));
                 }
-                Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(assessmentQuestionTo.getTopicSid()));
+                Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentQuestionTo.getAssessmentSid()));
                 //get Virtual Account
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
                         (BaseEntity.hexStringToByteArray(assessmentQuestionTo.getVirtualAccountSid()));
@@ -117,7 +120,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                     assessmentQuestion.setCompany(virtualAccount.getCompany());
                     assessmentQuestion.setCreatedOn(new Date(Instant.now().toEpochMilli()));
                     assessmentQuestion.setQuestionId(question);
-                    assessmentQuestion.setTopicId(topic);
+                    assessmentQuestion.setAssessmentId(assessment);
                     assessmentQuestionList.add(assessmentQuestion);
                 });
                 List<AssessmentQuestion> savedAssessmentQuestions = assessmentQuestionRepository.saveAll(assessmentQuestionList);
@@ -135,7 +138,6 @@ public class AssessmentServiceImpl implements IAssessmentService
         {
             log.error("throwing exception while associating questions to Assessments", exp.toString());
             throw new ApplicationException("Something went wrong while associating questions to Assessment" + exp.getMessage());
-
         }
     }
 
@@ -158,7 +160,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         try {
             if (assessmentSid != null) {
                 Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
-                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByTopicId(assessment.getTopicId());
+                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAndAssessmentId(assessment);
                 List<Question> questionList = new ArrayList<>();
                 if(CollectionUtils.isNotEmpty(assessmentQuestionList))
                 {
@@ -166,7 +168,6 @@ public class AssessmentServiceImpl implements IAssessmentService
                     {
                       questionList.add(assessmentQuestion.getQuestionId());
                     }
-
                     if(CollectionUtils.isNotEmpty(questionList))
                     {
                         return  mapper.convertList(questionList,QuestionTo.class);
@@ -174,11 +175,21 @@ public class AssessmentServiceImpl implements IAssessmentService
                 }
                 return Collections.EMPTY_LIST;
             } else
-                throw new RecordNotFoundException("No records found");
+                throw new InvalidSidException("Assessment Sid is Invalid");
         } catch (Exception exp) {
             log.error("throwing exception while fetching Assessment Questions",exp.toString());
             throw new ApplicationException("Something went wrong while fetching Assessment Questions" + exp.getMessage());
         }
+    }
+
+    private Integer getNoOfQuestionByAssessmentSid(String assessmentSid)
+    {
+        if(assessmentSid!=null)
+        {
+            Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
+            return assessmentQuestionRepository.countAssessmentQuestionByAssessmentId(assessment);
+        }
+        throw new InvalidSidException("Invalid Assessment Sid");
     }
 
     @Override
@@ -208,7 +219,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                 assessTo.setCompanySid(as.getCompany().getStringSid());
                 assessTo.getQuestionId().setAnswers(answer);
                 assessTo.setQuestionNumber(as.getQuestionNumber());
-                assessTo.setTopicSid(as.getTopicId().getStringSid());
+                assessTo.setAssessmentSid(as.getAssessmentId().getStringSid());
                 assessTo.setVirtualAccountSid(as.getCreatedBy().getStringSid());
                 assessTo.setQuestionPoint(as.getQuestionPoint());
                 assessTo.setQuestionNumber(as.getQuestionNumber());
@@ -270,7 +281,8 @@ public class AssessmentServiceImpl implements IAssessmentService
         {
             String URL = request.getRequestURL().toString();
             String URI = request.getRequestURI();
-            String Host = URL.replace(URI, "");
+            int port = request.getServerPort();
+            String Host = URL.replace(":"+port+URI, "");
             String generatedUrl=Host.concat("/assessment?assessmentSid="+assessmentSid);
             Assessment assessment=assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
             assessment.setUrl(generatedUrl);

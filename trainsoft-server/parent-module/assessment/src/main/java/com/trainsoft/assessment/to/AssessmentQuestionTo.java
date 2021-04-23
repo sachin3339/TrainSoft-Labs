@@ -19,6 +19,6 @@ public class AssessmentQuestionTo extends BaseTO
     private String CompanySid;
     private String virtualAccountSid;
     private List<String> questionSidList;
-    private String topicSid;
+    private String assessmentSid;
     private Question questionId;
 }

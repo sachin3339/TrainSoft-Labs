@@ -103,4 +103,9 @@ public class Assessment extends BaseEntity{
     @Column(name = "url")
     private String url;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "tag", referencedColumnName = "id",nullable = false)
+    private Tag tagId;
+
+
 }
