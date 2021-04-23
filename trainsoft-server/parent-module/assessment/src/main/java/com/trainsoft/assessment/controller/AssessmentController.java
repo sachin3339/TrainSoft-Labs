@@ -3,10 +3,7 @@ package com.trainsoft.assessment.controller;
 import com.trainsoft.assessment.commons.JWTDecode;
 import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.service.IAssessmentService;
-import com.trainsoft.assessment.to.AssessmentQuestionTo;
-import com.trainsoft.assessment.to.AssessmentTo;
-import com.trainsoft.assessment.to.InstructionsRequestTO;
-import com.trainsoft.assessment.to.VirtualAccountHasQuestionAnswerDetailsTO;
+import com.trainsoft.assessment.to.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -99,7 +96,7 @@ public class AssessmentController {
     @PostMapping("submit/answer")
     @ApiOperation(value = "submit Assessment question answer",notes =" API to Submit question answer")
   public ResponseEntity<?> submitAnswer(
-          @Param ("submit answer payload")@RequestBody VirtualAccountHasQuestionAnswerDetailsTO request){
+          @Param ("submit answer payload")@RequestBody SubmitAnswerRequestTO request){
        return ResponseEntity.ok(assessmentService.submitAnswer(request));
   }
 

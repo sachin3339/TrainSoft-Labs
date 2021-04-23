@@ -100,4 +100,9 @@ public class Assessment extends BaseEntity{
     @JoinColumn(name = "quiz_id", referencedColumnName = "id",nullable = false)
     private Topic topicId;
 
+    @ManyToOne(cascade =CascadeType.ALL)
+    @JoinColumn(name = "tag",referencedColumnName = "id",nullable = false)
+    private Tag tag;
+
+
 }

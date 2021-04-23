@@ -30,4 +30,5 @@ public class AssessmentTo extends BaseTO{
     private boolean isMandatory;
     private String createdByVirtualAccountSid;
     private String topicSid;
+    private String tagSid;
 }

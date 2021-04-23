@@ -15,4 +15,10 @@ public interface IAssessmentQuestionRepository extends JpaRepository<AssessmentQ
       AssessmentQuestion findBySid(byte [] sid);
       @Query(value = "select * from quiz_set_has_question where quiz_set_id=:id",nativeQuery = true)
       List<AssessmentQuestion> findByTopicId(@Param("id") Integer quizSetId);
+
+      @Query(value = "select sum(question_point) from total_marks from quiz_set_has_question where quiz_set_id=:id",nativeQuery = true)
+      Integer findTotalMarksForAQuizSet(@Param("id") Integer quizSetId);
+
+      @Query(value = "select count(*)total_question from quiz_set_has_question where quiz_set_id=:id",nativeQuery = true)
+      Integer findTotalQuestion(Integer quizSetId);
 }

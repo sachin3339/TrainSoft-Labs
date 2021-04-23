@@ -13,11 +13,15 @@ public interface IAssessmentService
     AssessmentTo getAssessmentBySid(String assessmentSid);
     List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid);
 
-    AssessmentTo getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
+    List<AssessmentTo> getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
 
     List<AssessmentQuestionTo> startAssessment(String quizSetSid);
 
-     VirtualAccountHasQuestionAnswerDetailsTO submitAnswer(VirtualAccountHasQuestionAnswerDetailsTO request);
+     VirtualAccountHasQuestionAnswerDetailsTO submitAnswer(SubmitAnswerRequestTO request);
 
      List<VirtualAccountHasQuestionAnswerDetailsTO> reviewQuestionsAndAnswers(String virtualAccountSid);
+
+     VirtualAccountHasQuizSetAssessmentTO submitAssessment(SubmitAssessmentTO request);
+
+
 }
