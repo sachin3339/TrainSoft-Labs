@@ -59,7 +59,7 @@ public class AWSUploadClient {
     }
 
     private String generateFileName(MultipartFile multiPart) {
-        return multiPart.getOriginalFilename()+"_"+new Date().getTime();
+        return new Date().getTime()+"_"+multiPart.getOriginalFilename();
     }
 
     private void uploadFileTos3bucket(String fileName, File file) {
@@ -82,12 +82,12 @@ public class AWSUploadClient {
         return fileNames;
     }
 
-   // public String uploadFile(MultipartFile multipartFile) {
     public FileTO uploadFile(MultipartFile multipartFile) {
         String fileUrl = "";
         try {
             File file = convertMultiPartToFile(multipartFile);
-            String fileName = generateFileName(multipartFile);
+            String generatedFileName = generateFileName(multipartFile);
+            String fileName=formatFileName(generatedFileName);
             String fileType=multipartFile.getContentType();
             long fileSize=multipartFile.getSize();
             fileUrl = endpointUrl + "/"+ fileName;
@@ -111,5 +111,12 @@ public class AWSUploadClient {
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         s3Client.deleteObject(new DeleteObjectRequest(bucketName + "/", fileName));
         return "Successfully deleted";
+    }
+
+    public String formatFileName(String fileName)
+    {
+        fileName = fileName.replaceAll("([^\\w|//s|//.])+", "");
+        fileName =fileName.trim();
+        return fileName;
     }
 }
