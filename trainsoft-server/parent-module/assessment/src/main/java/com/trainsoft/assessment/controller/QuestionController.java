@@ -3,7 +3,9 @@ package com.trainsoft.assessment.controller;
 import com.trainsoft.assessment.commons.JWTDecode;
 import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.service.IQuestionService;
+import com.trainsoft.assessment.to.InstructionsRequestTO;
 import com.trainsoft.assessment.to.QuestionTo;
+import com.trainsoft.assessment.to.QuizSetTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -52,7 +54,7 @@ public class QuestionController {
     public ResponseEntity<?> getQuestionAndAssociatedAnswers(
             @ApiParam(value = "Question Sid", required = true) @PathVariable("questionSid") String questionSid)
     {
-        return ResponseEntity.ok(questionService.getQuestionBySid(questionSid));
+        return ResponseEntity.ok(questionService.getAnswersQuestionBySid(questionSid));
     }
 
     @PostMapping("display/assessment/question")
