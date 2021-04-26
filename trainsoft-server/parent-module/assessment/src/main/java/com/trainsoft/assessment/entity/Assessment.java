@@ -48,10 +48,10 @@ public class Assessment extends BaseEntity{
     private boolean isQuestionRandomize;
 
     @Column(name = "duration")
-    private int duration;
+    private Integer duration;
 
     @Column(name = "is_pause_enable")
-    private int isPauseEnable;
+    private boolean isPauseEnable;
 
     @Column(name="is_payment_received")
     private boolean isPaymentReceived;

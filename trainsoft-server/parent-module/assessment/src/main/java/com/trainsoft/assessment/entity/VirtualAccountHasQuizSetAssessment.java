@@ -24,6 +24,9 @@ public class VirtualAccountHasQuizSetAssessment extends BaseEntity{
     @Column(name = "gain_marks")
     private Integer gainMarks;
 
+    @Column(name = "total_no_of_questions")
+    private Integer totalNumberOfQuestions;
+
     @Column(name = "total_no_of_correct_answer")
     private Integer totalNumberOfCorrectAnswer;
 
@@ -32,6 +35,12 @@ public class VirtualAccountHasQuizSetAssessment extends BaseEntity{
 
     @Column(name = "no_of_attempted_question")
     private Integer numberOfAttemptedQuestion;
+
+    @Column(name = "percentage")
+    private Double percentage;
+
+    @Column(name = "submitted_on")
+    private Date submittedOn;
 
     @ManyToOne
     @JoinColumn(name = "company_id",referencedColumnName = "id",nullable = false)

@@ -33,4 +33,9 @@ public class AssessmentTo extends BaseTO{
     private String tagSid;
     private Integer noOfQuestions;
     private String url;
+    private boolean isNextEnabled;
+    private boolean isAutoSubmitted;
+    private boolean isPauseEnable;
+    private boolean isNegative;
+    private boolean isPreviousEnabled;
 }

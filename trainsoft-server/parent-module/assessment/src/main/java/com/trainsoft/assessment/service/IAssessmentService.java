@@ -16,7 +16,7 @@ public interface IAssessmentService
 
     List<AssessmentTo> getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
 
-    List<AssessmentQuestionTo> startAssessment(String quizSetSid);
+    List<AssessmentQuestionTo> startAssessment(String quizSetSid,String virtualAccountSid);
 
      VirtualAccountHasQuestionAnswerDetailsTO submitAnswer(SubmitAnswerRequestTO request);
 
@@ -25,4 +25,9 @@ public interface IAssessmentService
     List<VirtualAccountHasQuestionAnswerDetailsTO> reviewQuestionsAndAnswers(String virtualAccountSid);
     String removeAssociatedQuestionFromAssessment(String questionSid);
     String generateAssessmentURL(String assessmentSid, HttpServletRequest request);
+
+    ScoreBoardTO getScoreBoard(String quizSetSid,String virtualAccountSid);
+
+    List<VirtualAccountHasQuestionAnswerDetailsTO> findUserAssessmentResponses(String virtualAccountSid);
+
 }

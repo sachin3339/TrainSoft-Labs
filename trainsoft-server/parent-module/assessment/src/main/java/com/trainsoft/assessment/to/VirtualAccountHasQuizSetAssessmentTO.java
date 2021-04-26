@@ -14,9 +14,12 @@ public class VirtualAccountHasQuizSetAssessmentTO extends BaseTO{
     private String quizSetSid;
     private Integer totalMarks;
     private Integer gainMarks;
+    private Integer totalNumberOfQuestions;
     private Integer totalNumberOfCorrectAnswer;
     private Integer totalNumberOfWrongAnswer;
     private Integer numberOfAttemptedQuestion;
+    private Double percentage;
+    private Date submittedOn;
     private String companySid;
     private String createdBySid;
     private Date createdOn;

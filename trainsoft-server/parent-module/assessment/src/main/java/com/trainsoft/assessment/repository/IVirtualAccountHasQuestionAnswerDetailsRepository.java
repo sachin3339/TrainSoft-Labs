@@ -21,4 +21,6 @@ public interface IVirtualAccountHasQuestionAnswerDetailsRepository extends JpaRe
 
     @Query(value = "select * from virtual_account_has_question_answer_details where is_correct=true and virtual_account_id=:id",nativeQuery = true)
     List<VirtualAccountHasQuestionAnswerDetails> findListOfCorrectResponse(@Param("id") Integer virtualAccountId);
+    @Query(value = "select * from virtual_account_has_question_answer_details where virtual_account_id=:id",nativeQuery = true)
+    List<VirtualAccountHasQuestionAnswerDetails> findVirtualAccountHasQuestionAnswerDetailsByVirtualAccount(@Param("id") Integer virtualAccountId);
 }
