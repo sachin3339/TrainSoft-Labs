@@ -23,7 +23,7 @@ public class TrainingView extends BaseEntity {
     private int noOfBatches;
 
     @Column(name = "course_name")
-    private String courseName;
+    private String course;
 
     @Column(name = "course_sid")
     private String courseSid;
@@ -61,5 +61,6 @@ public class TrainingView extends BaseEntity {
     @Column(name="virual_account_sid")
     private String virtualAccountSid;
 
-
+/*    @Column(name="batch_participants_sid")
+    private String batchParticipantsSid;*/
 }

@@ -51,6 +51,7 @@ public class TrainingServiceImpl implements ITrainingService {
     ITrainingCourseRepository trainingCourseRepository;
     CustomRepositoyImpl customRepositoy;
     AWSUploadClient awsUploadClient;
+    ITrainsoftCustomRepository customRepository;
 
 
     @Override
@@ -156,7 +157,6 @@ public class TrainingServiceImpl implements ITrainingService {
             List<TrainingView> trainingViews = pagedResult.toList();
             return trainingViews.stream().map(trainingView -> {
                 TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
-                to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
                 to.setCreatedByVASid(trainingView.getCreatedBy() == null ? null : trainingView.getCreatedBy().getStringSid());
                 to.setUpdatedByVASid(trainingView.getUpdatedBy() == null ? null : trainingView.getUpdatedBy().getStringSid());
                 return to;
@@ -636,7 +636,6 @@ public class TrainingServiceImpl implements ITrainingService {
             List<TrainingView> trainingViews = pagedResult.toList();
             return trainingViews.stream().map(trainingView -> {
                 TrainingViewTO to = mapper.convert(trainingView, TrainingViewTO.class);
-                to.setCourse(trainingView.getCourseName() == null ? null : trainingView.getCourseName());
                 to.setCreatedByVASid(trainingView.getCreatedBy() == null ? null : trainingView.getCreatedBy().getStringSid());
                 to.setUpdatedByVASid(trainingView.getUpdatedBy() == null ? null : trainingView.getUpdatedBy().getStringSid());
                 return to;
@@ -646,5 +645,19 @@ public class TrainingServiceImpl implements ITrainingService {
             throw new ApplicationException("throwing exception while fetching the all training details based on roles");
         }
     }
+
+    @Override
+    public List<TrainingViewTO> getTrainingsForLeaner(String vASid,String companySid) {
+        try {
+            List<TrainingView> trainingList = customRepository.findTrainingsForLeaner(vASid,companySid);
+            return mapper.convertList(trainingList,TrainingViewTO.class);
+
+        } catch (Exception e) {
+            log.error("throwing exception while fetching the all training details based on learners",e.toString());
+            throw new ApplicationException("throwing exception while fetching the all training details based on roles");
+        }
+    }
+
+
 
 }
