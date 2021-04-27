@@ -2,8 +2,11 @@ package com.trainsoft.assessment.repository;
 
 import com.trainsoft.assessment.entity.VirtualAccountHasQuestionAnswerDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 public interface IVirtualAccountHasQuestionAnswerDetailsRepository extends JpaRepository<VirtualAccountHasQuestionAnswerDetails,Integer> {
@@ -23,4 +26,6 @@ public interface IVirtualAccountHasQuestionAnswerDetailsRepository extends JpaRe
     List<VirtualAccountHasQuestionAnswerDetails> findListOfCorrectResponse(@Param("id") Integer virtualAccountId);
     @Query(value = "select * from virtual_account_has_question_answer_details where virtual_account_id=:id",nativeQuery = true)
     List<VirtualAccountHasQuestionAnswerDetails> findVirtualAccountHasQuestionAnswerDetailsByVirtualAccount(@Param("id") Integer virtualAccountId);
+
+
 }
