@@ -372,18 +372,17 @@ public class AssessmentServiceImpl implements IAssessmentService
             virtualAccountHasQuizSetAssessment.setNumberOfAttemptedQuestion(counts[4]);
         List<VirtualAccountHasQuestionAnswerDetails> list = virtualAccountHasQuestionAnswerDetailsRepository.findListOfCorrectResponse(virtualAccount3.getId());
         Integer gainMarks=0;
-        for (VirtualAccountHasQuestionAnswerDetails va:list){
+        for (VirtualAccountHasQuestionAnswerDetails va:list)
             gainMarks=gainMarks+va.getQuestionPoint();
-        }
         virtualAccountHasQuizSetAssessment.setGainMarks(gainMarks);
         virtualAccountHasQuizSetAssessment.setSubmittedOn(new Date());
        virtualAccountHasQuizSetAssessmentRepository.save(virtualAccountHasQuizSetAssessment);
+       virtualAccountHasQuizSetSessionTimingRepository.setEndTimeForAssessment(virtualAccount3.getId());
         VirtualAccountHasQuizSetAssessment virtualAccountHasQuizSetAssessment1 = virtualAccountHasQuizSetAssessmentRepository
                 .findByVirtualAccountId(virtualAccount3.getId());
         Integer gainMarks1 = virtualAccountHasQuizSetAssessment1.getGainMarks();
         Integer totalMarks = virtualAccountHasQuizSetAssessment1.getTotalMarks();
-        double percentage=(gainMarks1*100/totalMarks);;
-        //Double percentage= Double.valueOf(gainMarks1*100/totalMarks);
+        double percentage=((double)gainMarks1*100/(double)totalMarks );
         virtualAccountHasQuizSetAssessment1.setPercentage(percentage);
         virtualAccountHasQuizSetAssessmentRepository.save(virtualAccountHasQuizSetAssessment1);
         VirtualAccountHasQuizSetAssessmentTO vto = new VirtualAccountHasQuizSetAssessmentTO();
@@ -542,6 +541,8 @@ public class AssessmentServiceImpl implements IAssessmentService
                 vTo.getQuestion().setStatus(question.get().getStatus());
                 vTo.getQuestion().setQuestionType(question.get().getQuestionType());
                 vTo.getQuestion().setDifficulty(question.get().getDifficulty());
+                vTo.getQuestion().setAnswerExplanation(question.get().getAnswerExplanation());
+                vTo.getQuestion().setCompanySid(question.get().getCompany().getStringSid());
                 List<Answer> answer = answerRepository.findAnswerByQuestionId(question.get().id);
                 vTo.getQuestion().setAnswer(mapper.convertList(answer,AnswerTo.class));
                 vTo.setCorrect(vd.isCorrect());
