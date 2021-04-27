@@ -57,4 +57,7 @@ public class Question extends BaseEntity{
     @Column(name = "answer_explanation")
     private String answerExplanation;
 
+    @Column(name = "negative_point")
+    private Integer negativeQuestionPoint;
+
 }
