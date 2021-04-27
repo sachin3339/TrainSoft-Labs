@@ -91,11 +91,12 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.getInstructionsForAssessment(instructionsRequestTO));
     }
 
-    @GetMapping("start/assessment/{sid}")
+    @GetMapping("start/assessment/{sid}/{vSid}")
     @ApiOperation(value = "start Assessment",notes = "API to get questions and answers for starting Assessment.")
     public ResponseEntity<?> startAssessment(
-            @ApiParam("Quiz Set Sid")@PathVariable("sid") String quizSetSid){
-      return ResponseEntity.ok(assessmentService.startAssessment(quizSetSid));
+            @ApiParam("Quiz Set Sid")@PathVariable("sid") String quizSetSid,
+            @ApiParam("Virtual Account Sid")@PathVariable("vSid") String virtualAccountSid){
+      return ResponseEntity.ok(assessmentService.startAssessment(quizSetSid,virtualAccountSid));
     }
 
     @PostMapping("submit/answer")
@@ -134,5 +135,17 @@ public class AssessmentController {
     {
         return ResponseEntity.ok(assessmentService.generateAssessmentURL(assessmentSid,request));
     }
-
+   @GetMapping("get/assessment/score/{qSid}/{vSid}")
+   @ApiOperation(value = "Score Board",notes = "API to get scores for Assessment given.")
+    public ResponseEntity<?>getScoreBoardForAssessment(
+           @ApiParam("Quiz Set Sid") @PathVariable("qSid") String quizSetSid,
+          @ApiParam("Virtual Account Sid") @PathVariable("vSid") String virtualAccountSid){
+      return ResponseEntity.ok(assessmentService.getScoreBoard(quizSetSid,virtualAccountSid));
+    }
+    @GetMapping("get/user/assessment/responses/{sid}")
+    @ApiOperation(value = "get user assessment responses.",notes = "API to get User submitted Assessment Question Answers details.")
+    public ResponseEntity<?> findUserAssessmentRespones(
+            @ApiParam("Virtual Account sid")@PathVariable("sid") String virtualAccountSid){
+    return ResponseEntity.ok(assessmentService.findUserAssessmentResponses(virtualAccountSid));
+    }
 }

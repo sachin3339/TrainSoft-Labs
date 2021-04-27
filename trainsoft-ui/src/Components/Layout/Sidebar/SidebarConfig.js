@@ -106,6 +106,13 @@ export const AdminConfig = [
         disabled: true,
         role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]
     },
+    {
+        icon: ICN_SUPPORT_HOME,
+        title: "Assessment",
+        pathname: "topicAssesments",
+        disabled: true,
+        role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]
+    },
     // {
     //     icon: ICN_VSCODE,
     //     title: "Class",
