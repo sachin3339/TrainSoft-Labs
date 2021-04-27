@@ -10,9 +10,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @AllArgsConstructor
@@ -64,4 +67,13 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.displayQuestionsForAssessment());
     }
 
+    @PostMapping("question/bulkupload")
+    @ApiOperation(value = "bulkQuestionAndAnswerUpload", notes = "API to handle Question and Answer upload in bulk using csv file")
+    public ResponseEntity<?> bulkQuestionAndAnswerUpload(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "upload Question and Answer csv file", required = true) @RequestParam("file") @NonNull MultipartFile multipartFile)
+    {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return  ResponseEntity.ok(questionService.processQuestionAnswerInBulk(multipartFile,jwt));
+    }
 }
