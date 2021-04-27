@@ -36,4 +36,7 @@ public class VirtualAccountHasQuestionAnswerDetails extends BaseEntity{
     @Column(name = "created_on")
     private Date  createdOn;
 
+    @Column(name = "question_point")
+    private Integer questionPoint;
+
 }

@@ -48,10 +48,10 @@ public class Assessment extends BaseEntity{
     private boolean isQuestionRandomize;
 
     @Column(name = "duration")
-    private int duration;
+    private Integer duration;
 
     @Column(name = "is_pause_enable")
-    private int isPauseEnable;
+    private boolean isPauseEnable;
 
     @Column(name="is_payment_received")
     private boolean isPaymentReceived;
@@ -99,5 +99,13 @@ public class Assessment extends BaseEntity{
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "quiz_id", referencedColumnName = "id",nullable = false)
     private Topic topicId;
+
+    @Column(name = "url")
+    private String url;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "tag", referencedColumnName = "id",nullable = false)
+    private Tag tagId;
+
 
 }

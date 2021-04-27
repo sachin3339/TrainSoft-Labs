@@ -44,7 +44,7 @@ public class AssessmentQuestion extends BaseEntity
 
     @ManyToOne
     @JoinColumn(name = "quiz_set_id", referencedColumnName = "id")
-    private Topic topicId;
+    private Assessment assessmentId;
 
     @Column(name = "created_on")
     private Date createdOn;
