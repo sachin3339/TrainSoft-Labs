@@ -12,6 +12,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AssessmentQuestionTo extends BaseTO
 {
+    private static final long serialVersionUID = 2524102894707472237L;
     private String status;
     private int questionNumber;
     private boolean isAnswerRandomize;
@@ -19,6 +20,6 @@ public class AssessmentQuestionTo extends BaseTO
     private String CompanySid;
     private String virtualAccountSid;
     private List<String> questionSidList;
-    private String topicSid;
-    private Question questionId;
+    private String assessmentSid;
+    private QuestionTo questionId;
 }

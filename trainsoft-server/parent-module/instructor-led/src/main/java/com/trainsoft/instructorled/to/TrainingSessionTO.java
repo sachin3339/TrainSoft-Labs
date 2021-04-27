@@ -12,20 +12,22 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TrainingSessionTO extends BaseTO {
 
-    private String agendaName;
-    private String agendaDescription;
+    private String topic;
+    private String agenda;
     private InstructorEnum.Status status;
     private String assets;
     private String recording;
-    private long sessionDate;
-    private long startTime;
-    private long endTime;
-    private long createdOn;
+    private Long startTime;
+    private Long endTime;
+    private Long createdOn;
     private String courseSid;
     private String trainingSid;
     private String createdByVASid;
-    private long updatedOn;
+    private Long updatedOn;
     private String updatedByVASid;
     private String companySid;
     private String courseSessionSid;
+    private String meetingInfo;
+    private Integer duration;
+    private String  schedule_for;
 }

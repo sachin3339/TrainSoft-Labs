@@ -16,14 +16,15 @@ public interface ITrainingService {
     boolean deleteTrainingBySid(String trainingSid, String deletedBySid,String companySid);
 
 
-    TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO);
-    TrainingSessionTO updateTrainingSession(TrainingSessionTO trainingSessionTO);
+    //TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO);
+    TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO,String instructorSid);
+    TrainingSessionTO updateTrainingSession(TrainingSessionTO trainingSessionTO,String meetingId);
     TrainingSessionTO getTrainingSessionBySid(String trainingSessionSid);
     List<TrainingSessionTO> getTrainingSessionByTrainingSid(String trainingSid,String companySid);
     List<TrainingSessionTO> getTrainingSessionByTrainingSidAndCourseSid(String trainingSid,String courseSid,String companySid);
     List<TrainingSessionTO> getTrainingSessionsByName(String trainingSid,String name,String companySid);
     boolean deleteTrainingSessionBySid(String trainingSessionSid, String deletedBySid);
-    void updateTrainingSessionStatus(String sessionSid,String status,String updatedBy);
+    void updateTrainingSessionStatus(String sessionSid,String status,String updatedBy,String meetingId);
 
 
     String generatePassword();
@@ -35,6 +36,7 @@ public interface ITrainingService {
     boolean validateEmail(String email);
     boolean validateBatch(String batchName, String companySid);
     void updateVirtualAccountStatus(String virtualAccountSid, String status);
-    public List<TrainingViewTO> getTrainingsOnRoleWithPagination(int pageNo, int pageSize,String companySid,String vASid);
+    List<TrainingViewTO> getTrainingsOnRoleWithPagination(int pageNo, int pageSize,String companySid,String vASid);
+    List<TrainingViewTO> getTrainingsForLeaner(String vASid,String companySid);
 
 }

@@ -2,6 +2,7 @@ package com.trainsoft.assessment.service;
 
 import com.trainsoft.assessment.to.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface IAssessmentService
@@ -13,11 +14,20 @@ public interface IAssessmentService
     AssessmentTo getAssessmentBySid(String assessmentSid);
     List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid);
 
-    AssessmentTo getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
+    List<AssessmentTo> getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
 
-    List<AssessmentQuestionTo> startAssessment(String quizSetSid);
+    List<AssessmentQuestionTo> startAssessment(String quizSetSid,String virtualAccountSid);
 
-     VirtualAccountHasQuestionAnswerDetailsTO submitAnswer(VirtualAccountHasQuestionAnswerDetailsTO request);
+     VirtualAccountHasQuestionAnswerDetailsTO submitAnswer(SubmitAnswerRequestTO request);
 
-     List<VirtualAccountHasQuestionAnswerDetailsTO> reviewQuestionsAndAnswers(String virtualAccountSid);
+     VirtualAccountHasQuizSetAssessmentTO submitAssessment(SubmitAssessmentTO request);
+
+    List<VirtualAccountHasQuestionAnswerDetailsTO> reviewQuestionsAndAnswers(String virtualAccountSid);
+    String removeAssociatedQuestionFromAssessment(String questionSid);
+    String generateAssessmentURL(String assessmentSid, HttpServletRequest request);
+
+    ScoreBoardTO getScoreBoard(String quizSetSid,String virtualAccountSid);
+
+    List<VirtualAccountHasQuestionAnswerDetailsTO> findUserAssessmentResponses(String virtualAccountSid);
+
 }

@@ -116,4 +116,13 @@ public class BatchController {
         List<UserTO> addParticipants = batchService.createMultipleUserWithBatch(batchSid,vASid, jwt.getCompanySid());
         return ResponseEntity.ok(addParticipants);
     }
+
+    @GetMapping("batch/accounts/{batchSid}")
+    @ApiOperation(value = "getBatchesByName", notes = "Get list of batch by Batch name")
+    public ResponseEntity<?> getVirtualAccount(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Batch sid", required = true) @PathVariable("batchSid") String batchSid) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(batchService.getActiveVirtualAccountWithBatch(batchSid, jwt.getCompanySid()));
+    }
 }
