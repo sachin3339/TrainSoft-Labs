@@ -54,4 +54,7 @@ public class Question extends BaseEntity{
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
 
+    @Column(name = "answer_explanation")
+    private String answerExplanation;
+
 }
