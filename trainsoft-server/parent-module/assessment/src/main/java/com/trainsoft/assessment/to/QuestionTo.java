@@ -22,4 +22,5 @@ public class QuestionTo  extends BaseTO
    private AssessmentEnum.QuestionDifficulty difficulty;
    private List<AnswerTo> answer;
    private String answerExplanation;
+   private int negativeQuestionPoint;
 }
