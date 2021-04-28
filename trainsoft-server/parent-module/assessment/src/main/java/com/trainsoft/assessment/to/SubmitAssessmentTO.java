@@ -9,13 +9,6 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SubmitAssessmentTO implements Serializable {
     private static final long serialVersionUID = -574003405524374881L;
-
-    private String quizSid;
     private String quizSetSid;
-    private String companySid;
-    private String createdBySid;
-    private long createdOn;
-    private String updatedBySid;
-    private long updatedOn;
     private String virtualAccountSid;
 }
