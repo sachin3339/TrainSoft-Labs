@@ -15,4 +15,5 @@ public class VirtualAccountTO extends BaseTO{
     private InstructorEnum.Status status;
     private String companySid;
     private String appuserSid;
+    private String categoryTopicValue;
 }
