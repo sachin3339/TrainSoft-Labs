@@ -24,6 +24,8 @@ public class ApplicationProperties {
         private String userId;
         private String password;
         private Integer type;
-        private String settingSid;
+        private String zoomSettingSid;
+        private String companySid;
+        private String departmentSid;
     }
 }

@@ -3,7 +3,7 @@ package com.trainsoft.instructorled.value;
 public class InstructorEnum {
 
     public enum DepartmentRole {
-        INSTRUCTOR,LEARNER,SUPERVISOR;
+        INSTRUCTOR,LEARNER,SUPERVISOR,ASSESS_USER;
     }
 
     public enum VirtualAccountRole {
