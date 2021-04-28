@@ -3,6 +3,7 @@ package com.trainsoft.assessment.service.impl;
 import com.google.common.io.Files;
 import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.customexception.ApplicationException;
+import com.trainsoft.assessment.customexception.DuplicateRecordException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
 import com.trainsoft.assessment.entity.*;
@@ -17,6 +18,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -59,6 +63,11 @@ public class QuestionServiceImpl implements IQuestionService {
                         (BaseEntity.hexStringToByteArray(questionTo.getCreatedByVirtualAccountSid()));
                 // question details to save
                 Question question = mapper.convert(questionTo, Question.class);
+                if(isDuplicateRecord(question))
+                {
+                    log.error("Duplicate question, Saving failed :" + question.getName());
+                    throw new DuplicateRecordException("This question is already exist : "+question.getName());
+                }
                 question.generateUuid();
                 question.setCreatedBy(virtualAccount);
                 question.setCompany(virtualAccount.getCompany());
@@ -87,9 +96,15 @@ public class QuestionServiceImpl implements IQuestionService {
                   return null;
             } else
                 throw new RecordNotFoundException("No record found");
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
+            if(e instanceof DuplicateRecordException)
+            {
+                throw new ApplicationException(((DuplicateRecordException) e).devMessage);
+            }
             log.error("throwing exception while creating the Question", e.toString());
-            throw new ApplicationException("Something went wrong while creating the Question" + e.getMessage());
+            throw new ApplicationException("Something went wrong while creating the Question :" + e.getMessage());
         }
     }
 
@@ -172,6 +187,7 @@ public class QuestionServiceImpl implements IQuestionService {
                 return readCSV(multipartFile,jwtTokenTO);
             }
         }
+        log.error("Check Csv File, something is missing");
         return null;
     }
 
@@ -186,7 +202,7 @@ public class QuestionServiceImpl implements IQuestionService {
             for(CSVRecord record : parser)
             {
                 QuestionTo questionTo = new QuestionTo();
-                if ( validateCsvFields(record))
+                if (validateCsvFields(record) || !validateCsvFieldValues(record))
                 {
                    errorList.add(record);
                 }
@@ -198,6 +214,7 @@ public class QuestionServiceImpl implements IQuestionService {
                     setQuestionDifficulty(record.get("question_difficulty").trim(), questionTo);
                     questionTo.setNegativeQuestionPoint(Integer.parseInt(record.get("negative_question_point").trim()));
                     questionTo.setAnswerExplanation(record.get("answer_explanation").trim());
+                    questionTo.setQuestionType(AssessmentEnum.QuestionType.MCQ);
                     List<AnswerTo> answerToList=getAnswers(record);
                     if(CollectionUtils.isNotEmpty(answerToList))
                     questionTo.setAnswer(answerToList);
@@ -223,6 +240,11 @@ public class QuestionServiceImpl implements IQuestionService {
             List<Question> questionList = new ArrayList<>();
             for (QuestionTo questionTo : questionToList) {
                 Question question = mapper.convert(questionTo, Question.class);
+                if(isDuplicateRecord(question))
+                {
+                    log.error("Duplicate question, Not saving this question :"+question.getName());
+                    continue;
+                }
                 question.generateUuid();
                 question.setCreatedBy(virtualAccount);
                 question.setCompany(virtualAccount.getCompany());
@@ -244,22 +266,32 @@ public class QuestionServiceImpl implements IQuestionService {
                     questionList.add(question);
                 }
             }
-            questionRepository.saveAll(questionList);
+            if(CollectionUtils.isNotEmpty(questionList))
+            {
+                questionRepository.saveAll(questionList);
+                log.info("Records saved successfully !");
+            }
         }catch (Exception exp)
         {
             log.error("throwing exception while processing Question and Answer in Bulk", exp.toString());
-            throw new ApplicationException("Something went wrong while creating the Question and Answer in Bulk" + exp.getMessage());
+            throw new ApplicationException("Something went wrong while creating the Question and Answer in Bulk : "+exp.getMessage());
         }
     }
 
     private boolean validateCsvFields(CSVRecord record)
     {
        return record.get("name").isEmpty() || record.get("description").isEmpty() || record.get("question_point").isEmpty()
-                || record.get("tag_name").isEmpty() || record.get("answer_explanation").isEmpty()
+                || record.get("tag_name").isEmpty() || record.get("answer_explanation").isEmpty() || record.get("negative_question_point").isEmpty()
                 || record.get("answer_is_correct_A").isEmpty() || record.get("answer_is_correct_B").isEmpty()
                 || record.get("answer_is_correct_C").isEmpty() || record.get("answer_is_correct_D").isEmpty()
                 || record.get("answer_option_value_A").isEmpty() || record.get("answer_option_value_B").isEmpty()
                 || record.get("answer_option_value_C").isEmpty() || record.get("answer_option_value_D").isEmpty();
+    }
+
+    private boolean validateCsvFieldValues(CSVRecord record)
+    {
+        return StringUtils.isNumeric(record.get("question_point").trim())
+                || StringUtils.isNumeric(record.get("negative_question_point").trim());
     }
 
     private List<AnswerTo> getAnswers(CSVRecord record)
@@ -280,7 +312,7 @@ public class QuestionServiceImpl implements IQuestionService {
             int i = 0;
             for(AnswerTo answerTo : answerToList)
             {
-                answerTo.setCorrect(record.get(answerOptionCorrect[i++]).equals("1")?Boolean.TRUE:Boolean.FALSE);
+                answerTo.setCorrect(record.get(answerOptionCorrect[i++]).equalsIgnoreCase("True")?Boolean.TRUE:Boolean.FALSE);
             }
         }
         return answerToList;
@@ -294,5 +326,18 @@ public class QuestionServiceImpl implements IQuestionService {
             questionTo.setDifficulty(AssessmentEnum.QuestionDifficulty.INTERMEDIATE);
         else if(questionDifficulty.equalsIgnoreCase(AssessmentEnum.QuestionDifficulty.EXPERT.toString()))
             questionTo.setDifficulty(AssessmentEnum.QuestionDifficulty.EXPERT);
+    }
+
+    // To avoid duplicates
+    private boolean isDuplicateRecord(Question question)
+    {
+            String name = question.getName();
+            Question existingQuestion = questionRepository.findQuestionsByName(name);
+            if (existingQuestion != null && name.equalsIgnoreCase(existingQuestion.getName()))
+            {
+                question.setSid(existingQuestion.getSid());
+                return Boolean.TRUE;
+            }
+            return Boolean.FALSE;
     }
 }
