@@ -2,6 +2,7 @@ package com.trainsoft.assessment.service.impl;
 
 import com.trainsoft.assessment.commons.CommonUtils;
 import com.trainsoft.assessment.customexception.ApplicationException;
+import com.trainsoft.assessment.customexception.FunctionNotAllowedException;
 import com.trainsoft.assessment.customexception.InvalidSidException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
@@ -236,6 +237,12 @@ public class AssessmentServiceImpl implements IAssessmentService
 
     @Override
     public List<AssessmentQuestionTo> startAssessment(String quizSetSid,String virtualAccountSid) {
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
+        if (virtualAccount==null) throw new InvalidSidException("Invalid virtual Account Sid.");
+        VirtualAccountHasQuizSetSessionTiming virtualAccountHasQuizSetSessionTiming1 = virtualAccountHasQuizSetSessionTimingRepository
+                .findByVirtualAccountId(virtualAccount.getId());
+        if (virtualAccountHasQuizSetSessionTiming1!=null)
+            throw new FunctionNotAllowedException("you already have started your assessment or your assessment is submitted already.");
         Assessment assessment = assessmentRepository
                 .findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         if (assessment!=null){
@@ -258,8 +265,6 @@ public class AssessmentServiceImpl implements IAssessmentService
             });
             VirtualAccountHasQuizSetSessionTiming virtualAccountHasQuizSetSessionTiming = new VirtualAccountHasQuizSetSessionTiming();
             virtualAccountHasQuizSetSessionTiming.generateUuid();
-            VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
-            if (virtualAccount!=null)
                 virtualAccountHasQuizSetSessionTiming.setVirtualAccountId(virtualAccount);
             virtualAccountHasQuizSetSessionTiming.setQuizSetId(assessment);
             virtualAccountHasQuizSetSessionTiming.setQuizId(assessment.getTopicId());
@@ -347,6 +352,12 @@ public class AssessmentServiceImpl implements IAssessmentService
 
     @Override
     public VirtualAccountHasQuizSetAssessmentTO submitAssessment(SubmitAssessmentTO request) {
+        VirtualAccount virtualAccount = virtualAccountRepository
+                .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(request.getVirtualAccountSid()));
+        if (virtualAccount==null) throw new InvalidSidException("invalid virtual Account Sid");
+       VirtualAccountHasQuizSetAssessment checkEntry= virtualAccountHasQuizSetAssessmentRepository
+               .findByVirtualAccountId(virtualAccount.getId());
+       if (checkEntry!=null)throw new FunctionNotAllowedException("you have already submitted your Assessment.");
         VirtualAccountHasQuizSetAssessment virtualAccountHasQuizSetAssessment = new VirtualAccountHasQuizSetAssessment();
         virtualAccountHasQuizSetAssessment.generateUuid();
         Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(request.getQuizSetSid()));
@@ -360,9 +371,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                     .setUpdatedBy(assessment.getUpdatedBy());
             if (virtualAccountHasQuizSetAssessment.getUpdatedOn()!=null) virtualAccountHasQuizSetAssessment
                     .setUpdatedOn(assessment.getUpdatedOn());
-        VirtualAccount virtualAccount = virtualAccountRepository
-                .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(request.getVirtualAccountSid()));
-        if (virtualAccount!=null)virtualAccountHasQuizSetAssessment.setVirtualAccountId(virtualAccount);
+        virtualAccountHasQuizSetAssessment.setVirtualAccountId(virtualAccount);
         Integer[] counts = findCountsForAssessmentGiven(assessment.getId(), virtualAccount.getId());
             virtualAccountHasQuizSetAssessment.setTotalNumberOfQuestions(counts[0]);
             virtualAccountHasQuizSetAssessment.setTotalMarks(counts[1]);

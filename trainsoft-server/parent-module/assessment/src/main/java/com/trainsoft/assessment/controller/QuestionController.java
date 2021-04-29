@@ -6,9 +6,7 @@ import com.trainsoft.assessment.service.IQuestionService;
 import com.trainsoft.assessment.to.InstructionsRequestTO;
 import com.trainsoft.assessment.to.QuestionTo;
 import com.trainsoft.assessment.to.QuizSetTO;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -64,4 +62,24 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.displayQuestionsForAssessment());
     }
 
+    @PutMapping("update/question")
+    @ApiOperation(value = "update Question with it's associated answers",
+            notes = "API to update question and it's associated answers.")
+    public ResponseEntity<?> updateQuestion(
+            @ApiParam("update question payload")@RequestBody QuestionTo request){
+      return   ResponseEntity.ok(questionService.updateQuestion(request));
+    }
+
+    @DeleteMapping("delete/question/{sid}")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "question and it's associated answers deleted successfully."),
+    @ApiResponse(code = 403,message = "Given question Sid is associated with an Assessment.Request can't be processed."),
+    @ApiResponse(code = 401,message = "Invalid Question Sid.")})
+    @ApiOperation(value = "delete question with associated answer",
+            notes = "API to delete question with it's associated answers.")
+    public ResponseEntity<?> deleteQuestion(
+            @ApiParam("Question Sid")@PathVariable("sid") String questionSid){
+        questionService.deleteQuestion(questionSid);
+        return ResponseEntity.ok().build();
+    }
 }

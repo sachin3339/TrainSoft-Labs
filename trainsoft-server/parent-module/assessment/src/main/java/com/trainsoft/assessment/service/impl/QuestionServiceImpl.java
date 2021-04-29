@@ -1,6 +1,7 @@
 package com.trainsoft.assessment.service.impl;
 
 import com.trainsoft.assessment.customexception.ApplicationException;
+import com.trainsoft.assessment.customexception.FunctionNotAllowedException;
 import com.trainsoft.assessment.customexception.InvalidSidException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
@@ -30,6 +31,8 @@ public class QuestionServiceImpl implements IQuestionService {
     private final ICompanyRepository companyRepository;
     private final IQuestionRepository questionRepository;
     private final IQuestionTypeRepository questionTypeRepository;
+    private  final IAnswerRepository answerRepository;
+    private final IAssessmentQuestionRepository assessmentQuestionRepository;
 
     @Override
     public QuestionTo createQuestionAndAnswer(QuestionTo questionTo) {
@@ -106,6 +109,7 @@ public class QuestionServiceImpl implements IQuestionService {
         return Collections.EMPTY_LIST;
     }
 
+
     @Override
     public QuestionTo getAnswersQuestionBySid(String questionSid)
     {
@@ -142,4 +146,58 @@ public class QuestionServiceImpl implements IQuestionService {
         }
     }
 
+    @Override
+    public QuestionTo updateQuestion(QuestionTo request) {
+        Question question = questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(request.getSid()));
+        if (question==null) throw new InvalidSidException("invalid question sid.");
+        List<Answer> answer = answerRepository.findAnswerByQuestionId(question.getId());
+        question.setName(request.getName());
+        question.setDifficulty(request.getDifficulty());
+        question.setQuestionType(request.getQuestionType());
+        question.setTechnologyName(request.getTechnologyName());
+        question.setQuestionPoint(request.getQuestionPoint());
+        List<AnswerTo> answerTO = new ArrayList<>();
+        for (Answer ar : answer) {
+            for (AnswerTo re : request.getAnswer()) {
+                if (ar.getStringSid().equals(re.getSid())) {
+                    ar.setAnswerOptionValue(re.getAnswerOptionValue());
+                    ar.setAnswerOption(re.getAnswerOption());
+                    ar.setCorrect(re.isCorrect());
+                    answerTO.add(re);
+                }
+            }
+        }
+            answerRepository.saveAll(answer);
+            question.setAnswers(answer);
+        question.setAnswerExplanation(request.getAnswerExplanation());
+        question.setDescription(request.getDescription());
+        questionRepository.save(question);
+        QuestionTo questionTo = new QuestionTo();
+        questionTo.setSid(question.getStringSid());
+        questionTo.setName(question.getName());
+        questionTo.setDescription(request.getDescription());
+        questionTo.setTechnologyName(question.getTechnologyName());
+        questionTo.setCompanySid(question.getCompany().getStringSid());
+        questionTo.setQuestionPoint(question.getQuestionPoint());
+        questionTo.setQuestionType(question.getQuestionType());
+        questionTo.setCreatedByVirtualAccountSid(question.getCreatedBy().getStringSid());
+        questionTo.setAnswer(mapper.convertList(answer,AnswerTo.class));
+        questionTo.setDifficulty(question.getDifficulty());
+        questionTo.setAnswerExplanation(question.getAnswerExplanation());
+        questionTo.setStatus(question.getStatus());
+        questionTo.setNegativeQuestionPoint(questionTo.getNegativeQuestionPoint());
+        return questionTo;
+    }
+
+    @Override
+    public void deleteQuestion(String questionSid) {
+        Question question= questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid));
+        if (question==null) throw new InvalidSidException("invalid question sid.");
+        Optional<AssessmentQuestion> assessmentQuestion = assessmentQuestionRepository.findAssessmentQuestionByQuestionId(question);
+        if (assessmentQuestion.isPresent()) throw new FunctionNotAllowedException("can not delete a quiz set associated question");
+              questionRepository.delete(question);
+            List<Answer> answer = answerRepository.findAnswerByQuestionId(question.getId());
+             answerRepository.deleteAll(answer);
+            return;
+    }
 }

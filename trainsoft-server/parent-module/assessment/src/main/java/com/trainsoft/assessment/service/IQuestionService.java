@@ -10,4 +10,8 @@ public interface IQuestionService {
     List<QuestionTo> getAllQuestions();
     QuestionTo getAnswersQuestionBySid(String questionSid);
     List<QuestionTo> displayQuestionsForAssessment();
+    QuestionTo updateQuestion(QuestionTo request);
+
+    void deleteQuestion(String question);
+
 }
