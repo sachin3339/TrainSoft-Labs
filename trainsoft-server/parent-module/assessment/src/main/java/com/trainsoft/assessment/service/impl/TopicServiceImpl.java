@@ -36,7 +36,6 @@ public class TopicServiceImpl implements ITopicService {
     public TopicTo createTopic(TopicTo topicTo)
     {
         try {
-            if (topicTo != null) {
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
                         (BaseEntity.hexStringToByteArray(topicTo.getCreatedByVirtualAccountSid()));
                 Topic topic = mapper.convert(topicTo, Topic.class);
@@ -45,12 +44,9 @@ public class TopicServiceImpl implements ITopicService {
                 topic.setCreatedOn(new Date(Instant.now().toEpochMilli()));
                 topic.setCompany(virtualAccount.getCompany());
                 return mapper.convert(topicRepository.save(topic), TopicTo.class);
-            }
-            else
-                throw new RecordNotFoundException("Record not saved");
         }catch (Exception e) {
             log.error("throwing exception while creating the Topic", e.toString());
-            throw new ApplicationException("Something went wrong while creating the Topic" + e.getMessage());
+            throw new ApplicationException("Something went wrong while creating the Topic, please check Topic name may be duplicate: "+e.getMessage());
         }
     }
 

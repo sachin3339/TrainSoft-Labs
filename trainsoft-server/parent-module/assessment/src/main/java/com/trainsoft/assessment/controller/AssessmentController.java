@@ -48,10 +48,10 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.getAllCategories());
     }
 
-    @PostMapping("/assessments")
+    @GetMapping("/assessments/{tsid}")
     @ApiOperation(value = "getAssessmentsByTopic", notes = "API to get Assessments based on Topic.")
     public ResponseEntity<?> getAssessmentsByTopic(
-            @ApiParam(value = "Topic Sid", required = true) @RequestBody String topicSid)
+            @ApiParam("Topic sid")@PathVariable("tsid") String topicSid)
     {
         return ResponseEntity.ok(assessmentService.getAssessmentsByTopic(topicSid));
     }
@@ -68,18 +68,18 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.associateSelectedQuestionsToAssessment(assessmentQuestionTo));
     }
 
-    @PostMapping("/assessment")
+    @GetMapping("/assessment/{asid}")
     @ApiOperation(value = "", notes = "API to get Assessment.")
     public ResponseEntity<?> getAssessmentBySid(
-            @ApiParam(value = "Assessment Sid", required = true) @RequestBody String assessmentSid)
+            @ApiParam("Assessment sid")@PathVariable("asid") String assessmentSid)
     {
         return ResponseEntity.ok(assessmentService.getAssessmentBySid(assessmentSid));
     }
 
-    @PostMapping("/assessment/Questions")
+    @GetMapping("/assessment/Questions/{asid}")
     @ApiOperation(value = "", notes = "API to get Assessment.")
     public ResponseEntity<?> getAssessmentQuestions(
-            @ApiParam(value = "Assessment Sid", required = true) @RequestBody String assessmentSid)
+            @ApiParam(value = "Assessment Sid", required = true) @PathVariable("asid") String assessmentSid)
     {
         return ResponseEntity.ok(assessmentService.getAssessmentQuestionsBySid(assessmentSid));
     }
@@ -120,21 +120,22 @@ public class AssessmentController {
      return ResponseEntity.ok(assessmentService.submitAssessment(request));
   }
 
-    @DeleteMapping("/remove/associated/question")
+    @DeleteMapping("/remove/associated/question/{qsid}")
     @ApiOperation(value = "Delete associated question",notes = "API to delete associated question based on given question sid.")
     public ResponseEntity<?> removeAssociatedQuestionFromAssessment(
-            @ApiParam(value = "Question Sid", required = true) @RequestBody String questionSid)
+            @ApiParam(value = "Question Sid", required = true) @PathVariable("qsid") String questionSid)
     {
        return ResponseEntity.ok(assessmentService.removeAssociatedQuestionFromAssessment(questionSid));
     }
 
-    @PostMapping("generate/assessment/url")
+    @GetMapping("generate/assessment/url/{aSid}")
     @ApiOperation(value = "Generate assessment URL",notes =" API to generate assessment URL")
     public ResponseEntity<?> generateAssessmentURL(
-            @Param ("Assessment Sid")@RequestBody String  assessmentSid,HttpServletRequest request)
+            @ApiParam("Assessment Sid") @PathVariable("aSid") String assessmentSid,HttpServletRequest request)
     {
         return ResponseEntity.ok(assessmentService.generateAssessmentURL(assessmentSid,request));
     }
+
    @GetMapping("get/assessment/score/{qSid}/{vSid}")
    @ApiOperation(value = "Score Board",notes = "API to get scores for Assessment given.")
     public ResponseEntity<?>getScoreBoardForAssessment(

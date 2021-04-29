@@ -109,16 +109,17 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public List<QuestionTo> getAllQuestions()
+    public List<QuestionTo> getAllQuestions(JWTTokenTO jwtTokenTO)
     {
         try
         {
-            List<Question> questionsList = questionRepository.findAll();
+            Company company=getCompany(jwtTokenTO.getCompanySid());
+            List<Question> questionsList = questionRepository.findQuestionsByCompany(company);
             if (CollectionUtils.isNotEmpty(questionsList)) {
                 return mapper.convertList(questionsList, QuestionTo.class);
             }
             else
-                throw new RecordNotFoundException("No record found");
+                throw new RecordNotFoundException("No records found");
         } catch (Exception exp)
         {
             log.error("throwing exception while getting all Questions", exp.toString());
@@ -127,9 +128,9 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public List<QuestionTo> displayQuestionsForAssessment()
+    public List<QuestionTo> displayQuestionsForAssessment(JWTTokenTO jwtTokenTO)
     {
-        List<Question> questionList=questionRepository.findQuestionBySidNotInAssessments();
+        List<Question> questionList=questionRepository.findQuestionBySidNotInAssessments(getCompany(jwtTokenTO.getCompanySid()));
         if(CollectionUtils.isNotEmpty(questionList))
         {
            return mapper.convertList(questionList,QuestionTo.class);
@@ -339,5 +340,12 @@ public class QuestionServiceImpl implements IQuestionService {
                 return Boolean.TRUE;
             }
             return Boolean.FALSE;
+    }
+
+    private Company getCompany(String companySid){
+        Company c=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        Company company=new Company();
+        company.setId(c.getId());
+        return company;
     }
 }

@@ -45,14 +45,16 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getAllQuestionTypes());
     }
 
-    @PostMapping("/questions")
-    @ApiOperation(value = "getAllQuestions", notes = "API to get all Questions.")
-    public ResponseEntity<?> getAllQuestions()
+    @GetMapping("/questions")
+    @ApiOperation(value = "getAllQuestions", notes = "API to get all Questions based on Company.")
+    public ResponseEntity<?> getAllQuestions(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token)
     {
-        return ResponseEntity.ok(questionService.getAllQuestions());
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(questionService.getAllQuestions(jwt));
     }
 
-    @PostMapping("/question/{questionSid}")
+    @GetMapping("/question/{questionSid}")
     @ApiOperation(value = "getQuestionAndAssociatedAnswers", notes = "API to get Question and Associated Answers based on selected Question.")
     public ResponseEntity<?> getQuestionAndAssociatedAnswers(
             @ApiParam(value = "Question Sid", required = true) @PathVariable("questionSid") String questionSid)
@@ -60,11 +62,13 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getAnswersQuestionBySid(questionSid));
     }
 
-    @PostMapping("display/assessment/question")
+    @GetMapping("display/assessment/question")
     @ApiOperation(value = "displayQuestionsForAssessment", notes = "API to get all Questions which are not associated to any Assessments.")
-    public ResponseEntity<?> displayQuestionsForAssessment()
+    public ResponseEntity<?> displayQuestionsForAssessment(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token)
     {
-        return ResponseEntity.ok(questionService.displayQuestionsForAssessment());
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(questionService.displayQuestionsForAssessment(jwt));
     }
 
     @PostMapping("question/bulkupload")

@@ -10,8 +10,8 @@ public interface IQuestionService {
 
     List<QuestionTypeTo> getAllQuestionTypes();
     QuestionTo createQuestionAndAnswer(QuestionTo questionTo);
-    List<QuestionTo> getAllQuestions();
+    List<QuestionTo> getAllQuestions(JWTTokenTO jwtTokenTO);
     QuestionTo getAnswersQuestionBySid(String questionSid);
-    List<QuestionTo> displayQuestionsForAssessment();
+    List<QuestionTo> displayQuestionsForAssessment(JWTTokenTO jwtTokenTO);
     List<CSVRecord> processQuestionAnswerInBulk(MultipartFile multipartFile, JWTTokenTO jwtTokenTO);
 }
