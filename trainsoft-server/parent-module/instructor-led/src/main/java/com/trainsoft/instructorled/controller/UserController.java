@@ -44,7 +44,7 @@ public class UserController {
     public ResponseEntity<?> createUser(HttpServletRequest request,
             @ApiParam(value = "Create User payload", required = true) @RequestBody UserTO userTO) {
 
-        if(userTO.getCompanySid()==null) userTO.setCompanySid(null);
+       // if(userTO.getCompanySid()==null) userTO.setCompanySid(null);
         if(userTO.getDepartmentVA().getDepartmentRole()== InstructorEnum.DepartmentRole.SUPERVISOR){
             userTO.setRole(InstructorEnum.VirtualAccountRole.ADMIN);
         }else {
