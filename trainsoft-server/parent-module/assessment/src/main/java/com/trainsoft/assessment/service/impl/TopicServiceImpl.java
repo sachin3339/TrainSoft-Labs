@@ -13,6 +13,8 @@ import com.trainsoft.assessment.to.TopicTo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -51,10 +53,10 @@ public class TopicServiceImpl implements ITopicService {
     }
 
     @Override
-    public List<TopicTo> getAllTopics(JWTTokenTO jwtTokenTO)
+    public List<TopicTo> getAllTopics(JWTTokenTO jwtTokenTO, Pageable pageRequest)
     {
         try {
-            List<Topic> topics = topicRepository.findTopicByCompany(getCompany(jwtTokenTO.getCompanySid()));
+            List<Topic> topics = topicRepository.findTopicByCompany(getCompany(jwtTokenTO.getCompanySid()),pageRequest);
             List<TopicTo> topicToList = mapper.convertList(topics, TopicTo.class);
             if (CollectionUtils.isNotEmpty(topics))
             {

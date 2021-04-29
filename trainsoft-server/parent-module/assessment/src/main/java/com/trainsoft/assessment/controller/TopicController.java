@@ -10,6 +10,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,9 +39,10 @@ public class TopicController {
     @GetMapping("/display/topics")
     @ApiOperation(value = "displayTopics", notes = "API to get Topics.")
     public ResponseEntity<?> displayTopics(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token)
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            Pageable pageable)
     {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(topicService.getAllTopics(jwt));
+        return ResponseEntity.ok(topicService.getAllTopics(jwt,pageable));
     }
 }
