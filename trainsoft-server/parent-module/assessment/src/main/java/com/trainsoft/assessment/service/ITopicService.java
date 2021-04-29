@@ -8,5 +8,5 @@ import java.util.List;
 public interface ITopicService {
 
     TopicTo createTopic(TopicTo topicTo);
-    List<TopicTo> getAllTopics();
+    public List<TopicTo> getAllTopics(JWTTokenTO jwtTokenTO);
 }

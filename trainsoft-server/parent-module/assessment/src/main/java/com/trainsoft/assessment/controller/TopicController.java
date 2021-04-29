@@ -34,10 +34,12 @@ public class TopicController {
         return ResponseEntity.ok(topicService.createTopic(topicTo));
     }
 
-    @PostMapping("/display/topics")
+    @GetMapping("/display/topics")
     @ApiOperation(value = "displayTopics", notes = "API to get Topics.")
-    public ResponseEntity<?> displayTopics()
+    public ResponseEntity<?> displayTopics(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token)
     {
-        return ResponseEntity.ok(topicService.getAllTopics());
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(topicService.getAllTopics(jwt));
     }
 }
