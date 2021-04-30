@@ -4,6 +4,7 @@ import com.trainsoft.assessment.entity.Assessment;
 import com.trainsoft.assessment.entity.AssessmentQuestion;
 import com.trainsoft.assessment.entity.Question;
 import com.trainsoft.assessment.entity.Topic;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +15,7 @@ import java.util.Optional;
 
 public interface IAssessmentQuestionRepository extends JpaRepository<AssessmentQuestion, Integer>
 {
-      List<AssessmentQuestion> getAssessmentQuestionsByAndAssessmentId(Assessment assessmentId);
+      List<AssessmentQuestion> getAssessmentQuestionsByAndAssessmentId(Assessment assessmentId, Pageable pageable);
       @Query(value = "select * from quiz_set_has_question where quiz_set_id=:id",nativeQuery = true)
       List<AssessmentQuestion> findByTopicId(@Param("id") Integer quizSetId);
       Optional<AssessmentQuestion> findAssessmentQuestionByQuestionId(Question question);
