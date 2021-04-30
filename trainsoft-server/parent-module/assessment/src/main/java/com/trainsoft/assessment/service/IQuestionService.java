@@ -11,7 +11,6 @@ public interface IQuestionService {
     QuestionTo getAnswersQuestionBySid(String questionSid);
     List<QuestionTo> displayQuestionsForAssessment();
     QuestionTo updateQuestion(QuestionTo request);
-
     void deleteQuestion(String question);
 
 }

@@ -167,37 +167,29 @@ public class QuestionServiceImpl implements IQuestionService {
                 }
             }
         }
-            answerRepository.saveAll(answer);
-            question.setAnswers(answer);
-        question.setAnswerExplanation(request.getAnswerExplanation());
-        question.setDescription(request.getDescription());
-        questionRepository.save(question);
-        QuestionTo questionTo = new QuestionTo();
-        questionTo.setSid(question.getStringSid());
-        questionTo.setName(question.getName());
-        questionTo.setDescription(request.getDescription());
-        questionTo.setTechnologyName(question.getTechnologyName());
-        questionTo.setCompanySid(question.getCompany().getStringSid());
-        questionTo.setQuestionPoint(question.getQuestionPoint());
-        questionTo.setQuestionType(question.getQuestionType());
-        questionTo.setCreatedByVirtualAccountSid(question.getCreatedBy().getStringSid());
-        questionTo.setAnswer(mapper.convertList(answer,AnswerTo.class));
-        questionTo.setDifficulty(question.getDifficulty());
-        questionTo.setAnswerExplanation(question.getAnswerExplanation());
-        questionTo.setStatus(question.getStatus());
-        questionTo.setNegativeQuestionPoint(questionTo.getNegativeQuestionPoint());
-        return questionTo;
+         question.setAnswers(answerRepository.saveAll(answer));
+         question.setAnswerExplanation(request.getAnswerExplanation());
+         question.setDescription(request.getDescription());
+         QuestionTo questionTo= mapper.convert(questionRepository.save(question),QuestionTo.class);
+         questionTo.setAnswer(answerTO);
+         questionTo.setCreatedByVirtualAccountSid(question.getCreatedBy().getStringSid());
+         questionTo.setCompanySid(question.getCompany().getStringSid());
+         return questionTo;
     }
 
     @Override
     public void deleteQuestion(String questionSid) {
         Question question= questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid));
         if (question==null) throw new InvalidSidException("invalid question sid.");
-        Optional<AssessmentQuestion> assessmentQuestion = assessmentQuestionRepository.findAssessmentQuestionByQuestionId(question);
-        if (assessmentQuestion.isPresent()) throw new FunctionNotAllowedException("can not delete a quiz set associated question");
-              questionRepository.delete(question);
-            List<Answer> answer = answerRepository.findAnswerByQuestionId(question.getId());
-             answerRepository.deleteAll(answer);
-            return;
+        List<AssessmentQuestion> assessmentQuestion = assessmentQuestionRepository.findAssessmentQuestionByQuestion(question);
+        if (!assessmentQuestion.isEmpty()) throw new FunctionNotAllowedException("can not delete a quiz set associated question");
+        question.setStatus(AssessmentEnum.Status.DELETED);
+        questionRepository.save(question);
+        List<Answer> answer = answerRepository.findAnswerByQuestionId(question.getId());
+        answer.forEach(as->{
+            as.setStatus(AssessmentEnum.Status.DELETED);
+        });
+        answerRepository.saveAll(answer);
+       return;
     }
 }

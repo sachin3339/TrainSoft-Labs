@@ -25,4 +25,7 @@ public interface IAssessmentQuestionRepository extends JpaRepository<AssessmentQ
 
       @Query(value = "select count(*)total_question from quiz_set_has_question where quiz_set_id=:id",nativeQuery = true)
       Integer findTotalQuestion(@Param("id") Integer quizSetId);
+
+      @Query(value = "SELECT aq FROM AssessmentQuestion aq  WHERE  aq.questionId=:id")
+      List<AssessmentQuestion> findAssessmentQuestionByQuestion(@Param("id") Question question);
 }
