@@ -12,7 +12,7 @@ public interface IAssessmentRepository extends JpaRepository<Assessment,Integer>
 {
     Assessment findAssessmentBySid(byte[] assessmentSid);
     Assessment findBySid(byte [] sid);
-
+    Assessment findAssessmentByTitle(String title);
     @Query(value = "select * from quiz_set where tag=:id and difficulty=:df",nativeQuery = true)
     List<Assessment> findByTagAndDifficulty(@Param("id") Integer tagId,@Param("df") String difficulty);
 

@@ -1,9 +1,11 @@
 package com.trainsoft.assessment.service.impl;
 
+import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.customexception.ApplicationException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
 import com.trainsoft.assessment.entity.*;
+import com.trainsoft.assessment.repository.ICompanyRepository;
 import com.trainsoft.assessment.repository.ITopicRepository;
 import com.trainsoft.assessment.repository.IVirtualAccountRepository;
 import com.trainsoft.assessment.service.ITopicService;
@@ -11,6 +13,8 @@ import com.trainsoft.assessment.to.TopicTo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -26,6 +30,7 @@ public class TopicServiceImpl implements ITopicService {
      private  final IVirtualAccountRepository virtualAccountRepository;
      private  final  DozerUtils mapper;
      private  final ITopicRepository topicRepository;
+     private  final ICompanyRepository companyRepository;
 
 
 
@@ -33,7 +38,6 @@ public class TopicServiceImpl implements ITopicService {
     public TopicTo createTopic(TopicTo topicTo)
     {
         try {
-            if (topicTo != null) {
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
                         (BaseEntity.hexStringToByteArray(topicTo.getCreatedByVirtualAccountSid()));
                 Topic topic = mapper.convert(topicTo, Topic.class);
@@ -42,20 +46,17 @@ public class TopicServiceImpl implements ITopicService {
                 topic.setCreatedOn(new Date(Instant.now().toEpochMilli()));
                 topic.setCompany(virtualAccount.getCompany());
                 return mapper.convert(topicRepository.save(topic), TopicTo.class);
-            }
-            else
-                throw new RecordNotFoundException("Record not saved");
         }catch (Exception e) {
             log.error("throwing exception while creating the Topic", e.toString());
-            throw new ApplicationException("Something went wrong while creating the Topic" + e.getMessage());
+            throw new ApplicationException("Something went wrong while creating the Topic, please check Topic name may be duplicate: "+e.getMessage());
         }
     }
 
     @Override
-    public List<TopicTo> getAllTopics()
+    public List<TopicTo> getAllTopics(JWTTokenTO jwtTokenTO, Pageable pageRequest)
     {
         try {
-            List<Topic> topics = topicRepository.findAll();
+            List<Topic> topics = topicRepository.findTopicByCompany(getCompany(jwtTokenTO.getCompanySid()),pageRequest);
             List<TopicTo> topicToList = mapper.convertList(topics, TopicTo.class);
             if (CollectionUtils.isNotEmpty(topics))
             {
@@ -74,5 +75,12 @@ public class TopicServiceImpl implements ITopicService {
             log.error("throwing exception while getting all Topics", exp.toString());
             throw new ApplicationException("Something went wrong while getting all Topics" + exp.getMessage());
         }
+    }
+
+    private Company getCompany(String companySid){
+        Company c=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        Company company=new Company();
+        company.setId(c.getId());
+        return company;
     }
 }
