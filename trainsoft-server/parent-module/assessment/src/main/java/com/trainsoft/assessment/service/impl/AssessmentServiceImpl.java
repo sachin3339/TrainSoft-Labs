@@ -3,6 +3,7 @@ package com.trainsoft.assessment.service.impl;
 import com.trainsoft.assessment.commons.CommonUtils;
 import com.trainsoft.assessment.customexception.ApplicationException;
 import com.trainsoft.assessment.customexception.DuplicateRecordException;
+import com.trainsoft.assessment.customexception.FunctionNotAllowedException;
 import com.trainsoft.assessment.customexception.InvalidSidException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
@@ -252,6 +253,12 @@ public class AssessmentServiceImpl implements IAssessmentService
 
     @Override
     public List<AssessmentQuestionTo> startAssessment(String quizSetSid,String virtualAccountSid) {
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
+        if (virtualAccount==null) throw new InvalidSidException("Invalid virtual Account Sid.");
+        VirtualAccountHasQuizSetSessionTiming virtualAccountHasQuizSetSessionTiming1 = virtualAccountHasQuizSetSessionTimingRepository
+                .findByVirtualAccountId(virtualAccount.getId());
+        if (virtualAccountHasQuizSetSessionTiming1!=null)
+            throw new FunctionNotAllowedException("you already have started your assessment or your assessment is submitted already.");
         Assessment assessment = assessmentRepository
                 .findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         if (assessment!=null){
@@ -274,13 +281,10 @@ public class AssessmentServiceImpl implements IAssessmentService
             });
             VirtualAccountHasQuizSetSessionTiming virtualAccountHasQuizSetSessionTiming = new VirtualAccountHasQuizSetSessionTiming();
             virtualAccountHasQuizSetSessionTiming.generateUuid();
-            VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
-            if (virtualAccount!=null)
                 virtualAccountHasQuizSetSessionTiming.setVirtualAccountId(virtualAccount);
             virtualAccountHasQuizSetSessionTiming.setQuizSetId(assessment);
             virtualAccountHasQuizSetSessionTiming.setQuizId(assessment.getTopicId());
             virtualAccountHasQuizSetSessionTiming.setStartTime(new Date());
-           // virtualAccountHasQuizSetSessionTiming.setEndTime();
             virtualAccountHasQuizSetSessionTiming.setCompanyId(assessment.getCompany());
             virtualAccountHasQuizSetSessionTimingRepository.save(virtualAccountHasQuizSetSessionTiming);
             return assessmentQuestionTo;
@@ -296,14 +300,14 @@ public class AssessmentServiceImpl implements IAssessmentService
         Question question = questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(request.getQuestionSid()));
         if (question!=null)virtualAccountHasQuestionAnswerDetails.setQuestionId(question);
         virtualAccountHasQuestionAnswerDetails.setAnswer(CommonUtils.toJsonFunction.apply(request.getAnswer()));
-        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(request.getCompanySid()));
-        if (company!=null)virtualAccountHasQuestionAnswerDetails.setCompanyId(company);
-        VirtualAccount virtualAccount2 = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(request.getCreatedBySid()));
-        if (virtualAccount2!=null) virtualAccountHasQuestionAnswerDetails.setCreatedBy(virtualAccount2);
+        Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(request.getQuizSetSid()));
+        if (assessment==null)throw new InvalidSidException("invalid Quiz set Sid");
+            virtualAccountHasQuestionAnswerDetails.setCompanyId(assessment.getCompany());
+            virtualAccountHasQuestionAnswerDetails.setCreatedBy(assessment.getCreatedBy());
+            virtualAccountHasQuestionAnswerDetails.setCreatedOn(assessment.getCreatedOn());
         Answer answer = answerRepository.findCorrectAnswer(question.getId());
         if (answer!=null && answer.getAnswerOption().equals(request.getAnswer()))
             virtualAccountHasQuestionAnswerDetails.setCorrect(true);
-        virtualAccountHasQuestionAnswerDetails.setCreatedOn(new Date(request.getCreatedOn()));
         Integer questionPoint = questionRepository.findQuestionPoint(question.getId());
         virtualAccountHasQuestionAnswerDetails.setQuestionPoint(questionPoint);
         virtualAccountHasQuestionAnswerDetailsRepository.save(virtualAccountHasQuestionAnswerDetails);
@@ -364,38 +368,43 @@ public class AssessmentServiceImpl implements IAssessmentService
 
     @Override
     public VirtualAccountHasQuizSetAssessmentTO submitAssessment(SubmitAssessmentTO request) {
+        VirtualAccount virtualAccount = virtualAccountRepository
+                .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(request.getVirtualAccountSid()));
+        if (virtualAccount==null) throw new InvalidSidException("invalid virtual Account Sid");
+       VirtualAccountHasQuizSetAssessment checkEntry= virtualAccountHasQuizSetAssessmentRepository
+               .findByVirtualAccountId(virtualAccount.getId());
+       if (checkEntry!=null)throw new FunctionNotAllowedException("you have already submitted your Assessment.");
         VirtualAccountHasQuizSetAssessment virtualAccountHasQuizSetAssessment = new VirtualAccountHasQuizSetAssessment();
         virtualAccountHasQuizSetAssessment.generateUuid();
-        Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(request.getQuizSid()));
-        if (topic!=null)virtualAccountHasQuizSetAssessment.setQuizId(topic);
         Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(request.getQuizSetSid()));
-        if (assessment!=null) virtualAccountHasQuizSetAssessment.setQuizSetId(assessment);
-        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(request.getCompanySid()));
-        if (company!=null) virtualAccountHasQuizSetAssessment.setCompanyId(company);
-        VirtualAccount virtualAccount1 = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(request.getCreatedBySid()));
-        if (virtualAccount1!=null)virtualAccountHasQuizSetAssessment.setCreatedBy(virtualAccount1);
-        virtualAccountHasQuizSetAssessment.setCreatedOn(new Date(request.getCreatedOn()));
-        VirtualAccount virtualAccount2= virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(request.getUpdatedBySid()));
-        if (virtualAccount2!=null)virtualAccountHasQuizSetAssessment.setUpdatedBy(virtualAccount2);
-        virtualAccountHasQuizSetAssessment.setUpdatedOn(new Date(request.getUpdatedOn()));
-        VirtualAccount virtualAccount3 = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(request.getVirtualAccountSid()));
-        if (virtualAccount3!=null)virtualAccountHasQuizSetAssessment.setVirtualAccountId(virtualAccount3);
-        Integer[] counts = findCountsForAssessmentGiven(assessment.getId(), virtualAccount3.getId());
+        if (assessment==null) throw new InvalidSidException("Invalid Quiz Set Sid");
+            virtualAccountHasQuizSetAssessment.setQuizSetId(assessment);
+            virtualAccountHasQuizSetAssessment.setCompanyId(assessment.getCompany());
+            virtualAccountHasQuizSetAssessment.setQuizId(assessment.getTopicId());
+            virtualAccountHasQuizSetAssessment.setCreatedBy(assessment.getCreatedBy());
+            virtualAccountHasQuizSetAssessment.setCreatedOn(assessment.getCreatedOn());
+            if (virtualAccountHasQuizSetAssessment.getUpdatedBy()!=null) virtualAccountHasQuizSetAssessment
+                    .setUpdatedBy(assessment.getUpdatedBy());
+            if (virtualAccountHasQuizSetAssessment.getUpdatedOn()!=null) virtualAccountHasQuizSetAssessment
+                    .setUpdatedOn(assessment.getUpdatedOn());
+        virtualAccountHasQuizSetAssessment.setVirtualAccountId(virtualAccount);
+        Integer[] counts = findCountsForAssessmentGiven(assessment.getId(), virtualAccount.getId());
             virtualAccountHasQuizSetAssessment.setTotalNumberOfQuestions(counts[0]);
             virtualAccountHasQuizSetAssessment.setTotalMarks(counts[1]);
             virtualAccountHasQuizSetAssessment.setTotalNumberOfCorrectAnswer(counts[2]);
             virtualAccountHasQuizSetAssessment.setTotalNumberOfWrongAnswer(counts[3]);
             virtualAccountHasQuizSetAssessment.setNumberOfAttemptedQuestion(counts[4]);
-        List<VirtualAccountHasQuestionAnswerDetails> list = virtualAccountHasQuestionAnswerDetailsRepository.findListOfCorrectResponse(virtualAccount3.getId());
+        List<VirtualAccountHasQuestionAnswerDetails> list = virtualAccountHasQuestionAnswerDetailsRepository
+                .findListOfCorrectResponse(virtualAccount.getId());
         Integer gainMarks=0;
         for (VirtualAccountHasQuestionAnswerDetails va:list)
             gainMarks=gainMarks+va.getQuestionPoint();
         virtualAccountHasQuizSetAssessment.setGainMarks(gainMarks);
         virtualAccountHasQuizSetAssessment.setSubmittedOn(new Date());
        virtualAccountHasQuizSetAssessmentRepository.save(virtualAccountHasQuizSetAssessment);
-       virtualAccountHasQuizSetSessionTimingRepository.setEndTimeForAssessment(virtualAccount3.getId());
+       virtualAccountHasQuizSetSessionTimingRepository.setEndTimeForAssessment(virtualAccount.getId());
         VirtualAccountHasQuizSetAssessment virtualAccountHasQuizSetAssessment1 = virtualAccountHasQuizSetAssessmentRepository
-                .findByVirtualAccountId(virtualAccount3.getId());
+                .findByVirtualAccountId(virtualAccount.getId());
         Integer gainMarks1 = virtualAccountHasQuizSetAssessment1.getGainMarks();
         Integer totalMarks = virtualAccountHasQuizSetAssessment1.getTotalMarks();
         double percentage=((double)gainMarks1*100/(double)totalMarks );
@@ -403,19 +412,19 @@ public class AssessmentServiceImpl implements IAssessmentService
         virtualAccountHasQuizSetAssessmentRepository.save(virtualAccountHasQuizSetAssessment1);
         VirtualAccountHasQuizSetAssessmentTO vto = new VirtualAccountHasQuizSetAssessmentTO();
         vto.setSid(virtualAccountHasQuizSetAssessment.getStringSid());
-        vto.setQuizSid(topic.getStringSid());
+        vto.setQuizSid(assessment.getTopicId().getStringSid());
         vto.setQuizSetSid(assessment.getStringSid());
         vto.setTotalMarks(virtualAccountHasQuizSetAssessment.getTotalMarks());
         vto.setGainMarks(virtualAccountHasQuizSetAssessment.getGainMarks());
         vto.setTotalNumberOfCorrectAnswer(virtualAccountHasQuizSetAssessment.getTotalNumberOfCorrectAnswer());
         vto.setTotalNumberOfWrongAnswer(virtualAccountHasQuizSetAssessment.getTotalNumberOfWrongAnswer());
         vto.setNumberOfAttemptedQuestion(virtualAccountHasQuizSetAssessment.getNumberOfAttemptedQuestion());
-        vto.setCompanySid(company.getStringSid());
+        vto.setCompanySid(assessment.getCompany().getStringSid());
         vto.setCreatedOn(virtualAccountHasQuizSetAssessment.getCreatedOn());
-        vto.setCreatedBySid(virtualAccount1.getStringSid());
-        if (virtualAccount2!=null) vto.setUpdatedBySid(virtualAccount2.getStringSid());
+        vto.setCreatedBySid(assessment.getCreatedBy().getStringSid());
+        if (assessment.getUpdatedBy()!=null) vto.setUpdatedBySid(assessment.getUpdatedBy().getStringSid());
         vto.setUpdatedOn(virtualAccountHasQuizSetAssessment.getUpdatedOn());
-        vto.setVirtualAccountSid(virtualAccount3.getStringSid());
+        vto.setVirtualAccountSid(virtualAccount.getStringSid());
         vto.setTotalNumberOfQuestions(virtualAccountHasQuizSetAssessment1.getTotalNumberOfQuestions());
         vto.setSubmittedOn(virtualAccountHasQuizSetAssessment1.getSubmittedOn());
         vto.setPercentage(virtualAccountHasQuizSetAssessment1.getPercentage());

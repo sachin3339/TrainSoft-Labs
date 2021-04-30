@@ -1,8 +1,9 @@
 package com.trainsoft.assessment.service.impl;
 
 import com.google.common.io.Files;
-import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.customexception.ApplicationException;
+import com.trainsoft.assessment.customexception.FunctionNotAllowedException;
+import com.trainsoft.assessment.customexception.InvalidSidException;
 import com.trainsoft.assessment.customexception.DuplicateRecordException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
@@ -18,9 +19,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -33,24 +32,30 @@ import java.util.*;
 @Slf4j
 @Service
 public class QuestionServiceImpl implements IQuestionService {
-
     private final IVirtualAccountRepository virtualAccountRepository;
     private final DozerUtils mapper;
     private final ICompanyRepository companyRepository;
     private final IQuestionRepository questionRepository;
     private final IQuestionTypeRepository questionTypeRepository;
+    private final IAnswerRepository answerRepository;
+    private final IAssessmentQuestionRepository assessmentQuestionRepository;
     @Value("${answer.option.value.csv.header}")
     private  String ANSWER_OPTION_VALUE_CSV_HEADER;
     @Value("${answer.option.is.correct.csv.header}")
     private String ANSWER_OPTION_IS_CORRECT_CSV_HEADER;
 
+
     @Autowired
-    public QuestionServiceImpl(IVirtualAccountRepository virtualAccountRepository, DozerUtils mapper, ICompanyRepository companyRepository, IQuestionRepository questionRepository, IQuestionTypeRepository questionTypeRepository) {
+    public QuestionServiceImpl(IVirtualAccountRepository virtualAccountRepository, DozerUtils mapper, ICompanyRepository
+            companyRepository, IQuestionRepository questionRepository, IQuestionTypeRepository questionTypeRepository,
+                               IAnswerRepository answerRepository,IAssessmentQuestionRepository assessmentQuestionRepository) {
         this.virtualAccountRepository = virtualAccountRepository;
         this.mapper = mapper;
         this.companyRepository = companyRepository;
         this.questionRepository = questionRepository;
         this.questionTypeRepository = questionTypeRepository;
+        this.answerRepository=answerRepository;
+        this.assessmentQuestionRepository=assessmentQuestionRepository;
     }
 
     @Override
@@ -140,6 +145,7 @@ public class QuestionServiceImpl implements IQuestionService {
         return Collections.EMPTY_LIST;
     }
 
+
     @Override
     public QuestionTo getAnswersQuestionBySid(String questionSid)
     {
@@ -176,6 +182,52 @@ public class QuestionServiceImpl implements IQuestionService {
         }
     }
 
+    @Override
+    public QuestionTo updateQuestion(QuestionTo request) {
+        Question question = questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(request.getSid()));
+        if (question==null) throw new InvalidSidException("invalid question sid.");
+        List<Answer> answer = answerRepository.findAnswerByQuestionId(question.getId());
+        question.setName(request.getName());
+        question.setDifficulty(request.getDifficulty());
+        question.setQuestionType(request.getQuestionType());
+        question.setTechnologyName(request.getTechnologyName());
+        question.setQuestionPoint(request.getQuestionPoint());
+        List<AnswerTo> answerTO = new ArrayList<>();
+        for (Answer ar : answer) {
+            for (AnswerTo re : request.getAnswer()) {
+                if (ar.getStringSid().equals(re.getSid())) {
+                    ar.setAnswerOptionValue(re.getAnswerOptionValue());
+                    ar.setAnswerOption(re.getAnswerOption());
+                    ar.setCorrect(re.isCorrect());
+                    answerTO.add(re);
+                }
+            }
+        }
+         question.setAnswers(answerRepository.saveAll(answer));
+         question.setAnswerExplanation(request.getAnswerExplanation());
+         question.setDescription(request.getDescription());
+         QuestionTo questionTo= mapper.convert(questionRepository.save(question),QuestionTo.class);
+         questionTo.setAnswer(answerTO);
+         questionTo.setCreatedByVirtualAccountSid(question.getCreatedBy().getStringSid());
+         questionTo.setCompanySid(question.getCompany().getStringSid());
+         return questionTo;
+    }
+
+    @Override
+    public void deleteQuestion(String questionSid) {
+        Question question= questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid));
+        if (question==null) throw new InvalidSidException("invalid question sid.");
+        List<AssessmentQuestion> assessmentQuestion = assessmentQuestionRepository.findAssessmentQuestionByQuestion(question);
+        if (!assessmentQuestion.isEmpty()) throw new FunctionNotAllowedException("can not delete a quiz set associated question");
+        question.setStatus(AssessmentEnum.Status.DELETED);
+        questionRepository.save(question);
+        List<Answer> answer = answerRepository.findAnswerByQuestionId(question.getId());
+        answer.forEach(as->{
+            as.setStatus(AssessmentEnum.Status.DELETED);
+        });
+        answerRepository.saveAll(answer);
+       return;
+    }
 
     @Override
     public List<CSVRecord> processQuestionAnswerInBulk(MultipartFile multipartFile, String virtualAccountSid)

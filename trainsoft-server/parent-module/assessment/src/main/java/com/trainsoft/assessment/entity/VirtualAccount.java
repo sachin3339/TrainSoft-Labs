@@ -35,5 +35,6 @@ public class VirtualAccount extends BaseEntity {
 	@Column(name="created_on")
 	private Date createdOn;
 
-
+	@Column(name= "assessment_values")
+	private String categoryTopicValue;
 }

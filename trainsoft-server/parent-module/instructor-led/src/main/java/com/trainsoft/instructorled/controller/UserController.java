@@ -42,10 +42,9 @@ public class UserController {
     @PostMapping("user/create")
     @ApiOperation(value = "createUser", notes = "API to create new User.")
     public ResponseEntity<?> createUser(HttpServletRequest request,
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Create User payload", required = true) @RequestBody UserTO userTO) {
-        JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        userTO.setCompanySid(jwt.getCompanySid());
+
+       // if(userTO.getCompanySid()==null) userTO.setCompanySid(null);
         if(userTO.getDepartmentVA().getDepartmentRole()== InstructorEnum.DepartmentRole.SUPERVISOR){
             userTO.setRole(InstructorEnum.VirtualAccountRole.ADMIN);
         }else {

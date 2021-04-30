@@ -16,5 +16,6 @@ public class UserTO extends BaseTO{
     private AppUserTO appuser;
     private  DepartmentVirtualAccountTO departmentVA;
     private  String jwtToken;
+    private String categoryTopicValue;
 
 }

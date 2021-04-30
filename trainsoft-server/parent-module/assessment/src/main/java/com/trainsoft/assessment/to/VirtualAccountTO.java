@@ -22,4 +22,5 @@ public class VirtualAccountTO extends BaseTO{
     private AppUserTO appuser;
 
     private Date createdOn;
+    private String categoryTopicValue;
 }
