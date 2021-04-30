@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStreamReader;
@@ -109,12 +110,12 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public List<QuestionTo> getAllQuestions(JWTTokenTO jwtTokenTO)
+    public List<QuestionTo> getAllQuestions(JWTTokenTO jwtTokenTO, Pageable pageable)
     {
         try
         {
             Company company=getCompany(jwtTokenTO.getCompanySid());
-            List<Question> questionsList = questionRepository.findQuestionsByCompany(company);
+            List<Question> questionsList = questionRepository.findQuestionsByCompany(company,pageable);
             if (CollectionUtils.isNotEmpty(questionsList)) {
                 return mapper.convertList(questionsList, QuestionTo.class);
             }

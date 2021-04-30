@@ -3,6 +3,7 @@ package com.trainsoft.assessment.repository;
 import com.trainsoft.assessment.entity.Company;
 import com.trainsoft.assessment.entity.Question;
 import com.trainsoft.assessment.to.QuestionTo;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,5 +22,5 @@ public interface IQuestionRepository extends JpaRepository<Question, Integer>
 
     Question findQuestionsByName(@Param("description") String name);
 
-    List<Question> findQuestionsByCompany(Company company);
+    List<Question> findQuestionsByCompany(Company company, Pageable pageable);
 }

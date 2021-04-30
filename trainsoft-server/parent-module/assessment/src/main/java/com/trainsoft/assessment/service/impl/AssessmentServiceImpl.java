@@ -16,6 +16,7 @@ import com.trainsoft.assessment.to.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
@@ -177,11 +178,11 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid) {
+    public List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid, Pageable pageable) {
         try {
             if (assessmentSid != null) {
                 Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
-                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAndAssessmentId(assessment);
+                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAndAssessmentId(assessment,pageable);
                 List<Question> questionList = new ArrayList<>();
                 if(CollectionUtils.isNotEmpty(assessmentQuestionList))
                 {

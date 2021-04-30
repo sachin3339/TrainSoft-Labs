@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -77,11 +78,11 @@ public class AssessmentController {
     }
 
     @GetMapping("/assessment/Questions/{asid}")
-    @ApiOperation(value = "", notes = "API to get Assessment.")
+    @ApiOperation(value = "", notes = "API to get Assessment Questions.")
     public ResponseEntity<?> getAssessmentQuestions(
-            @ApiParam(value = "Assessment Sid", required = true) @PathVariable("asid") String assessmentSid)
+            @ApiParam(value = "Assessment Sid", required = true) @PathVariable("asid") String assessmentSid, Pageable pageable)
     {
-        return ResponseEntity.ok(assessmentService.getAssessmentQuestionsBySid(assessmentSid));
+        return ResponseEntity.ok(assessmentService.getAssessmentQuestionsBySid(assessmentSid,pageable));
     }
 
     @PostMapping("get/instructions")
