@@ -1,5 +1,6 @@
 package com.trainsoft.instructorled.repository;
 
+import com.trainsoft.instructorled.entity.Company;
 import com.trainsoft.instructorled.entity.Training;
 import com.trainsoft.instructorled.entity.TrainingView;
 import com.trainsoft.instructorled.entity.VirtualAccount;
@@ -14,7 +15,7 @@ import java.util.List;
 public interface ITrainsoftCustomRepository {
 
     Integer findIdBySid(String classz, String sid);
-    BigInteger noOfCountByClass(String classz,String companySid);
+    BigInteger noOfCountByClass(String classz, Company company);
     List<VirtualAccount> findActiveVirtualAccountWithBatch(String batchSid,String companySid);
    // Page<Training> findTrainingsForLeaner(String vASid);
     List<TrainingView> findTrainingsForLeaner(String vASid,String companySid);
