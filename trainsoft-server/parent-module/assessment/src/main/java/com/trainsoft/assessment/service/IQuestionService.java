@@ -15,4 +15,7 @@ public interface IQuestionService {
     QuestionTo getAnswersQuestionBySid(String questionSid);
     List<QuestionTo> displayQuestionsForAssessment(JWTTokenTO jwtTokenTO);
     List<CSVRecord> processQuestionAnswerInBulk(MultipartFile multipartFile, JWTTokenTO jwtTokenTO);
+    QuestionTo updateQuestion(QuestionTo request);
+    void deleteQuestion(String question);
+
 }

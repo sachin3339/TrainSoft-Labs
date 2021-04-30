@@ -23,7 +23,8 @@ public class AssessmentExceptionHandler extends ResponseEntityExceptionHandler {
             IncorrectEmailException.class,
             UserNotFoundException.class,
             IncorrectEmailIdOrPasswordException.class,
-            InvalidSidException.class
+            InvalidSidException.class,
+            FunctionNotAllowedException.class
     })
     protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         if (ex instanceof UserNotFoundException) {
@@ -68,7 +69,13 @@ public class AssessmentExceptionHandler extends ResponseEntityExceptionHandler {
                         .message(((InvalidSidException) ex).devMessage)
                         .error(ex.getLocalizedMessage()).build();
                 return new ResponseEntity<>(errors, new HttpHeaders(), errors.getStatus());
-        } else {
+        }else if(ex instanceof FunctionNotAllowedException) {
+            ErrorResponse errors = ErrorResponse.builder()
+                    .status(HttpStatus.FORBIDDEN)
+                    .message(((FunctionNotAllowedException) ex).devMessage)
+                    .error(ex.getLocalizedMessage()).build();
+            return new ResponseEntity<>(errors, new HttpHeaders(), errors.getStatus());
+        }else {
             ErrorResponse errors = ErrorResponse.builder()
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .message(ex.getMessage())
