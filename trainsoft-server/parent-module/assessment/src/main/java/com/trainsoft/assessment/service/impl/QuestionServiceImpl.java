@@ -20,9 +20,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -35,26 +33,30 @@ import java.util.*;
 @Slf4j
 @Service
 public class QuestionServiceImpl implements IQuestionService {
-
     private final IVirtualAccountRepository virtualAccountRepository;
     private final DozerUtils mapper;
     private final ICompanyRepository companyRepository;
     private final IQuestionRepository questionRepository;
     private final IQuestionTypeRepository questionTypeRepository;
-    private  final IAnswerRepository answerRepository;
+    private final IAnswerRepository answerRepository;
     private final IAssessmentQuestionRepository assessmentQuestionRepository;
     @Value("${answer.option.value.csv.header}")
     private  String ANSWER_OPTION_VALUE_CSV_HEADER;
     @Value("${answer.option.is.correct.csv.header}")
     private String ANSWER_OPTION_IS_CORRECT_CSV_HEADER;
 
+
     @Autowired
-    public QuestionServiceImpl(IVirtualAccountRepository virtualAccountRepository, DozerUtils mapper, ICompanyRepository companyRepository, IQuestionRepository questionRepository, IQuestionTypeRepository questionTypeRepository) {
+    public QuestionServiceImpl(IVirtualAccountRepository virtualAccountRepository, DozerUtils mapper, ICompanyRepository
+            companyRepository, IQuestionRepository questionRepository, IQuestionTypeRepository questionTypeRepository,
+                               IAnswerRepository answerRepository,IAssessmentQuestionRepository assessmentQuestionRepository) {
         this.virtualAccountRepository = virtualAccountRepository;
         this.mapper = mapper;
         this.companyRepository = companyRepository;
         this.questionRepository = questionRepository;
         this.questionTypeRepository = questionTypeRepository;
+        this.answerRepository=answerRepository;
+        this.assessmentQuestionRepository=assessmentQuestionRepository;
     }
 
     @Override
