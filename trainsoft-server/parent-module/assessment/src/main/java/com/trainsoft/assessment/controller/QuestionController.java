@@ -10,9 +10,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @AllArgsConstructor
@@ -42,14 +46,17 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getAllQuestionTypes());
     }
 
-    @PostMapping("/questions")
-    @ApiOperation(value = "getAllQuestions", notes = "API to get all Questions.")
-    public ResponseEntity<?> getAllQuestions()
+    @GetMapping("/questions")
+    @ApiOperation(value = "getAllQuestions", notes = "API to get all Questions based on Company.")
+    public ResponseEntity<?> getAllQuestions(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            Pageable pageable)
     {
-        return ResponseEntity.ok(questionService.getAllQuestions());
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(questionService.getAllQuestions(jwt,pageable));
     }
 
-    @PostMapping("/question/{questionSid}")
+    @GetMapping("/question/{questionSid}")
     @ApiOperation(value = "getQuestionAndAssociatedAnswers", notes = "API to get Question and Associated Answers based on selected Question.")
     public ResponseEntity<?> getQuestionAndAssociatedAnswers(
             @ApiParam(value = "Question Sid", required = true) @PathVariable("questionSid") String questionSid)
@@ -57,11 +64,22 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getAnswersQuestionBySid(questionSid));
     }
 
-    @PostMapping("display/assessment/question")
+    @GetMapping("display/assessment/question")
     @ApiOperation(value = "displayQuestionsForAssessment", notes = "API to get all Questions which are not associated to any Assessments.")
-    public ResponseEntity<?> displayQuestionsForAssessment()
+    public ResponseEntity<?> displayQuestionsForAssessment(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token)
     {
-        return ResponseEntity.ok(questionService.displayQuestionsForAssessment());
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(questionService.displayQuestionsForAssessment(jwt));
     }
 
+    @PostMapping("question/bulkupload")
+    @ApiOperation(value = "bulkQuestionAndAnswerUpload", notes = "API to handle Question and Answer upload in bulk using csv file")
+    public ResponseEntity<?> bulkQuestionAndAnswerUpload(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "upload Question and Answer csv file", required = true) @RequestParam("file") @NonNull MultipartFile multipartFile)
+    {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return  ResponseEntity.ok(questionService.processQuestionAnswerInBulk(multipartFile,jwt));
+    }
 }

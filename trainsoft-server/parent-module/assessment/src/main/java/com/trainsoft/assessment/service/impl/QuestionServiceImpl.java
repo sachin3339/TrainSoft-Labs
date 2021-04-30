@@ -1,27 +1,36 @@
 package com.trainsoft.assessment.service.impl;
 
+import com.google.common.io.Files;
+import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.customexception.ApplicationException;
-import com.trainsoft.assessment.customexception.InvalidSidException;
+import com.trainsoft.assessment.customexception.DuplicateRecordException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
 import com.trainsoft.assessment.entity.*;
 import com.trainsoft.assessment.repository.*;
 import com.trainsoft.assessment.service.IQuestionService;
-import com.trainsoft.assessment.to.*;
 import com.trainsoft.assessment.to.AnswerTo;
 import com.trainsoft.assessment.to.QuestionTo;
 import com.trainsoft.assessment.to.QuestionTypeTo;
 import com.trainsoft.assessment.value.AssessmentEnum;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.InputStreamReader;
 import java.time.Instant;
 import java.util.*;
 
 @Slf4j
-@AllArgsConstructor
 @Service
 public class QuestionServiceImpl implements IQuestionService {
 
@@ -30,6 +39,19 @@ public class QuestionServiceImpl implements IQuestionService {
     private final ICompanyRepository companyRepository;
     private final IQuestionRepository questionRepository;
     private final IQuestionTypeRepository questionTypeRepository;
+    @Value("${answer.option.value.csv.header}")
+    private  String ANSWER_OPTION_VALUE_CSV_HEADER;
+    @Value("${answer.option.is.correct.csv.header}")
+    private String ANSWER_OPTION_IS_CORRECT_CSV_HEADER;
+
+    @Autowired
+    public QuestionServiceImpl(IVirtualAccountRepository virtualAccountRepository, DozerUtils mapper, ICompanyRepository companyRepository, IQuestionRepository questionRepository, IQuestionTypeRepository questionTypeRepository) {
+        this.virtualAccountRepository = virtualAccountRepository;
+        this.mapper = mapper;
+        this.companyRepository = companyRepository;
+        this.questionRepository = questionRepository;
+        this.questionTypeRepository = questionTypeRepository;
+    }
 
     @Override
     public QuestionTo createQuestionAndAnswer(QuestionTo questionTo) {
@@ -42,6 +64,11 @@ public class QuestionServiceImpl implements IQuestionService {
                         (BaseEntity.hexStringToByteArray(questionTo.getCreatedByVirtualAccountSid()));
                 // question details to save
                 Question question = mapper.convert(questionTo, Question.class);
+                if(isDuplicateRecord(question))
+                {
+                    log.error("Duplicate question, Saving failed :" + question.getName());
+                    throw new DuplicateRecordException("This question is already exist : "+question.getName());
+                }
                 question.generateUuid();
                 question.setCreatedBy(virtualAccount);
                 question.setCompany(virtualAccount.getCompany());
@@ -70,23 +97,30 @@ public class QuestionServiceImpl implements IQuestionService {
                   return null;
             } else
                 throw new RecordNotFoundException("No record found");
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
+            if(e instanceof DuplicateRecordException)
+            {
+                throw new ApplicationException(((DuplicateRecordException) e).devMessage);
+            }
             log.error("throwing exception while creating the Question", e.toString());
-            throw new ApplicationException("Something went wrong while creating the Question" + e.getMessage());
+            throw new ApplicationException("Something went wrong while creating the Question :" + e.getMessage());
         }
     }
 
     @Override
-    public List<QuestionTo> getAllQuestions()
+    public List<QuestionTo> getAllQuestions(JWTTokenTO jwtTokenTO, Pageable pageable)
     {
         try
         {
-            List<Question> questionsList = questionRepository.findAll();
+            Company company=getCompany(jwtTokenTO.getCompanySid());
+            List<Question> questionsList = questionRepository.findQuestionsByCompany(company,pageable);
             if (CollectionUtils.isNotEmpty(questionsList)) {
                 return mapper.convertList(questionsList, QuestionTo.class);
             }
             else
-                throw new RecordNotFoundException("No record found");
+                throw new RecordNotFoundException("No records found");
         } catch (Exception exp)
         {
             log.error("throwing exception while getting all Questions", exp.toString());
@@ -95,9 +129,9 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public List<QuestionTo> displayQuestionsForAssessment()
+    public List<QuestionTo> displayQuestionsForAssessment(JWTTokenTO jwtTokenTO)
     {
-        List<Question> questionList=questionRepository.findQuestionBySidNotInAssessments();
+        List<Question> questionList=questionRepository.findQuestionBySidNotInAssessments(getCompany(jwtTokenTO.getCompanySid()));
         if(CollectionUtils.isNotEmpty(questionList))
         {
            return mapper.convertList(questionList,QuestionTo.class);
@@ -142,4 +176,177 @@ public class QuestionServiceImpl implements IQuestionService {
         }
     }
 
+
+    @Override
+    public List<CSVRecord> processQuestionAnswerInBulk(MultipartFile multipartFile, JWTTokenTO jwtTokenTO)
+    {
+        if(multipartFile!=null && !multipartFile.isEmpty())
+        {
+            String extension = Files.getFileExtension(multipartFile.getOriginalFilename());
+
+            if(extension.equalsIgnoreCase("csv"))
+            {
+                return readCSV(multipartFile,jwtTokenTO);
+            }
+        }
+        log.error("Check Csv File, something is missing");
+        return null;
+    }
+
+    private List<CSVRecord> readCSV(MultipartFile multipartFile,JWTTokenTO jwtTokenTO)
+    {
+        try
+        {
+            InputStreamReader inputStreamReader = new InputStreamReader(multipartFile.getInputStream());
+            CSVParser parser = CSVFormat.DEFAULT.withDelimiter(',').withHeader().parse(inputStreamReader);
+            List<CSVRecord> errorList = new ArrayList<>();
+            List<QuestionTo> questionToList = new ArrayList<>();
+            for(CSVRecord record : parser)
+            {
+                QuestionTo questionTo = new QuestionTo();
+                if (validateCsvFields(record) || !validateCsvFieldValues(record))
+                {
+                   errorList.add(record);
+                }
+                else {
+                    questionTo.setName(record.get("name").trim());
+                    questionTo.setDescription(record.get("description").trim());
+                    questionTo.setTechnologyName(record.get("tag_name").trim());
+                    questionTo.setQuestionPoint(Integer.parseInt(record.get("question_point").trim()));
+                    setQuestionDifficulty(record.get("question_difficulty").trim(), questionTo);
+                    questionTo.setNegativeQuestionPoint(Integer.parseInt(record.get("negative_question_point").trim()));
+                    questionTo.setAnswerExplanation(record.get("answer_explanation").trim());
+                    questionTo.setQuestionType(AssessmentEnum.QuestionType.MCQ);
+                    List<AnswerTo> answerToList=getAnswers(record);
+                    if(CollectionUtils.isNotEmpty(answerToList))
+                    questionTo.setAnswer(answerToList);
+                    questionToList.add(questionTo);
+                }
+            }
+            if(CollectionUtils.isNotEmpty(questionToList)) {
+                saveQuestionBulkData(questionToList, jwtTokenTO);
+            }
+            return errorList;
+        } catch (Exception exp)
+        {
+            log.error("throwing exception while processing Question and Answer in Bulk", exp.toString());
+            throw new ApplicationException("Something went wrong while creating the Question and Answer in Bulk" + exp.getMessage());
+        }
+    }
+
+    private void saveQuestionBulkData(List<QuestionTo> questionToList,JWTTokenTO jwtTokenTO)
+    {
+        try {
+            VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
+                    (BaseEntity.hexStringToByteArray(jwtTokenTO.getVirtualAccountSid()));
+            List<Question> questionList = new ArrayList<>();
+            for (QuestionTo questionTo : questionToList) {
+                Question question = mapper.convert(questionTo, Question.class);
+                if(isDuplicateRecord(question))
+                {
+                    log.error("Duplicate question, Not saving this question :"+question.getName());
+                    continue;
+                }
+                question.generateUuid();
+                question.setCreatedBy(virtualAccount);
+                question.setCompany(virtualAccount.getCompany());
+                question.setStatus(AssessmentEnum.Status.ENABLED);
+                question.setCreatedOn(new Date(Instant.now().toEpochMilli()));
+                // answer details to save
+                List<AnswerTo> answerToList = questionTo.getAnswer();
+                List<Answer> answerList = mapper.convertList(answerToList, Answer.class, null);
+                if (CollectionUtils.isNotEmpty(answerList)) {
+                    answerList.forEach(answer ->
+                    {
+                        answer.generateUuid();
+                        answer.setCreatedBy(virtualAccount);
+                        answer.setStatus(AssessmentEnum.Status.ENABLED);
+                        answer.setCreatedOn(new Date(Instant.now().toEpochMilli()));
+                        answer.setQuestionId(question);
+                    });
+                    question.setAnswers(answerList);
+                    questionList.add(question);
+                }
+            }
+            if(CollectionUtils.isNotEmpty(questionList))
+            {
+                questionRepository.saveAll(questionList);
+                log.info("Records saved successfully !");
+            }
+        }catch (Exception exp)
+        {
+            log.error("throwing exception while processing Question and Answer in Bulk", exp.toString());
+            throw new ApplicationException("Something went wrong while creating the Question and Answer in Bulk : "+exp.getMessage());
+        }
+    }
+
+    private boolean validateCsvFields(CSVRecord record)
+    {
+       return record.get("name").isEmpty() || record.get("description").isEmpty() || record.get("question_point").isEmpty()
+                || record.get("tag_name").isEmpty() || record.get("answer_explanation").isEmpty() || record.get("negative_question_point").isEmpty()
+                || record.get("answer_is_correct_A").isEmpty() || record.get("answer_is_correct_B").isEmpty()
+                || record.get("answer_is_correct_C").isEmpty() || record.get("answer_is_correct_D").isEmpty()
+                || record.get("answer_option_value_A").isEmpty() || record.get("answer_option_value_B").isEmpty()
+                || record.get("answer_option_value_C").isEmpty() || record.get("answer_option_value_D").isEmpty();
+    }
+
+    private boolean validateCsvFieldValues(CSVRecord record)
+    {
+        return StringUtils.isNumeric(record.get("question_point").trim())
+                || StringUtils.isNumeric(record.get("negative_question_point").trim());
+    }
+
+    private List<AnswerTo> getAnswers(CSVRecord record)
+    {
+        List<AnswerTo> answerToList = new ArrayList<>();
+        if(!ANSWER_OPTION_VALUE_CSV_HEADER.isEmpty() && !ANSWER_OPTION_IS_CORRECT_CSV_HEADER.isEmpty() )
+        {
+            String[] answerOptionValues = ANSWER_OPTION_VALUE_CSV_HEADER.split(",");
+            char ch='A';
+            for (String value : answerOptionValues)
+            {
+                AnswerTo answerTo = new AnswerTo();
+                answerTo.setAnswerOptionValue(record.get(value).trim());
+                answerTo.setAnswerOption(""+ ch++);
+                answerToList.add(answerTo);
+            }
+            String[] answerOptionCorrect = ANSWER_OPTION_IS_CORRECT_CSV_HEADER.split(",");
+            int i = 0;
+            for(AnswerTo answerTo : answerToList)
+            {
+                answerTo.setCorrect(record.get(answerOptionCorrect[i++]).equalsIgnoreCase("True")?Boolean.TRUE:Boolean.FALSE);
+            }
+        }
+        return answerToList;
+    }
+
+    private void setQuestionDifficulty(String questionDifficulty,QuestionTo questionTo)
+    {
+        if(questionDifficulty.equalsIgnoreCase(AssessmentEnum.QuestionDifficulty.BEGINNER.toString()))
+            questionTo.setDifficulty(AssessmentEnum.QuestionDifficulty.BEGINNER);
+        else if(questionDifficulty.equalsIgnoreCase(AssessmentEnum.QuestionDifficulty.INTERMEDIATE.toString()))
+            questionTo.setDifficulty(AssessmentEnum.QuestionDifficulty.INTERMEDIATE);
+        else if(questionDifficulty.equalsIgnoreCase(AssessmentEnum.QuestionDifficulty.EXPERT.toString()))
+            questionTo.setDifficulty(AssessmentEnum.QuestionDifficulty.EXPERT);
+    }
+
+    // To avoid duplicates
+    private boolean isDuplicateRecord(Question question)
+    {
+            String name = question.getName();
+            Question existingQuestion = questionRepository.findQuestionsByName(name);
+            if (existingQuestion != null && name.equalsIgnoreCase(existingQuestion.getName()))
+            {
+                question.setSid(existingQuestion.getSid());
+                return Boolean.TRUE;
+            }
+            return Boolean.FALSE;
+    }
+
+    private Company getCompany(String companySid){
+        Company c=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        Company company=new Company();
+        company.setId(c.getId());
+        return company;
+    }
 }

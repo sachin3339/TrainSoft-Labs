@@ -1,6 +1,7 @@
 package com.trainsoft.assessment.customexception;
 
 public class InvalidSidException extends BaseException{
+
     private static final long serialVersionUID = 7772143054626516292L;
 
     public  InvalidSidException(Throwable e) {

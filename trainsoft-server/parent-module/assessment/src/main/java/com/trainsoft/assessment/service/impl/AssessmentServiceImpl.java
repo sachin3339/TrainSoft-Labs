@@ -2,6 +2,7 @@ package com.trainsoft.assessment.service.impl;
 
 import com.trainsoft.assessment.commons.CommonUtils;
 import com.trainsoft.assessment.customexception.ApplicationException;
+import com.trainsoft.assessment.customexception.DuplicateRecordException;
 import com.trainsoft.assessment.customexception.InvalidSidException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
@@ -15,6 +16,7 @@ import com.trainsoft.assessment.to.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
@@ -53,6 +55,11 @@ public class AssessmentServiceImpl implements IAssessmentService
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
                         (BaseEntity.hexStringToByteArray(assessmentTo.getCreatedByVirtualAccountSid()));
                 Assessment assessment=mapper.convert(assessmentTo, Assessment.class);
+                if(isDuplicateAssessment(assessment))
+                {
+                    log.error("Record already exist with the same name:"+assessment.getTitle());
+                    throw new DuplicateRecordException("Duplicate record will not be created");
+                }
                 assessment.generateUuid();
                 assessment.setCreatedBy(virtualAccount);
                 assessment.setCompany(virtualAccount.getCompany());
@@ -66,15 +73,24 @@ public class AssessmentServiceImpl implements IAssessmentService
             throw new RuntimeException("Record not saved");
         }catch (Exception exp)
         {
+            if(exp instanceof DuplicateRecordException)
+            {
+                throw new ApplicationException(((DuplicateRecordException) exp).devMessage);
+            }
             log.error("throwing exception while creating the Assessment", exp.toString());
             throw new ApplicationException("Something went wrong while creating the Assessment" + exp.getMessage());
         }
     }
 
+    private boolean isDuplicateAssessment(Assessment assessment)
+    {
+        Assessment existingAssessment=assessmentRepository.findAssessmentByTitle(assessment.getTitle().trim());
+        return existingAssessment != null && existingAssessment.getTitle().equalsIgnoreCase(assessment.getTitle());
+    }
+
     @Override
     public List<CategoryTO> getAllCategories()
     {
-
             List<Category> categoryList = categoryRepository.findAll();
             if (CollectionUtils.isNotEmpty(categoryList)) {
                return mapper.convertList(categoryList, CategoryTO.class);
@@ -162,11 +178,11 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid) {
+    public List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid, Pageable pageable) {
         try {
             if (assessmentSid != null) {
                 Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
-                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAndAssessmentId(assessment);
+                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAndAssessmentId(assessment,pageable);
                 List<Question> questionList = new ArrayList<>();
                 if(CollectionUtils.isNotEmpty(assessmentQuestionList))
                 {
