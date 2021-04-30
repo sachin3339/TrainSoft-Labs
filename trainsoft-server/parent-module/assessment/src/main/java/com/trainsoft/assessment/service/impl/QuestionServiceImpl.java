@@ -110,11 +110,11 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public List<QuestionTo> getAllQuestions(JWTTokenTO jwtTokenTO, Pageable pageable)
+    public List<QuestionTo> getAllQuestions(String companySid, Pageable pageable)
     {
         try
         {
-            Company company=getCompany(jwtTokenTO.getCompanySid());
+            Company company=getCompany(companySid);
             List<Question> questionsList = questionRepository.findQuestionsByCompany(company,pageable);
             if (CollectionUtils.isNotEmpty(questionsList)) {
                 return mapper.convertList(questionsList, QuestionTo.class);
@@ -129,9 +129,9 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public List<QuestionTo> displayQuestionsForAssessment(JWTTokenTO jwtTokenTO)
+    public List<QuestionTo> displayQuestionsForAssessment(String companySid)
     {
-        List<Question> questionList=questionRepository.findQuestionBySidNotInAssessments(getCompany(jwtTokenTO.getCompanySid()));
+        List<Question> questionList=questionRepository.findQuestionBySidNotInAssessments(getCompany(companySid));
         if(CollectionUtils.isNotEmpty(questionList))
         {
            return mapper.convertList(questionList,QuestionTo.class);
@@ -178,7 +178,7 @@ public class QuestionServiceImpl implements IQuestionService {
 
 
     @Override
-    public List<CSVRecord> processQuestionAnswerInBulk(MultipartFile multipartFile, JWTTokenTO jwtTokenTO)
+    public List<CSVRecord> processQuestionAnswerInBulk(MultipartFile multipartFile, String virtualAccountSid)
     {
         if(multipartFile!=null && !multipartFile.isEmpty())
         {
@@ -186,14 +186,14 @@ public class QuestionServiceImpl implements IQuestionService {
 
             if(extension.equalsIgnoreCase("csv"))
             {
-                return readCSV(multipartFile,jwtTokenTO);
+                return readCSV(multipartFile,virtualAccountSid);
             }
         }
         log.error("Check Csv File, something is missing");
         return null;
     }
 
-    private List<CSVRecord> readCSV(MultipartFile multipartFile,JWTTokenTO jwtTokenTO)
+    private List<CSVRecord> readCSV(MultipartFile multipartFile,String virtualAccountSid)
     {
         try
         {
@@ -224,7 +224,7 @@ public class QuestionServiceImpl implements IQuestionService {
                 }
             }
             if(CollectionUtils.isNotEmpty(questionToList)) {
-                saveQuestionBulkData(questionToList, jwtTokenTO);
+                saveQuestionBulkData(questionToList, virtualAccountSid);
             }
             return errorList;
         } catch (Exception exp)
@@ -234,11 +234,11 @@ public class QuestionServiceImpl implements IQuestionService {
         }
     }
 
-    private void saveQuestionBulkData(List<QuestionTo> questionToList,JWTTokenTO jwtTokenTO)
+    private void saveQuestionBulkData(List<QuestionTo> questionToList,String virtualAccountSid)
     {
         try {
             VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
-                    (BaseEntity.hexStringToByteArray(jwtTokenTO.getVirtualAccountSid()));
+                    (BaseEntity.hexStringToByteArray(virtualAccountSid));
             List<Question> questionList = new ArrayList<>();
             for (QuestionTo questionTo : questionToList) {
                 Question question = mapper.convert(questionTo, Question.class);

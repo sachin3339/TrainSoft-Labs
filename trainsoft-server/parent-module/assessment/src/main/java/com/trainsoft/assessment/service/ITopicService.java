@@ -10,5 +10,5 @@ import java.util.List;
 public interface ITopicService {
 
     TopicTo createTopic(TopicTo topicTo);
-    List<TopicTo> getAllTopics(JWTTokenTO jwtTokenTO, Pageable pageRequest);
+    List<TopicTo> getAllTopics(String companySid, Pageable pageable);
 }

@@ -1,5 +1,6 @@
 package com.trainsoft.instructorled.commons;
 
+import com.trainsoft.instructorled.entity.Company;
 import com.trainsoft.instructorled.entity.Training;
 import com.trainsoft.instructorled.entity.TrainingView;
 import com.trainsoft.instructorled.entity.VirtualAccount;
@@ -32,10 +33,10 @@ public class CustomRepositoyImpl implements ITrainsoftCustomRepository {
     }
 
     @Override
-    public BigInteger noOfCountByClass(String classz,String companySid) {
-        String customQuery = "SELECT count(a.id) as noOfCount from "+classz+" a where a.status <> 'DELETED' and company_sid=:companySid";
+    public BigInteger noOfCountByClass(String classz, Company company) {
+        String customQuery = "SELECT count(a.id) as noOfCount from "+classz+" a where a.status <> 'DELETED' and company_id=:company_id";
         Query query = entitymangager.createNativeQuery(customQuery);
-        query.setParameter("companySid",companySid);
+        query.setParameter("company_id",company.id);
         return (BigInteger)query.getSingleResult();
     }
 

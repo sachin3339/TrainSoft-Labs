@@ -555,7 +555,7 @@ public class TrainingServiceImpl implements ITrainingService {
 
     @Override
     public BigInteger getCountByClass(String classz,String companySid) {
-        return customRepositoy.noOfCountByClass(classz,companySid);
+        return customRepositoy.noOfCountByClass(classz,getCompany(companySid));
     }
     @Override
     public TrainingTO updateTraining(TrainingTO trainingTO) {

@@ -53,7 +53,7 @@ public class QuestionController {
             Pageable pageable)
     {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(questionService.getAllQuestions(jwt,pageable));
+        return ResponseEntity.ok(questionService.getAllQuestions(jwt.getCompanySid(),pageable));
     }
 
     @GetMapping("/question/{questionSid}")
@@ -70,7 +70,7 @@ public class QuestionController {
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token)
     {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(questionService.displayQuestionsForAssessment(jwt));
+        return ResponseEntity.ok(questionService.displayQuestionsForAssessment(jwt.getCompanySid()));
     }
 
     @PostMapping("question/bulkupload")
@@ -80,6 +80,6 @@ public class QuestionController {
             @ApiParam(value = "upload Question and Answer csv file", required = true) @RequestParam("file") @NonNull MultipartFile multipartFile)
     {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return  ResponseEntity.ok(questionService.processQuestionAnswerInBulk(multipartFile,jwt));
+        return  ResponseEntity.ok(questionService.processQuestionAnswerInBulk(multipartFile,jwt.getVirtualAccountSid()));
     }
 }
