@@ -100,18 +100,18 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<AssessmentTo> getAssessmentsByTopic(String topicSid)
+    public List<AssessmentTo> getAssessmentsByTopic(String topicSid,Pageable pageable)
     {
             Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
-            if (topic != null) {
-                List<Assessment> assessmentList = topic.getAssessments();
+            List<Assessment> assessmentList = assessmentRepository.findAssessmentByTopicId(topic,pageable);
+            if (CollectionUtils.isNotEmpty(assessmentList))
+            {
                 if (CollectionUtils.isNotEmpty(assessmentList)) {
                     List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList, AssessmentTo.class);
                     assessmentToList.forEach(assessmentTo ->
                     {
                         assessmentTo.setTopicSid(BaseEntity.bytesToHexStringBySid(topic.getSid()));
                         assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessmentTo.getSid()));
-
                     });
                     return assessmentToList;
                 }
