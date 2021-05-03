@@ -44,7 +44,9 @@ import PauseIcon from '@material-ui/icons/Pause';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
+import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 
+export const ICN_EXPANDED = <AspectRatioIcon/>
 export const ICN_TRAINSOFT = <img src={TRAINSOFT}/>
 export const ICN_PUSHED = <PauseIcon/>
 export const ICN_PLAY_CIRCLE = <PlayCircleFilledWhiteIcon/>

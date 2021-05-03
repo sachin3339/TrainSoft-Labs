@@ -86,7 +86,7 @@ const RestService = {
   createTraining: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.CREATE_TRAINING,payload),
   editTraining: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.EDIT_TRAINING,payload),
   editTrainingSession: (payload,meetingSid ="")=> AxiosService.post(GLOBELCONSTANT.TRAINING.UPDATE_TRAINING_SESSION + "/"+ meetingSid,payload),
-  CreateTrainingSession: (payload)=> AxiosService.post(GLOBELCONSTANT.TRAINING.CREATE_SESSION,payload),
+  CreateTrainingSession: (payload,virtualAccountSid)=> AxiosService.post(GLOBELCONSTANT.TRAINING.CREATE_SESSION.replace("{virtualAccountSid}",virtualAccountSid),payload),
   searchTraining : (name) => AxiosService.get(GLOBELCONSTANT.TRAINING.SEARCH_TRAINER + name),
   deleteTraining: (trainingId)=> AxiosService.delete(GLOBELCONSTANT.TRAINING.DELETE_TRAINER + trainingId),
   getTrainingBySid: (trainingSid)=> AxiosService.get(GLOBELCONSTANT.TRAINING.GET_TRAINING_SID.replace("{trainingSid}",trainingSid)),

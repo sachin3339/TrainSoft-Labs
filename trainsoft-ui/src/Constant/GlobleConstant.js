@@ -69,7 +69,7 @@ const GLOBELCONSTANT = {
             CREATE_TRAINING: API_HOST +  "training/create",
             GET_TRAINING_SID:API_HOST +  "training/{trainingSid}",
             GET_TRAINING_SESSION: API_HOST +  "trainingsession/training/{trainingSid}/course/{courseSid}",
-            CREATE_SESSION: API_HOST +  "trainingSession/create",
+            CREATE_SESSION: API_HOST +  "trainingSession/create/{virtualAccountSid}",
             SEARCH_TRAINER: API_HOST + "trainings/",
             DELETE_TRAINER: API_HOST + "delete/training/",
             DELETE_TRAIN_SESSION: API_HOST + "delete/trainingsession/{trainingSesssionSid}",

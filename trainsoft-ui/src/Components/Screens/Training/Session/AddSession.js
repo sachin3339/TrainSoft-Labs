@@ -50,7 +50,7 @@ const AddSession = ({ show, setShow, getSessionByPage, isEdit, initialValue }) =
                 "trainingSid": training.sid,
             }
             payload.status = "ENABLED"
-            RestService.CreateTrainingSession(payload).then(res => {
+            RestService.CreateTrainingSession(payload,training.virtualAccountSid).then(res => {
                 Toast.success({ message: `Agenda is Successfully Created` });
                 getSessionByPage()
                 setShow(false)
@@ -82,7 +82,7 @@ const AddSession = ({ show, setShow, getSessionByPage, isEdit, initialValue }) =
             val.endTime = endTime
             val.startTime = startTime
             val.meetingInfo = data.meetingInfo ? JSON.stringify(data.meetingInfo) : null
-            RestService.editTrainingSession(val, meetingId).then(res => {
+            RestService.editTrainingSession(val,meetingId).then(res => {
                 Toast.success({ message: `Session updated successfully ` });
                 getSessionByPage()
                 setShow(false)
