@@ -95,6 +95,23 @@ public class TopicServiceImpl implements ITopicService {
             }
     }
 
+    @Override
+    public TopicTo softDeleteTopic(String topicSid)
+    {
+        if(topicSid!=null)
+        {
+            Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
+            if(topic!=null && CollectionUtils.isEmpty(topic.getAssessments()))
+            {
+                topic.setStatus(AssessmentEnum.Status.DELETED);
+                return mapper.convert(topicRepository.save(topic), TopicTo.class);
+            }
+            else
+                throw new ApplicationException("Topic does not exist OR Contains Assessments , which cannot be Deleted until related Assessments are deleted");
+        }
+        else throw new InvalidSidException("Invalid Topic Sid !");
+    }
+
 
     private Company getCompany(String companySid){
         Company c=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
