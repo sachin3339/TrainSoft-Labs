@@ -31,4 +31,8 @@ public interface IAssessmentService
 
     List<VirtualAccountHasQuestionAnswerDetailsTO> findUserAssessmentResponses(String virtualAccountSid);
 
+    AssessmentTo updateAssessment(AssessmentTo assessmentTo);
+
+    void deleteAssessment(String QuizSetSid);
+
 }
