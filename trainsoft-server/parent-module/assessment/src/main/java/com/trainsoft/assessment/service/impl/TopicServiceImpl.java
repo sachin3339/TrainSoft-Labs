@@ -2,6 +2,7 @@ package com.trainsoft.assessment.service.impl;
 
 import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.customexception.ApplicationException;
+import com.trainsoft.assessment.customexception.InvalidSidException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
 import com.trainsoft.assessment.entity.*;
@@ -79,10 +80,27 @@ public class TopicServiceImpl implements ITopicService {
         }
     }
 
+    @Override
+    public TopicTo updateTopic(String topicSid,String topicName)
+    {
+            Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
+            if(topic!=null)
+            {
+                topic.setName(topicName);
+                return mapper.convert(topicRepository.save(topic),TopicTo.class);
+            }
+           else {
+                log.error("Invalid Topic Sid:" + topicSid);
+                throw new InvalidSidException("Invalid Topic Sid: " + topicSid);
+            }
+    }
+
+
     private Company getCompany(String companySid){
         Company c=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Company company=new Company();
         company.setId(c.getId());
         return company;
     }
+
 }

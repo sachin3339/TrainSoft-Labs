@@ -11,4 +11,5 @@ public interface ITopicService {
 
     TopicTo createTopic(TopicTo topicTo);
     List<TopicTo> getAllTopics(String companySid, Pageable pageable);
+    TopicTo updateTopic(String topicSid,String topicName);
 }

@@ -45,4 +45,12 @@ public class TopicController {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         return ResponseEntity.ok(topicService.getAllTopics(jwt.getCompanySid(),pageable));
     }
+
+    @PutMapping("/update/topic")
+    @ApiOperation(value = "updateTopic", notes = "API to update Topic based on Topic Id and Topic Name.")
+    public ResponseEntity<?> updateTopic(@ApiParam(value = "Update Topic payload", required = true) @RequestBody TopicTo topicTo)
+    {
+        return ResponseEntity.ok(topicService.updateTopic(topicTo.getSid(),topicTo.getName()));
+    }
+
 }
