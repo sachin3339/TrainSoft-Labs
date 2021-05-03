@@ -10,6 +10,7 @@ import com.trainsoft.assessment.repository.ITopicRepository;
 import com.trainsoft.assessment.repository.IVirtualAccountRepository;
 import com.trainsoft.assessment.service.ITopicService;
 import com.trainsoft.assessment.to.TopicTo;
+import com.trainsoft.assessment.value.AssessmentEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -44,6 +45,7 @@ public class TopicServiceImpl implements ITopicService {
                 topic.generateUuid();
                 topic.setCreatedBy(virtualAccount);
                 topic.setCreatedOn(new Date(Instant.now().toEpochMilli()));
+                topic.setStatus(AssessmentEnum.Status.ENABLED);
                 topic.setCompany(virtualAccount.getCompany());
                 return mapper.convert(topicRepository.save(topic), TopicTo.class);
         }catch (Exception e) {
