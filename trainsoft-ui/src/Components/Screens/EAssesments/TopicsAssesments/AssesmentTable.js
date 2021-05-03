@@ -1,5 +1,8 @@
-import { useState } from "react";
-import { Button } from "react-bootstrap";
+import { useEffect, useState,useContext } from "react";
+import RestService from "../../../../Services/api.service";
+import AppContext from "../../../../Store/AppContext";
+import useToast from "../../../../Store/ToastHook";
+import { Button } from "../../../Common/Buttons/Buttons";
 
 import CardHeader from "../../../Common/CardHeader";
 import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
@@ -7,18 +10,14 @@ import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
 import { Link } from "../../../Common/Router";
 
 const AssesmentsTable = ({ location }) => {
+  const Toast = useToast()
+  const {spinner} = useContext(AppContext)
   const [count, setCount] = useState(0);
-  const [questions, setQuestions] = useState([
-    {
-      name: "Java Funda Mntals",
-      questions: "10",
+  const [assessment,setAssessment] = useState([])
 
-      sid: "1",
-    },
-  ]);
   const [configuration, setConfiguration] = useState({
     columns: {
-      name: {
+      title: {
         title: "Assesment Name",
         sortDirection: null,
         sortEnabled: true,
@@ -37,12 +36,12 @@ const AssesmentsTable = ({ location }) => {
               className="dt-name"
               style={{ marginLeft: "10px" }}
             >
-              {data.name}
+              {data.title}
             </Link>
           </div>
         ),
       },
-      questions: {
+      noOfQuestions: {
         title: "Questions",
         sortDirection: null,
         sortEnabled: true,
@@ -98,6 +97,54 @@ const AssesmentsTable = ({ location }) => {
     // showCheckbox: true,
     clearSelection: false,
   });
+
+  // get All Assessment By Topic sid
+  const getAssessmentByTopic = async () => {
+         spinner.hide("Loading... wait");
+    try {
+        RestService.getAssessmentByTopic(location.state.sid).then(
+            response => {
+              setAssessment(response.data);
+            },
+            err => {
+                spinner.hide();
+            }
+        ).finally(() => {
+            spinner.hide();
+        });
+    } catch (err) {
+        console.error("error occur on getAllTopic()", err)
+    }
+}
+
+ // Create Topic
+ const createAssesment = async (payload) => {
+  spinner.hide("Loading... wait");
+  try {
+      RestService.createTopic(payload).then(
+          response => {
+            Toast.success({ message: "Topic added successfully" })
+            // getAllTopic()
+          
+          },
+          err => {
+              spinner.hide();
+            
+          }
+      ).finally(() => {
+          spinner.hide();
+        
+      });
+  } catch (err) {
+  
+      console.error("error occur on createTopic()", err)
+  }
+}
+
+useEffect(()=>{
+  getAssessmentByTopic()
+},[])
+
   return (
     <>
       <CardHeader
@@ -112,7 +159,7 @@ const AssesmentsTable = ({ location }) => {
         <DynamicTable
           {...{
             configuration,
-            sourceData: questions,
+            sourceData: assessment,
             // onPageChange: (e) => getCourse(e),
             count,
           }}

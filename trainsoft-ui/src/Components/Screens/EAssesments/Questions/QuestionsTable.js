@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useState ,useContext,useEffect} from "react";
+import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
+import RestService from "../../../../Services/api.service";
+import AppContext from "../../../../Store/AppContext";
+import useToast from "../../../../Store/ToastHook";
 import { Toggle } from "../../../Common/BsUtils";
 import { Button } from "../../../Common/Buttons/Buttons";
 import CardHeader from "../../../Common/CardHeader";
@@ -6,16 +10,10 @@ import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
 import { Link, navigate } from "../../../Common/Router";
 
 const QuestionsTable = ({ location }) => {
+  const Toast = useToast()
+  const {spinner} = useContext(AppContext)
   const [count, setCount] = useState(0);
-  const [questions, setQuestions] = useState([
-    {
-      name: "What is a correct syntax to output “Hello World” in Java?",
-      type: "Multiple Choice",
-      tags: "Java",
-      difficulty: "Beginner",
-      sid: "1",
-    },
-  ]);
+  const [questions, setQuestions] = useState([])
   const [configuration, setConfiguration] = useState({
     columns: {
       name: {
@@ -43,13 +41,13 @@ const QuestionsTable = ({ location }) => {
           </div>
         ),
       },
-      type: {
+      questionType: {
         title: "Type",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
       },
-      tags: {
+      technologyName: {
         title: "Tags",
         sortDirection: null,
         sortEnabled: true,
@@ -66,12 +64,12 @@ const QuestionsTable = ({ location }) => {
               borderRadius: "25px",
             }}
           >
-            {data.tags}
+            {data.technologyName}
           </div>
         ),
       },
       difficulty: {
-        title: "Tags",
+        title: "Difficulty",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
@@ -79,7 +77,7 @@ const QuestionsTable = ({ location }) => {
           <div
             style={{
               background: "#E8E8E8",
-              width: "79px",
+              width: "96 px",
               height: "24px",
               display: "flex",
               justifyContent: "center",
@@ -136,6 +134,30 @@ const QuestionsTable = ({ location }) => {
     // showCheckbox: true,
     clearSelection: false,
   });
+
+// get All question 
+const getAllQuestion= async (page=1) => {
+      spinner.hide("Loading... wait");
+ try {
+     RestService.getAllQuestion(GLOBELCONSTANT.PAGE_SIZE, page).then(
+         response => {
+          setQuestions(response.data);
+         },
+         err => {
+             spinner.hide();
+         }
+     ).finally(() => {
+         spinner.hide();
+     });
+ } catch (err) {
+     console.error("error occur on getAllTopic()", err)
+ }
+}
+
+
+useEffect(()=>{
+  getAllQuestion()
+},[])
   return (
     <>
       <CardHeader

@@ -96,10 +96,12 @@ const RestService = {
   zoomParticipant: ()=> AxiosService.get('https://api.zoom.us/v2/users/kumarkanhiya21@gmail.com/meetings?page_size=30&type=live',zoomAuth),
   // getTrainingByRole: (pageNo,pageSize) => AxiosService.get(GLOBELCONSTANT.TRAINING.PARTICIPANT_BY_ROLE.replace("{pageNo}",pageNo).replace("{pageSize}",pageSize)),
 
-
-  // instructor
-
-
+  // assessment
+  getAllTopic: (pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_TOPIC + 5 +"&pageNo="+ pageNo),
+  getAllQuestion: (pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ALL_QUESTION + 5 +"&pageNo="+ pageNo),
+  createQuestion: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_QUESTION,payload),
+  createTopic: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_TOPIC,payload),
+  getAssessmentByTopic: (sid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT + sid),
   
 };
 
