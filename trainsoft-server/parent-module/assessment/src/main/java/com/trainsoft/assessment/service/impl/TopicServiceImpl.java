@@ -53,10 +53,10 @@ public class TopicServiceImpl implements ITopicService {
     }
 
     @Override
-    public List<TopicTo> getAllTopics(JWTTokenTO jwtTokenTO, Pageable pageRequest)
+    public List<TopicTo> getAllTopics(String companySid, Pageable pageable)
     {
         try {
-            List<Topic> topics = topicRepository.findTopicByCompany(getCompany(jwtTokenTO.getCompanySid()),pageRequest);
+            List<Topic> topics = topicRepository.findTopicByCompany(getCompany(companySid),pageable);
             List<TopicTo> topicToList = mapper.convertList(topics, TopicTo.class);
             if (CollectionUtils.isNotEmpty(topics))
             {

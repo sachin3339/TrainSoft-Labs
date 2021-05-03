@@ -1,5 +1,5 @@
 package com.trainsoft.assessment.service;
-import com.trainsoft.assessment.commons.JWTTokenTO;
+
 import com.trainsoft.assessment.to.*;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.data.domain.Pageable;
@@ -11,11 +11,10 @@ public interface IQuestionService {
 
     List<QuestionTypeTo> getAllQuestionTypes();
     QuestionTo createQuestionAndAnswer(QuestionTo questionTo);
-    List<QuestionTo> getAllQuestions(JWTTokenTO jwtTokenTO, Pageable pageable);
+    List<QuestionTo> getAllQuestions(String companySid, Pageable pageable);
     QuestionTo getAnswersQuestionBySid(String questionSid);
-    List<QuestionTo> displayQuestionsForAssessment(JWTTokenTO jwtTokenTO);
-    List<CSVRecord> processQuestionAnswerInBulk(MultipartFile multipartFile, JWTTokenTO jwtTokenTO);
+    List<QuestionTo> displayQuestionsForAssessment(String companySid);
+    List<CSVRecord> processQuestionAnswerInBulk(MultipartFile multipartFile, String virtualAccountSid);
     QuestionTo updateQuestion(QuestionTo request);
     void deleteQuestion(String question);
-
 }

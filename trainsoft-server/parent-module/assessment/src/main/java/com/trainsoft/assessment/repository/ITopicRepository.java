@@ -12,4 +12,7 @@ public interface ITopicRepository extends JpaRepository<Topic,Integer> {
 
     Topic findTopicBySid(byte[] sid);
     List<Topic> findTopicByCompany(Company company, Pageable pageable);
+
+    @Query(value = "SELECT COUNT(*) FROM quiz as qz WHERE qz.company_id=:company",nativeQuery = true)
+    Integer findTopicCountByCompany(Company company);
 }

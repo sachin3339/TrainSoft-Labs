@@ -43,6 +43,6 @@ public class TopicController {
             Pageable pageable)
     {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(topicService.getAllTopics(jwt,pageable));
+        return ResponseEntity.ok(topicService.getAllTopics(jwt.getCompanySid(),pageable));
     }
 }
