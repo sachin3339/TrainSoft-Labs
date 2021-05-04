@@ -21,7 +21,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.*;
 
@@ -45,6 +47,7 @@ public class AssessmentServiceImpl implements IAssessmentService
     private final ITagRepository tagRepository;
     private final IVirtualAccountHasQuizSetAssessmentRepository virtualAccountHasQuizSetAssessmentRepository;
     private final ITrainsoftCustomRepository customRepository;
+    private final IAppUserRepository appUserRepository;
 
 
     @Override
@@ -637,10 +640,65 @@ public class AssessmentServiceImpl implements IAssessmentService
         if (!assessmentQuestion.isEmpty()) assessmentQuestionRepository.deleteAll(assessmentQuestion);
         return ;
     }
+
     @Override
     public BigInteger getCountByClass(String classz, String companySid)
     {
         return customRepository.noOfCountByClass(classz,getCompany(companySid));
+    }
+
+    @Override
+    public AssessmentDashboardTo getAssessDetails(String assessmentSid)
+    {
+       Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
+       AssessmentDashboardTo assessmentDashboardTo = new AssessmentDashboardTo();
+       assessmentDashboardTo.setTotalQuestions(getNoOfQuestionByAssessmentSid(assessmentSid));
+       assessmentDashboardTo.setAssessmentStartedOn(assessment.getCreatedOn());
+       List<AssessTo> assessToList = new ArrayList<>();
+       List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessmentList
+               = virtualAccountHasQuizSetAssessmentRepository.findByAssessment(assessment.id);
+       int submitted = virtualAccountHasQuizSetAssessmentList.size();
+       List<VirtualAccountHasQuizSetSessionTiming> notSubmittedList = virtualAccountHasQuizSetSessionTimingRepository.findByQuizSetId(assessment);
+        int notSubmitted = notSubmittedList.size();
+                assessmentDashboardTo.setTotalSubmitted(submitted);
+       assessmentDashboardTo.setTotalAttended(submitted+notSubmitted);
+        //Double attendance = submitted/total no of users;
+
+       for (VirtualAccountHasQuizSetAssessment entry:virtualAccountHasQuizSetAssessmentList)
+        {
+            VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountById(entry.getVirtualAccountId().id);
+            AppUser appUser = appUserRepository.findAppUserById(virtualAccount.getAppuser().id);
+            AssessTo assessTo = new AssessTo();
+            assessTo.setEmail(appUser.getEmailId());
+            assessTo.setName(appUser.getName());
+            assessTo.setScore(entry.getPercentage());
+            assessTo.setSubmittedOn(entry.getSubmittedOn());
+            assessTo.setStatus("SUBMITTED");
+            assessToList.add(assessTo);
+        }
+       assessmentDashboardTo.setBatchAvgScore(batchAverageScore(assessToList));
+        for (VirtualAccountHasQuizSetSessionTiming entry:notSubmittedList)
+        {
+           VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountById(entry.getVirtualAccountId().id);
+            AppUser appUser = appUserRepository.findAppUserById(virtualAccount.getAppuser().id);
+           AssessTo assessTo = new AssessTo();
+           assessTo.setName(appUser.getName());
+           assessTo.setEmail(appUser.getEmailId());
+           assessTo.setStatus("PENDING");
+           assessToList.add(assessTo);
+        }
+       assessmentDashboardTo.setAssessToList(assessToList);
+        return assessmentDashboardTo;
+    }
+
+    private Double batchAverageScore(List<AssessTo> assessToList)
+    {
+        if(CollectionUtils.isNotEmpty(assessToList))
+        {
+            OptionalDouble score = assessToList.stream().mapToDouble(AssessTo::getScore).average();
+            return score.isPresent()? BigDecimal.valueOf(score.getAsDouble()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue():0.0;
+        }
+        return null;
     }
 
 
@@ -650,4 +708,6 @@ public class AssessmentServiceImpl implements IAssessmentService
         c.setId(company.getId());
         return c;
     }
+
+
 }

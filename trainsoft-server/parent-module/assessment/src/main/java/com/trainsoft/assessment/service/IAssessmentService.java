@@ -37,4 +37,6 @@ public interface IAssessmentService
 
     BigInteger getCountByClass(String classz, String companySid);
 
+    AssessmentDashboardTo getAssessDetails(String assessmentSid);
+
 }

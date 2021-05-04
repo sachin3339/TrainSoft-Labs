@@ -173,4 +173,12 @@ public class AssessmentController {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         return ResponseEntity.ok(assessmentService.getCountByClass(classz,jwt.getCompanySid()));
     }
+
+    @GetMapping("get/assessdetails/{aSid}")
+    @ApiOperation(value = "getAssessDetails", notes = "API to get Assess Details")
+    public ResponseEntity<?> getAssessDetails(@ApiParam(value = "Assessment Sid", required = true) @PathVariable("aSid") String assessmentSid)
+    {
+        return ResponseEntity.ok(assessmentService.getAssessDetails(assessmentSid));
+    }
+
 }
