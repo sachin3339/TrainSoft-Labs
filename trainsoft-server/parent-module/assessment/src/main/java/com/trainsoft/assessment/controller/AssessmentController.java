@@ -51,9 +51,9 @@ public class AssessmentController {
     @GetMapping("/assessments/{tsid}")
     @ApiOperation(value = "getAssessmentsByTopic", notes = "API to get Assessments based on Topic.")
     public ResponseEntity<?> getAssessmentsByTopic(
-            @ApiParam("Topic sid")@PathVariable("tsid") String topicSid)
+            @ApiParam("Topic sid")@PathVariable("tsid") String topicSid,Pageable pageable)
     {
-        return ResponseEntity.ok(assessmentService.getAssessmentsByTopic(topicSid));
+        return ResponseEntity.ok(assessmentService.getAssessmentsByTopic(topicSid,pageable));
     }
 
     @PostMapping("/associate/Question")

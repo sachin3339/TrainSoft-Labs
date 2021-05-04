@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public interface IAssessmentQuestionRepository extends JpaRepository<AssessmentQuestion, Integer>
 {
-      List<AssessmentQuestion> getAssessmentQuestionsByAndAssessmentId(Assessment assessmentId, Pageable pageable);
+      List<AssessmentQuestion> getAssessmentQuestionsByAssessmentId(Assessment assessmentId, Pageable pageable);
       @Query(value = "select * from quiz_set_has_question where quiz_set_id=:id",nativeQuery = true)
       List<AssessmentQuestion> findByTopicId(@Param("id") Integer quizSetId);
       Optional<AssessmentQuestion> findAssessmentQuestionByQuestionId(Question question);

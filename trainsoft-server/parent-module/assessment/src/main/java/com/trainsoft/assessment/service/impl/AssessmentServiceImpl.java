@@ -101,18 +101,18 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<AssessmentTo> getAssessmentsByTopic(String topicSid)
+    public List<AssessmentTo> getAssessmentsByTopic(String topicSid,Pageable pageable)
     {
             Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
-            if (topic != null) {
-                List<Assessment> assessmentList = topic.getAssessments();
+            List<Assessment> assessmentList = assessmentRepository.findAssessmentByTopicId(topic,pageable);
+            if (CollectionUtils.isNotEmpty(assessmentList))
+            {
                 if (CollectionUtils.isNotEmpty(assessmentList)) {
                     List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList, AssessmentTo.class);
                     assessmentToList.forEach(assessmentTo ->
                     {
                         assessmentTo.setTopicSid(BaseEntity.bytesToHexStringBySid(topic.getSid()));
                         assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessmentTo.getSid()));
-
                     });
                     return assessmentToList;
                 }
@@ -184,7 +184,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         try {
             if (assessmentSid != null) {
                 Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
-                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAndAssessmentId(assessment,pageable);
+                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAssessmentId(assessment,pageable);
                 List<Question> questionList = new ArrayList<>();
                 if(CollectionUtils.isNotEmpty(assessmentQuestionList))
                 {
