@@ -4,6 +4,7 @@ import com.trainsoft.assessment.to.*;
 import org.springframework.data.domain.Pageable;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
 import java.util.List;
 
 public interface IAssessmentService
@@ -30,5 +31,6 @@ public interface IAssessmentService
     ScoreBoardTO getScoreBoard(String quizSetSid,String virtualAccountSid);
 
     List<VirtualAccountHasQuestionAnswerDetailsTO> findUserAssessmentResponses(String virtualAccountSid);
+    BigInteger getCountByClass(String classz, String companySid);
 
 }

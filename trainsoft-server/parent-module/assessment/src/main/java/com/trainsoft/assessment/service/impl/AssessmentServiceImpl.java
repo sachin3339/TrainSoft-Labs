@@ -20,6 +20,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.util.*;
 
@@ -38,11 +39,11 @@ public class AssessmentServiceImpl implements IAssessmentService
     private final IAssessmentQuestionRepository assessmentQuestionRepository;
     private final IAnswerRepository answerRepository;
     private final IVirtualAccountHasQuestionAnswerDetailsRepository virtualAccountHasQuestionAnswerDetailsRepository;
-    private final ICategoryRepository iCategoryRepository;
     private final ICompanyRepository companyRepository;
     private final IVirtualAccountHasQuizSetSessionTimingRepository virtualAccountHasQuizSetSessionTimingRepository;
     private final ITagRepository tagRepository;
     private final IVirtualAccountHasQuizSetAssessmentRepository virtualAccountHasQuizSetAssessmentRepository;
+    private final ITrainsoftCustomRepository customRepository;
 
 
     @Override
@@ -584,4 +585,17 @@ public class AssessmentServiceImpl implements IAssessmentService
         return virtualAccountHasQuestionAnswerDetailsTO;
     }
 
+    @Override
+    public BigInteger getCountByClass(String classz, String companySid)
+    {
+        return customRepository.noOfCountByClass(classz,getCompany(companySid));
+    }
+
+
+    private Company getCompany(String companySid){
+        Company company=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        Company c=new Company();
+        c.setId(company.getId());
+        return c;
+    }
 }

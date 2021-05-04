@@ -150,4 +150,13 @@ public class AssessmentController {
             @ApiParam("virtual Account sid")@PathVariable("sid") String virtualAccountSid){
     return ResponseEntity.ok(assessmentService.findUserAssessmentResponses(virtualAccountSid));
     }
+
+    @GetMapping("get/{classz}")
+    @ApiOperation(value = "getCount", notes = "API to get Count of records based on companySid of given Type")
+    public ResponseEntity<?> getCountByClass(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Given classZ", required = true) @PathVariable("classz") String classz) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(assessmentService.getCountByClass(classz,jwt.getCompanySid()));
+    }
 }
