@@ -29,4 +29,6 @@ public interface IAssessmentQuestionRepository extends JpaRepository<AssessmentQ
 
       @Query(value = "SELECT aq FROM AssessmentQuestion aq  WHERE  aq.questionId=:id")
       List<AssessmentQuestion> findAssessmentQuestionByQuestion(@Param("id") Question question);
+
+      List<AssessmentQuestion> findAssessmentQuestionByAssessmentId(Assessment assessmentId);
 }

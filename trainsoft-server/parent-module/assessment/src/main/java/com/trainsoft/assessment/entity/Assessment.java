@@ -41,7 +41,7 @@ public class Assessment extends BaseEntity{
     private Date updatedOn;
 
     @ManyToOne
-    @JoinColumn(name = "company_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
 
     @Column(name ="is_question_randomize")
@@ -97,14 +97,14 @@ public class Assessment extends BaseEntity{
     private String category;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "quiz_id", referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "quiz_id", referencedColumnName = "id")
     private Topic topicId;
 
     @Column(name = "url")
     private String url;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "tag", referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "tag", referencedColumnName = "id")
     private Tag tagId;
 
 
