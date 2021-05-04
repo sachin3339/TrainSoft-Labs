@@ -39,4 +39,10 @@ public class AssessmentTo extends BaseTO{
     private boolean isNegative;
     private boolean isPreviousEnabled;
     private Date createdOn;
+    private String updatedBySid;
+    private Date updatedOn;
+    private boolean isMultipleAttempts;
+    private boolean isPaymentReceived;
+    private boolean isReduceMarks;
+    private boolean isQuestionRandomize;
 }

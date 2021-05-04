@@ -31,6 +31,10 @@ public interface IAssessmentService
     ScoreBoardTO getScoreBoard(String quizSetSid,String virtualAccountSid);
 
     List<VirtualAccountHasQuestionAnswerDetailsTO> findUserAssessmentResponses(String virtualAccountSid);
+
+    AssessmentTo updateAssessment(AssessmentTo assessmentTo);
+    void deleteAssessment(String QuizSetSid);
+
     BigInteger getCountByClass(String classz, String companySid);
 
 }
