@@ -4,9 +4,7 @@ import com.trainsoft.assessment.commons.JWTDecode;
 import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.service.IAssessmentService;
 import com.trainsoft.assessment.to.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +17,7 @@ import javax.mail.internet.InternetAddress;
 import javax.naming.Context;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import java.security.PublicKey;
 
 
 @Slf4j
@@ -52,9 +51,9 @@ public class AssessmentController {
     @GetMapping("/assessments/{tsid}")
     @ApiOperation(value = "getAssessmentsByTopic", notes = "API to get Assessments based on Topic.")
     public ResponseEntity<?> getAssessmentsByTopic(
-            @ApiParam("Topic sid")@PathVariable("tsid") String topicSid)
+            @ApiParam("Topic sid")@PathVariable("tsid") String topicSid,Pageable pageable)
     {
-        return ResponseEntity.ok(assessmentService.getAssessmentsByTopic(topicSid));
+        return ResponseEntity.ok(assessmentService.getAssessmentsByTopic(topicSid,pageable));
     }
 
     @PostMapping("/associate/Question")
@@ -149,5 +148,25 @@ public class AssessmentController {
     public ResponseEntity<?> findUserAssessmentRespones(
             @ApiParam("virtual Account sid")@PathVariable("sid") String virtualAccountSid){
     return ResponseEntity.ok(assessmentService.findUserAssessmentResponses(virtualAccountSid));
+    }
+
+    @PutMapping("update/assessment")
+    @ApiOperation(value = "Update Assessment",notes = "API to update Assessment.")
+    public ResponseEntity<?> updateAssessment(
+            @ApiParam(value = "Authorization token",required = true) @RequestHeader String token,
+            @ApiParam(value = "Update payload",required = true)  @RequestBody AssessmentTo assessmentTo){
+        JWTTokenTO jwtTokenTO = JWTDecode.parseJWT(token);
+        assessmentTo.setUpdatedBySid(jwtTokenTO.getVirtualAccountSid());
+        return ResponseEntity.ok(assessmentService.updateAssessment(assessmentTo));
+    }
+
+    @DeleteMapping("delete/assessment/{sid}")
+    @ApiOperation(value = "delete Assessment",notes = "API to delete Assessment.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,message = "Assessment deleted Successfully.")})
+    public ResponseEntity<?> deleteAssessment(
+            @ApiParam(value = "QuizSet Sid",required = true) @PathVariable("sid") String quizSetSid){
+        assessmentService.deleteAssessment(quizSetSid);
+      return ResponseEntity.ok().build();
     }
 }

@@ -10,7 +10,7 @@ public interface IAssessmentService
 {
     AssessmentTo createAssessment(AssessmentTo assessmentTo);
     List<CategoryTO> getAllCategories();
-    List<AssessmentTo> getAssessmentsByTopic(String topicSid);
+    List<AssessmentTo> getAssessmentsByTopic(String topicSid,Pageable pageable);
     List<QuestionTo> associateSelectedQuestionsToAssessment(AssessmentQuestionTo  assessmentQuestionTo);
     AssessmentTo getAssessmentBySid(String assessmentSid);
     List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid, Pageable pageable);
@@ -30,5 +30,9 @@ public interface IAssessmentService
     ScoreBoardTO getScoreBoard(String quizSetSid,String virtualAccountSid);
 
     List<VirtualAccountHasQuestionAnswerDetailsTO> findUserAssessmentResponses(String virtualAccountSid);
+
+    AssessmentTo updateAssessment(AssessmentTo assessmentTo);
+
+    void deleteAssessment(String QuizSetSid);
 
 }

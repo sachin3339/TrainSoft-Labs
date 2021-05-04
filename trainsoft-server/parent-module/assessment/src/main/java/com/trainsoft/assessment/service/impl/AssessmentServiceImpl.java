@@ -14,6 +14,7 @@ import com.trainsoft.assessment.repository.ITopicRepository;
 import com.trainsoft.assessment.repository.IVirtualAccountRepository;
 import com.trainsoft.assessment.service.IAssessmentService;
 import com.trainsoft.assessment.to.*;
+import com.trainsoft.assessment.value.AssessmentEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -100,18 +101,18 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<AssessmentTo> getAssessmentsByTopic(String topicSid)
+    public List<AssessmentTo> getAssessmentsByTopic(String topicSid,Pageable pageable)
     {
             Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
-            if (topic != null) {
-                List<Assessment> assessmentList = topic.getAssessments();
+            List<Assessment> assessmentList = assessmentRepository.findAssessmentByTopicId(topic,pageable);
+            if (CollectionUtils.isNotEmpty(assessmentList))
+            {
                 if (CollectionUtils.isNotEmpty(assessmentList)) {
                     List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList, AssessmentTo.class);
                     assessmentToList.forEach(assessmentTo ->
                     {
                         assessmentTo.setTopicSid(BaseEntity.bytesToHexStringBySid(topic.getSid()));
                         assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessmentTo.getSid()));
-
                     });
                     return assessmentToList;
                 }
@@ -183,7 +184,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         try {
             if (assessmentSid != null) {
                 Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
-                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAndAssessmentId(assessment,pageable);
+                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAssessmentId(assessment,pageable);
                 List<Question> questionList = new ArrayList<>();
                 if(CollectionUtils.isNotEmpty(assessmentQuestionList))
                 {
@@ -584,4 +585,55 @@ public class AssessmentServiceImpl implements IAssessmentService
         return virtualAccountHasQuestionAnswerDetailsTO;
     }
 
+    @Override
+    public AssessmentTo updateAssessment(AssessmentTo assessmentTo) {
+        Assessment assessment = assessmentRepository
+                .findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentTo.getSid()));
+        if (assessment==null) throw new InvalidSidException("invalid Quiz Set Sid");
+        assessment.setSid(BaseEntity.hexStringToByteArray(assessmentTo.getSid()));
+        assessment.setTitle(assessmentTo.getTitle());
+        assessment.setDescription(assessmentTo.getDescription());
+        VirtualAccount virtualAccount = virtualAccountRepository.
+                findVirtualAccountBySid(BaseEntity.hexStringToByteArray(assessmentTo.getUpdatedBySid()));
+        assessment.setUpdatedBy(virtualAccount);
+        assessment.setUpdatedOn(new Date());
+        Tag tag = tagRepository.findBySid(BaseEntity.hexStringToByteArray(assessmentTo.getTagSid()));
+        if (tag!=null)assessment.setTagId(tag);
+        assessment.setAutoSubmitted(assessmentTo.isAutoSubmitted());
+        assessment.setNextEnabled(assessmentTo.isNextEnabled());
+        assessment.setDuration(assessmentTo.getDuration());
+        assessment.setPremium(assessmentTo.isPremium());
+        assessment.setMandatory(assessmentTo.isMandatory());
+        assessment.setNegative(assessmentTo.isNegative());
+        assessment.setDifficulty(assessmentTo.getDifficulty());
+        assessment.setMultipleAttempts(assessmentTo.isMultipleAttempts());
+        assessment.setMultipleSitting(assessmentTo.isMultipleSitting());
+        assessment.setPauseEnable(assessmentTo.isPauseEnable());
+        assessment.setMultipleSitting(assessmentTo.isMultipleSitting());
+        assessment.setCategory(assessmentTo.getCategory());
+        assessment.setPaymentReceived(assessmentTo.isPaymentReceived());
+        assessment.setReduceMarks(assessmentTo.isReduceMarks());
+        assessment.setPreviousEnabled(assessmentTo.isPreviousEnabled());
+        assessment.setQuestionRandomize(assessmentTo.isQuestionRandomize());
+        assessment.setValidUpto(assessmentTo.getValidUpto());
+        assessment.setUrl(assessmentTo.getUrl());
+        assessmentRepository.save(assessment);
+        AssessmentTo assessmentTO = mapper.convert(assessment, AssessmentTo.class);
+        assessmentTO.setCompanySid(assessment.getCompany().getStringSid());
+        assessmentTO.setCreatedByVirtualAccountSid(assessment.getCreatedBy().getStringSid());
+        assessmentTO.setTopicSid(assessment.getTopicId().getStringSid());
+        assessmentTO.setUpdatedBySid(assessment.getUpdatedBy().getStringSid());
+        assessmentTO.setTagSid(assessment.getTagId().getStringSid());
+        return assessmentTO;
+    }
+
+    @Override
+    public void deleteAssessment(String quizSetSid){
+        Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(quizSetSid));
+        if (assessment==null) throw new InvalidSidException("invalid Quiz Set Sid.");
+        assessment.setStatus(AssessmentEnum.Status.DELETED);
+        List<AssessmentQuestion> assessmentQuestion = assessmentQuestionRepository.findAssessmentQuestionByAssessmentId(assessment);
+        if (!assessmentQuestion.isEmpty()) assessmentQuestionRepository.deleteAll(assessmentQuestion);
+        return ;
+    }
 }
