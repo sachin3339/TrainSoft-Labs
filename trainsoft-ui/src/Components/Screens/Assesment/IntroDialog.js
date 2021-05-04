@@ -19,37 +19,8 @@ import RestService from "../../../Services/api.service";
 import AppContext from "../../../Store/AppContext";
 
 export const IntroDialog = ({ open, setOpen }) => {
-  const { user, spinner } = useContext(AppContext)
-  const [introInfo, setIntroInfo] = useState({
-    "sid": "659253CF91270AD9421C17EA0EB550305576E7943120E023722C03A9877E92BD",
-    "title": "Java Fundamentals",
-    "description": "Basic Java fundamental Questions.",
-    "status": "ENABLED",
-    "category": "Technology",
-    "difficulty": "BEGINNER",
-    "validUpto": "2021-04-17T14:37:53.000+00:00",
-    "duration": 60,
-    "createdByVirtualAccountSid": "5A3C54277479414C91A7BBF2BC3D2ED0FFFB5E771000431EB128D07D65394DC5",
-    "topicSid": "89EA8C83643C428EB24950815D4D2C870803CB9A47334FE6BF23D9D187E4A3EE",
-    "tagSid": "CF993A5F48E54E948418B7A0AFC1010E88AAB7458DE4C02DEE35FBDCE2C6AE49",
-    "noOfQuestions": 9,
-    "url": "http://localhost/assessment?assessmentSid=659253CF91270AD9421C17EA0EB550305576E7943120E023722C03A9877E92BD",
-    "updatedBySid": null,
-    "updatedOn": null,
-    "negative": false,
-    "companySid": "5D66EAB00B4446C9A7ADB898C43C2C119456C5E6CA4D4499AE237822E3A41CB7",
-    "multipleAttempts": false,
-    "multipleSitting": false,
-    "pauseEnable": false,
-    "paymentReceived": false,
-    "autoSubmitted": true,
-    "nextEnabled": true,
-    "premium": false,
-    "mandatory": false,
-    "reduceMarks": false,
-    "previousEnabled": true,
-    "questionRandomize": false
-  });
+  const { spinner } = useContext(AppContext)
+  const [introInfo, setIntroInfo] = useState({});
 
   // get All session
   const getAssessmentInstruction = async () => {
