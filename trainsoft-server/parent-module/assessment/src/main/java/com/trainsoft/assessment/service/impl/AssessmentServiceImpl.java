@@ -183,7 +183,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         try {
             if (assessmentSid != null) {
                 Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
-                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAssessmentId(assessment,pageable);
+                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAssessmentIdOrderByCreatedOnDesc(assessment,pageable);
                 List<Question> questionList = new ArrayList<>();
                 if(CollectionUtils.isNotEmpty(assessmentQuestionList))
                 {

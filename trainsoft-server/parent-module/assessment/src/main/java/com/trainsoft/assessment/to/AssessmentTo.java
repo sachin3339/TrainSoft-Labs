@@ -38,4 +38,5 @@ public class AssessmentTo extends BaseTO{
     private boolean isPauseEnable;
     private boolean isNegative;
     private boolean isPreviousEnabled;
+    private Date createdOn;
 }
