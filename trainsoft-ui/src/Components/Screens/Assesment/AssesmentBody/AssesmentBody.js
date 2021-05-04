@@ -3,7 +3,7 @@ import { navigate } from "../../../Common/Router";
 import { AssesmentContext } from "../AssesementContext";
 import Submit from "../common/SubmitButton";
 import { IntroDialog } from "../IntroDialog";
-import { questions } from "../mock";
+// import { questions } from "../mock";
 import styles from "./AssesmentBody.module.css";
 import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import CheckIcon from "@material-ui/icons/Check";
@@ -11,14 +11,14 @@ import CloseIcon from "@material-ui/icons/Close";
 import FlagOutlinedIcon from "@material-ui/icons/FlagOutlined";
 import GroupOutlinedIcon from "@material-ui/icons/GroupOutlined";
 
-const AssesmentBody = () => {
+const AssesmentBody = ({ questions }) => {
   const [introDialog, setIntroDialog] = useState(true);
 
   return (
     <div className={styles.container}>
       <IntroDialog open={introDialog} setOpen={setIntroDialog} />
       <Header introDialog={introDialog} title={"Introduction to Java"} />
-      <Main />
+      <Main {...{questions}}/>
     </div>
   );
 };
@@ -86,7 +86,7 @@ const AssesmentTimer = ({ startTime = 0, timeLimit = 0 }) => {
   return <div className={styles.timer}>{formatTime()}</div>;
 };
 
-const Main = () => {
+const Main = ({questions}) => {
   const {
     questionIndex,
     activeQuestion,
@@ -98,10 +98,10 @@ const Main = () => {
   return (
     <div className={styles.main}>
       {finished ? (
-        <FinishScreen />
+        <FinishScreen {...{questions}}/>
       ) : (
         <>
-          {Object.keys(selectedAnswers).length === questions.length &&
+          {questions && Object.keys(selectedAnswers).length === questions.length &&
             !finished && (
               <div className={styles.doneBox}>
                 <div>
@@ -123,8 +123,8 @@ const Main = () => {
             )}
           {/* {title && <div className={styles.title}>{title}</div>} */}
           {questionIndex === -1 ? (
-            questions.map((_question, index) => (
-              <AssesmentCard question={_question} index={index} review />
+            questions.map((question, index) => (
+              <AssesmentCard question={question} index={index} review />
             ))
           ) : (
             <AssesmentCard question={activeQuestion} />
@@ -135,7 +135,7 @@ const Main = () => {
   );
 };
 
-const FinishScreen = () => {
+const FinishScreen = ({questions}) => {
   return (
     <div className={styles.finishScreen}>
       <div className={styles.check}>
@@ -321,12 +321,13 @@ const FinishScreen = () => {
             </div>
           </div>
         </div>
-        {questions.map((_question, index) => (
+        {questions.map((question, index) => (
           <AssesmentCard
-            question={_question}
+            question={question}
             index={index}
             result
             correct={index % 2 === 0}
+            questions
           />
         ))}
       </div>
@@ -334,7 +335,7 @@ const FinishScreen = () => {
   );
 };
 
-const AssesmentCard = ({ question, review = false, index, correct }) => {
+const AssesmentCard = ({ question, review = false, index, correct, questions }) => {
   const {
     setAnswer,
     selectedAnswers,
@@ -343,17 +344,17 @@ const AssesmentCard = ({ question, review = false, index, correct }) => {
     questionIndex,
   } = useContext(AssesmentContext);
   const [activeOption, setActiveOption] = useState(
-    selectedAnswers[question?.id]
+    selectedAnswers[question?.sid]
   );
 
   useEffect(() => {
-    setActiveOption(selectedAnswers[question?.id]);
+    setActiveOption(selectedAnswers[question?.sid]);
   }, [question, selectedAnswers]);
 
   return (
     <div className={styles.assesmentCard}>
-      <div className={styles.number}>
-        Question {question?.number} / {question?.total}
+      <div className={styles.questionNumber}>
+        Question {question?.questionNumber} / {Array.isArray(questions) && questions.length}
         {review && (
           <div
             className={styles.editButton}
@@ -368,21 +369,26 @@ const AssesmentCard = ({ question, review = false, index, correct }) => {
           </div>
         )}
       </div>
-      <div className={styles.title}>{question?.title}</div>
-      {question?.options?.map((_option, index) => (
+      <div className={styles.title}>{question && question.questionId?.name}</div>
+      {
+      question 
+      && question.questionId
+      && Array.isArray(question.questionId.answer)
+      && question.questionId.answer.length > 0
+      && question.questionId.answer.map((_option, index) => (
         <div
           onClick={() => {
             if (!finished) {
-              setActiveOption(_option?.id);
+              setActiveOption(_option?.sid);
             }
           }}
         >
           <AnswerOption
             {..._option}
             correct={correct}
-            key={_option?.id}
+            key={_option?.sid}
             index={index}
-            active={activeOption === _option?.id}
+            active={activeOption === _option?.sid}
           />
         </div>
       ))}
@@ -405,7 +411,7 @@ const AssesmentCard = ({ question, review = false, index, correct }) => {
   );
 };
 
-const AnswerOption = ({ title, active, index, correct }) => {
+const AnswerOption = ({ answerOptionValue, active, index, correct }) => {
   const labels = "ABCDEFG".split("");
   const { finished } = useContext(AssesmentContext);
   return (
@@ -420,7 +426,7 @@ const AnswerOption = ({ title, active, index, correct }) => {
         />
       </div>
       <div className={styles.answerTitle}>
-        {labels[index]}. {title}{" "}
+        {labels[index]}. {answerOptionValue}{" "}
         {finished && active ? (
           correct ? (
             <CheckIcon style={{ color: "green" }} />

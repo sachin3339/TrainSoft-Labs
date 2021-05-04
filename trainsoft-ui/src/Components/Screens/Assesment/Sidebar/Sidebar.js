@@ -2,14 +2,14 @@ import { useContext } from "react";
 import { ICN_TRAINSOFT } from "../../../Common/Icon";
 import { navigate } from "../../../Common/Router";
 import { AssesmentContext } from "../AssesementContext";
-import { questions } from "../mock";
+// import { questions } from "../mock";
 import styles from "./Sidebar.module.css";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import CheckIcon from "@material-ui/icons/Check";
 import PersonOutlineOutlinedIcon from "@material-ui/icons/PersonOutlineOutlined";
 
-const Sidebar = () => {
+const Sidebar = ({ questions }) => {
   const {
     setQuestion,
     selectedAnswers,
@@ -37,21 +37,24 @@ const Sidebar = () => {
 
       {!finished ? (
         <>
-          {questions.map((_question, index) => (
-            <div
-              onClick={() => {
-                setQuestion(_question);
-                setquestionIndex(index);
-              }}
-            >
-              <QuestionItem
-                {..._question}
-                key={_question?.id}
-                done={selectedAnswers[_question?.id]}
-                active={activeQuestion?.id === _question?.id}
-              />
-            </div>
-          ))}
+          {
+            questions.map((_question, index) => (
+              <div
+                onClick={() => {
+                  setQuestion(_question);
+                  setquestionIndex(index + 1);
+                }}
+              >
+                <QuestionItem
+                  {..._question}
+                  key={index}
+                  number={index + 1}
+                  done={selectedAnswers[_question && _question.questionId?.sid]}
+                  active={activeQuestion?.sid === _question && _question.questionId?.sid}
+                />
+              </div>
+            ))
+          }
           <div
             onClick={() => {
               setQuestion(null);
@@ -179,6 +182,7 @@ const LeaderBoardItem = ({ name, index, percent }) => {
 };
 
 const QuestionItem = ({ number, active = false, done = false }) => {
+  debugger;
   return (
     <div
       className={styles.questionItem}
