@@ -6,18 +6,13 @@ import com.trainsoft.assessment.service.IAssessmentService;
 import com.trainsoft.assessment.to.*;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.mail.internet.InternetAddress;
-import javax.naming.Context;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import java.security.PublicKey;
+
 
 
 @Slf4j
@@ -168,5 +163,14 @@ public class AssessmentController {
             @ApiParam(value = "QuizSet Sid",required = true) @PathVariable("sid") String quizSetSid){
         assessmentService.deleteAssessment(quizSetSid);
       return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("get/{classz}")
+    @ApiOperation(value = "getCount", notes = "API to get Count of records based on companySid of given Type")
+    public ResponseEntity<?> getCountByClass(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Given classZ", required = true) @PathVariable("classz") String classz) {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+        return ResponseEntity.ok(assessmentService.getCountByClass(classz,jwt.getCompanySid()));
     }
 }

@@ -43,12 +43,14 @@ public class QuestionServiceImpl implements IQuestionService {
     private  String ANSWER_OPTION_VALUE_CSV_HEADER;
     @Value("${answer.option.is.correct.csv.header}")
     private String ANSWER_OPTION_IS_CORRECT_CSV_HEADER;
+    private  final ITrainsoftCustomRepository customRepository;
 
 
     @Autowired
     public QuestionServiceImpl(IVirtualAccountRepository virtualAccountRepository, DozerUtils mapper, ICompanyRepository
             companyRepository, IQuestionRepository questionRepository, IQuestionTypeRepository questionTypeRepository,
-                               IAnswerRepository answerRepository,IAssessmentQuestionRepository assessmentQuestionRepository) {
+                               IAnswerRepository answerRepository,IAssessmentQuestionRepository assessmentQuestionRepository,
+                               ITrainsoftCustomRepository customRepository) {
         this.virtualAccountRepository = virtualAccountRepository;
         this.mapper = mapper;
         this.companyRepository = companyRepository;
@@ -56,6 +58,7 @@ public class QuestionServiceImpl implements IQuestionService {
         this.questionTypeRepository = questionTypeRepository;
         this.answerRepository=answerRepository;
         this.assessmentQuestionRepository=assessmentQuestionRepository;
+        this.customRepository=customRepository;
     }
 
     @Override
@@ -400,5 +403,31 @@ public class QuestionServiceImpl implements IQuestionService {
         Company company=new Company();
         company.setId(c.getId());
         return company;
+    }
+
+    @Override
+    public List<QuestionTo> searchQuestion(String searchString,String companySid) {
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        if (company==null) throw new InvalidSidException("invalid company sid");
+      List<Question> question = customRepository.searchQuestion(searchString, company.getId());
+     /* List<QuestionTo> list=new ArrayList<>();
+        question.forEach(q->{
+            QuestionTo questionTo = new QuestionTo();
+            questionTo.setSid(q.getStringSid());
+          questionTo.setName(q.getName());
+          questionTo.setDescription(q.getDescription());
+          questionTo.setQuestionType(q.getQuestionType());
+          questionTo.setCreatedByVirtualAccountSid(q.getCreatedBy().getStringSid());
+          questionTo.setDifficulty(q.getDifficulty());
+          questionTo.setTechnologyName(q.getTechnologyName());
+          questionTo.setStatus(q.getStatus());
+          questionTo.setNegativeQuestionPoint(q.getNegativeQuestionPoint());
+          questionTo.setAnswerExplanation(q.getAnswerExplanation());
+          questionTo.setCreatedOn(q.getCreatedOn());
+          questionTo.setCompanySid(q.getCompany().getStringSid());
+          list.add(questionTo);
+      });
+        return list;*/
+        return mapper.convertList(question, QuestionTo.class);
     }
 }

@@ -17,4 +17,6 @@ public interface IQuestionService {
     List<CSVRecord> processQuestionAnswerInBulk(MultipartFile multipartFile, String virtualAccountSid);
     QuestionTo updateQuestion(QuestionTo request);
     void deleteQuestion(String question);
+
+    List<QuestionTo> searchQuestion(String searchString,String companySid);
 }
