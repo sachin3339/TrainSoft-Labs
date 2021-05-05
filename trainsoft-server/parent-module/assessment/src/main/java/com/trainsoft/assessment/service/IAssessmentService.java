@@ -16,7 +16,7 @@ public interface IAssessmentService
     AssessmentTo getAssessmentBySid(String assessmentSid);
     List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid, Pageable pageable);
 
-    List<AssessmentTo> getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
+    AssessmentTo getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
 
     List<AssessmentQuestionTo> startAssessment(String quizSetSid,String virtualAccountSid);
 

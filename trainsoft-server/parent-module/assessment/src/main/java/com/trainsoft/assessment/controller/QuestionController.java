@@ -16,6 +16,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Slf4j
 @AllArgsConstructor
 @RestController
@@ -99,5 +101,13 @@ public class QuestionController {
     {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         return  ResponseEntity.ok(questionService.processQuestionAnswerInBulk(multipartFile,jwt.getVirtualAccountSid()));
+    }
+
+    @GetMapping("search/question/{searchString}/{sid}")
+    @ApiOperation(value = "search question",notes = "API to Search Question")
+    public ResponseEntity<?> searchQuestion(
+            @ApiParam(value ="Search String",required = true)@PathVariable("searchString") String searchString,
+            @ApiParam(value = "Company Sid",required = true)@PathVariable("sid") String companySid){
+        return ResponseEntity.ok(questionService.searchQuestion(searchString, companySid));
     }
 }

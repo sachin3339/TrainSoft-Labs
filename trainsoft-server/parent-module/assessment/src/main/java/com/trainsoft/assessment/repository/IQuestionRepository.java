@@ -3,6 +3,7 @@ package com.trainsoft.assessment.repository;
 import com.trainsoft.assessment.entity.Company;
 import com.trainsoft.assessment.entity.Question;
 import com.trainsoft.assessment.to.QuestionTo;
+import com.trainsoft.assessment.value.AssessmentEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,4 +27,6 @@ public interface IQuestionRepository extends JpaRepository<Question, Integer>
 
     @Query("FROM Question as ques WHERE ques.status<>'DELETED' AND ques.company=:company order by ques.createdOn desc")
     List<Question> findQuestionsByCompany(Company company, Pageable pageable);
+
+    List<Question> findQuestionByNameContainingAndCompanyAndStatusNot(String str, Company company, AssessmentEnum.Status status);
 }

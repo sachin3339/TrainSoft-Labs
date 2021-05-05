@@ -23,4 +23,5 @@ public interface IAssessmentRepository extends JpaRepository<Assessment,Integer>
     @Query("FROM Assessment  as assess WHERE assess.status <> 'DELETED' AND assess.topicId=:topic order by assess.createdOn desc")
     List<Assessment> findAssessmentByTopicId(Topic topic, Pageable pageable);
 
+
 }
