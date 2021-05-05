@@ -18,7 +18,6 @@ import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
 import CreateStep1 from "./CreateStep1";
 import CreateStep2 from "./CreateStep2";
 
-import Submit from "../../../Assesment/common/SubmitButton";
 import "../topic.css";
 import CreateStep3 from "./CreateStep3";
 import CreateStep4 from "./CreateStep4";

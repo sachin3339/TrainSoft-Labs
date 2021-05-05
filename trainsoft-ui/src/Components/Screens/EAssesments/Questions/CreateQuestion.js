@@ -13,13 +13,14 @@ import { Form } from "react-bootstrap";
 import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
 import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
 import CardHeader from "../../../Common/CardHeader";
-import Submit from "../../Assesment/common/SubmitButton";
+
 import "./question.css";
+import Submit from "../../Assessment/common/SubmitButton";
 
 const CreateQuestion = ({ location }) => {
   const Toast = useToast()
   const {spinner} = useContext(AppContext)
-  
+
 // Create Topic
 const createAssessment = async (payload) => {
   spinner.hide("Loading... wait");

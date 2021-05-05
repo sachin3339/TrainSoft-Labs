@@ -1,6 +1,5 @@
 package com.trainsoft.assessment.to;
 
-import com.trainsoft.assessment.entity.AppUser;
 import com.trainsoft.assessment.entity.Company;
 import com.trainsoft.assessment.value.InstructorEnum;
 import lombok.Getter;
