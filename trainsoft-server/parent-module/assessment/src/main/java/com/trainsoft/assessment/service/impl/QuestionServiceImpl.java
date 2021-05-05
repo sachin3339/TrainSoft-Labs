@@ -95,6 +95,7 @@ public class QuestionServiceImpl implements IQuestionService {
                     question.setAnswers(answerList);
                     QuestionTo savedQuestionTO = mapper.convert(questionRepository.save(question), QuestionTo.class);
                     savedQuestionTO.setCreatedByVirtualAccountSid(virtualAccount.getStringSid());
+                    savedQuestionTO.setCompanySid(virtualAccount.getCompany().getStringSid());
                     savedQuestionTO.setAnswer(mapper.convertList(answerList,AnswerTo.class));
                     return savedQuestionTO;
                 }
