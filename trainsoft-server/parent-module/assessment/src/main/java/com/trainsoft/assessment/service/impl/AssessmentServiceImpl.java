@@ -467,7 +467,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                 String URI = request.getRequestURI();
                 int port = request.getServerPort();
                 String Host = URL.replace(":" + port + URI, "");
-                String generatedUrl = Host.concat("/assessment?assessmentSid=" + assessmentSid);
+                String generatedUrl = Host.concat("/assessment?assessmentSid="+assessmentSid+"&companySid="+assessment.getCompany().getStringSid());
                 assessment.setUrl(generatedUrl);
                 assessmentRepository.save(assessment);
                 return "generated Assessment URL successfully and Saved";
