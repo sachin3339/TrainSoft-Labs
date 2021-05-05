@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.trainsoft.assessment.value.AssessmentEnum;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -11,6 +13,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class QuestionTo  extends BaseTO
 {
+   private static final long serialVersionUID = -299917227949419346L;
    private String name;
    private String description;
    private String createdByVirtualAccountSid;
@@ -23,4 +26,5 @@ public class QuestionTo  extends BaseTO
    private List<AnswerTo> answer;
    private String answerExplanation;
    private int negativeQuestionPoint;
+   private Date createdOn;
 }
