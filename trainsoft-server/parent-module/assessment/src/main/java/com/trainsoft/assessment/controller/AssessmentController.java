@@ -138,6 +138,7 @@ public class AssessmentController {
           @ApiParam("Virtual Account Sid") @PathVariable("vSid") String virtualAccountSid){
       return ResponseEntity.ok(assessmentService.getScoreBoard(quizSetSid,virtualAccountSid));
     }
+
     @GetMapping("get/user/assessment/responses/{sid}")
     @ApiOperation(value = "get user assessment responses.",notes = "API to get User submitted Assessment Question Answers details.")
     public ResponseEntity<?> findUserAssessmentRespones(

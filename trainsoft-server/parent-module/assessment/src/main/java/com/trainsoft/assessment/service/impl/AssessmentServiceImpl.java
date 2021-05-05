@@ -461,17 +461,20 @@ public class AssessmentServiceImpl implements IAssessmentService
     {
         if(assessmentSid!=null)
         {
-            String URL = request.getRequestURL().toString();
-            String URI = request.getRequestURI();
-            int port = request.getServerPort();
-            String Host = URL.replace(":"+port+URI, "");
-            String generatedUrl=Host.concat("/assessment?assessmentSid="+assessmentSid);
             Assessment assessment=assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
-            assessment.setUrl(generatedUrl);
-            assessmentRepository.save(assessment);
-            return "generated Assessment URL successfully and Saved";
+            if(assessment!=null) {
+                String URL = request.getRequestURL().toString();
+                String URI = request.getRequestURI();
+                int port = request.getServerPort();
+                String Host = URL.replace(":" + port + URI, "");
+                String generatedUrl = Host.concat("/assessment?assessmentSid=" + assessmentSid);
+                assessment.setUrl(generatedUrl);
+                assessmentRepository.save(assessment);
+                return "generated Assessment URL successfully and Saved";
+            }
+            throw new InvalidSidException("Provided Sid is not Valid");
         }
-        else throw new InvalidSidException("Assessment Sid is not valid");
+        else throw new InvalidSidException("Assessment Sid is null");
     }
 
     private Integer[] findRankForToday(Integer quizSetId,Integer virtualAccountId){
