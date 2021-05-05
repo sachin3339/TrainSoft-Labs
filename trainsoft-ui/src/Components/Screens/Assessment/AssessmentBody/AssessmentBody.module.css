@@ -30,6 +30,20 @@
   border-radius: 40px;
   cursor: pointer;
 }
+.quitButton {
+  background-color: #fff;
+  color: #FD6060;
+  border:1px solid#FD6060;
+  font: normal normal 600 12px/15px Montserrat;
+  text-transform: uppercase;
+  width: 91px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+  cursor: pointer;
+}
 
 .timer {
   color: black;
@@ -50,7 +64,7 @@
   margin-bottom: 30px;
 }
 
-.assesmentCard {
+.AssessmentCard {
   background: #ffffff 0% 0% no-repeat padding-box;
   /* box-shadow: 0px 3px 9px #00000012; */
   /* border: 1px solid #dbdbdb; */
@@ -58,7 +72,7 @@
   border-radius: 8px;
 }
 
-.assesmentCard .number {
+.AssessmentCard .number {
   font: normal normal 600 14px/18px Montserrat;
   color: #555555;
   display: flex;
@@ -66,7 +80,7 @@
   align-items: center;
 }
 
-.assesmentCard .title {
+.AssessmentCard .title {
   font: normal normal 600 16px/19px Montserrat;
   color: #111111;
   margin-bottom: 25px;
@@ -79,7 +93,7 @@
   margin: 25px 0;
 }
 
-.assesmentCard .button {
+.AssessmentCard .button {
   display: flex;
   /* justify-content: flex-end; */
 }

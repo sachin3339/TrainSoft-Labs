@@ -10,7 +10,7 @@ import AxiosService from './Services/axios.service';
 import AppContext from "./Store/AppContext";
 import LandingHome from "./Components/LandingPage/Home/LandingHome";
 import ResetPwd from "./Components/Screens/Auth/ResetPwd";
-import Assesment from "./Components/Screens/Assesment/Assesment";
+import Assessment from "./Components/Screens/Assessment/Assessment";
 import { TrainingProvider } from "./Store/TrainingContext";
 import VsCode from "./Components/Screens/VsCode/VsCode";
 import MeetingClose from "./Components/Zoom/MeetingClose";
@@ -28,7 +28,7 @@ function App() {
             <LandingHome path="/"/>
             <ResetPwd path="/reset/:token"/>
             <Login path="/login"/>
-            <Assesment path="/assesment"/>
+            <Assessment path="/assesment"/>
             <Dashboard path="/*"/>
             <ClassLab path="class/*"/>
             <VsCode path="vscode"/>

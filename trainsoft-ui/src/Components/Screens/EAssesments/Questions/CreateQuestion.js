@@ -10,7 +10,7 @@ import { useState } from "react";
 import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
 import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
 import CardHeader from "../../../Common/CardHeader";
-import Submit from "../../Assesment/common/SubmitButton";
+import Submit from "../../Assessment/common/SubmitButton";
 
 const CreateQuestion = ({ location }) => {
   return (
