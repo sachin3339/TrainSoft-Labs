@@ -21,6 +21,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.util.*;
 
@@ -39,11 +40,11 @@ public class AssessmentServiceImpl implements IAssessmentService
     private final IAssessmentQuestionRepository assessmentQuestionRepository;
     private final IAnswerRepository answerRepository;
     private final IVirtualAccountHasQuestionAnswerDetailsRepository virtualAccountHasQuestionAnswerDetailsRepository;
-    private final ICategoryRepository iCategoryRepository;
     private final ICompanyRepository companyRepository;
     private final IVirtualAccountHasQuizSetSessionTimingRepository virtualAccountHasQuizSetSessionTimingRepository;
     private final ITagRepository tagRepository;
     private final IVirtualAccountHasQuizSetAssessmentRepository virtualAccountHasQuizSetAssessmentRepository;
+    private final ITrainsoftCustomRepository customRepository;
 
 
     @Override
@@ -184,7 +185,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         try {
             if (assessmentSid != null) {
                 Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
-                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAssessmentId(assessment,pageable);
+                List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.getAssessmentQuestionsByAssessmentIdOrderByCreatedOnDesc(assessment,pageable);
                 List<Question> questionList = new ArrayList<>();
                 if(CollectionUtils.isNotEmpty(assessmentQuestionList))
                 {
@@ -217,39 +218,21 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<AssessmentTo> getInstructionsForAssessment(InstructionsRequestTO request) {
+    public AssessmentTo getInstructionsForAssessment(InstructionsRequestTO request) {
         Tag tag = tagRepository.findBySid(BaseEntity.hexStringToByteArray(request.getTagSid()));
         if (tag==null) throw new InvalidSidException("invalid Tag Sid");
         List<Assessment> assessment= assessmentRepository.findByTagAndDifficulty(tag.getId(),request.getDifficulty());
-       List<AssessmentTo> assessmentToList = new ArrayList<>();
-        assessment.forEach(as->{
-            Integer noOfQuestion = getNoOfQuestionByAssessmentSid(as.getStringSid());
-            AssessmentTo assessmentTo = new AssessmentTo();
-            assessmentTo.setSid(as.getStringSid());
-            assessmentTo.setCompanySid(as.getCompany().getStringSid());
-            assessmentTo.setCategory(as.getCategory());
-            assessmentTo.setTagSid(as.getTagId().getStringSid());
-            assessmentTo.setTopicSid(as.getTopicId().getStringSid());
-            assessmentTo.setNoOfQuestions(noOfQuestion);
-            assessmentTo.setAutoSubmitted(as.isAutoSubmitted());
-            assessmentTo.setDescription(as.getDescription());
-            assessmentTo.setDifficulty(as.getDifficulty());
-            assessmentTo.setDuration(as.getDuration());
-            assessmentTo.setMandatory(as.isMandatory());
-            assessmentTo.setMultipleSitting(as.isMultipleSitting());
-            assessmentTo.setPauseEnable(as.isPauseEnable());
-            assessmentTo.setPreviousEnabled(as.isPreviousEnabled());
-            assessmentTo.setPremium(as.isPremium());
-            assessmentTo.setStatus(as.getStatus());
-            assessmentTo.setValidUpto(as.getValidUpto());
-            assessmentTo.setNegative(as.isNegative());
-            assessmentTo.setNextEnabled(as.isNextEnabled());
-            assessmentTo.setTitle(as.getTitle());
-            assessmentTo.setUrl(as.getUrl());
-            assessmentTo.setCreatedByVirtualAccountSid(as.getCreatedBy().getStringSid());
-            assessmentToList.add(assessmentTo);
-        });
-        return assessmentToList;
+        Random random = new Random();
+        Assessment assessment1 = assessment.get(random.nextInt(assessment.size()));
+        AssessmentTo assessmentTo = mapper.convert(assessment1, AssessmentTo.class);
+        assessmentTo.setTopicSid(assessment1.getTopicId().getStringSid());
+        assessmentTo.setTagSid(assessment1.getTagId().getStringSid());
+        assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessment1.getStringSid()));
+        if (assessment1.getUpdatedBy()!=null)assessmentTo.setUpdatedBySid(assessment1.getUpdatedBy().getStringSid());
+        if (assessment1.getUpdatedOn()!=null)assessmentTo.setUpdatedOn(assessment1.getUpdatedOn());
+        assessmentTo.setCompanySid(assessment1.getCompany().getStringSid());
+        assessmentTo.setCreatedByVirtualAccountSid(assessment1.getCreatedBy().getStringSid());
+        return assessmentTo;
     }
 
     @Override
@@ -557,20 +540,20 @@ public class AssessmentServiceImpl implements IAssessmentService
                 vTo.setVirtualAccountSid(virtualAccount.getStringSid());
                 Optional<Question> question = questionRepository.findById(vd.getQuestionId().getId());
                 vTo.setQuestionSid(question.get().getStringSid());
-                vTo.setQuestion(mapper.convert(question,QuestionTo.class));
-                vTo.getQuestion().setSid(question.get().getStringSid());
-                vTo.getQuestion().setName(question.get().getName());
-                vTo.getQuestion().setDescription(question.get().getDescription());
-                vTo.getQuestion().setCreatedByVirtualAccountSid(question.get().getCreatedBy().getStringSid());
-                vTo.getQuestion().setTechnologyName(question.get().getTechnologyName());
-                vTo.getQuestion().setQuestionPoint(question.get().getQuestionPoint());
-                vTo.getQuestion().setStatus(question.get().getStatus());
-                vTo.getQuestion().setQuestionType(question.get().getQuestionType());
-                vTo.getQuestion().setDifficulty(question.get().getDifficulty());
-                vTo.getQuestion().setAnswerExplanation(question.get().getAnswerExplanation());
-                vTo.getQuestion().setCompanySid(question.get().getCompany().getStringSid());
+                vTo.setQuestionId(mapper.convert(question,QuestionTo.class));
+                vTo.getQuestionId().setSid(question.get().getStringSid());
+                vTo.getQuestionId().setName(question.get().getName());
+                vTo.getQuestionId().setDescription(question.get().getDescription());
+                vTo.getQuestionId().setCreatedByVirtualAccountSid(question.get().getCreatedBy().getStringSid());
+                vTo.getQuestionId().setTechnologyName(question.get().getTechnologyName());
+                vTo.getQuestionId().setQuestionPoint(question.get().getQuestionPoint());
+                vTo.getQuestionId().setStatus(question.get().getStatus());
+                vTo.getQuestionId().setQuestionType(question.get().getQuestionType());
+                vTo.getQuestionId().setDifficulty(question.get().getDifficulty());
+                vTo.getQuestionId().setAnswerExplanation(question.get().getAnswerExplanation());
+                vTo.getQuestionId().setCompanySid(question.get().getCompany().getStringSid());
                 List<Answer> answer = answerRepository.findAnswerByQuestionId(question.get().id);
-                vTo.getQuestion().setAnswer(mapper.convertList(answer,AnswerTo.class));
+                vTo.getQuestionId().setAnswer(mapper.convertList(answer,AnswerTo.class));
                 vTo.setCorrect(vd.isCorrect());
                 vTo.setAnswer(vd.getAnswer());
                 vTo.setQuestionPoint(vd.getQuestionPoint());
@@ -635,5 +618,28 @@ public class AssessmentServiceImpl implements IAssessmentService
         List<AssessmentQuestion> assessmentQuestion = assessmentQuestionRepository.findAssessmentQuestionByAssessmentId(assessment);
         if (!assessmentQuestion.isEmpty()) assessmentQuestionRepository.deleteAll(assessmentQuestion);
         return ;
+    }
+    @Override
+    public BigInteger getCountByClass(String classz, String companySid)
+    {
+        return customRepository.noOfCountByClass(classz,getCompany(companySid));
+    }
+
+    private Company getCompany(String companySid){
+        Company company=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        Company c=new Company();
+        c.setId(company.getId());
+        return c;
+    }
+
+    @Override
+    public List<AssessmentTo> searchAssessment(String searchString, String companySid, String topicSid) {
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
+        if (company!=null && topic!=null){
+            List<Assessment> assessment = customRepository.searchAssessment(searchString, company, topic);
+            return mapper.convertList(assessment,AssessmentTo.class);
+
+        }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
     }
 }

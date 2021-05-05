@@ -16,5 +16,5 @@ public class VirtualAccountHasQuestionAnswerDetailsTO extends BaseTO{
     private String createdBySid;
     private Date createdOn;
     private Integer questionPoint;
-    private QuestionTo question;
+    private QuestionTo questionId;
 }

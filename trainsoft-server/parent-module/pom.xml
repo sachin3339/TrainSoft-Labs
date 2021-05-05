@@ -14,7 +14,7 @@
 	</parent>
 
     <modules>
-        <module>instructor-led</module>
         <module>assessment</module>
+        <module>instructor-led</module>
     </modules>
 </project>

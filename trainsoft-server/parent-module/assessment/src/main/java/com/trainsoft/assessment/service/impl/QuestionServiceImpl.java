@@ -43,12 +43,14 @@ public class QuestionServiceImpl implements IQuestionService {
     private  String ANSWER_OPTION_VALUE_CSV_HEADER;
     @Value("${answer.option.is.correct.csv.header}")
     private String ANSWER_OPTION_IS_CORRECT_CSV_HEADER;
+    private  final ITrainsoftCustomRepository customRepository;
 
 
     @Autowired
     public QuestionServiceImpl(IVirtualAccountRepository virtualAccountRepository, DozerUtils mapper, ICompanyRepository
             companyRepository, IQuestionRepository questionRepository, IQuestionTypeRepository questionTypeRepository,
-                               IAnswerRepository answerRepository,IAssessmentQuestionRepository assessmentQuestionRepository) {
+                               IAnswerRepository answerRepository,IAssessmentQuestionRepository assessmentQuestionRepository,
+                               ITrainsoftCustomRepository customRepository) {
         this.virtualAccountRepository = virtualAccountRepository;
         this.mapper = mapper;
         this.companyRepository = companyRepository;
@@ -56,6 +58,7 @@ public class QuestionServiceImpl implements IQuestionService {
         this.questionTypeRepository = questionTypeRepository;
         this.answerRepository=answerRepository;
         this.assessmentQuestionRepository=assessmentQuestionRepository;
+        this.customRepository=customRepository;
     }
 
     @Override
@@ -400,5 +403,18 @@ public class QuestionServiceImpl implements IQuestionService {
         Company company=new Company();
         company.setId(c.getId());
         return company;
+    }
+
+    @Override
+    public List<QuestionTo> searchQuestion(String searchString,String companySid) {
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        if (company==null) throw new InvalidSidException("invalid company sid");
+      List<Question> question = customRepository.searchQuestion(searchString, company);
+        List<QuestionTo> questionTo = mapper.convertList(question, QuestionTo.class);
+        questionTo.forEach(qt->{
+            for (Question q:question){
+                qt.setCompanySid(q.getCompany().getStringSid());
+                qt.setCreatedByVirtualAccountSid(q.getCreatedBy().getStringSid());
+            } });return questionTo;
     }
 }

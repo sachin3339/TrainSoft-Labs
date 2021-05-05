@@ -6,6 +6,7 @@ if (HOSTNAME !== null && ((HOSTNAME.indexOf('localhost') !== -1) || (HOSTNAME.in
 export const API_PATH = HOSTNAME ;
 
 let API_HOST = HOSTNAME +"/insled/v1/"
+const ASSESSMENT_V1 = "https://www.trainsoft.io/assessnet/v1/"
 
 const GLOBELCONSTANT = {
         BASE_URL: API_HOST,
@@ -81,6 +82,18 @@ const GLOBELCONSTANT = {
             GET_INSTRUCTOR_TRAINING: API_HOST +  "trainer/trainings/{pageNo}/{pageSize}",
             GET_LEARNER_TRAINING: API_HOST +  "learner/trainings",
             UPDATE_SE_TRAINING : API_HOST + "update/session/{sessionSid}/{status}/{meetingId}"
+
+        },
+        API: {
+            ASSESSMENT: {
+                GET_INSTRUCTION: ASSESSMENT_V1 + "get/instructions",
+                GET_QUESTIONS: ASSESSMENT_V1 + "start/assessment/{assessmentSid}/{virtualAccountSid}",
+                SUBMIT_ANSWER: ASSESSMENT_V1 + "/submit/answer",
+                REVIEW_RESPONSE: ASSESSMENT_V1 + "review/response/{virtualAccountSid}",
+                SUBMIT_ASSESSMENT: ASSESSMENT_V1 + "submit/assessment",
+                GET_SCORE: ASSESSMENT_V1 + "get/assessment/score/{assessmentSid}/{virtualAccountSid}",
+                SUBMIT_RESPONSE: ASSESSMENT_V1 + "get/user/assessment/responses/{virtualAccountSid}"
+            }
 
         },
         INSTRUCTOR: {

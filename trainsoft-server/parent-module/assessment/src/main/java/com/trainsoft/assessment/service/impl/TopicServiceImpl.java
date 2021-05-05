@@ -1,5 +1,6 @@
 package com.trainsoft.assessment.service.impl;
 
+import com.trainsoft.assessment.commons.CustomRepositoryImpl;
 import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.customexception.ApplicationException;
 import com.trainsoft.assessment.customexception.InvalidSidException;
@@ -8,6 +9,7 @@ import com.trainsoft.assessment.dozer.DozerUtils;
 import com.trainsoft.assessment.entity.*;
 import com.trainsoft.assessment.repository.ICompanyRepository;
 import com.trainsoft.assessment.repository.ITopicRepository;
+import com.trainsoft.assessment.repository.ITrainsoftCustomRepository;
 import com.trainsoft.assessment.repository.IVirtualAccountRepository;
 import com.trainsoft.assessment.service.ITopicService;
 import com.trainsoft.assessment.to.TopicTo;
@@ -33,6 +35,7 @@ public class TopicServiceImpl implements ITopicService {
      private  final  DozerUtils mapper;
      private  final ITopicRepository topicRepository;
      private  final ICompanyRepository companyRepository;
+     private final ITrainsoftCustomRepository customRepository;
 
 
 
@@ -118,6 +121,16 @@ public class TopicServiceImpl implements ITopicService {
         Company company=new Company();
         company.setId(c.getId());
         return company;
+    }
+
+    @Override
+    public List<TopicTo> searchTopic(String searchString, String companySid) {
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        if (company!=null){
+            List<Topic> topic = customRepository.searchTopic(searchString, company);
+           return mapper.convertList(topic,TopicTo.class);
+        }
+        throw new InvalidSidException("invalid company Sid");
     }
 
 }

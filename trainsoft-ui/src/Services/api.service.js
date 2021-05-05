@@ -99,6 +99,15 @@ const RestService = {
 
   // instructor
 
+  // assessment 
+  getAssessmentInstruction: (payload)=> AxiosService.post(GLOBELCONSTANT.API.ASSESSMENT.GET_INSTRUCTION, payload),
+  getQuestionAnswer: (assessmentSid, virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.GET_QUESTIONS.replace("{assessmentSid}", assessmentSid).replace("{virtualAccountSid}", virtualAccountSid)),
+  submitAnswer: (payload)=> AxiosService.post(GLOBELCONSTANT.API.ASSESSMENT.SUBMIT_ANSWER, payload),
+  reviewAssessmentResponse: (virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.REVIEW_RESPONSE.replace("{virtualAccountSid}", virtualAccountSid)),
+  submitAssessment: (payload)=> AxiosService.post(GLOBELCONSTANT.API.ASSESSMENT.SUBMIT_ASSESSMENT, payload),
+  getAssessmentScore: (assessmentSid, virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.GET_SCORE.replace("{assessmentSid}", assessmentSid).replace("{virtualAccountSid}", virtualAccountSid)),
+  getSubmittedResponse: (virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.SUBMIT_RESPONSE.replace("{virtualAccountSid}", virtualAccountSid)),
+
 
   
 };
