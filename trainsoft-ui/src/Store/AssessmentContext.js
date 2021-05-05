@@ -6,7 +6,7 @@ export default AssessmentContext;
 export const AssessmentProvider = (props) => {
     const [topicSid,setTopicSid] = useState(null) 
     const [assessmentCon,setAssessmentCon] = useState(null) 
-    const [initialAssessment,setInitialAssessment] = useState()
+    const [initialAssessment,setInitialAssessment] = useState(null)
     const [assessmentVal,setAssessmentVal] = useState()
     const [category,setCategory] = useState([])
 

@@ -39,22 +39,17 @@ let val ={
   title: "",
   topicSid: "",
   validUpto: "",
-
 }
 const CreateStep1 = ({ location,handleNext,handleBack }) => {
-  const {setAssessmentVal,category} = useContext(AssessmentContext)
+  const {initialAssessment,setAssessmentVal,category} = useContext(AssessmentContext)
   const [initialValue,setInitialValue] = useState(val)
   const Toast = useToast()
   const {spinner} = useContext(AppContext)
-
-  useEffect(()=>{
-    setInitialValue()
-  },[])
   return (
     <>
           <Formik
             onSubmit={(value) => setAssessmentVal(value)}
-            initialValues={initialValue}
+            initialValues={initialAssessment}
             // validationSchema={schema}
           >
             {({ handleSubmit, isSubmitting, dirty, setFieldValue,values }) => (
@@ -89,13 +84,14 @@ const CreateStep1 = ({ location,handleNext,handleBack }) => {
                       name="category"
                       value={values.category} payloadKey="name"
                     />
+                    {values.category?.tags &&
                     <SelectInput
                       label="Tag"
                       option={values.category?.tags}
                       bindKey="name"
                       name="tagSid"
-                      value={values.tagSid} payloadKey="sid"
                     />
+                      }
                     <Form.Group>
                     <Form.Label className="label">
                        Difficulty

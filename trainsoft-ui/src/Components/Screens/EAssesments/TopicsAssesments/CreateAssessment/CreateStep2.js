@@ -23,7 +23,7 @@ import "../topic.css";
 import AssessmentContext from "../../../../../Store/AssessmentContext";
 
 const CreateStep2 = ({ location,handleNext,handleBack }) => {
-  const {setAssessmentVal,assessmentVal,topicSid} = useContext(AssessmentContext)
+  const {setAssessmentVal,assessmentVal,topicSid,initialAssessment} = useContext(AssessmentContext)
 
   const Toast = useToast()
   const {spinner} = useContext(AppContext)
@@ -38,22 +38,22 @@ const createAssessment = async (val) => {
        payload.mandatory = val.mandatory 
        payload.multipleSitting = val.multipleSitting 
        payload.topicSid = topicSid
-       payload.tagSid = assessmentVal.tagSid.sid
-       payload.category = assessmentVal.category.name
-     RestService.createAssessment(payload).then(
-         response => {
-           Toast.success({ message: "Assessment added successfully" })
-           setAssessmentVal(response.data)
-           handleNext()
-         },
-         err => {
-             spinner.hide();
-         }
-     ).finally(() => {
-         spinner.hide();
-     });
+       payload.tagSid = assessmentVal.tagSid.sid ? assessmentVal.tagSid.sid : assessmentVal.tagSid 
+       payload.category = assessmentVal.category.name ? assessmentVal.category.name : assessmentVal.category
+       if(assessmentVal.sid !== undefined){
+          let {data} = await RestService.updateAssessment(payload)
+          Toast.success({ message: "Assessment updated successfully" })
+          setAssessmentVal(data)
+       }else{
+        let {data} = await RestService.createAssessment(payload)
+        Toast.success({ message: "Assessment created successfully" })
+        setAssessmentVal(data)
+       }
+        handleNext()
+        spinner.hide()
    } catch (err) {
-     console.error("error occur on createTopic()", err)
+    spinner.hide()
+     console.error("error occur on createAssessment()", err)
    }
   }
 
@@ -61,11 +61,7 @@ const createAssessment = async (val) => {
     <>
           <Formik
             onSubmit={(value) => createAssessment(value)}
-            initialValues={{
-              "duration": 45,
-              "mandatory": true,
-              "multipleSitting": false,
-              }}  
+            initialValues={initialAssessment}  
             // validationSchema={schema}
           >
             {({ handleSubmit, isSubmitting, dirty, setFieldValue ,values}) => (

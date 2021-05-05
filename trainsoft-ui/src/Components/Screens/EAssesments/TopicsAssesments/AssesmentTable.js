@@ -1,4 +1,5 @@
 import { useEffect, useState,useContext } from "react";
+import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import RestService from "../../../../Services/api.service";
 import AppContext from "../../../../Store/AppContext";
 import AssessmentContext from "../../../../Store/AssessmentContext";
@@ -10,7 +11,25 @@ import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
 import { ICN_EDIT, ICN_TRASH } from "../../../Common/Icon";
 
 import { Link, navigate } from "../../../Common/Router";
-
+let val ={
+  autoSubmitted: true,
+  category: "",
+  description: "",
+  difficulty: "",
+  duration: 0,
+  mandatory: true,
+  multipleSitting: true,
+  negative: true,
+  nextEnabled: true,
+  pauseEnable: true,
+  premium: false,
+  previousEnabled: true,
+  status: "ENABLED",
+  tagSid: "",
+  title: "",
+  topicSid: "",
+  validUpto: "",
+}
 const AssesmentsTable = ({ location }) => {
   const Toast = useToast()
   const {spinner} = useContext(AppContext)
@@ -117,10 +136,10 @@ const AssesmentsTable = ({ location }) => {
   });
 
   // get All Assessment By Topic sid
-  const getAssessmentByTopic = async (pageNo) => {
+  const getAssessmentByTopic = async (pageNo="1") => {
          spinner.hide("Loading... wait");
     try {
-        RestService.getAssessmentByTopic(topicSid).then(
+        RestService.getAssessmentByTopic(topicSid,GLOBELCONSTANT.PAGE_SIZE,pageNo-1).then(
             response => {
               setAssessment(response.data);
             },
@@ -161,9 +180,9 @@ useEffect(()=>{
         }}
       >
         <Button className=" ml-2" 
-           onClick={()=> navigate("create-assessment",{state :{ title: "TOPIC",
+           onClick={()=>{ setInitialAssessment(val); navigate("create-assessment",{state :{ title: "TOPIC",
            subTitle: "Topic",
-           path: "topicAssesment",}})}
+           path: "topicAssesment",}})}}
         >+ New Assesment</Button>
       </CardHeader>
 
