@@ -1,16 +1,22 @@
 package com.trainsoft.assessment.commons;
 
+import com.trainsoft.assessment.entity.Assessment;
 import com.trainsoft.assessment.entity.Company;
 import com.trainsoft.assessment.entity.Question;
+import com.trainsoft.assessment.entity.Topic;
 import com.trainsoft.assessment.repository.ITrainsoftCustomRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -30,19 +36,35 @@ public class CustomRepositoryImpl implements ITrainsoftCustomRepository
     }
 
     @Override
-    public List<Question> searchQuestion(String searchString, Integer companyId){
-//        String customQuery="select * from question where name like "+searchString+"%"+"or description like"+searchString+"%"
-//                +"or technology_name like"+searchString+"%"+"or answer_explanation like"+searchString+"%"+
-//                "and status='ENABLED' and company_id="+companyId;
-
-        String customQuery="select * from question where name like :str or description like :str " +
-                "or technology_name like :str or answer_explanation like :str and company_id=:companyId " +
-                "and status='ENABLED'";
-
-        Query query = entitymangager.createNativeQuery(customQuery);
+    public List<Question> searchQuestion(String searchString, Company company){
+        String  customQuery = "SELECT ques FROM Question as ques WHERE ques.name like :str OR ques.description like :str "
+                +"OR ques.technologyName like :str AND ques.company =:company AND ques.status='ENABLED'";
+        Query query = entitymangager.createQuery(customQuery);
         query.setParameter("str", "%"+searchString + "%");
-        query.setParameter("companyId", companyId);
-       return (List<Question>) query.getResultList();
+        query.setParameter("company", company);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Assessment> searchAssessment(String searchString, Company company,Topic topic) {
+        String customQuery="SELECT assess FROM Assessment as assess WHERE assess.title like :str  " +
+                "OR assess.description like :str OR assess.category like :str AND " +
+                "assess.company =:company AND assess.topicId =:topic AND assess.status='ENABLED'";
+        Query query = entitymangager.createQuery(customQuery);
+        query.setParameter("str","%"+searchString+"%");
+        query.setParameter("company",company);
+        query.setParameter("topic",topic);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Topic> searchTopic(String searchString, Company company) {
+        String customQuery="SELECT tp from Topic as tp where tp.name like :str OR tp.description like :str " +
+                "And tp.company=:company";
+        Query query = entitymangager.createQuery(customQuery);
+        query.setParameter("str","%"+searchString+"%");
+        query.setParameter("company",company);
+        return query.getResultList();
     }
 
 }

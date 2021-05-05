@@ -173,4 +173,13 @@ public class AssessmentController {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         return ResponseEntity.ok(assessmentService.getCountByClass(classz,jwt.getCompanySid()));
     }
+
+    @GetMapping("search/assessment/{searchString}/{cSid}/{tSid}")
+    @ApiOperation(value = "search assessment",notes = "API to search Assessment.")
+    public ResponseEntity<?>searchAssessment(
+           @ApiParam("Search String") @PathVariable("searchString") String searchString,
+           @ApiParam("Company Sid") @PathVariable("cSid") String companySid,
+           @ApiParam("Topic Sid")@PathVariable("tSid") String topicSid){
+     return ResponseEntity.ok(assessmentService.searchAssessment(searchString,companySid,topicSid));
+    }
 }

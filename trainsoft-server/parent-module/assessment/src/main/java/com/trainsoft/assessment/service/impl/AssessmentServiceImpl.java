@@ -625,7 +625,6 @@ public class AssessmentServiceImpl implements IAssessmentService
         return customRepository.noOfCountByClass(classz,getCompany(companySid));
     }
 
-
     private Company getCompany(String companySid){
         Company company=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Company c=new Company();
@@ -633,4 +632,14 @@ public class AssessmentServiceImpl implements IAssessmentService
         return c;
     }
 
+    @Override
+    public List<AssessmentTo> searchAssessment(String searchString, String companySid, String topicSid) {
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
+        if (company!=null && topic!=null){
+            List<Assessment> assessment = customRepository.searchAssessment(searchString, company, topic);
+            return mapper.convertList(assessment,AssessmentTo.class);
+
+        }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
+    }
 }

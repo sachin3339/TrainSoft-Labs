@@ -37,4 +37,6 @@ public interface IAssessmentService
 
     BigInteger getCountByClass(String classz, String companySid);
 
+    List<AssessmentTo> searchAssessment(String searchString,String companySid,String topicSid);
+
 }
