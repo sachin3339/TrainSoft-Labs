@@ -1,7 +1,7 @@
 .sideBarNav{
     width: 210px;
     height: 100%;
-    background: #2D62ED;
+    background: #49167E;
     overflow-y: auto;
 }
 .navlist-items {
@@ -10,7 +10,7 @@
 }
 .navbar-fixed-control {
     min-height: 50px;
-    background-color: #2248ad;
+    background-color: #49167E;
     padding: 10px 15px;
     display: flex;
     flex-direction: row;
@@ -19,7 +19,7 @@
 }
 .navbar-fixed-control:hover {
     cursor: pointer;
-    background-color: #1e3d90;
+    background-color: #49167E;
 }
 .user-profile-name {
     font-size: 13px;
@@ -79,7 +79,7 @@
     background-color: transparent;
     border-left: 3px solid #ccff00;
     transition: 500ms;
-    background-color: #1748c5;
+    background-color: #2D0A52;
 }
 .sideBarNav .active svg{
     opacity: 1;

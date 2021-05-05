@@ -1,17 +1,20 @@
 import { useEffect, useState,useContext } from "react";
 import RestService from "../../../../Services/api.service";
 import AppContext from "../../../../Store/AppContext";
+import AssessmentContext from "../../../../Store/AssessmentContext";
 import useToast from "../../../../Store/ToastHook";
 import { Button } from "../../../Common/Buttons/Buttons";
 
 import CardHeader from "../../../Common/CardHeader";
 import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
+import { ICN_EDIT, ICN_TRASH } from "../../../Common/Icon";
 
-import { Link } from "../../../Common/Router";
+import { Link, navigate } from "../../../Common/Router";
 
 const AssesmentsTable = ({ location }) => {
   const Toast = useToast()
   const {spinner} = useContext(AppContext)
+  const {topicSid,setInitialAssessment} = useContext(AssessmentContext)
   const [count, setCount] = useState(0);
   const [assessment,setAssessment] = useState([])
 
@@ -52,6 +55,7 @@ const AssesmentsTable = ({ location }) => {
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
+        render:(data)=> data.type === true ? "Premium": "Free" 
       },
       category: {
         title: "Category",
@@ -86,7 +90,21 @@ const AssesmentsTable = ({ location }) => {
         configuration.columns[sortKey].sortDirection;
       setConfiguration({ ...configuration });
     },
-
+    actions: [
+      {
+        title: "Edit",
+        icon: ICN_EDIT,
+        onClick: (data, i) => { setInitialAssessment(data);navigate("create-assessment",{state :{ title: "Topic",
+        subTitle: "Assessment",
+        data: data,
+        path: "topicAssesment",}}) }
+      },
+      {
+        title: "Delete",
+        icon: ICN_TRASH,
+        onClick: (data) => deleteAssessment(data.sid),
+      },
+    ],
     actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
     actionVariant: "", // user can pass action button variant like primary, dark, light,
     actionAlignment: true, // user can pass alignment property of dropdown menu by default it is alignLeft
@@ -99,10 +117,10 @@ const AssesmentsTable = ({ location }) => {
   });
 
   // get All Assessment By Topic sid
-  const getAssessmentByTopic = async () => {
+  const getAssessmentByTopic = async (pageNo) => {
          spinner.hide("Loading... wait");
     try {
-        RestService.getAssessmentByTopic(location.state.sid).then(
+        RestService.getAssessmentByTopic(topicSid).then(
             response => {
               setAssessment(response.data);
             },
@@ -117,29 +135,19 @@ const AssesmentsTable = ({ location }) => {
     }
 }
 
- // Create Topic
- const createAssesment = async (payload) => {
-  spinner.hide("Loading... wait");
-  try {
-      RestService.createTopic(payload).then(
-          response => {
-            Toast.success({ message: "Topic added successfully" })
-            // getAllTopic()
-          
-          },
-          err => {
-              spinner.hide();
-            
-          }
-      ).finally(() => {
-          spinner.hide();
-        
-      });
-  } catch (err) {
-  
-      console.error("error occur on createTopic()", err)
+  // delete assessmsnt
+  const deleteAssessment = async (sid) => {
+    spinner.show("Loading... wait");
+    try {
+      let response = await RestService.deleteAssessment(sid)
+      getAssessmentByTopic()
+      Toast.success({ message: "Assessment deleted successfully" })
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
+    }
   }
-}
 
 useEffect(()=>{
   getAssessmentByTopic()
@@ -152,7 +160,11 @@ useEffect(()=>{
           ...location,
         }}
       >
-        <Button className=" ml-2">+ New Assesment</Button>
+        <Button className=" ml-2" 
+           onClick={()=> navigate("create-assessment",{state :{ title: "TOPIC",
+           subTitle: "Topic",
+           path: "topicAssesment",}})}
+        >+ New Assesment</Button>
       </CardHeader>
 
       <div className="table-shadow">

@@ -1,4 +1,4 @@
-import { useState,useContext ,useEffect} from "react";
+import { useState, useContext, useEffect } from "react";
 import { Formik } from "formik";
 import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import RestService from "../../../../Services/api.service";
@@ -11,12 +11,16 @@ import { Link } from "../../../Common/Router";
 import { ICN_EDIT, ICN_TRASH } from "../../../Common/Icon";
 import useToast from "../../../../Store/ToastHook";
 import { Button } from "../../../Common/Buttons/Buttons";
+import AssessmentContext from "../../../../Store/AssessmentContext";
 
 const TopicsTable = ({ location }) => {
-  const {spinner} =  useContext(AppContext)
+  const { spinner } = useContext(AppContext)
+  const {setTopicSid,setCategory} = useContext(AssessmentContext)
   const [count, setCount] = useState(0);
   const [show, setShow] = useState(false);
-  const [topic,setTopic] = useState([])
+  const [topic, setTopic] = useState([]);
+  const [initialValue,setInitialValue] = useState({name:""})
+  const [isEdit,setIsEdit] = useState(false)
   const Toast = useToast()
 
   const [configuration, setConfiguration] = useState({
@@ -27,7 +31,7 @@ const TopicsTable = ({ location }) => {
         sortEnabled: true,
         isSearchEnabled: false,
         render: (data) => (
-          <div style={{ display: "flex", alginItems: "center" }}>
+          <div onClick={()=> setTopicSid(data.sid)} style={{ display: "flex", alginItems: "center" }}>
             <Link
               to={"topic-details"}
               state={{
@@ -59,8 +63,8 @@ const TopicsTable = ({ location }) => {
       configuration.sortBy = sortKey;
       Object.keys(configuration.columns).map(
         (key) =>
-          (configuration.columns[key].sortDirection =
-            key === sortKey ? !configuration.columns[key].sortDirection : false)
+        (configuration.columns[key].sortDirection =
+          key === sortKey ? !configuration.columns[key].sortDirection : false)
       );
       configuration.sortDirection =
         configuration.columns[sortKey].sortDirection;
@@ -70,12 +74,12 @@ const TopicsTable = ({ location }) => {
       {
         title: "Edit",
         icon: ICN_EDIT,
-        onClick: (data, i) =>{}
+        onClick: (data, i) => { setIsEdit(true);setShow(true);setInitialValue(data)}
       },
       {
-        title: "Delete",
+        title: "Delete",  
         icon: ICN_TRASH,
-        onClick: (data) => {},
+        onClick: (data) => deleteTopic(data.sid),
       },
     ],
     actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
@@ -88,55 +92,71 @@ const TopicsTable = ({ location }) => {
     // showCheckbox: true,
     clearSelection: false,
   });
-  
+
+
+  // get All topic
+  const getAllTopic = async (pageNo = "1") => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getAllTopic(GLOBELCONSTANT.PAGE_SIZE, pageNo - 1)
+      setTopic(data);
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
+    }
+  }
 
    // get All topic
-   const getAllTopic = async (pageNo="1") => {
-    spinner.hide("Loading... wait");
+   const getAllCategory = async (pageNo = "1") => {
+    spinner.show("Loading... wait");
     try {
-        RestService.getAllTopic(GLOBELCONSTANT.PAGE_SIZE,pageNo).then(
-            response => {
-              setTopic(response.data);
-            },
-            err => {
-                spinner.hide();
-            }
-        ).finally(() => {
-            spinner.hide();
-        });
+      let { data } = await RestService.getAllCategory()
+      setCategory(data)
+      spinner.hide();
     } catch (err) {
-        console.error("error occur on getAllTopic()", err)
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
     }
-}
-
- // Create Topic
- const createTopic = async (payload) => {
-  spinner.hide("Loading... wait");
-  try {
-      RestService.createTopic(payload).then(
-          response => {
-            Toast.success({ message: "Topic added successfully" })
-            getAllTopic()
-            setShow(false)
-          },
-          err => {
-              spinner.hide();
-              setShow(false)
-          }
-      ).finally(() => {
-          spinner.hide();
-          setShow(false)
-      });
-  } catch (err) {
-    setShow(false)
-      console.error("error occur on createTopic()", err)
   }
-}
+
+  // delete Topic
+  const deleteTopic = async (sid) => {
+    spinner.show("Loading... wait");
+    try {
+      let response = await RestService.deleteTopic(sid)
+      getAllTopic()
+      Toast.success({ message: "Topic deleted successfully" })
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
+    }
+  }
+
+  // Create Topic
+  const createTopic = async (payload) => {
+    spinner.hide("Loading... wait");
+
+    try {
+      let data = !isEdit ? await RestService.createTopic(payload) : await RestService.updateTopic(payload)
+        Toast.success({ message: `Topic ${isEdit ? "updated": 'added'} successfully` })
+        getAllTopic()
+        setShow(false)
+        setIsEdit(false)
+    } catch (err) {
+      setShow(false)
+      console.error("error occur on createTopic()", err)
+    }
+  }
 
 
-useEffect(() => {
-  getAllTopic()
-}, [])
+
+
+  useEffect(() => {
+    getAllTopic()
+    getAllCategory()
+  }, [])
 
   return (
     <>
@@ -154,21 +174,21 @@ useEffect(() => {
           + New Topic
         </Button>
       </CardHeader>
-      <BsModal {...{ show, setShow, headerTitle: "Add Topic", size: "lg" }}>
+      <BsModal {...{ show, setShow, headerTitle: `${isEdit ? "Update Topic": "Add Topic"}`, size: "lg" }}>
         <div className="">
           <div>
             <Formik
-            initialValues={{name:''}}
-            onSubmit={(values) => createTopic(values)}
+              initialValues={initialValue}
+              onSubmit={(values) =>  createTopic(values)}
             >
               {({ handleSubmit }) => (
                 <>
                   <form onSubmit={handleSubmit}>
-                     <TextInput name="name" label="Topic Name" />
+                    <TextInput name="name" label="Topic Name" />
                     <div className="text-right mt-2">
-                    
+
                       <Button type="submit" className=" px-4">
-                        Create
+                       {isEdit ? "Update": "Create"}
                       </Button>
                     </div>
                   </form>
@@ -185,7 +205,7 @@ useEffect(() => {
             configuration,
             sourceData: topic,
             onPageChange: (e) => getAllTopic(e),
-            count:10,
+            count: 10,
           }}
         />
       </div>

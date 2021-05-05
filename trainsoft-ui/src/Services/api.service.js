@@ -97,12 +97,18 @@ const RestService = {
   // getTrainingByRole: (pageNo,pageSize) => AxiosService.get(GLOBELCONSTANT.TRAINING.PARTICIPANT_BY_ROLE.replace("{pageNo}",pageNo).replace("{pageSize}",pageSize)),
 
   // assessment
-  getAllTopic: (pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_TOPIC + 5 +"&pageNo="+ pageNo),
-  getAllQuestion: (pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ALL_QUESTION + 5 +"&pageNo="+ pageNo),
+  getAllTopic: (pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_TOPIC + pageSize +"&pageNo="+ pageNo),
+  deleteTopic: (sid) => AxiosService.delete(GLOBELCONSTANT.ASSESSMENT.DELETE_TOPIC.replace("{topicSid}",sid)),
+  updateTopic: (payload) => AxiosService.put(GLOBELCONSTANT.ASSESSMENT.UPDATE_TOPIC,payload),
+  getAllQuestion: (pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ALL_QUESTION + pageSize +"&pageNo="+ pageNo),
   createQuestion: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_QUESTION,payload),
   createTopic: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_TOPIC,payload),
   getAssessmentByTopic: (sid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT + sid),
-  
+  deleteAssessment: (sid) => AxiosService.delete(GLOBELCONSTANT.ASSESSMENT.DELETE_ASSESSMENT.replace("{assId}",sid) ),
+  associateQuestion: (assID,payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.ASSOCIATE_QUESTION.replace("{assID}",assID), payload),
+  getAssociateQuestion: (assID,pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSOCIATE_QUESTION.replace("{assId}",assID).replace("{pageSize}",pageSize).replace("{pageNo}",pageNo)),  
+  getAllCategory: ()=> AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_CATEGORY),
+  createAssessment:(payload)=>AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_ASSESSMENT,payload),
 };
 
 export default RestService;

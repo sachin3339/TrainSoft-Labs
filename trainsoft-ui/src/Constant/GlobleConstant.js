@@ -87,15 +87,20 @@ const GLOBELCONSTANT = {
         },
         ASSESSMENT: {
             GET_TOPIC: API_ASSES + "display/topics?pageSize=",
+            DELETE_TOPIC: API_ASSES + "delete/topic/{topicSid}",
+            UPDATE_TOPIC:API_ASSES +  "update/topic",
             GET_ASSESSMENT: API_ASSES + "assessments/",
             CREATE_TOPIC: API_ASSES + "create/topic",
             GET_ASS_QUESTION:API_ASSES + "question/types",
+            DELETE_ASSESSMENT: API_ASSES + "delete/assessment/{assId}",
             CREATE_ASSESSMENT: API_ASSES +"create/assessment",
             CREATE_QUESTION: API_ASSES +"create/question/individual",
             ASSOCIATE_QUESTION:API_ASSES + "associate/Question",
+            GET_ASSOCIATE_QUESTION:API_ASSES + "assessment/Questions/{assId}?pageSize={pageSize}&pageNo={pageNo}",
             GET_NOT_ASS_QUESTION:API_ASSES + "display/assessment/question",
             GET_ALL_QUESTION:API_ASSES + "questions/?pageSize=",
-            DELETE_QUESTION: API_ASSES + "remove/associated/question/"
+            DELETE_QUESTION: API_ASSES + "remove/associated/question/",
+            GET_CATEGORY: API_ASSES + "categories"
         },
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},
@@ -130,7 +135,13 @@ const GLOBELCONSTANT = {
                     // ['clean'] // remove formatting button
                 ],
         },
-        PAGE_SIZE: 10
+        PAGE_SIZE: 10,
+        
+        DIFFICULTY: [
+            {key: "BIGENER",name: "Bigener"},
+            {key: "INTERMEDIATE",name: "Intermediate"},
+            {key: "EXPERT",name: "Expert"},
+        ],
     }
 
 export default GLOBELCONSTANT;
