@@ -409,25 +409,12 @@ public class QuestionServiceImpl implements IQuestionService {
     public List<QuestionTo> searchQuestion(String searchString,String companySid) {
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         if (company==null) throw new InvalidSidException("invalid company sid");
-      List<Question> question = customRepository.searchQuestion(searchString, company.getId());
-     /* List<QuestionTo> list=new ArrayList<>();
-        question.forEach(q->{
-            QuestionTo questionTo = new QuestionTo();
-            questionTo.setSid(q.getStringSid());
-          questionTo.setName(q.getName());
-          questionTo.setDescription(q.getDescription());
-          questionTo.setQuestionType(q.getQuestionType());
-          questionTo.setCreatedByVirtualAccountSid(q.getCreatedBy().getStringSid());
-          questionTo.setDifficulty(q.getDifficulty());
-          questionTo.setTechnologyName(q.getTechnologyName());
-          questionTo.setStatus(q.getStatus());
-          questionTo.setNegativeQuestionPoint(q.getNegativeQuestionPoint());
-          questionTo.setAnswerExplanation(q.getAnswerExplanation());
-          questionTo.setCreatedOn(q.getCreatedOn());
-          questionTo.setCompanySid(q.getCompany().getStringSid());
-          list.add(questionTo);
-      });
-        return list;*/
-        return mapper.convertList(question, QuestionTo.class);
+      List<Question> question = customRepository.searchQuestion(searchString, company);
+        List<QuestionTo> questionTo = mapper.convertList(question, QuestionTo.class);
+        questionTo.forEach(qt->{
+            for (Question q:question){
+                qt.setCompanySid(q.getCompany().getStringSid());
+                qt.setCreatedByVirtualAccountSid(q.getCreatedBy().getStringSid());
+            } });return questionTo;
     }
 }

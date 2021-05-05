@@ -540,20 +540,20 @@ public class AssessmentServiceImpl implements IAssessmentService
                 vTo.setVirtualAccountSid(virtualAccount.getStringSid());
                 Optional<Question> question = questionRepository.findById(vd.getQuestionId().getId());
                 vTo.setQuestionSid(question.get().getStringSid());
-                vTo.setQuestion(mapper.convert(question,QuestionTo.class));
-                vTo.getQuestion().setSid(question.get().getStringSid());
-                vTo.getQuestion().setName(question.get().getName());
-                vTo.getQuestion().setDescription(question.get().getDescription());
-                vTo.getQuestion().setCreatedByVirtualAccountSid(question.get().getCreatedBy().getStringSid());
-                vTo.getQuestion().setTechnologyName(question.get().getTechnologyName());
-                vTo.getQuestion().setQuestionPoint(question.get().getQuestionPoint());
-                vTo.getQuestion().setStatus(question.get().getStatus());
-                vTo.getQuestion().setQuestionType(question.get().getQuestionType());
-                vTo.getQuestion().setDifficulty(question.get().getDifficulty());
-                vTo.getQuestion().setAnswerExplanation(question.get().getAnswerExplanation());
-                vTo.getQuestion().setCompanySid(question.get().getCompany().getStringSid());
+                vTo.setQuestionId(mapper.convert(question,QuestionTo.class));
+                vTo.getQuestionId().setSid(question.get().getStringSid());
+                vTo.getQuestionId().setName(question.get().getName());
+                vTo.getQuestionId().setDescription(question.get().getDescription());
+                vTo.getQuestionId().setCreatedByVirtualAccountSid(question.get().getCreatedBy().getStringSid());
+                vTo.getQuestionId().setTechnologyName(question.get().getTechnologyName());
+                vTo.getQuestionId().setQuestionPoint(question.get().getQuestionPoint());
+                vTo.getQuestionId().setStatus(question.get().getStatus());
+                vTo.getQuestionId().setQuestionType(question.get().getQuestionType());
+                vTo.getQuestionId().setDifficulty(question.get().getDifficulty());
+                vTo.getQuestionId().setAnswerExplanation(question.get().getAnswerExplanation());
+                vTo.getQuestionId().setCompanySid(question.get().getCompany().getStringSid());
                 List<Answer> answer = answerRepository.findAnswerByQuestionId(question.get().id);
-                vTo.getQuestion().setAnswer(mapper.convertList(answer,AnswerTo.class));
+                vTo.getQuestionId().setAnswer(mapper.convertList(answer,AnswerTo.class));
                 vTo.setCorrect(vd.isCorrect());
                 vTo.setAnswer(vd.getAnswer());
                 vTo.setQuestionPoint(vd.getQuestionPoint());
@@ -625,7 +625,6 @@ public class AssessmentServiceImpl implements IAssessmentService
         return customRepository.noOfCountByClass(classz,getCompany(companySid));
     }
 
-
     private Company getCompany(String companySid){
         Company company=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Company c=new Company();
@@ -633,4 +632,14 @@ public class AssessmentServiceImpl implements IAssessmentService
         return c;
     }
 
+    @Override
+    public List<AssessmentTo> searchAssessment(String searchString, String companySid, String topicSid) {
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
+        if (company!=null && topic!=null){
+            List<Assessment> assessment = customRepository.searchAssessment(searchString, company, topic);
+            return mapper.convertList(assessment,AssessmentTo.class);
+
+        }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
+    }
 }
