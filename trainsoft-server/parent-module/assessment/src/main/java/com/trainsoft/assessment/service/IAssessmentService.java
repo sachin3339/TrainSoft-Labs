@@ -4,18 +4,19 @@ import com.trainsoft.assessment.to.*;
 import org.springframework.data.domain.Pageable;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
 import java.util.List;
 
 public interface IAssessmentService
 {
     AssessmentTo createAssessment(AssessmentTo assessmentTo);
     List<CategoryTO> getAllCategories();
-    List<AssessmentTo> getAssessmentsByTopic(String topicSid);
+    List<AssessmentTo> getAssessmentsByTopic(String topicSid,Pageable pageable);
     List<QuestionTo> associateSelectedQuestionsToAssessment(AssessmentQuestionTo  assessmentQuestionTo);
     AssessmentTo getAssessmentBySid(String assessmentSid);
     List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid, Pageable pageable);
 
-    List<AssessmentTo> getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
+    AssessmentTo getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
 
     List<AssessmentQuestionTo> startAssessment(String quizSetSid,String virtualAccountSid);
 
@@ -30,5 +31,12 @@ public interface IAssessmentService
     ScoreBoardTO getScoreBoard(String quizSetSid,String virtualAccountSid);
 
     List<VirtualAccountHasQuestionAnswerDetailsTO> findUserAssessmentResponses(String virtualAccountSid);
+
+    AssessmentTo updateAssessment(AssessmentTo assessmentTo);
+    void deleteAssessment(String QuizSetSid);
+
+    BigInteger getCountByClass(String classz, String companySid);
+
+    List<AssessmentTo> searchAssessment(String searchString,String companySid,String topicSid);
 
 }
