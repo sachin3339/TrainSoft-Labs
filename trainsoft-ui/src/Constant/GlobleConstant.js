@@ -6,6 +6,7 @@ if (HOSTNAME !== null && ((HOSTNAME.indexOf('localhost') !== -1) || (HOSTNAME.in
 export const API_PATH = HOSTNAME ;
 
 let API_HOST = HOSTNAME +"/insled/v1/"
+let API_ASSES = "https://www.trainsoft.io/assessnet/v1/"
 const ASSESSMENT_V1 = "https://www.trainsoft.io/assessnet/v1/"
 
 const GLOBELCONSTANT = {
@@ -82,7 +83,6 @@ const GLOBELCONSTANT = {
             GET_INSTRUCTOR_TRAINING: API_HOST +  "trainer/trainings/{pageNo}/{pageSize}",
             GET_LEARNER_TRAINING: API_HOST +  "learner/trainings",
             UPDATE_SE_TRAINING : API_HOST + "update/session/{sessionSid}/{status}/{meetingId}"
-
         },
         API: {
             ASSESSMENT: {
@@ -98,6 +98,29 @@ const GLOBELCONSTANT = {
         },
         INSTRUCTOR: {
             GET_INSTRUCTOR: API_HOST +  'depatments'
+        },
+        ASSESSMENT: {
+            GET_TOPIC: API_ASSES + "display/topics?pageSize=",
+            DELETE_TOPIC: API_ASSES + "delete/topic/{topicSid}",
+            UPDATE_TOPIC:API_ASSES +  "update/topic",
+            GET_ASSESSMENT: API_ASSES + "assessments/{assId}?pageSize={pageSize}&pageNo={pageNo}",
+            CREATE_TOPIC: API_ASSES + "create/topic",
+            GET_ASS_QUESTION:API_ASSES + "question/types",
+            DELETE_ASSESSMENT: API_ASSES + "delete/assessment/{assId}",
+            CREATE_ASSESSMENT: API_ASSES +"create/assessment",
+            CREATE_QUESTION: API_ASSES +"create/question/individual",
+            ASSOCIATE_QUESTION:API_ASSES + "associate/Question",
+            GET_ASSOCIATE_QUESTION:API_ASSES + "assessment/Questions/{assId}?pageSize={pageSize}&pageNo={pageNo}",
+            GET_NOT_ASS_QUESTION:API_ASSES + "display/assessment/question",
+            GET_ALL_QUESTION:API_ASSES + "questions/?pageSize=",
+            DELETE_ASS_QUESTION: API_ASSES + "remove/associated/question/",
+            GET_CATEGORY: API_ASSES + "categories",
+            UPDATE_ASSESSMENT: API_ASSES + "update/assessment",
+            DELETE_QUESTION: API_ASSES + "delete/question/{questionId}",
+            SEARCH_TOPIC: API_ASSES + "search/topic/",
+            SEARCH_ASSESSMENT: API_ASSES + "search/assessment/{query}/{companySid}/{topicSid}",
+            SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}"
+
         },
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},
@@ -132,6 +155,13 @@ const GLOBELCONSTANT = {
                     // ['clean'] // remove formatting button
                 ],
         },
+        PAGE_SIZE: 10,
+        
+        DIFFICULTY: [
+            {key: "BIGENER",name: "Bigener"},
+            {key: "INTERMEDIATE",name: "Intermediate"},
+            {key: "EXPERT",name: "Expert"},
+        ],
     }
 
 export default GLOBELCONSTANT;

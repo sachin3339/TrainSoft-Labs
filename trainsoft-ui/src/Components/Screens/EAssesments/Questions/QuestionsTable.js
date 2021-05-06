@@ -1,21 +1,20 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
+import RestService from "../../../../Services/api.service";
+import AppContext from "../../../../Store/AppContext";
+import useToast from "../../../../Store/ToastHook";
 import { Toggle } from "../../../Common/BsUtils";
 import { Button } from "../../../Common/Buttons/Buttons";
 import CardHeader from "../../../Common/CardHeader";
 import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
+import { ICN_EDIT, ICN_TRASH } from "../../../Common/Icon";
 import { Link, navigate } from "../../../Common/Router";
 
 const QuestionsTable = ({ location }) => {
+  const Toast = useToast()
+  const { spinner,user } = useContext(AppContext)
   const [count, setCount] = useState(0);
-  const [questions, setQuestions] = useState([
-    {
-      name: "What is a correct syntax to output “Hello World” in Java?",
-      type: "Multiple Choice",
-      tags: "Java",
-      difficulty: "Beginner",
-      sid: "1",
-    },
-  ]);
+  const [questions, setQuestions] = useState([])
   const [configuration, setConfiguration] = useState({
     columns: {
       name: {
@@ -43,13 +42,13 @@ const QuestionsTable = ({ location }) => {
           </div>
         ),
       },
-      type: {
+      questionType: {
         title: "Type",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
       },
-      tags: {
+      technologyName: {
         title: "Tags",
         sortDirection: null,
         sortEnabled: true,
@@ -66,12 +65,12 @@ const QuestionsTable = ({ location }) => {
               borderRadius: "25px",
             }}
           >
-            {data.tags}
+            {data.technologyName}
           </div>
         ),
       },
       difficulty: {
-        title: "Tags",
+        title: "Difficulty",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
@@ -79,7 +78,7 @@ const QuestionsTable = ({ location }) => {
           <div
             style={{
               background: "#E8E8E8",
-              width: "79px",
+              width: "120px",
               height: "24px",
               display: "flex",
               justifyContent: "center",
@@ -99,33 +98,26 @@ const QuestionsTable = ({ location }) => {
       configuration.sortBy = sortKey;
       Object.keys(configuration.columns).map(
         (key) =>
-          (configuration.columns[key].sortDirection =
-            key === sortKey ? !configuration.columns[key].sortDirection : false)
+        (configuration.columns[key].sortDirection =
+          key === sortKey ? !configuration.columns[key].sortDirection : false)
       );
       configuration.sortDirection =
         configuration.columns[sortKey].sortDirection;
       setConfiguration({ ...configuration });
     },
-    // actions: [
-    //   {
-    //     title: "Edit",
-    //     icon: ICN_EDIT,
-    //     onClick: (data, i) => {
-    //       setIsEdit(true);
-    //       setShow(true);
-    //       setInitialValues({
-    //         name: data.name,
-    //         description: data.description,
-    //         sid: data.sid,
-    //       });
-    //     },
-    //   },
-    //   {
-    //     title: "Delete",
-    //     icon: ICN_TRASH,
-    //     onClick: (data) => deleteCourse(data.sid),
-    //   },
-    // ],
+    actions: [
+      {
+        title: "Edit",
+        icon: ICN_EDIT,
+        onClick: (data, i) => { }
+
+      },
+      {
+        title: "Delete",
+        icon: ICN_TRASH,
+        onClick: (data) => deleteQuestion(data.sid),
+      },
+    ],
     actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
     actionVariant: "", // user can pass action button variant like primary, dark, light,
     actionAlignment: true, // user can pass alignment property of dropdown menu by default it is alignLeft
@@ -136,14 +128,57 @@ const QuestionsTable = ({ location }) => {
     // showCheckbox: true,
     clearSelection: false,
   });
+
+  // get All question 
+  const getAllQuestion = async (page = 1) => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getAllQuestion(GLOBELCONSTANT.PAGE_SIZE, page-1)
+      setQuestions(data);
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllQuestion()", err)
+    }
+  }
+
+  // Delete question
+  const deleteQuestion = async (sid) => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.deleteQuestion(sid)
+      Toast.success({ message: "Question deleted successfully" })
+      getAllQuestion()
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on deleteQuestion()", err)
+    }
+  }
+
+      // search topic 
+      const searchQuestion = async (value) => {
+        spinner.show("Loading... wait");
+        try {
+          let {data} = await RestService.searchQuestion(value,user.companySid)
+          setQuestions(data);
+          spinner.hide();
+        } catch (err) {
+          spinner.hide();
+          console.error("error occur on searchTopic()", err)
+        }
+      }
+
+
+  useEffect(() => {
+    getAllQuestion()
+  }, [])
   return (
     <>
       <CardHeader
-        location={{
-          ...location,
-          state: {
-            title: "Questions",
-          },
+        {...{location,
+          onChange: (e) => e.length === 0 && getAllQuestion(),
+          onEnter: (e) => searchQuestion(e),
         }}
       >
         <Button

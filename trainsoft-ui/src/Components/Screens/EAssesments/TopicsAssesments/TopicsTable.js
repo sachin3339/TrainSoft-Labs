@@ -1,23 +1,28 @@
+import { useState, useContext, useEffect } from "react";
 import { Formik } from "formik";
-import { useState } from "react";
-import { Button } from "react-bootstrap";
+import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
+import RestService from "../../../../Services/api.service";
+import AppContext from "../../../../Store/AppContext";
 import { BsModal } from "../../../Common/BsUtils";
 import CardHeader from "../../../Common/CardHeader";
 import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
 import { TextInput } from "../../../Common/InputField/InputField";
 import { Link } from "../../../Common/Router";
+import { ICN_EDIT, ICN_TRASH } from "../../../Common/Icon";
+import useToast from "../../../../Store/ToastHook";
+import { Button } from "../../../Common/Buttons/Buttons";
+import AssessmentContext from "../../../../Store/AssessmentContext";
 
 const TopicsTable = ({ location }) => {
+  const { spinner,user } = useContext(AppContext)
+  const {setTopicSid,setCategory} = useContext(AssessmentContext)
   const [count, setCount] = useState(0);
   const [show, setShow] = useState(false);
-  const [questions, setQuestions] = useState([
-    {
-      name: "Java",
-      numAssignments: "10",
+  const [topic, setTopic] = useState([]);
+  const [initialValue,setInitialValue] = useState({name:""})
+  const [isEdit,setIsEdit] = useState(false)
+  const Toast = useToast()
 
-      sid: "1",
-    },
-  ]);
   const [configuration, setConfiguration] = useState({
     columns: {
       name: {
@@ -26,7 +31,7 @@ const TopicsTable = ({ location }) => {
         sortEnabled: true,
         isSearchEnabled: false,
         render: (data) => (
-          <div style={{ display: "flex", alginItems: "center" }}>
+          <div onClick={()=> setTopicSid(data.sid)} style={{ display: "flex", alginItems: "center" }}>
             <Link
               to={"topic-details"}
               state={{
@@ -44,7 +49,7 @@ const TopicsTable = ({ location }) => {
           </div>
         ),
       },
-      numAssignments: {
+      noOfAssessments: {
         title: "NO. OF ASSIGNMENT",
         sortDirection: null,
         sortEnabled: true,
@@ -58,33 +63,25 @@ const TopicsTable = ({ location }) => {
       configuration.sortBy = sortKey;
       Object.keys(configuration.columns).map(
         (key) =>
-          (configuration.columns[key].sortDirection =
-            key === sortKey ? !configuration.columns[key].sortDirection : false)
+        (configuration.columns[key].sortDirection =
+          key === sortKey ? !configuration.columns[key].sortDirection : false)
       );
       configuration.sortDirection =
         configuration.columns[sortKey].sortDirection;
       setConfiguration({ ...configuration });
     },
-    // actions: [
-    //   {
-    //     title: "Edit",
-    //     icon: ICN_EDIT,
-    //     onClick: (data, i) => {
-    //       setIsEdit(true);
-    //       setShow(true);
-    //       setInitialValues({
-    //         name: data.name,
-    //         description: data.description,
-    //         sid: data.sid,
-    //       });
-    //     },
-    //   },
-    //   {
-    //     title: "Delete",
-    //     icon: ICN_TRASH,
-    //     onClick: (data) => deleteCourse(data.sid),
-    //   },
-    // ],
+    actions: [
+      {
+        title: "Edit",
+        icon: ICN_EDIT,
+        onClick: (data, i) => { setIsEdit(true);setShow(true);setInitialValue(data)}
+      },
+      {
+        title: "Delete",  
+        icon: ICN_TRASH,
+        onClick: (data) => deleteTopic(data.sid),
+      },
+    ],
     actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
     actionVariant: "", // user can pass action button variant like primary, dark, light,
     actionAlignment: true, // user can pass alignment property of dropdown menu by default it is alignLeft
@@ -95,12 +92,95 @@ const TopicsTable = ({ location }) => {
     // showCheckbox: true,
     clearSelection: false,
   });
+
+
+  // get All topic
+  const getAllTopic = async (pageNo = "1") => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getAllTopic(GLOBELCONSTANT.PAGE_SIZE, pageNo - 1)
+      setTopic(data);
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
+    }
+  }
+
+   // get All topic
+   const getAllCategory = async (pageNo = "1") => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getAllCategory()
+      setCategory(data)
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
+    }
+  }
+
+  // delete Topic
+  const deleteTopic = async (sid) => {
+    spinner.show("Loading... wait");
+    try {
+      let response = await RestService.deleteTopic(sid)
+      getAllTopic()
+      Toast.success({ message: "Topic deleted successfully" })
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
+    }
+  }
+
+  // Create Topic
+  const createTopic = async (payload) => {
+    spinner.hide("Loading... wait");
+
+    try {
+      let data = !isEdit ? await RestService.createTopic(payload) : await RestService.updateTopic(payload)
+        Toast.success({ message: `Topic ${isEdit ? "updated": 'added'} successfully` })
+        getAllTopic()
+        setShow(false)
+        setIsEdit(false)
+    } catch (err) {
+      setShow(false)
+      console.error("error occur on createTopic()", err)
+    }
+  }
+
+
+    // search topic 
+    const searchTopic = async (value) => {
+      spinner.show("Loading... wait");
+      try {
+        let {data} = await RestService.searchTopic(value,user.companySid)
+        setTopic(data);
+        spinner.hide();
+      } catch (err) {
+        spinner.hide();
+        console.error("error occur on searchTopic()", err)
+      }
+    }
+  
+
+
+  useEffect(() => {
+    getAllTopic()
+    getAllCategory()
+  }, [])
+
   return (
     <>
       <CardHeader
-        location={{
-          ...location,
+        {...{
+          location,
+          onChange: (e) => e.length === 0 && getAllTopic(),
+          onEnter: (e) => searchTopic(e),
         }}
+        
+        
       >
         <Button
           className=" ml-2"
@@ -111,30 +191,21 @@ const TopicsTable = ({ location }) => {
           + New Topic
         </Button>
       </CardHeader>
-      <BsModal {...{ show, setShow, headerTitle: "Add Topic", size: "lg" }}>
+      <BsModal {...{ show, setShow, headerTitle: `${isEdit ? "Update Topic": "Add Topic"}`, size: "lg" }}>
         <div className="">
           <div>
             <Formik
-            // initialValues={
-            //   !isEdit
-            //     ? { topicName: "", topicDescription: "" }
-            //     : initialValues
-            // }
-            // validationSchema={schema}
-            // onSubmit={(values) => {
-            //   !isEdit ? createSession(values) : editSession(values);
-            // }}
+              initialValues={initialValue}
+              onSubmit={(values) =>  createTopic(values)}
             >
               {({ handleSubmit }) => (
                 <>
                   <form onSubmit={handleSubmit}>
-                    <TextInput name="topicName" label="Topic Name" />
+                    <TextInput name="name" label="Topic Name" />
                     <div className="text-right mt-2">
-                      {/* <Button className=" px-4" onClick={() => setShow(false)}>
-                        Cancel
-                      </Button> */}
-                      <Button onClick={() => setShow(false)} className=" px-4">
-                        Create
+
+                      <Button type="submit" className=" px-4">
+                       {isEdit ? "Update": "Create"}
                       </Button>
                     </div>
                   </form>
@@ -149,9 +220,9 @@ const TopicsTable = ({ location }) => {
         <DynamicTable
           {...{
             configuration,
-            sourceData: questions,
-            // onPageChange: (e) => getCourse(e),
-            count,
+            sourceData: topic,
+            onPageChange: (e) => getAllTopic(e),
+            count: 10,
           }}
         />
       </div>
