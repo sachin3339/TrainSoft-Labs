@@ -165,6 +165,26 @@ export const RadioBox = (props) => {
     </>)
 };
 
+// input type RadioBox 
+export const RadioBoxKey = (props) => {
+    const [field, meta, helpers] = useField(props);
+    const { setValue } = helpers;
+    const { value } = meta;
+    return (<>
+        { props.options.map((option, i) => <Form.Check
+            key={i}
+            custom
+            label={option.label}
+            id={option.label}
+            inline
+            checked={value === option.value ? true : false}
+            type="radio"
+            onChange={(e) => setValue(option.value)}
+        />)}
+        <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
+    </>)
+};
+
 // input type checkbox
 export const Checkbox = (props) => {
     const [field, helpers] = useField(props);
