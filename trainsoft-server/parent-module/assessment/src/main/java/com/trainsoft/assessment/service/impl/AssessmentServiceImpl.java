@@ -111,9 +111,9 @@ public class AssessmentServiceImpl implements IAssessmentService
     public List<AssessmentTo> getAssessmentsByTopic(String topicSid,Pageable pageable)
     {
             Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
-            List<Assessment> assessmentList = assessmentRepository.findAssessmentByTopicId(topic,pageable);
-            if (CollectionUtils.isNotEmpty(assessmentList))
+            if (topic!=null)
             {
+                List<Assessment> assessmentList = assessmentRepository.findAssessmentByTopicId(topic,pageable);
                 if (CollectionUtils.isNotEmpty(assessmentList)) {
                     List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList, AssessmentTo.class);
                     assessmentToList.forEach(assessmentTo ->
@@ -648,7 +648,7 @@ public class AssessmentServiceImpl implements IAssessmentService
            List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessmentList
                    = virtualAccountHasQuizSetAssessmentRepository.findByAssessment(assessment.id);
            if(CollectionUtils.isEmpty(virtualAccountHasQuizSetAssessmentList))
-               throw new RecordNotFoundException("No one has submitted Assessment :"+assessmentSid);
+               throw new ApplicationException("No one has submitted Assessment :"+assessmentSid);
            int submitted = virtualAccountHasQuizSetAssessmentList.size();
            List<VirtualAccountHasQuizSetSessionTiming> notSubmittedList = virtualAccountHasQuizSetSessionTimingRepository.findByQuizSetId(assessment);
            int notSubmitted = notSubmittedList.size();
