@@ -8,22 +8,19 @@ import AppContext from "../../../../Store/AppContext";
 import useToast from "../../../../Store/ToastHook";
 import { Field } from "formik";
 import AppUtils from '../../../../Services/Utils';
+import GLOBELCONSTANT from '../../../../Constant/GlobleConstant';
 
-const ANS_OBJ =  {
-  "answerOption": "",
-  "answerOptionValue": "",
-  "correct": false,
-  "status": "ENABLED"
-}
-
-const AnswerSelector = ({ values, ordering = "Alphabets", setFieldValue }) => {
+const AnswerSelector = ({ 
+  values, 
+  ordering = GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS, 
+  setFieldValue 
+}) => {
   const [correctAnswer, setCorrectAnswer] = useState();
-  const ALPHABETS = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
   const addAnswer = () => {
     try {
       let tmpVal = {...values};
-      tmpVal.answer.push(ANS_OBJ);
+      tmpVal.answer.push(GLOBELCONSTANT.DATA.ANS_OBJ);
       setFieldValue("answer", tmpVal.answer);
       handleChangeOptionValue();
     } catch (err) {
@@ -35,7 +32,6 @@ const AnswerSelector = ({ values, ordering = "Alphabets", setFieldValue }) => {
     try {
       let tmpVal = {...values};
       tmpVal.answer.splice(index, 1);
-      // values.answer.filter((_, _index) => _index !== index)
       setFieldValue("answer", tmpVal.answer);
       handleChangeOptionValue();
     } catch (err) {
@@ -43,10 +39,13 @@ const AnswerSelector = ({ values, ordering = "Alphabets", setFieldValue }) => {
     }
   }
 
+  // this method to set option value
   const handleChangeOptionValue = () => {
-    let newVal = values.answer.map((r, i) => ({...r, answerOption: ordering === "Alphabets" ? ALPHABETS[i] : i + 1}))
+    let newVal = values.answer.map((r, i) => ({...r, answerOption: ordering === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? GLOBELCONSTANT.ALPHABETS[i] : i + 1}))
     setFieldValue("answer", newVal);
   }
+
+  // this method to set correct answer for question
   const handleSetCorrectAnswer = (index) => {
     try {
       setCorrectAnswer(index);
@@ -88,7 +87,7 @@ const AnswerSelector = ({ values, ordering = "Alphabets", setFieldValue }) => {
                   }}
                 />
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <div style={{ width: "20px" }}>{ ordering === "Alphabets" ? ALPHABETS[index] : index + 1}.</div>
+                  <div style={{ width: "20px" }}>{ ordering === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? GLOBELCONSTANT.ALPHABETS[index] : index + 1}.</div>
                   <Field 
                      style={{
                       width: "500px",

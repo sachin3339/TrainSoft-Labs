@@ -15,6 +15,54 @@ const GLOBELCONSTANT = {
         ZOOM_PATH:  window.location.origin + '/zoom',
         VSCODE_PATH:  window.location.origin + '/vscode',
 
+        STATUS: {
+            ENABLED: "ENABLED",
+            DISABLED: "DISABLED",
+            DELETED: "DELETED"
+        },
+        QUESTION_LABEL: {
+            BEGINNER: "BEGINNER",
+            INTERMEDIATE: "INTERMEDIATE",
+            EXPERT: "EXPERT",
+        },
+        ANSWER_PATTERN: {
+            ALPHABETS: "ALPHABETS",
+            NUMBER: "NUMBER"
+        },
+        QUESTION_TYPE: [
+            {
+              laebl: "Single Choice",
+              value: "SCQ"
+            },
+            {
+              laebl: "Multiple Choice",
+              value: "MCQ"
+            },
+        ],
+        ANSWER_ORDER_TYPE: [
+            {
+              label: "Alphabets",
+              value: "ALPHABETS"
+            },
+            {
+              label: "Number",
+              value: "NUMBER"
+            },
+        ],
+        DIFFICULTY: [
+            {
+                label:"Beginner",
+                value:"BEGINNER"
+            }, 
+            {
+                label:"Intermediate",
+                value:"INTERMEDIATE"
+            },
+            {
+                label:"Expert",
+                value:"EXPERT"
+            }
+        ],
         AUTH: {
             LOGIN: API_HOST + "login",
             FORGOT: API_HOST + "forgot/password/",
@@ -160,12 +208,54 @@ const GLOBELCONSTANT = {
                 ],
         },
         PAGE_SIZE: 10,
-        
-        DIFFICULTY: [
-            {key: "BIGENER",name: "Bigener"},
-            {key: "INTERMEDIATE",name: "Intermediate"},
-            {key: "EXPERT",name: "Expert"},
-        ],
+        ALPHABETS: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+        DATA: {
+            ANS_OBJ: {
+                "answerOption": "",
+                "answerOptionValue": "",
+                "correct": false,
+                "status": "ENABLED"
+            },
+            CREATE_QUESTION: {
+                "answer": [
+                    {
+                        "answerOption": "",
+                        "answerOptionValue": "",
+                        "correct": false,
+                        "status": "ENABLED"
+                    },
+                    {
+                        "answerOption": "",
+                        "answerOptionValue": "",
+                        "correct": false,
+                        "status": "ENABLED"
+                    },
+                    {
+                        "answerOption": "",
+                        "answerOptionValue": "",
+                        "correct": false,
+                        "status": "ENABLED"
+                    },
+                    {
+                        "answerOption": "",
+                        "answerOptionValue": "",
+                        "correct": false,
+                        "status": "ENABLED"
+                    }
+                ],
+                "answerExplanation": "",
+                "description": "",
+                "difficulty": "BEGINNER",
+                "name": "",
+                "negativeQuestionPoint": 1,
+                "questionPoint": 1,
+                "questionType": "MCQ",
+                "status": "ENABLED",
+                "technologyName": "",
+                "answerOrderType": "ALPHABETS"
+            },
+
+        }
     }
 
 export default GLOBELCONSTANT;

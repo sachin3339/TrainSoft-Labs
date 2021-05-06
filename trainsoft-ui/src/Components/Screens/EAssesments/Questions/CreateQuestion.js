@@ -6,49 +6,34 @@ import { Formik } from "formik";
 import {
   TextInput,
   SelectInput,
-  RadioBox,
   TextArea,
+  RadioBoxKey,
 } from "../../../Common/InputField/InputField";
 import { Form } from "react-bootstrap";
 import CardHeader from "../../../Common/CardHeader";
 import Submit from "../../Assessment/common/SubmitButton";
 import AnswerSelector from "./AnswerSelector";
+import AppUtils from "../../../../Services/Utils";
+import { navigate } from "../../../Common/Router";
+import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import "./question.css";
 
-const QUESTION_TYPE = [
-  {
-    name: "Single Choice",
-    value: "SCQ"
-  },
-  {
-    name: "Multiple Choice",
-    value: "MCQ"
-  },
-]
-
-const ANSWER_ORDER_TYPE = [
-  {
-    name: "Alphabet",
-    value: "alphabet"
-  },
-  {
-    name: "Number",
-    value: "number"
-  },
-]
-
 const CreateQuestion = ({ location }) => {
+  const goBack = () => navigate("./");
   const Toast = useToast()
   const { spinner } = useContext(AppContext);
+  const [questionType, setQuestionType] = useState([]);
 
-  // Create Topic
+  // Create question
   const createNewQuestion = async (values) => {
-    spinner.hide("Loading... wait");
+    spinner.hide("Loading... Please wait...");
     try {
       let payload = {...values}
       delete payload.answerOrderType;
       RestService.createQuestion(payload).then(
         response => {
+          spinner.hide();
+          goBack();
           Toast.success({ message: "Question created successfully" })
         },
         err => {
@@ -62,6 +47,30 @@ const CreateQuestion = ({ location }) => {
     }
   }
 
+   // Create Topic
+   const getQuestionType = async () => {
+    spinner.hide("Loading... Please wait...");
+    try {
+      RestService.GetQuestionType().then(
+        response => {
+          spinner.hide();
+          setQuestionType(response.data);
+        },
+        err => {
+          spinner.hide();
+        }
+      ).finally(() => {
+        spinner.hide();
+      });
+    } catch (err) {
+      console.error("error occur on getQuestionType()", err)
+    }
+  }
+
+  // initialize component
+  useEffect(() => {
+    getQuestionType();
+  }, [])
   return (
     <>
       <CardHeader
@@ -78,28 +87,15 @@ const CreateQuestion = ({ location }) => {
         {true ? (
           <Formik
             onSubmit={(value) => createNewQuestion(value)}
-            initialValues={{
-              "answer": [],
-              "answerExplanation": "",
-              "description": "",
-              "difficulty": "BEGINNER",
-              "name": "",
-              "negativeQuestionPoint": 1,
-              "questionPoint": 1,
-              "questionType": "MCQ",
-              "status": "ENABLED",
-              "technologyName": "",
-              "answerOrderType": "Alphabets"
-            }
-            }
+            initialValues={GLOBELCONSTANT.DATA.CREATE_QUESTION}
           >
-            {({ handleSubmit, values, setFieldValue, isSubmitting, dirty }) => (
+            {({ handleSubmit, values, setFieldValue, resetForm, isSubmitting, dirty, touched }) => (
               <form onSubmit={handleSubmit} className="create-batch">
                 <div>
                   <Form.Group style={{ width: "60%" }}>
                     <SelectInput
                       label="Question Type"
-                      option={QUESTION_TYPE}
+                      option={AppUtils.isNotEmptyArray(questionType) ? questionType : []}
                       name="questionType"
                       bindKey="name"
                       valueKey="value"
@@ -121,18 +117,19 @@ const CreateQuestion = ({ location }) => {
                     />
                   </Form.Group>
                   <Form.Group>
-                    <TextInput
-                      label="Difficulty"
-                      placeholder="Difficulty"
-                      name="difficulty"
-                    />
+                    <Form.Label className="label">
+                       Difficulty
+                     </Form.Label>
+                    <div style={{ marginBottom: "10px" }}>
+                      <RadioBoxKey name="difficulty" options={GLOBELCONSTANT.DIFFICULTY} />
+                    </div>
                   </Form.Group>
                   <Form.Group>
                     <Form.Label className="label">
                       Answer Choice Ordering
                     </Form.Label>
                     <div style={{ marginBottom: "10px" }}>
-                      <RadioBox name="answerOrderType" options={["Alphabets", "Number"]} />
+                      <RadioBoxKey name="answerOrderType" options={GLOBELCONSTANT.ANSWER_ORDER_TYPE} />
                     </div>
                   </Form.Group>
 
@@ -172,8 +169,10 @@ const CreateQuestion = ({ location }) => {
                       background: "#0000003E",
                       color: "black",
                       marginRight: "10px",
-                    }}>Cancel</Submit>
-                  <Submit onClick={()=> createNewQuestion(values)}>Create</Submit>
+                    }}
+                    onClick={() => {resetForm(); goBack()}}
+                  >Cancel</Submit>
+                  <Submit onClick={()=> createNewQuestion(values)} disabled={isSubmitting || !dirty || !touched}>Create</Submit>
                 </div>
               </form>
             )}
