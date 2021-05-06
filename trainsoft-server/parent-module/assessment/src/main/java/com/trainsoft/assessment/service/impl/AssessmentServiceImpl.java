@@ -73,7 +73,9 @@ public class AssessmentServiceImpl implements IAssessmentService
                 assessment.setTopicId(topicRepository.findTopicBySid
                         (BaseEntity.hexStringToByteArray(assessmentTo.getTopicSid())));
                 assessment.setTagId(tagRepository.findBySid(BaseEntity.hexStringToByteArray(assessmentTo.getTagSid())));
-                return mapper.convert(assessmentRepository.save(assessment),AssessmentTo.class);
+                AssessmentTo savedAssessmentTo = mapper.convert(assessmentRepository.save(assessment),AssessmentTo.class);
+                savedAssessmentTo.setCompanySid(assessment.getStringSid());
+                return savedAssessmentTo;
             }
             else
             throw new RuntimeException("Record not saved");
@@ -245,7 +247,7 @@ public class AssessmentServiceImpl implements IAssessmentService
             assessmentTo.setPreviousEnabled(as.isPreviousEnabled());
             assessmentTo.setPremium(as.isPremium());
             assessmentTo.setStatus(as.getStatus());
-            assessmentTo.setValidUpto(as.getValidUpto());
+            assessmentTo.setValidUpto(as.getValidUpto().toEpochMilli());
             assessmentTo.setNegative(as.isNegative());
             assessmentTo.setNextEnabled(as.isNextEnabled());
             assessmentTo.setTitle(as.getTitle());
@@ -622,7 +624,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         assessment.setReduceMarks(assessmentTo.isReduceMarks());
         assessment.setPreviousEnabled(assessmentTo.isPreviousEnabled());
         assessment.setQuestionRandomize(assessmentTo.isQuestionRandomize());
-        assessment.setValidUpto(assessmentTo.getValidUpto());
+        assessment.setValidUpto(Instant.ofEpochMilli(assessmentTo.getValidUpto()));
         assessment.setUrl(assessmentTo.getUrl());
         assessmentRepository.save(assessment);
         AssessmentTo assessmentTO = mapper.convert(assessment, AssessmentTo.class);
