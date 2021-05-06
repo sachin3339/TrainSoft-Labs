@@ -11,7 +11,7 @@ import RestService from "../../../Services/api.service";
 import AppContext from "../../../Store/AppContext";
 import { AssessmentContext } from "./AssesementContext";
 export const IntroDialog = ({ open, setOpen }) => {
-  const { instruction, setInstruction} = useContext(AssessmentContext);
+  const { setInstruction } = useContext(AssessmentContext);
   const { spinner } = useContext(AppContext)
   const [introInfo, setIntroInfo] = useState({});
 
@@ -25,8 +25,8 @@ export const IntroDialog = ({ open, setOpen }) => {
       }
       RestService.getAssessmentInstruction(payload).then(
         response => {
-          setInstruction(response.data[0])
-          setIntroInfo(response.data[0]);
+          setInstruction(response.data);
+          setIntroInfo(response.data);
         },
         err => {
           spinner.hide();
