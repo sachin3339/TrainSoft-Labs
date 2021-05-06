@@ -97,7 +97,7 @@ const RestService = {
   // getTrainingByRole: (pageNo,pageSize) => AxiosService.get(GLOBELCONSTANT.TRAINING.PARTICIPANT_BY_ROLE.replace("{pageNo}",pageNo).replace("{pageSize}",pageSize)),
 
 
-  // instructor
+  // ASSESMENT
 
 
   

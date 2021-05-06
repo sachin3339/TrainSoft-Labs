@@ -86,6 +86,10 @@ const GLOBELCONSTANT = {
         INSTRUCTOR: {
             GET_INSTRUCTOR: API_HOST +  'depatments'
         },
+        ASSESMENT: {
+            CREATE_E_ASSESMENT: API_HOST + "user/create",
+            GET_CATEGORY_LIST: API_HOST +"categories",
+        },
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},
             {key: "BATCH_MGMT",name: "Batch Management"},
