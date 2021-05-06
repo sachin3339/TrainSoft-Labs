@@ -455,7 +455,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                 String generatedUrl = Host.concat("/assessment?assessmentSid="+assessmentSid+"&companySid="+assessment.getCompany().getStringSid());
                 assessment.setUrl(generatedUrl);
                 assessmentRepository.save(assessment);
-                return "generated Assessment URL successfully and Saved";
+                return generatedUrl;
             }
             throw new InvalidSidException("Provided Sid is not Valid");
         }
