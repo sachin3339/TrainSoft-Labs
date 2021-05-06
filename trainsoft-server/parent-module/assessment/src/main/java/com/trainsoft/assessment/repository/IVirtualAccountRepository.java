@@ -4,6 +4,7 @@ import com.trainsoft.assessment.entity.AppUser;
 import com.trainsoft.assessment.entity.Company;
 import com.trainsoft.assessment.entity.VirtualAccount;
 import com.trainsoft.assessment.value.InstructorEnum;
+import io.swagger.models.auth.In;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,5 +23,8 @@ public interface IVirtualAccountRepository extends JpaRepository<VirtualAccount,
 	List<VirtualAccount> findVirtualAccountByEmailId(@Param("email")String email);
 	@Query(value = "SELECT va from VirtualAccount va where va.appuser.name like :str% or va.appuser.emailId like :str% or va.appuser.phoneNumber like :str% and va.company.sid=:sid and va.status<>:status")
 	List<VirtualAccount> findVirtualAccountByNameContainingOrEmailIdContainingOrPhoneNumberContaining(@Param("str") String str,@Param("sid")byte[] sid,InstructorEnum.Status status);
+	VirtualAccount findVirtualAccountBySidAndCompanyAndStatusNot(byte[] sid, Company company, InstructorEnum.Status status);
+	List<VirtualAccount> findVirtualAccountByCompanyAndStatus(Company company, InstructorEnum.Status status);
 
+	VirtualAccount findVirtualAccountById(Integer id);
 }

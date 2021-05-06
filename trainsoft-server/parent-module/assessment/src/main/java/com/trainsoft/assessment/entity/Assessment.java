@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Date;
 
 @Entity
@@ -91,7 +92,7 @@ public class Assessment extends BaseEntity{
     private boolean isMultipleSitting;
 
     @Column(name = "valid_upto")
-    private Date validUpto;
+    private Instant validUpto;
 
     @Column(name = "category")
     private String category;

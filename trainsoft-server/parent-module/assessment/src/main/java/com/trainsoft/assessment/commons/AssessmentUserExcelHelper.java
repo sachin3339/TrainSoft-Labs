@@ -1,8 +1,8 @@
 package com.trainsoft.assessment.commons;
 
+
 import com.trainsoft.assessment.customexception.ApplicationException;
 import com.trainsoft.assessment.to.AppUserTO;
-import com.trainsoft.assessment.to.DepartmentTO;
 import com.trainsoft.assessment.to.DepartmentVirtualAccountTO;
 import com.trainsoft.assessment.to.UserTO;
 import com.trainsoft.assessment.value.InstructorEnum;
@@ -22,10 +22,10 @@ import java.util.Iterator;
 import java.util.List;
 
 @AllArgsConstructor
-public class ExcelHelper {
+public class AssessmentUserExcelHelper {
 
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    static String[] HEADERs = {"Name", "EmailId", "EmployeeId", "PhoneNumber","AccessType","DepartmentName"};
+    static String[] HEADERs = {"Name", "EmailId", "PhoneNumber", "EmployeeId"};
     static String SHEET = "Participants";
 
     public static boolean hasExcelFormat(MultipartFile file) {
@@ -53,7 +53,6 @@ public class ExcelHelper {
                 Iterator<Cell> cellsInRow = currentRow.iterator();
                 UserTO userTO=new UserTO();
                 AppUserTO appUserTO=new AppUserTO();
-                DepartmentTO departmentTO=new DepartmentTO();
                 DepartmentVirtualAccountTO departmentVirtualAccountTO=new DepartmentVirtualAccountTO();
                 int cellIdx = 0;
                 while (cellsInRow.hasNext()) {
@@ -66,29 +65,23 @@ public class ExcelHelper {
                             appUserTO.setEmailId(currentCell.getStringCellValue());
                             break;
                         case 2:
-                            appUserTO.setEmployeeId(currentCell.getCellType()== currentCell.getCellType().NUMERIC?
-                                    NumberToTextConverter.toText(currentCell.getNumericCellValue()):currentCell.getStringCellValue());
-                            break;
-                        case 3:
                             appUserTO.setPhoneNumber(currentCell.getCellType()== currentCell.getCellType().NUMERIC?
                                     NumberToTextConverter.toText(currentCell.getNumericCellValue()):currentCell.getStringCellValue());
                             break;
-                        case 4:
-                            appUserTO.setAccessType(InstructorEnum.AccessType.valueOf(currentCell.getStringCellValue()));
-                            break;
-                        case 5:
-                            departmentTO.setName(currentCell.getStringCellValue());
+                        case 3:
+                            appUserTO.setEmployeeId(currentCell.getCellType()== currentCell.getCellType().NUMERIC?
+                                    NumberToTextConverter.toText(currentCell.getNumericCellValue()):currentCell.getStringCellValue());
                             break;
                         default:
                             break;
                     }
                     cellIdx++;
                 }
+                appUserTO.setAccessType(InstructorEnum.AccessType.ALL);
                 appUserTO.setStatus(InstructorEnum.Status.ENABLED);
                 appUserTO.setSuperAdmin(false);
                 appUserTO.setPassword(CommonUtils.generatePassword());
-                departmentVirtualAccountTO.setDepartment(departmentTO);
-                departmentVirtualAccountTO.setDepartmentRole(InstructorEnum.DepartmentRole.LEARNER);
+                departmentVirtualAccountTO.setDepartmentRole(InstructorEnum.DepartmentRole.ASSESS_USER);
                 userTO.setRole(InstructorEnum.VirtualAccountRole.USER);
                 userTO.setDepartmentVA(departmentVirtualAccountTO);
                 userTO.setAppuser(appUserTO);

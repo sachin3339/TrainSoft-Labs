@@ -44,13 +44,15 @@ public class QuestionServiceImpl implements IQuestionService {
     @Value("${answer.option.is.correct.csv.header}")
     private String ANSWER_OPTION_IS_CORRECT_CSV_HEADER;
     private  final ITrainsoftCustomRepository customRepository;
+    private final IAssessmentRepository assessmentRepository;
 
 
     @Autowired
     public QuestionServiceImpl(IVirtualAccountRepository virtualAccountRepository, DozerUtils mapper, ICompanyRepository
             companyRepository, IQuestionRepository questionRepository, IQuestionTypeRepository questionTypeRepository,
                                IAnswerRepository answerRepository,IAssessmentQuestionRepository assessmentQuestionRepository,
-                               ITrainsoftCustomRepository customRepository) {
+                               ITrainsoftCustomRepository customRepository,IAssessmentRepository assessmentRepository)
+    {
         this.virtualAccountRepository = virtualAccountRepository;
         this.mapper = mapper;
         this.companyRepository = companyRepository;
@@ -59,6 +61,7 @@ public class QuestionServiceImpl implements IQuestionService {
         this.answerRepository=answerRepository;
         this.assessmentQuestionRepository=assessmentQuestionRepository;
         this.customRepository=customRepository;
+        this.assessmentRepository=assessmentRepository;
     }
 
     @Override
@@ -98,6 +101,7 @@ public class QuestionServiceImpl implements IQuestionService {
                     question.setAnswers(answerList);
                     QuestionTo savedQuestionTO = mapper.convert(questionRepository.save(question), QuestionTo.class);
                     savedQuestionTO.setCreatedByVirtualAccountSid(virtualAccount.getStringSid());
+                    savedQuestionTO.setCompanySid(virtualAccount.getCompany().getStringSid());
                     savedQuestionTO.setAnswer(mapper.convertList(answerList,AnswerTo.class));
                     return savedQuestionTO;
                 }
@@ -137,15 +141,20 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public List<QuestionTo> displayQuestionsForAssessment(String companySid)
+    public List<QuestionTo> displayQuestionsForAssessment(String companySid,String assessmentSid)
     {
-        List<Question> questionList=questionRepository.findQuestionBySidNotInAssessments(getCompany(companySid));
-        if(CollectionUtils.isNotEmpty(questionList))
+        if(companySid!=null && assessmentSid!=null)
         {
-           return mapper.convertList(questionList,QuestionTo.class);
+            Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
+            List<Question> questionList = questionRepository.findQuestionBySidNotInAssessments(getCompany(companySid),assessment);
+            if (CollectionUtils.isNotEmpty(questionList)) {
+                return mapper.convertList(questionList, QuestionTo.class);
+            }
+            log.warn("No Questions available");
+            return Collections.EMPTY_LIST;
         }
-        log.warn("No Questions available");
-        return Collections.EMPTY_LIST;
+        log.error("Invalid Sid CompanySid: {0} and AssessmentSid: {1}",companySid,assessmentSid);
+        throw new InvalidSidException("Invalid Sid CompanySid: "+companySid+" and AssessmentSid: "+assessmentSid);
     }
 
 

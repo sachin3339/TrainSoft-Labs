@@ -1,7 +1,5 @@
 package com.trainsoft.assessment.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.trainsoft.assessment.commons.CommonUtils;
 import com.trainsoft.assessment.customexception.ApplicationException;
 import com.trainsoft.assessment.customexception.DuplicateRecordException;
@@ -23,7 +21,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.*;
 
@@ -47,8 +47,8 @@ public class AssessmentServiceImpl implements IAssessmentService
     private final ITagRepository tagRepository;
     private final IVirtualAccountHasQuizSetAssessmentRepository virtualAccountHasQuizSetAssessmentRepository;
     private final ITrainsoftCustomRepository customRepository;
-    private static final Gson gson = new Gson();
-
+    private final IAppUserRepository appUserRepository;
+    private final IVirtualAccountAssessmentRepository virtualAccountAssessmentRepository;
 
 
     @Override
@@ -74,7 +74,9 @@ public class AssessmentServiceImpl implements IAssessmentService
                 assessment.setTopicId(topicRepository.findTopicBySid
                         (BaseEntity.hexStringToByteArray(assessmentTo.getTopicSid())));
                 assessment.setTagId(tagRepository.findBySid(BaseEntity.hexStringToByteArray(assessmentTo.getTagSid())));
-                return mapper.convert(assessmentRepository.save(assessment),AssessmentTo.class);
+                AssessmentTo savedAssessmentTo = mapper.convert(assessmentRepository.save(assessment),AssessmentTo.class);
+                savedAssessmentTo.setCompanySid(assessment.getStringSid());
+                return savedAssessmentTo;
             }
             else
             throw new RuntimeException("Record not saved");
@@ -454,17 +456,20 @@ public class AssessmentServiceImpl implements IAssessmentService
     {
         if(assessmentSid!=null)
         {
-            String URL = request.getRequestURL().toString();
-            String URI = request.getRequestURI();
-            int port = request.getServerPort();
-            String Host = URL.replace(":"+port+URI, "");
-            String generatedUrl=Host.concat("/assessment?assessmentSid="+assessmentSid);
             Assessment assessment=assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
-            assessment.setUrl(generatedUrl);
-            assessmentRepository.save(assessment);
-            return "generated Assessment URL successfully and Saved";
+            if(assessment!=null) {
+                String URL = request.getRequestURL().toString();
+                String URI = request.getRequestURI();
+                int port = request.getServerPort();
+                String Host = URL.replace(":" + port + URI, "");
+                String generatedUrl = Host.concat("/assessment?assessmentSid="+assessmentSid+"&companySid="+assessment.getCompany().getStringSid());
+                assessment.setUrl(generatedUrl);
+                assessmentRepository.save(assessment);
+                return generatedUrl;
+            }
+            throw new InvalidSidException("Provided Sid is not Valid");
         }
-        else throw new InvalidSidException("Assessment Sid is not valid");
+        else throw new InvalidSidException("Assessment Sid is null");
     }
 
     private Integer[] findRankForToday(Integer quizSetId,Integer virtualAccountId){
@@ -612,7 +617,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         assessment.setReduceMarks(assessmentTo.isReduceMarks());
         assessment.setPreviousEnabled(assessmentTo.isPreviousEnabled());
         assessment.setQuestionRandomize(assessmentTo.isQuestionRandomize());
-        assessment.setValidUpto(assessmentTo.getValidUpto());
+        assessment.setValidUpto(Instant.ofEpochMilli(assessmentTo.getValidUpto()));
         assessment.setUrl(assessmentTo.getUrl());
         assessmentRepository.save(assessment);
         AssessmentTo assessmentTO = mapper.convert(assessment, AssessmentTo.class);
@@ -633,11 +638,79 @@ public class AssessmentServiceImpl implements IAssessmentService
         if (!assessmentQuestion.isEmpty()) assessmentQuestionRepository.deleteAll(assessmentQuestion);
         return ;
     }
+
     @Override
     public BigInteger getCountByClass(String classz, String companySid)
     {
         return customRepository.noOfCountByClass(classz,getCompany(companySid));
     }
+
+    @Override
+    public AssessmentDashboardTo getAssessDetails(String assessmentSid)
+    {
+       Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
+       if(assessment!=null)
+       {
+           AssessmentDashboardTo assessmentDashboardTo = new AssessmentDashboardTo();
+           assessmentDashboardTo.setTotalQuestions(getNoOfQuestionByAssessmentSid(assessmentSid));
+           assessmentDashboardTo.setAssessmentStartedOn(assessment.getCreatedOn());
+           List<AssessTo> assessToList = new ArrayList<>();
+           List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessmentList
+                   = virtualAccountHasQuizSetAssessmentRepository.findByAssessment(assessment.id);
+           if(CollectionUtils.isEmpty(virtualAccountHasQuizSetAssessmentList))
+               throw new RecordNotFoundException("No one has submitted Assessment :"+assessmentSid);
+           int submitted = virtualAccountHasQuizSetAssessmentList.size();
+           List<VirtualAccountHasQuizSetSessionTiming> notSubmittedList = virtualAccountHasQuizSetSessionTimingRepository.findByQuizSetId(assessment);
+           int notSubmitted = notSubmittedList.size();
+           assessmentDashboardTo.setTotalSubmitted(submitted);
+           int totalNoOfUsers = virtualAccountAssessmentRepository.getCountByAssessment(assessment);
+           assessmentDashboardTo.setTotalUsers(totalNoOfUsers);
+           if(totalNoOfUsers>=submitted) {
+               Double attendance = (new Double(submitted)/totalNoOfUsers)*100;
+               assessmentDashboardTo.setAssessAttendance(BigDecimal.valueOf(attendance).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+           }
+
+           // get Assessment submitted assess details
+           for (VirtualAccountHasQuizSetAssessment entry : virtualAccountHasQuizSetAssessmentList) {
+               VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountById(entry.getVirtualAccountId().id);
+               AppUser appUser = appUserRepository.findAppUserById(virtualAccount.getAppuser().id);
+               AssessTo assessTo = new AssessTo();
+               assessTo.setEmail(appUser.getEmailId());
+               assessTo.setName(appUser.getName());
+               assessTo.setScore(entry.getPercentage());
+               assessTo.setSubmittedOn(entry.getSubmittedOn());
+               assessTo.setStatus("SUBMITTED");
+               assessToList.add(assessTo);
+           }
+           assessmentDashboardTo.setBatchAvgScore(batchAverageScore(assessToList));
+
+           // get Assessment not submitted assess details
+           for (VirtualAccountHasQuizSetSessionTiming entry : notSubmittedList) {
+               VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountById(entry.getVirtualAccountId().id);
+               AppUser appUser = appUserRepository.findAppUserById(virtualAccount.getAppuser().id);
+               AssessTo assessTo = new AssessTo();
+               assessTo.setName(appUser.getName());
+               assessTo.setEmail(appUser.getEmailId());
+               assessTo.setStatus("PENDING");
+               assessToList.add(assessTo);
+           }
+           assessmentDashboardTo.setAssessToList(assessToList);
+           return assessmentDashboardTo;
+       }
+       log.error("Assessment Sid is null !");
+       throw new InvalidSidException("Assessment Sid is null !");
+    }
+
+    private Double batchAverageScore(List<AssessTo> assessToList)
+    {
+        if(CollectionUtils.isNotEmpty(assessToList))
+        {
+            OptionalDouble score = assessToList.stream().mapToDouble(AssessTo::getScore).average();
+            return score.isPresent()? BigDecimal.valueOf(score.getAsDouble()).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue():0.0;
+        }
+        return null;
+    }
+
 
     private Company getCompany(String companySid){
         Company company=companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));

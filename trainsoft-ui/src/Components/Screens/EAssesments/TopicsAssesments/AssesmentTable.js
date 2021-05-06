@@ -1,24 +1,45 @@
-import { useState } from "react";
-import { Button } from "react-bootstrap";
+import { useEffect, useState,useContext } from "react";
+import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
+import RestService from "../../../../Services/api.service";
+import AppContext from "../../../../Store/AppContext";
+import AssessmentContext from "../../../../Store/AssessmentContext";
+import useToast from "../../../../Store/ToastHook";
+import { Button } from "../../../Common/Buttons/Buttons";
 
 import CardHeader from "../../../Common/CardHeader";
 import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
+import { ICN_EDIT, ICN_TRASH } from "../../../Common/Icon";
 
-import { Link } from "../../../Common/Router";
-
+import { Link, navigate } from "../../../Common/Router";
+let val ={
+  autoSubmitted: true,
+  category: "",
+  description: "",
+  difficulty: "",
+  duration: 0,
+  mandatory: true,
+  multipleSitting: true,
+  negative: true,
+  nextEnabled: true,
+  pauseEnable: true,
+  premium: false,
+  previousEnabled: true,
+  status: "ENABLED",
+  tagSid: "",
+  title: "",
+  topicSid: "",
+  validUpto: "",
+}
 const AssesmentsTable = ({ location }) => {
+  const Toast = useToast()
+  const {spinner,user} = useContext(AppContext)
+  const {topicSid,setInitialAssessment} = useContext(AssessmentContext)
   const [count, setCount] = useState(0);
-  const [questions, setQuestions] = useState([
-    {
-      name: "Java Funda Mntals",
-      questions: "10",
+  const [assessment,setAssessment] = useState([])
 
-      sid: "1",
-    },
-  ]);
   const [configuration, setConfiguration] = useState({
     columns: {
-      name: {
+      title: {
         title: "Assesment Name",
         sortDirection: null,
         sortEnabled: true,
@@ -37,12 +58,12 @@ const AssesmentsTable = ({ location }) => {
               className="dt-name"
               style={{ marginLeft: "10px" }}
             >
-              {data.name}
+              {data.title}
             </Link>
           </div>
         ),
       },
-      questions: {
+      noOfQuestions: {
         title: "Questions",
         sortDirection: null,
         sortEnabled: true,
@@ -53,6 +74,7 @@ const AssesmentsTable = ({ location }) => {
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
+        render:(data)=> data.type === true ? "Premium": "Free" 
       },
       category: {
         title: "Category",
@@ -87,7 +109,21 @@ const AssesmentsTable = ({ location }) => {
         configuration.columns[sortKey].sortDirection;
       setConfiguration({ ...configuration });
     },
-
+    actions: [
+      {
+        title: "Edit",
+        icon: ICN_EDIT,
+        onClick: (data, i) => { setInitialAssessment(data);navigate("create-assessment",{state :{ title: "Topic",
+        subTitle: "Assessment",
+        data: data,
+        path: "topicAssesment",}}) }
+      },
+      {
+        title: "Delete",
+        icon: ICN_TRASH,
+        onClick: (data) => deleteAssessment(data.sid),
+      },
+    ],
     actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
     actionVariant: "", // user can pass action button variant like primary, dark, light,
     actionAlignment: true, // user can pass alignment property of dropdown menu by default it is alignLeft
@@ -98,21 +134,77 @@ const AssesmentsTable = ({ location }) => {
     // showCheckbox: true,
     clearSelection: false,
   });
+
+  // get All Assessment By Topic sid
+  const getAssessmentByTopic = async (pageNo="1") => {
+         spinner.hide("Loading... wait");
+    try {
+        RestService.getAssessmentByTopic(topicSid,GLOBELCONSTANT.PAGE_SIZE,pageNo-1).then(
+            response => {
+              setAssessment(response.data);
+            },
+            err => {
+                spinner.hide();
+            }
+        ).finally(() => {
+            spinner.hide();
+        });
+    } catch (err) {
+        console.error("error occur on getAllTopic()", err)
+    }
+}
+
+  // delete assessmsnt
+  const deleteAssessment = async (sid) => {
+    spinner.show("Loading... wait");
+    try {
+      let response = await RestService.deleteAssessment(sid)
+      getAssessmentByTopic()
+      Toast.success({ message: "Assessment deleted successfully" })
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
+    }
+  }
+
+      // search assesment 
+      const searchAssessment = async (value) => {
+        spinner.show("Loading... wait");
+        try {
+          let {data} = await RestService.searchAssessment(value,user.companySid,topicSid)
+          setAssessment(data);
+          spinner.hide();
+        } catch (err) {
+          spinner.hide();
+          console.error("error occur on searchTopic()", err)
+        }
+      }
+
+useEffect(()=>{
+  getAssessmentByTopic()
+},[])
+
   return (
     <>
       <CardHeader
-        location={{
-          ...location,
+        {...{location,
+          onChange: (e) => e.length === 0 && getAssessmentByTopic(),
+          onEnter: (e) => searchAssessment(e),
         }}
       >
-        <Button className=" ml-2">+ New Assesment</Button>
+        <Button className=" ml-2" 
+           onClick={()=>{ setInitialAssessment(val); navigate("create-assessment",{state :{ title: "TOPIC",
+           subTitle: "Topic",
+           path: "topicAssesment",}})}}
+        >+ New Assesment</Button>
       </CardHeader>
 
       <div className="table-shadow">
         <DynamicTable
           {...{
             configuration,
-            sourceData: questions,
+            sourceData: assessment,
             // onPageChange: (e) => getCourse(e),
             count,
           }}

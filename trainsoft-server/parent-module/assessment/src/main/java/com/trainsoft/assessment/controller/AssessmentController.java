@@ -3,14 +3,24 @@ package com.trainsoft.assessment.controller;
 import com.trainsoft.assessment.commons.JWTDecode;
 import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.service.IAssessmentService;
+import com.trainsoft.assessment.service.IUserBulkUploadService;
 import com.trainsoft.assessment.to.*;
+import com.trainsoft.assessment.value.InstructorEnum;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -23,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 public class AssessmentController {
 
     IAssessmentService assessmentService;
+    IUserBulkUploadService bulkUploadService;
 
     @PostMapping("/create/assessment")
     @ApiOperation(value = "createAssessment", notes = "API to create new Assessment.")
@@ -138,6 +149,7 @@ public class AssessmentController {
           @ApiParam("Virtual Account Sid") @PathVariable("vSid") String virtualAccountSid){
       return ResponseEntity.ok(assessmentService.getScoreBoard(quizSetSid,virtualAccountSid));
     }
+
     @GetMapping("get/user/assessment/responses/{sid}")
     @ApiOperation(value = "get user assessment responses.",notes = "API to get User submitted Assessment Question Answers details.")
     public ResponseEntity<?> findUserAssessmentRespones(
@@ -182,4 +194,40 @@ public class AssessmentController {
            @ApiParam("Topic Sid")@PathVariable("tSid") String topicSid){
      return ResponseEntity.ok(assessmentService.searchAssessment(searchString,companySid,topicSid));
     }
+
+    @PostMapping(value = "/upload/list/assess/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiOperation(value = "upload assessment Participants excel file", notes = "API to upload assessment Participant list through excel file")
+    public ResponseEntity<?> uploadAssessmentParticipants(HttpServletRequest request,
+         @ApiParam(value = "upload Participants excel file", required = true) @RequestParam("file") MultipartFile file,
+         @ApiParam(value = "Assessment Sid", required = true) @RequestHeader("assessSid") String assessSid,
+         @ApiParam(value = "Assessment url", required = true) @RequestHeader("assessUrl") String assessUrl){
+        bulkUploadService.uploadAssessementParticipants(file,request,assessSid,assessUrl);
+        return ResponseEntity.status(HttpStatus.OK).body("Uploaded the file successfully: ");
+    }
+
+    @PostMapping("create/assess/user")
+    @ApiOperation(value = "createAssessmentUser", notes = "API to create new assessment User.")
+    public ResponseEntity<?> createAssessmentUser(HttpServletRequest request,
+      @ApiParam(value = "Create Assessment User payload", required = true) @RequestBody UserTO userTO,
+      @ApiParam(value = "Assessment Sid", required = true) @RequestHeader("assessSid") String assessSid ) {
+
+        if (userTO.getDepartmentVA().getDepartmentRole() == InstructorEnum.DepartmentRole.SUPERVISOR) {
+            userTO.setRole(InstructorEnum.VirtualAccountRole.ADMIN);
+        } else {
+            userTO.setRole(InstructorEnum.VirtualAccountRole.USER);
+        }
+        if (userTO.getDepartmentVA().getDepartmentRole() == null) {
+            userTO.getDepartmentVA().setDepartmentRole(InstructorEnum.DepartmentRole.ASSESS_USER);
+        }
+        UserTO createUser = bulkUploadService.createVirtualAccountWithAssessmentUser(request, userTO, assessSid);
+        return ResponseEntity.ok(createUser);
+    }
+
+    @GetMapping("get/assessdetails/{aSid}")
+    @ApiOperation(value = "getAssessDetails", notes = "API to get Assess Details")
+    public ResponseEntity<?> getAssessDetails(@ApiParam(value = "Assessment Sid", required = true) @PathVariable("aSid") String assessmentSid)
+    {
+        return ResponseEntity.ok(assessmentService.getAssessDetails(assessmentSid));
+    }
+
 }
