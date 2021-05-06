@@ -648,16 +648,18 @@ public class AssessmentServiceImpl implements IAssessmentService
            List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessmentList
                    = virtualAccountHasQuizSetAssessmentRepository.findByAssessment(assessment.id);
            if(CollectionUtils.isEmpty(virtualAccountHasQuizSetAssessmentList))
-               throw new ApplicationException("No one has submitted Assessment :"+assessmentSid);
+               log.error("No one has submitted Assessment :"+assessmentSid);
            int submitted = virtualAccountHasQuizSetAssessmentList.size();
            List<VirtualAccountHasQuizSetSessionTiming> notSubmittedList = virtualAccountHasQuizSetSessionTimingRepository.findByQuizSetId(assessment);
            int notSubmitted = notSubmittedList.size();
            assessmentDashboardTo.setTotalSubmitted(submitted);
            int totalNoOfUsers = virtualAccountAssessmentRepository.getCountByAssessment(assessment);
            assessmentDashboardTo.setTotalUsers(totalNoOfUsers);
-           if(totalNoOfUsers>=submitted) {
-               Double attendance = (new Double(submitted)/totalNoOfUsers)*100;
-               assessmentDashboardTo.setAssessAttendance(BigDecimal.valueOf(attendance).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+           if(totalNoOfUsers>=submitted)
+           {
+               double attendance = ((double)submitted)/totalNoOfUsers*100;
+               if (!Double.isNaN(attendance))
+                   assessmentDashboardTo.setAssessAttendance(BigDecimal.valueOf(attendance).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
            }
 
            // get Assessment submitted assess details
