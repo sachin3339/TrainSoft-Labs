@@ -1,19 +1,77 @@
 import React from 'react';
 import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
 import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
+import { useEffect, useState, useContext } from "react";
+import { Form } from "react-bootstrap";
+import RestService from "../../../../Services/api.service";
+import AppContext from "../../../../Store/AppContext";
+import useToast from "../../../../Store/ToastHook";
+import { Field } from "formik";
+import AppUtils from '../../../../Services/Utils';
 
-const AnswerSelector = ({ answers = [], ordering = "Alphabets", setFieldValue }) => {
-    const [answers, setAnswers] = useState([{}, {}, {}]);
+const ANS_OBJ =  {
+  "answerOption": "",
+  "answerOptionValue": "",
+  "correct": false,
+  "status": "ENABLED"
+}
+
+const AnswerSelector = ({ values, ordering = "Alphabets", setFieldValue }) => {
   const [correctAnswer, setCorrectAnswer] = useState();
+  const ALPHABETS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+
+  const addAnswer = () => {
+    try {
+      let tmpVal = {...values};
+      tmpVal.answer.push(ANS_OBJ);
+      setFieldValue("answer", tmpVal.answer);
+      handleChangeOptionValue();
+    } catch (err) {
+      console.error("Error occur in addAnswer --", err);
+    }
+  }
+
+  const deleteAnswer = (index) => {
+    try {
+      let tmpVal = {...values};
+      tmpVal.answer.splice(index, 1);
+      // values.answer.filter((_, _index) => _index !== index)
+      setFieldValue("answer", tmpVal.answer);
+      handleChangeOptionValue();
+    } catch (err) {
+      console.error("Error occur in deleteAnswer --", err);
+    }
+  }
+
+  const handleChangeOptionValue = () => {
+    let newVal = values.answer.map((r, i) => ({...r, answerOption: ordering === "Alphabets" ? ALPHABETS[i] : i + 1}))
+    setFieldValue("answer", newVal);
+  }
+  const handleSetCorrectAnswer = (index) => {
+    try {
+      setCorrectAnswer(index);
+      let newVal = values.answer.map((r, i) => ({...r, correct: i === index ? true : false}));
+      setFieldValue("answer", newVal);
+    } catch (err) {
+      console.error("Error occur in handleSetCorrectAnswer --", err);  
+    }
+  }
+
+  useEffect(() => {
+    handleChangeOptionValue();
+  }, [ordering])
+   
 
   return (
     <div style={{ margin: "45px 0" }}>
-      {answers && (
-        <div style={{ display: "flex", alignItems: "center" }}>
+      {
+        AppUtils.isNotEmptyObject(values)
+        && <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ marginRight: "30px" }}>
             <Form.Label className="label">Answers</Form.Label>
-            {answers.map((_answer, index) => (
-              <div
+            {
+              AppUtils.isNotEmptyArray(values.answer)
+              && values.answer.map((_answer, index) => <div
                 style={{
                   padding: "15px 0",
                   display: "flex",
@@ -30,21 +88,18 @@ const AnswerSelector = ({ answers = [], ordering = "Alphabets", setFieldValue })
                   }}
                 />
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <div style={{ width: "20px" }}>{index + 1}.</div>
-                  <input
-                    style={{
+                  <div style={{ width: "20px" }}>{ ordering === "Alphabets" ? ALPHABETS[index] : index + 1}.</div>
+                  <Field 
+                     style={{
                       width: "500px",
                       border: "none",
                       borderBottom: "1px solid rgba(0,0,0,0.2)",
                       outline: "none",
                     }}
+                    name={`answer[${index}].answerOptionValue`}
                   />
                   <div
-                    onClick={() =>
-                      setAnswers(
-                        answers.filter((_, _index) => _index !== index)
-                      )
-                    }
+                    onClick={() => deleteAnswer(index)}
                     style={{
                       width: "15px",
                       height: "15px",
@@ -63,13 +118,13 @@ const AnswerSelector = ({ answers = [], ordering = "Alphabets", setFieldValue })
                     />
                   </div>
                 </div>
-              </div>
-            ))}
+              </div>)
+            }
           </div>
           <div>
-            <Form.Label className="label">Market Correct Answer </Form.Label>
-            {answers.map((_, index) => (
-              <div
+            <Form.Label className="label">Mark Correct Answer </Form.Label>
+            {
+              values.answer.map((_, index) => <div
                 style={{
                   padding: "15px 0",
                   display: "flex",
@@ -77,7 +132,7 @@ const AnswerSelector = ({ answers = [], ordering = "Alphabets", setFieldValue })
                 }}
               >
                 <div
-                  onClick={() => setCorrectAnswer(index)}
+                  onClick={() => handleSetCorrectAnswer(index)}
                   style={{
                     width: "20px",
                     height: "20px",
@@ -91,13 +146,13 @@ const AnswerSelector = ({ answers = [], ordering = "Alphabets", setFieldValue })
                         : "4px solid #D4D6DB",
                   }}
                 />
-              </div>
-            ))}
+              </div>)
+            }
           </div>
         </div>
-      )}
+      }
       <div
-        onClick={() => setAnswers([...answers, {}])}
+        onClick={() => addAnswer()}
         style={{
           color: "#2D62ED",
           display: "flex",
@@ -112,5 +167,5 @@ const AnswerSelector = ({ answers = [], ordering = "Alphabets", setFieldValue })
     </div>
   );
 }
- 
+
 export default AnswerSelector;

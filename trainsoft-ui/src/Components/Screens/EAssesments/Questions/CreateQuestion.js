@@ -42,9 +42,11 @@ const CreateQuestion = ({ location }) => {
   const { spinner } = useContext(AppContext);
 
   // Create Topic
-  const createNewQuestion = async (payload) => {
+  const createNewQuestion = async (values) => {
     spinner.hide("Loading... wait");
     try {
+      let payload = {...values}
+      delete payload.answerOrderType;
       RestService.createQuestion(payload).then(
         response => {
           Toast.success({ message: "Question created successfully" })
@@ -77,41 +79,17 @@ const CreateQuestion = ({ location }) => {
           <Formik
             onSubmit={(value) => createNewQuestion(value)}
             initialValues={{
-              "answer": [
-                {
-                  "answerOption": "A",
-                  "answerOptionValue": "Yes",
-                  "correct": true,
-                  "status": "ENABLED"
-                },
-                {
-                  "answerOption": "B",
-                  "answerOptionValue": "No",
-                  "correct": false,
-                  "status": "ENABLED"
-                },
-                {
-                  "answerOption": "C",
-                  "answerOptionValue": "May be",
-                  "correct": false,
-                  "status": "ENABLED"
-                },
-                {
-                  "answerOption": "D",
-                  "answerOptionValue": "None",
-                  "correct": false,
-                  "status": "ENABLED"
-                }
-              ],
-              "answerExplanation": "Yes C++ is Object Oriented Language",
-              "description": "C++",
+              "answer": [],
+              "answerExplanation": "",
+              "description": "",
               "difficulty": "BEGINNER",
-              "name": "C++ is Object Oriented Language jj ?",
+              "name": "",
               "negativeQuestionPoint": 1,
               "questionPoint": 1,
               "questionType": "MCQ",
               "status": "ENABLED",
-              "technologyName": "C++"
+              "technologyName": "",
+              "answerOrderType": "Alphabets"
             }
             }
           >
@@ -124,6 +102,8 @@ const CreateQuestion = ({ location }) => {
                       option={QUESTION_TYPE}
                       name="questionType"
                       bindKey="name"
+                      valueKey="value"
+                      value="Multiple Choice"
                     />
                   </Form.Group>
                   <Form.Group>
@@ -131,6 +111,20 @@ const CreateQuestion = ({ location }) => {
                       label="Question Title"
                       placeholder="Name"
                       name="name"
+                    />
+                  </Form.Group>
+                  <Form.Group>
+                    <TextInput
+                      label="Technology Name"
+                      placeholder="Technology Name"
+                      name="technologyName"
+                    />
+                  </Form.Group>
+                  <Form.Group>
+                    <TextInput
+                      label="Difficulty"
+                      placeholder="Difficulty"
+                      name="difficulty"
                     />
                   </Form.Group>
                   <Form.Group>
@@ -143,7 +137,7 @@ const CreateQuestion = ({ location }) => {
                   </Form.Group>
 
                   <AnswerSelector {...{
-                      answers: values.answer, 
+                      values, 
                       ordering: values.answerOrderType, 
                       setFieldValue
                   }}/>
@@ -155,6 +149,12 @@ const CreateQuestion = ({ location }) => {
                     />
                   </Form.Group>
 
+                  <Form.Group>
+                    <TextArea
+                      label="Description"
+                      name="description"
+                    />
+                  </Form.Group>
                   <Form.Group>
                     <TextArea label="Tags" name="tags" />
                   </Form.Group>
@@ -173,7 +173,7 @@ const CreateQuestion = ({ location }) => {
                       color: "black",
                       marginRight: "10px",
                     }}>Cancel</Submit>
-                  <Submit>Create</Submit>
+                  <Submit onClick={()=> createNewQuestion(values)}>Create</Submit>
                 </div>
               </form>
             )}
@@ -181,7 +181,6 @@ const CreateQuestion = ({ location }) => {
         ) : (
           <div>
             <div className="text-center title-ss text-success">
-              {/* Hi, {contact.name} Our sales team will get back to you ASAP */}
             </div>
           </div>
         )}

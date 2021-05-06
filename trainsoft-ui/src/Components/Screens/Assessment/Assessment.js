@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import RestService from "../../../Services/api.service";
 import AppContext from "../../../Store/AppContext";
 import { AssessmentContext, AssessmentProvider } from "./AssesementContext";
-import { AssessmentDialog } from "./AssessmentDialog";
+import { AssessmentDialog } from "./AssesmentDialog";
 import AssessmentBody from "./AssessmentBody/AssesmentBody";
 import Sidebar from "./Sidebar/Sidebar";
 import AppUtils from "../../../Services/Utils";
