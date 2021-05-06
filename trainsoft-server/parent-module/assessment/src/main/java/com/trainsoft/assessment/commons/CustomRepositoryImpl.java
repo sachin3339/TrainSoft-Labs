@@ -33,8 +33,8 @@ public class CustomRepositoryImpl implements ITrainsoftCustomRepository
 
     @Override
     public List<Question> searchQuestion(String searchString, Company company){
-        String  customQuery = "SELECT ques FROM Question as ques WHERE ques.name like :str OR ques.description like :str "
-                +"OR ques.technologyName like :str AND ques.company =:company AND ques.status='ENABLED'";
+        String  customQuery = "SELECT ques FROM Question as ques WHERE ( ques.name like :str OR ques.description like :str "
+                +"OR ques.technologyName like :str ) AND ques.company =:company AND ques.status<>'DELETED'";
         Query query = entitymangager.createQuery(customQuery);
         query.setParameter("str", "%"+searchString + "%");
         query.setParameter("company", company);
@@ -43,9 +43,9 @@ public class CustomRepositoryImpl implements ITrainsoftCustomRepository
 
     @Override
     public List<Assessment> searchAssessment(String searchString, Company company,Topic topic) {
-        String customQuery="SELECT assess FROM Assessment as assess WHERE assess.title like :str  " +
-                "OR assess.description like :str OR assess.category like :str AND " +
-                "assess.company =:company AND assess.topicId =:topic AND assess.status='ENABLED'";
+        String customQuery="SELECT assess FROM Assessment as assess WHERE ( assess.title like :str  " +
+                "OR assess.description like :str OR assess.category like :str) AND " +
+                "assess.company =:company AND assess.topicId =:topic AND assess.status <> 'DELETED'";
         Query query = entitymangager.createQuery(customQuery);
         query.setParameter("str","%"+searchString+"%");
         query.setParameter("company",company);
@@ -55,8 +55,8 @@ public class CustomRepositoryImpl implements ITrainsoftCustomRepository
 
     @Override
     public List<Topic> searchTopic(String searchString, Company company) {
-        String customQuery="SELECT tp from Topic as tp where tp.name like :str OR tp.description like :str " +
-                "And tp.company=:company";
+        String customQuery="SELECT tp from Topic as tp where ( tp.name like :str OR tp.description like :str ) " +
+                "And tp.company=:company And tp.status <>'DELETED'";
         Query query = entitymangager.createQuery(customQuery);
         query.setParameter("str","%"+searchString+"%");
         query.setParameter("company",company);

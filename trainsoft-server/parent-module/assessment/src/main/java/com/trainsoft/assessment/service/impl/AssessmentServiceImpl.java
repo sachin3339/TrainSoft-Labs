@@ -49,7 +49,7 @@ public class AssessmentServiceImpl implements IAssessmentService
     private final ITrainsoftCustomRepository customRepository;
     private final IAppUserRepository appUserRepository;
     private final IVirtualAccountAssessmentRepository virtualAccountAssessmentRepository;
-
+    private final String defaultCompanySid="87EABA4D52D54638BE304F5E0C05577FB1F809AA22B94F0F8D11FFCA0D517CAC";
 
     @Override
     public AssessmentTo createAssessment(AssessmentTo assessmentTo)
@@ -226,19 +226,49 @@ public class AssessmentServiceImpl implements IAssessmentService
     @Override
     public AssessmentTo getInstructionsForAssessment(InstructionsRequestTO request) {
         Tag tag = tagRepository.findBySid(BaseEntity.hexStringToByteArray(request.getTagSid()));
-        if (tag==null) throw new InvalidSidException("invalid Tag Sid");
-        List<Assessment> assessment= assessmentRepository.findByTagAndDifficulty(tag.getId(),request.getDifficulty());
-        Random random = new Random();
-        Assessment assessment1 = assessment.get(random.nextInt(assessment.size()));
-        AssessmentTo assessmentTo = mapper.convert(assessment1, AssessmentTo.class);
-        assessmentTo.setTopicSid(assessment1.getTopicId().getStringSid());
-        assessmentTo.setTagSid(assessment1.getTagId().getStringSid());
-        assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessment1.getStringSid()));
-        if (assessment1.getUpdatedBy()!=null)assessmentTo.setUpdatedBySid(assessment1.getUpdatedBy().getStringSid());
-        if (assessment1.getUpdatedOn()!=null)assessmentTo.setUpdatedOn(assessment1.getUpdatedOn());
-        assessmentTo.setCompanySid(assessment1.getCompany().getStringSid());
-        assessmentTo.setCreatedByVirtualAccountSid(assessment1.getCreatedBy().getStringSid());
-        return assessmentTo;
+        List<Assessment> assessment=null;
+        ArrayList<Assessment> assessments = new ArrayList<>();
+        if (tag!=null && request.getCompanySid()==null){
+            Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(defaultCompanySid));
+             assessment= assessmentRepository
+                    .findByTagAndDifficulty(tag.getId(),request.getDifficulty(),company.getId());
+            assessment.forEach(as->{
+                Integer noOfQuestion = getNoOfQuestionByAssessmentSid(as.getStringSid());
+                if (noOfQuestion>=1) assessments.add(as);
+            });
+            if (assessments.size()==0) throw new RecordNotFoundException("No Assessment Found.");
+            Assessment assessment1 = assessments.get(new Random().nextInt(assessments.size()));
+            AssessmentTo assessmentTo = mapper.convert(assessment1, AssessmentTo.class);
+            assessmentTo.setTopicSid(assessment1.getTopicId().getStringSid());
+            assessmentTo.setTagSid(assessment1.getTagId().getStringSid());
+            assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessment1.getStringSid()));
+            if (assessment1.getUpdatedBy()!=null)assessmentTo.setUpdatedBySid(assessment1.getUpdatedBy().getStringSid());
+            if (assessment1.getUpdatedOn()!=null)assessmentTo.setUpdatedOn(assessment1.getUpdatedOn());
+            assessmentTo.setCompanySid(assessment1.getCompany().getStringSid());
+            assessmentTo.setCreatedByVirtualAccountSid(assessment1.getCreatedBy().getStringSid());
+            return assessmentTo;
+        }
+        if (tag!=null && request.getCompanySid()!=null){
+            Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(request.getCompanySid()));
+            if (company==null)throw new InvalidSidException("invalid company sid");
+            assessment= assessmentRepository
+                    .findByTagAndDifficulty(tag.getId(),request.getDifficulty(),company.getId());
+            assessment.forEach(as->{
+                Integer noOfQuestion = getNoOfQuestionByAssessmentSid(as.getStringSid());
+                if (noOfQuestion>=1) assessments.add(as);
+            });
+            Assessment assessment1 = assessments.get(new Random().nextInt(assessments.size()));
+            AssessmentTo assessmentTo = mapper.convert(assessment1, AssessmentTo.class);
+            assessmentTo.setTopicSid(assessment1.getTopicId().getStringSid());
+            assessmentTo.setTagSid(assessment1.getTagId().getStringSid());
+            assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessment1.getStringSid()));
+            if (assessment1.getUpdatedBy()!=null)assessmentTo.setUpdatedBySid(assessment1.getUpdatedBy().getStringSid());
+            if (assessment1.getUpdatedOn()!=null)assessmentTo.setUpdatedOn(assessment1.getUpdatedOn());
+            assessmentTo.setCompanySid(assessment1.getCompany().getStringSid());
+            assessmentTo.setCreatedByVirtualAccountSid(assessment1.getCreatedBy().getStringSid());
+            return assessmentTo;
+        }
+        throw new InvalidSidException("invalid tag sid.");
     }
 
     @Override
@@ -289,15 +319,16 @@ public class AssessmentServiceImpl implements IAssessmentService
         if (virtualAccount!=null) virtualAccountHasQuestionAnswerDetails.setVirtualAccountId(virtualAccount);
         Question question = questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(request.getQuestionSid()));
         if (question!=null)virtualAccountHasQuestionAnswerDetails.setQuestionId(question);
-        virtualAccountHasQuestionAnswerDetails.setAnswer(CommonUtils.toJsonFunction.apply(request.getAnswer()));
+        Answer answer = answerRepository
+                .findBySidAndQuestionIdAndCorrect(BaseEntity.hexStringToByteArray(request.getAnswerSid()));
+        AnswerTo answerTo = mapper.convert(answer, AnswerTo.class);
+        virtualAccountHasQuestionAnswerDetails.setAnswer(CommonUtils.toJsonFunction.apply(answerTo));
         Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(request.getQuizSetSid()));
         if (assessment==null)throw new InvalidSidException("invalid Quiz set Sid");
             virtualAccountHasQuestionAnswerDetails.setCompanyId(assessment.getCompany());
             virtualAccountHasQuestionAnswerDetails.setCreatedBy(assessment.getCreatedBy());
             virtualAccountHasQuestionAnswerDetails.setCreatedOn(assessment.getCreatedOn());
-        Answer answer = answerRepository.findCorrectAnswer(question.getId());
-        if (answer!=null && answer.getAnswerOption().equals(request.getAnswer()))
-            virtualAccountHasQuestionAnswerDetails.setCorrect(true);
+        if (answer.isCorrect()==true) virtualAccountHasQuestionAnswerDetails.setCorrect(true);
         Integer questionPoint = questionRepository.findQuestionPoint(question.getId());
         virtualAccountHasQuestionAnswerDetails.setQuestionPoint(questionPoint);
         virtualAccountHasQuestionAnswerDetailsRepository.save(virtualAccountHasQuestionAnswerDetails);
@@ -715,8 +746,12 @@ public class AssessmentServiceImpl implements IAssessmentService
         Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
         if (company!=null && topic!=null){
             List<Assessment> assessment = customRepository.searchAssessment(searchString, company, topic);
-            return mapper.convertList(assessment,AssessmentTo.class);
-
+            List<AssessmentTo> assessmentToList1 = mapper.convertList(assessment, AssessmentTo.class);
+            Iterator<Assessment> assessment1 = assessment.stream().iterator();
+            Iterator<AssessmentTo> assessmentTo = assessmentToList1.stream().iterator();
+            while (assessment1.hasNext() && assessmentTo.hasNext()) {
+                assessmentTo.next().setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessment1.next().getStringSid()));
+            }return assessmentToList1;
         }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
     }
 }
