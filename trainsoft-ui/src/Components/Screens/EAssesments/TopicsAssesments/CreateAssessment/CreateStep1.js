@@ -1,15 +1,11 @@
 import { useEffect, useState,useContext } from "react";
-import RestService from "../../../../../Services/api.service";
 import AppContext from "../../../../../Store/AppContext";
 import useToast from "../../../../../Store/ToastHook";
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
 import { Formik } from "formik";
 import {
   TextInput,
   SelectInput,
-  RadioBox,
+
   TextArea,
   RadioBoxKey,
   DateInput,
@@ -17,35 +13,13 @@ import {
 import { Form } from "react-bootstrap";
 import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
 import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
-import CardHeader from "../../../../Common/CardHeader";
 
 import "../topic.css";
 import AssessmentContext from "../../../../../Store/AssessmentContext";
 import Submit from "../../../Assessment/common/SubmitButton";
 
-
-let val ={
-  autoSubmitted: true,
-  category: "",
-  description: "",
-  difficulty: "",
-  duration: 0,
-  mandatory: true,
-  multipleSitting: true,
-  negative: true,
-  nextEnabled: true,
-  pauseEnable: true,
-  premium: false,
-  previousEnabled: true,
-  status: "ENABLED",
-  tagSid: "",
-  title: "",
-  topicSid: "",
-  validUpto: "",
-}
 const CreateStep1 = ({ location,handleNext,handleBack }) => {
   const {initialAssessment,setAssessmentVal,category} = useContext(AssessmentContext)
-  const [initialValue,setInitialValue] = useState(val)
   const Toast = useToast()
   const {spinner} = useContext(AppContext)
   return (

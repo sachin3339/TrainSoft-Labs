@@ -14,7 +14,7 @@ import { Button } from "../../../Common/Buttons/Buttons";
 import AssessmentContext from "../../../../Store/AssessmentContext";
 
 const TopicsTable = ({ location }) => {
-  const { spinner } = useContext(AppContext)
+  const { spinner,user } = useContext(AppContext)
   const {setTopicSid,setCategory} = useContext(AssessmentContext)
   const [count, setCount] = useState(0);
   const [show, setShow] = useState(false);
@@ -151,6 +151,19 @@ const TopicsTable = ({ location }) => {
   }
 
 
+    // search topic 
+    const searchTopic = async (value) => {
+      spinner.show("Loading... wait");
+      try {
+        let {data} = await RestService.searchTopic(value,user.companySid)
+        setTopic(data);
+        spinner.hide();
+      } catch (err) {
+        spinner.hide();
+        console.error("error occur on searchTopic()", err)
+      }
+    }
+  
 
 
   useEffect(() => {
@@ -161,9 +174,13 @@ const TopicsTable = ({ location }) => {
   return (
     <>
       <CardHeader
-        location={{
-          ...location,
+        {...{
+          location,
+          onChange: (e) => e.length === 0 && getAllTopic(),
+          onEnter: (e) => searchTopic(e),
         }}
+        
+        
       >
         <Button
           className=" ml-2"

@@ -45,12 +45,8 @@ const val = {
 }
 
 const CreateAssessment = ({ location }) => {
-  const {initialAssessment,setInitialAssessment} = useContext(AssessmentContext)
-
   const [activeStep, setActiveStep] = useState(0);
   const steps = getSteps();
-  const Toast = useToast()
-  const {spinner} = useContext(AppContext)
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -79,6 +75,7 @@ const CreateAssessment = ({ location }) => {
           },
         }}
       /> */}
+      <div className="ass-step">
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label) => (
           <Step key={label}>
@@ -86,6 +83,7 @@ const CreateAssessment = ({ location }) => {
           </Step>
         ))}
       </Stepper>
+      </div>
         <div className="table-shadow " style={{ padding: "10px 40px 10px 40px" }}>
         {activeStep === 0 && <><CreateStep1 {...{handleNext,handleBack}}/></>}
         {activeStep === 1 && <><CreateStep2 {...{handleNext,handleBack}} /></>}

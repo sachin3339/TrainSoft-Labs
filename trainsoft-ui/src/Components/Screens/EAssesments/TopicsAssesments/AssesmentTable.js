@@ -32,7 +32,7 @@ let val ={
 }
 const AssesmentsTable = ({ location }) => {
   const Toast = useToast()
-  const {spinner} = useContext(AppContext)
+  const {spinner,user} = useContext(AppContext)
   const {topicSid,setInitialAssessment} = useContext(AssessmentContext)
   const [count, setCount] = useState(0);
   const [assessment,setAssessment] = useState([])
@@ -168,6 +168,19 @@ const AssesmentsTable = ({ location }) => {
     }
   }
 
+      // search assesment 
+      const searchAssessment = async (value) => {
+        spinner.show("Loading... wait");
+        try {
+          let {data} = await RestService.searchAssessment(value,user.companySid,topicSid)
+          setAssessment(data);
+          spinner.hide();
+        } catch (err) {
+          spinner.hide();
+          console.error("error occur on searchTopic()", err)
+        }
+      }
+
 useEffect(()=>{
   getAssessmentByTopic()
 },[])
@@ -175,8 +188,9 @@ useEffect(()=>{
   return (
     <>
       <CardHeader
-        location={{
-          ...location,
+        {...{location,
+          onChange: (e) => e.length === 0 && getAssessmentByTopic(),
+          onEnter: (e) => searchAssessment(e),
         }}
       >
         <Button className=" ml-2" 

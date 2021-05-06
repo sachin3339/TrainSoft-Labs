@@ -113,9 +113,14 @@ const GLOBELCONSTANT = {
             GET_ASSOCIATE_QUESTION:API_ASSES + "assessment/Questions/{assId}?pageSize={pageSize}&pageNo={pageNo}",
             GET_NOT_ASS_QUESTION:API_ASSES + "display/assessment/question",
             GET_ALL_QUESTION:API_ASSES + "questions/?pageSize=",
-            DELETE_QUESTION: API_ASSES + "remove/associated/question/",
+            DELETE_ASS_QUESTION: API_ASSES + "remove/associated/question/",
             GET_CATEGORY: API_ASSES + "categories",
-            UPDATE_ASSESSMENT: API_ASSES + "update/assessment"
+            UPDATE_ASSESSMENT: API_ASSES + "update/assessment",
+            DELETE_QUESTION: API_ASSES + "delete/question/{questionId}",
+            SEARCH_TOPIC: API_ASSES + "search/topic/",
+            SEARCH_ASSESSMENT: API_ASSES + "search/assessment/{query}/{companySid}/{topicSid}",
+            SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}"
+
         },
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},
