@@ -121,7 +121,10 @@ const GLOBELCONSTANT = {
             SEARCH_TOPIC: API_ASSES + "search/topic/",
             SEARCH_ASSESSMENT: API_ASSES + "search/assessment/{query}/{companySid}/{topicSid}",
             SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}"
-
+        },
+        ASSESMENT: {
+            CREATE_E_ASSESMENT: API_HOST + "user/create",
+            GET_CATEGORY_LIST: API_HOST +"categories",
         },
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},

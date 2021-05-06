@@ -117,7 +117,7 @@ const RestService = {
   searchQuestion: (query,companySid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.SEARCH_QUESTION.replace("{query}",query).replace("{companySid}",companySid)),
 
 
-  // instructor
+  // ASSESMENT
 
   // assessment 
   getAssessmentInstruction: (payload)=> AxiosService.post(GLOBELCONSTANT.API.ASSESSMENT.GET_INSTRUCTION, payload),

@@ -1,8 +1,8 @@
 import { Dialog, IconButton } from "@material-ui/core";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import CloseIcon from "@material-ui/icons/Close";
 import { ICN_TRAINSOFT } from "../../Common/Icon";
-import { Formik } from "formik";
+import { Formik, yupToFormErrors, ErrorMessage } from "formik";
 import { Form } from "react-bootstrap";
 import {
   RadioBox,
@@ -12,11 +12,62 @@ import {
 import { BtnInfo } from "../../Common/Buttons/Buttons";
 import { AssessmentContext } from "./AssesementContext";
 import { navigate } from "../../Common/Router";
+import APILINKS from '../../../Constant/GlobleConstant';
+import * as Yup from 'yup';
+import axios from "axios";
+import { Category } from "@material-ui/icons";
 
 export const AssessmentDialog = () => {
   const { dialogOpen: open, setDialogOpen: setOpen } = useContext(
     AssessmentContext
   );
+
+  const [category, setCategory] = useState([])
+  const [topics, setTopics] = useState([])
+
+  useEffect(() => {
+    const APIGETLINK = "https://www.trainsoft.io/assessnet/v1/categories";
+    axios.get(APIGETLINK).then((res) => {
+      setCategory(res.data);
+
+    })
+  }, [])
+
+  useEffect(() =>{
+    const TOPICLINK = "https://www.trainsoft.io/assessnet/v1/display/topics";
+    axios.get(TOPICLINK).then((response) => {
+      setTopics(response.data);
+    })
+  }
+  )
+
+  //Assesment API
+  const APILINK = APILINKS.ASSESMENT.CREATE_E_ASSESMENT;
+
+  const [state, setState] = useState({
+    "appuser": {
+      "emailId": "",
+      "name": ""
+    },
+    "categoryTopicValue": { category: "", topic: "", difficulty: "" },
+    "companySid": null,
+    "departmentVA": {
+      "departmentRole": "ASSESS_USER"
+    },
+    "role": "USER"
+  });
+
+  const onSubmitted = async (values, { setSubmitting }) => {
+    try {
+      // --------we need remarks and user id as a payload so we are using session storage-----//
+      let tempData = { ...values, categoryTopicValue: JSON.stringify(values.categoryTopicValue) };
+      await axios.post(APILINK, tempData);
+      setOpen(false)
+      setSubmitting(false);
+    } catch (err) {
+      setSubmitting(false)
+    }
+  }
 
   return (
     <Dialog
@@ -56,53 +107,69 @@ export const AssessmentDialog = () => {
           <div className="context-body">
             {true ? (
               <Formik
-                // onSubmit={(value) => onSubmit(value)}
-                initialValues={{
-                  name: "",
-                  phoneNo: "",
-                  email: "",
-                }}
-                // validationSchema={schema}
+                initialValues={state}
+
+                validationSchema={Yup.object().shape({
+                  appuser: Yup.object().shape({
+                    name: Yup.string().required("Enter your name"),
+                    emailId: Yup.string().required("Enter your EMail Id"),
+                  }),
+                  categoryTopicValue: Yup.object().shape({
+                    category: Yup.string().required("Choose a Category"),
+                    difficulty: Yup.string().required("Choose a Difficulty"),
+                    topic: Yup.string().required("Chose a Topic"),
+                  }),
+
+                })
+
+                }
+                onSubmit={onSubmitted}
               >
-                {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => (
+                {({ handleSubmit,values, errors, touched, isSubmitting, isValid, dirty, setFieldValue }) => (
                   <form onSubmit={handleSubmit} className="create-batch">
                     <div>
                       <Form.Group>
                         <TextInput
                           label="Enter your name"
                           placeholder="Name"
-                          name="name"
+                          name="appuser.name"
                         />
                       </Form.Group>
+                      {errors.name && touched.name && (<div>{errors.name}</div>)}
                       <Form.Group>
                         <TextInput
                           label="Your Email"
                           placeholder="Email"
-                          name="email"
+                          name="appuser.emailId"
                         />
+                        {errors.emailId && touched.emailId && (<div>{errors.emailId}</div>)}
                       </Form.Group>
+                      
+      
                       <Form.Group>
-                        <SelectInput
-                          label="Select Category"
-                          option={["Technology", "Technology"]}
-                          name="trainingBatchs"
-                        />
-                      </Form.Group>
+                      <SelectInput label="Select Category" name="categoryTopicValue.category" bindKey="name" option={category} valueKey="name" />
+                         </Form.Group>
+                        
                       <Form.Group>
                         <Form.Label className="label">
                           Select Difficulty
                         </Form.Label>
                         <div>
-                          <RadioBox name="hi" options={["Java", "Not Java"]} />
+                          <RadioBox name="categoryTopicValue.difficulty" options={["Beginner", "Intermediate", "Expert"]} />
                         </div>
+                        {errors.difficulty && touched.difficulty && (<div>{errors.difficulty}</div>)}
                       </Form.Group>
+                     {/*<Form.Group>
+                      <SelectInput label="Select Topic" name="categoryTopicValue.topic" value={topics.name} bindKey="name" option={topics} />
+                     </Form.Group> */}
                       <Form.Group>
                         <SelectInput
                           label="Select Topic"
                           option={["Java", "Not Java"]}
-                          name="trainingBatchs"
+                          name="categoryTopicValue.topic"
                         />
-                      </Form.Group>
+                        {errors.topic && touched.topic && (<div>{errors.topic}</div>)}
+                     </Form.Group>
                     </div>
                     <footer className="mt-4">
                       <div> </div>
@@ -110,7 +177,8 @@ export const AssessmentDialog = () => {
                         <BtnInfo
                           type="submit"
                           className="btn-block btn-block"
-                          onClick={() => setOpen(false)}
+                          //onClick={() => setOpen(false)}
+                          disabled={isSubmitting || !isValid || !dirty}
                         >
                           LET’S BEGIN! IT’S FREE
                         </BtnInfo>
