@@ -1,55 +1,55 @@
 import { useState, useEffect, useContext } from "react";
-import DynamicTable from "../../Common/DynamicTable/DynamicTable";
+import DynamicTable from "../../../../Common/DynamicTable/DynamicTable";
 import { Dropdown, Form } from 'react-bootstrap'
 import { Formik } from 'formik';
-import { ICN_EDIT, ICN_DELETE, ICN_TRASH } from "../../Common/Icon";
-import { Button } from "../../Common/Buttons/Buttons";
-import { TextInput, SelectInput } from "../../Common/InputField/InputField";
-import { Link, Router } from "../../Common/Router";
-import BatchesDetails from "./BatchDetails";
-import { BsModal, Toggle } from "../../Common/BsUtils";
-import CardHeader from "../../Common/CardHeader";
-import RestService from "../../../Services/api.service";
+import { ICN_EDIT, ICN_DELETE, ICN_TRASH } from "../../../../Common/Icon";
+import { Button } from "../../../../Common/Buttons/Buttons";
+import { TextInput, SelectInput } from "../../../../Common/InputField/InputField";
+import { BsModal, Toggle } from "../../../../Common/BsUtils";
+// import CardHeader from "../../Common/CardHeader";
 import * as Yup from 'yup';
 import moment from 'moment'
-import useToast from "../../../Store/ToastHook";
-import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
-import AppContext from "../../../Store/AppContext";
-import { getAllBatches } from "../../../Services/service";
-import './batches.css'
-import SearchBox from "../../Common/SearchBox/SearchBox";
+// import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
 
-const AddParticipant = ({ show, setShow, sid, getParticipant }) => {
+import SearchBox from "../../../../Common/SearchBox/SearchBox";
+import RestService from "../../../../../Services/api.service";
+import AppContext from "../../../../../Store/AppContext";
+import useToast from "../../../../../Store/ToastHook";
+import AssessmentContext from "../../../../../Store/AssessmentContext";
+
+const QuestionModel = ({ show, setShow, sid, getParticipant,allQuestion }) => {
+  const {assessmentVal} = useContext(AssessmentContext)
     const { user, spinner, ROLE } = useContext(AppContext)
     const [count, setCount] = useState(0)
     const Toast = useToast()
     const [participant, setParticipant] = useState([])
     const [selectedSid, setSelectedSid] = useState([])
     const [searchValue, setSearchValue] = useState([])
+    const [question,setQuestion] = useState([])
+
     const [configuration, setConfiguration] = useState({
         columns: {
             "name": {
-                "title": "Name",
+                "title": "Question",
+                "sortDirection": null,
+                "sortEnabled": true,
+                isSearchEnabled: false,
+            },
+            "questionType": {
+                "title": "Type",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
 
             },
-            "employeeId": {
-                "title": "Emp Id",
-                "sortDirection": null,
-                "sortEnabled": true,
-                isSearchEnabled: false,
-
-            },
-            "emailId": {
-                "title": "Email Id",
+            "technologyName": {
+                "title": "Tag",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false
             },
-            "phoneNumber": {
-                "title": "Phone No",
+            "difficulty": {
+                "title": "Difficulty",
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false
@@ -79,46 +79,32 @@ const AddParticipant = ({ show, setShow, sid, getParticipant }) => {
 
 
 
-    // get all getLearner
-    const getLearner = async (pagination = 1) => {
-        try {
-            let pageSize = 500
-            spinner.show();
-            RestService.getBatchLearner(sid).then(
-                response => {
-                    let val = response.data.map(res => {
-                        let data = res.appuser
-                        data.role = res.departmentVA ? res.departmentVA.departmentRole : ''
-                        data.department = res.departmentVA ? res.departmentVA.department.name : ''
-                        data.vSid = res.sid
-                        data.vaRole = res.role
-                        data.status = res.status
-                        data.departmentVA = res.departmentVA
-                        return data
-                    })
-                    setParticipant(val)
-                    setSearchValue(val)
-                    spinner.hide();
-                },
-                err => {
-                    console.error("error occur on getLearner()", err)
-                    spinner.hide();
-                }
-            )
-        } catch (err) {
-            console.error("error occur on getLearner()", err)
-            spinner.hide();
-        }
+    // get All topic
+  const getAllQuestion = async (pageNo = "1") => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getAllQuestion(200,0)
+      setQuestion(data);
+
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
     }
+  }
 
 
     // get user count
-    const associateParticipant = async () => {
+    const associateQuestion = async () => {
         try {
-            RestService.associateParticipant(sid, selectedSid).then(
+            let payload = {
+                "questionSidList":selectedSid,
+                "assessmentSid": assessmentVal.sid
+              }
+            RestService.associateQuestion(sid, payload).then(
                 response => {
-                    Toast.success({ message: "Participant added successfully" })
-                    getParticipant()
+                    Toast.success({ message: "Question added successfully" })
+                    allQuestion()
                     setShow(false)
                 },
                 err => {
@@ -131,39 +117,38 @@ const AddParticipant = ({ show, setShow, sid, getParticipant }) => {
             });
         } catch (err) {
             setShow(false)
-            console.error("error occur on getAllBatch()", err)
+            console.error("error occur on associateQuestion()", err)
         }
     }
 
     const onSearch = (e) => {
         try {
-            setSearchValue(participant.filter(res => res.emailId.toUpperCase().indexOf(e.toUpperCase()) > -1))
+            setSearchValue(question.filter(res => res.name.toUpperCase().indexOf(e.toUpperCase()) > -1))
         } catch (err) {
             console.error("error occur on onSearch()", err)
         }
     }
 
     useEffect(() => {
-        getLearner()
+        getAllQuestion()
     }, [])
 
     return (<>
         <BsModal {...{
             show,
             setShow,
-            headerTitle: "Add Participant",
+            headerTitle: "Upload Question",
             headerAction: <SearchBox {...{ onChange: (e) => onSearch(e), onEnter: () => { }, clearField: () => { } }} />,
             size: "xl"
         }}>
             <div className="partiContainer">
-                <DynamicTable {...{ configuration, sourceData: searchValue, onSelected: (e) => { setSelectedSid(e.map(r => r.vSid)); } }} />
-
+                <DynamicTable {...{ configuration, sourceData: question, onSelected: (e) => {console.log(e); setSelectedSid(e.map(r => r.sid)); } }} />
             </div>
             <div className="jce mt-2">
-                <Button className="mx-2" onClick={() => { setShow(true); associateParticipant() }}>Add</Button>
+                <Button className="mx-2" onClick={() => { setShow(true); associateQuestion() }}>Add Question({selectedSid.length})</Button>
             </div>
         </BsModal>
     </>)
 
 }
-export default AddParticipant
+export default QuestionModel
