@@ -102,6 +102,7 @@ const RestService = {
   updateTopic: (payload) => AxiosService.put(GLOBELCONSTANT.ASSESSMENT.UPDATE_TOPIC,payload),
   getAllQuestion: (pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ALL_QUESTION + pageSize +"&pageNo="+ pageNo),
   createQuestion: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_QUESTION,payload),
+  GetQuestionType: () => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_QUESTION_TYPE),
   createTopic: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_TOPIC,payload),
   getAssessmentByTopic: (assID,pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT.replace("{assId}",assID).replace("{pageSize}",pageSize).replace("{pageNo}",pageNo)),
   deleteAssessment: (sid) => AxiosService.delete(GLOBELCONSTANT.ASSESSMENT.DELETE_ASSESSMENT.replace("{assId}",sid) ),

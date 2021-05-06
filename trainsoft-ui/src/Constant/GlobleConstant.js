@@ -109,6 +109,7 @@ const GLOBELCONSTANT = {
             DELETE_ASSESSMENT: API_ASSES + "delete/assessment/{assId}",
             CREATE_ASSESSMENT: API_ASSES +"create/assessment",
             CREATE_QUESTION: API_ASSES +"create/question/individual",
+            GET_QUESTION_TYPE: API_ASSES + "question/types",
             ASSOCIATE_QUESTION:API_ASSES + "associate/Question",
             GET_ASSOCIATE_QUESTION:API_ASSES + "assessment/Questions/{assId}?pageSize={pageSize}&pageNo={pageNo}",
             GET_NOT_ASS_QUESTION:API_ASSES + "display/assessment/question",
