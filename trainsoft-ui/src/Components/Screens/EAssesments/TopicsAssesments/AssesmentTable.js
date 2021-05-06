@@ -1,3 +1,4 @@
+import { Category } from "@material-ui/icons";
 import { useEffect, useState,useContext } from "react";
 import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import RestService from "../../../../Services/api.service";
@@ -15,7 +16,7 @@ let val ={
   autoSubmitted: true,
   category: "",
   description: "",
-  difficulty: "",
+  difficulty: "BEGINNER",
   duration: 0,
   mandatory: true,
   multipleSitting: true,
@@ -28,12 +29,13 @@ let val ={
   tagSid: "",
   title: "",
   topicSid: "",
-  validUpto: "",
+  validUpto: true,
+  date:'',
 }
 const AssesmentsTable = ({ location }) => {
   const Toast = useToast()
   const {spinner,user} = useContext(AppContext)
-  const {topicSid,setInitialAssessment} = useContext(AssessmentContext)
+  const {topicSid,setInitialAssessment,category} = useContext(AssessmentContext)
   const [count, setCount] = useState(0);
   const [assessment,setAssessment] = useState([])
 
@@ -46,7 +48,7 @@ const AssesmentsTable = ({ location }) => {
         isSearchEnabled: false,
         render: (data) => (
           <div style={{ display: "flex", alginItems: "center" }}>
-            <Link
+            <Link onClick={()=>setInitialAssessment(data)}
               to={"assesment-details"}
               state={{
                 title: "Topic",
@@ -113,7 +115,7 @@ const AssesmentsTable = ({ location }) => {
       {
         title: "Edit",
         icon: ICN_EDIT,
-        onClick: (data, i) => { setInitialAssessment(data);navigate("create-assessment",{state :{ title: "Topic",
+        onClick: (data, i) => { initialStateConfig(data);navigate("create-assessment",{state :{ title: "Topic",
         subTitle: "Assessment",
         data: data,
         path: "topicAssesment",}}) }
@@ -134,6 +136,23 @@ const AssesmentsTable = ({ location }) => {
     // showCheckbox: true,
     clearSelection: false,
   });
+
+  const initialStateConfig = (values)=>{
+    let data = {
+      ...values,
+      category: getCategory(values.category),
+      tagSid: getCategory(values.category)?.tags.find(res=> res.sid === values.tagSid),
+      validUpto: values.validUpto === 0 ? true : false,
+      date: values.validUpto === 0 ? '' : values.validUpto,
+      duration: values.duration === 0 ? true : false,
+      timeLimit: values.duration == 0 ? 0 : values.duration 
+    }
+    setInitialAssessment(data)
+  }
+
+  const getCategory =(vals)=>{
+    return category.find(res=>res.name === vals)
+  }
 
   // get All Assessment By Topic sid
   const getAssessmentByTopic = async (pageNo="1") => {

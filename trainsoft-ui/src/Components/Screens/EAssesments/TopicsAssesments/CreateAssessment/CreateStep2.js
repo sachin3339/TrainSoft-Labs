@@ -1,31 +1,23 @@
-import { useEffect, useState,useContext } from "react";
+import { useContext } from "react";
 import RestService from "../../../../../Services/api.service";
 import AppContext from "../../../../../Store/AppContext";
 import useToast from "../../../../../Store/ToastHook";
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
 import { Formik } from "formik";
 import {
   TextInput,
-  SelectInput,
-  RadioBox,
-  TextArea,
-  DateInput,
   RadioBoxKey,
 } from "../../../../Common/InputField/InputField";
 import { Form } from "react-bootstrap";
-import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
-import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
-import CardHeader from "../../../../Common/CardHeader";
 import Submit from "../../../Assessment/common/SubmitButton";
+import { navigate } from "../../../../Common/Router";
+
 
 
 import "../topic.css";
 import AssessmentContext from "../../../../../Store/AssessmentContext";
 
 const CreateStep2 = ({ location,handleNext,handleBack }) => {
-  const {setAssessmentVal,assessmentVal,topicSid,initialAssessment} = useContext(AssessmentContext)
+  const {setAssessmentVal,assessmentVal,topicSid,initialAssessment,setInitialAssessment} = useContext(AssessmentContext)
 
   const Toast = useToast()
   const {spinner} = useContext(AppContext)
@@ -35,21 +27,35 @@ const CreateStep2 = ({ location,handleNext,handleBack }) => {
 const createAssessment = async (val) => {
   spinner.hide("Loading... wait");
   try {
-   let payload = assessmentVal
-       payload.duration = 45
-       payload.mandatory = val.mandatory 
-       payload.multipleSitting = val.multipleSitting 
-       payload.topicSid = topicSid
-       payload.tagSid = assessmentVal.tagSid.sid ? assessmentVal.tagSid.sid : assessmentVal.tagSid 
-       payload.category = assessmentVal.category.name ? assessmentVal.category.name : assessmentVal.category
-       if(assessmentVal.sid !== undefined){
-          let {data} = await RestService.updateAssessment(payload)
+    let payload = {
+      autoSubmitted: true,
+      category: initialAssessment.category.name ? initialAssessment.category.name : initialAssessment.category,
+      description:val.description,
+      difficulty: val.difficulty,
+      duration: val.duration === true ? 0 : val.timeLimit,
+      mandatory: val.mandatory,
+      multipleSitting: val.multipleSitting ,
+      negative: true,
+      nextEnabled: true,
+      pauseEnable: true,
+      premium: val.premium,
+      previousEnabled: true,
+      status: "ENABLED",
+      tagSid: initialAssessment.tagSid.sid ? initialAssessment.tagSid.sid : initialAssessment.tagSid ,
+      title: val.title,
+      topicSid: topicSid,
+      validUpto: val.validUpto ? 0 : val.date,
+    }
+       if(initialAssessment.sid !== undefined){
+          let {data} = await RestService.updateAssessment({...payload,"sid":val.sid,"url":val.url})
           Toast.success({ message: "Assessment updated successfully" })
           setAssessmentVal(data)
+          setInitialAssessment(data)
        }else{
         let {data} = await RestService.createAssessment(payload)
         Toast.success({ message: "Assessment created successfully" })
         setAssessmentVal(data)
+        setInitialAssessment(data)
        }
         handleNext()
         spinner.hide()
@@ -63,7 +69,10 @@ const createAssessment = async (val) => {
     <>
           <Formik
             onSubmit={(value) => createAssessment(value)}
-            initialValues={initialAssessment}  
+            initialValues={{
+              ...initialAssessment,
+              timeLimit: 10
+            }}  
             // validationSchema={schema}
           >
             {({ handleSubmit, isSubmitting, dirty, setFieldValue ,values}) => (
@@ -76,11 +85,11 @@ const createAssessment = async (val) => {
                     Time limit
                     </Form.Label>
                     <div style={{ marginBottom: "10px" }}>
-                      <RadioBoxKey name="duration" options={[{label:"No Limit",value:true}, {label:"Set Limit",value:false}]} />
+                      <RadioBoxKey name="duration" options={[{label:"No Limit", value: 0}, {label:"Set Limit",value:false}]} />
                     </div>
                     </div>
                     <div>
-                        {/* <DateInput name="duration"/> */}
+                        <TextInput type="number" name="timeLimit"/>
                     </div>
                   </Form.Group>
                   <Form.Group style={{ width: "60%" }}>
@@ -110,10 +119,12 @@ const createAssessment = async (val) => {
                   </div>
                   
                   <div>
-                  <Submit style={{background: "#0000003E", color: "black",marginRight: "10px", }}>
+                  <Submit onClick={()=>{navigate("topic-details",{state :{ title: "Topic",
+                                 subTitle: "Topic",
+                                 path: "topicAssesment",}})}} style={{background: "#0000003E", color: "black",marginRight: "10px", }}>
                     Cancel
                   </Submit>
-                  <Submit onClick={()=>createAssessment(values) }>Next</Submit>
+                  <Submit onClick={()=> createAssessment(values) }>Next</Submit>
                   </div>
                 </div>
               </form>

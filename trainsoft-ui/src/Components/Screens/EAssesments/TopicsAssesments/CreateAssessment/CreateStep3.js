@@ -8,6 +8,7 @@ import DynamicTable from "../../../../Common/DynamicTable/DynamicTable";
 import { ICN_DELETE, ICN_EDIT } from "../../../../Common/Icon";
 import QuestionModel from "./QuestionModel";
 import AssessmentContext from "../../../../../Store/AssessmentContext";
+import { navigate } from "../../../../Common/Router";
 
 import "../topic.css";
 
@@ -107,7 +108,9 @@ const CreateStep3 = ({ location, handleNext, handleBack }) => {
                 </div>
 
                 <div>
-                    <Submit style={{ background: "#0000003E", color: "black", marginRight: "10px", }}>
+                    <Submit onClick={()=>{navigate("topic-details",{state :{ title: "Topic",
+                                 subTitle: "Topic",
+                                 path: "topicAssesment",}})}} style={{ background: "#0000003E", color: "black", marginRight: "10px", }}>
                         Cancel
                   </Submit>
                     <Submit onClick={handleNext}>Next</Submit>

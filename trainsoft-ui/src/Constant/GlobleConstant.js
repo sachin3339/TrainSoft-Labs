@@ -119,7 +119,11 @@ const GLOBELCONSTANT = {
             DELETE_QUESTION: API_ASSES + "delete/question/{questionId}",
             SEARCH_TOPIC: API_ASSES + "search/topic/",
             SEARCH_ASSESSMENT: API_ASSES + "search/assessment/{query}/{companySid}/{topicSid}",
-            SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}"
+            SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}",
+            GENERATE_URL : API_ASSES + "generate/assessment/url/{assId}",
+            UPLOAD_ASSESSMENT: API_ASSES + "upload/list/assess/participants",
+            UPLOAD_QUESTION: API_ASSES + "question/bulkupload",
+            GET_ASSESSMENT_DASHBOARD : API_ASSES + "get/assessdetails/{aasId}"
 
         },
         ACCESS_LEVEL: [
@@ -141,6 +145,7 @@ const GLOBELCONSTANT = {
             LEARNER:"LEARNER",
         },
         SAMPLE_TEMPLATE: "https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx",
+        UPLOAD_ASSES_TEMPLATE : "https://sessionassests.s3.ap-south-1.amazonaws.com/Assement_User_Upload_template.xlsx",
         QUILL: {
                 toolbar: [
                     [{ font: [] }, { 'header': [1, 2, 3, 4, 5, 6, false] }],

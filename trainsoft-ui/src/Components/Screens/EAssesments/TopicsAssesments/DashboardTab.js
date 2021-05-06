@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import FlagOutlinedIcon from "@material-ui/icons/FlagOutlined";
 import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
+import AssessmentContext from "../../../../Store/AssessmentContext";
+import RestService from "../../../../Services/api.service";
+import moment from "moment";
+import AppContext from "../../../../Store/AppContext";
 
 const DashboardTab = () => {
+  const { initialAssessment } = useContext(AssessmentContext)
+  const { spinner } = useContext(AppContext)
   const [count, setCount] = useState(0);
-  const [questions, setQuestions] = useState([
-    {
-      name: "JRaymond",
-      type: "Submitted",
-      sid: "1",
-    },
-  ]);
+  const [dashboardDate, setDashboardDate] = useState([])
+
   const [configuration, setConfiguration] = useState({
     columns: {
       name: {
@@ -24,41 +25,36 @@ const DashboardTab = () => {
           </div>
         ),
       },
-      questions: {
+      email: {
         title: "EMAIL",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
       },
-      type: {
+      status: {
         title: "SUBMISSION STATUS",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
         render: (data) => (
-          <div style={{ color: data.type === "submitted" ? "#1C9B60" : "" }}>
-            {data.type}{" "}
+          <div style={{ color: data.status === "SUBMITTED" ? "#1C9B60" : "" }}>
+            {data.status}{" "}
           </div>
         ),
       },
-      category: {
+      submittedOn: {
         title: "SUBMITTED ON",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
+        render: (res) => moment(res.submittedOn).format("DD/MM/YYYY")
       },
-      difficulty: {
+      score: {
         title: "SUBMITTED ON",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
-      },
-      validity: {
-        title: "Validity",
-        sortDirection: null,
-        sortEnabled: true,
-        isSearchEnabled: false,
-      },
+      }
     },
     headerTextColor: "#454E50", // user can change table header text color
     sortBy: null, // by default sort table by name key
@@ -67,8 +63,8 @@ const DashboardTab = () => {
       configuration.sortBy = sortKey;
       Object.keys(configuration.columns).map(
         (key) =>
-          (configuration.columns[key].sortDirection =
-            key === sortKey ? !configuration.columns[key].sortDirection : false)
+        (configuration.columns[key].sortDirection =
+          key === sortKey ? !configuration.columns[key].sortDirection : false)
       );
       configuration.sortDirection =
         configuration.columns[sortKey].sortDirection;
@@ -84,16 +80,33 @@ const DashboardTab = () => {
 
     clearSelection: false,
   });
+
+  // get All question
+  const getDashBoard = async (pageNo = "1") => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getAssessmentDashboard(initialAssessment.sid)
+      setDashboardDate(data);
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getDashBoard()", err)
+    }
+  }
+
+  useEffect(() => {
+    getDashBoard()
+  }, [])
   return (
     <>
       <div style={{ paddingTop: "30px" }}>
-        <Headers />
+        <Headers {...{ initialAssessment, dashboardDate }} />
       </div>
       <div className="table-shadow">
         <DynamicTable
           {...{
             configuration,
-            sourceData: questions,
+            sourceData: dashboardDate?.assessToList,
             // onPageChange: (e) => getCourse(e),
             count,
           }}
@@ -103,7 +116,9 @@ const DashboardTab = () => {
   );
 };
 
-const Headers = () => {
+
+
+const Headers = ({ initialAssessment, dashboardDate }) => {
   return (
     <div
       style={{
@@ -115,14 +130,14 @@ const Headers = () => {
       }}
     >
       <HeaderElement
-        stat={"5 Apr 2021"}
+        stat={moment(dashboardDate?.assessmentStartedOn).format("DD/MM/YYYY")}
         icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
       >
         Assesment <br />
         Start On
       </HeaderElement>
       <HeaderElement
-        stat={"13"}
+        stat={dashboardDate?.totalSubmitted}
         substat={"13"}
         icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
       >
@@ -130,21 +145,21 @@ const Headers = () => {
         Submitted
       </HeaderElement>
       <HeaderElement
-        stat={"100%"}
+        stat={dashboardDate?.assessAttendance}
         icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
       >
         Assensee <br />
         Attendance
       </HeaderElement>
       <HeaderElement
-        stat={"20"}
+        stat={dashboardDate?.totalQuestions}
         icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
       >
         Total <br />
         Questions
       </HeaderElement>
       <HeaderElement
-        stat={"98%"}
+        stat={dashboardDate?.batchAvgScore}
         icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
       >
         Batch <br />

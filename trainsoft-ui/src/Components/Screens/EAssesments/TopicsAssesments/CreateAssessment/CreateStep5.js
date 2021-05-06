@@ -10,11 +10,13 @@ import Submit from "../../../Assessment/common/SubmitButton";
 import YES_ICON from "../../../../../Assets/Images/yes.png"
 import "../topic.css";
 import { navigate } from "../../../../Common/Router";
+import AssessmentContext from "../../../../../Store/AssessmentContext";
 
 
 const CreateStep5 = ({ location, handleNext, handleBack }) => {
     const Toast = useToast()
-    const { spinner } = useContext(AppContext)
+    const { spinner,user } = useContext(AppContext)
+    const {  assessmentVal } = useContext(AssessmentContext)
 
 
     // Create Topic
@@ -36,6 +38,16 @@ const CreateStep5 = ({ location, handleNext, handleBack }) => {
         }
     }
 
+    const copyUrl = () =>{
+        let copyText = document.getElementById("copy_url");
+        let textArea = document.createElement("textarea");
+        textArea.value = copyText.textContent;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("Copy");
+        Toast.success({ message: 'Url is copy successfully', time: 2000});
+      }
+
     return (
         <>
             <Formik
@@ -51,11 +63,12 @@ const CreateStep5 = ({ location, handleNext, handleBack }) => {
                                     <div className="title-lg text-center">Assessment successfully created!</div>
                                     <div className=" text-center py-2">Copy the below URL to share with the assessees manually</div>
                                     <div className="file-upload">
-                                        <div>
-                                            {values?.file ? values?.file.name : "No File Uploaded Yet"}
+                                        <div className="upload-width" id="copy_url">
+                                            
+                                            {`https://www.trainsoft.io/assessment?assessmentSid=${assessmentVal.sid}&companySid=${user.companySid}`}
                                         </div>
                                         <div>
-                                        <Button variant="contained" color="primary" component="span">
+                                        <Button variant="contained" color="primary" component="span"  onClick={()=>copyUrl()}>
                                                  Copy
                                         </Button>
                                         </div>

@@ -1,6 +1,12 @@
+import {useContext } from 'react'
 import { Form } from "react-bootstrap";
+import AssessmentContext from "../../../../Store/AssessmentContext";
+import moment from 'moment'
+
 
 const AssesmentInfoTab = () => {
+  const {topicSid,initialAssessment} = useContext(AssessmentContext)
+
   return (
     <>
       <div
@@ -16,13 +22,13 @@ const AssesmentInfoTab = () => {
         <Form.Group>
           <Form.Label>Assesment Title</Form.Label>
           <br />
-          <Form.Label style={{ fontWeight: 600 }}>JAVA Fundamentals</Form.Label>
+          <Form.Label style={{ fontWeight: 600 }}>{initialAssessment?.title}</Form.Label>
         </Form.Group>
 
         <Form.Group>
           <Form.Label>Type</Form.Label>
           <br />
-          <Form.Label style={{ fontWeight: 600 }}>Premium</Form.Label>
+          <Form.Label style={{ fontWeight: 600 }}>{initialAssessment?.premium ? "Premium" : "Free"}</Form.Label>
         </Form.Group>
 
         <Form.Group>
@@ -34,7 +40,7 @@ const AssesmentInfoTab = () => {
         <Form.Group>
           <Form.Label>Difficulty</Form.Label>
           <br />
-          <Form.Label style={{ fontWeight: 600 }}>Beginner</Form.Label>
+          <Form.Label style={{ fontWeight: 600 }}>{initialAssessment?.difficulty}</Form.Label>
         </Form.Group>
       </div>
       <div
@@ -48,27 +54,21 @@ const AssesmentInfoTab = () => {
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Assesment Title</Form.Label>
+          <Form.Label>Time Limit</Form.Label>
           <br />
-          <Form.Label style={{ fontWeight: 600 }}>JAVA Fundamentals</Form.Label>
+          <Form.Label style={{ fontWeight: 600 }}>{initialAssessment?.validUpto === 0 ? "No Limit": moment(initialAssessment?.validUpto).format("DD/MM/YYYY") }</Form.Label>
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Type</Form.Label>
+          <Form.Label>Assessment Sitting</Form.Label>
           <br />
-          <Form.Label style={{ fontWeight: 600 }}>Premium</Form.Label>
+          <Form.Label style={{ fontWeight: 600 }}>{initialAssessment?.multipleSitting ? "Multiple" : "Signal"}</Form.Label>
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Category</Form.Label>
+          <Form.Label>All Question Mandatory</Form.Label>
           <br />
-          <Form.Label style={{ fontWeight: 600 }}>Technology</Form.Label>
-        </Form.Group>
-
-        <Form.Group>
-          <Form.Label>Difficulty</Form.Label>
-          <br />
-          <Form.Label style={{ fontWeight: 600 }}>Beginner</Form.Label>
+          <Form.Label style={{ fontWeight: 600 }}>{initialAssessment?.mandatory ? "Multiple" : "Signal"}</Form.Label>
         </Form.Group>
       </div>
     </>

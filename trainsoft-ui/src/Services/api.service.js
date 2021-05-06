@@ -114,8 +114,12 @@ const RestService = {
   searchTopic: (query,companySid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.SEARCH_TOPIC + query + "/" + companySid),
   searchAssessment: (query,companySid,topicSid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.SEARCH_ASSESSMENT.replace("{query}",query).replace("{companySid}",companySid).replace("{topicSid}",topicSid)),
   searchQuestion: (query,companySid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.SEARCH_QUESTION.replace("{query}",query).replace("{companySid}",companySid)),
+  generateUrl: (assId) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GENERATE_URL.replace("{assId}",assId)),
+  uploadAssParticipant : (payload,headers)=> AxiosService.post(GLOBELCONSTANT.ASSESSMENT.UPLOAD_ASSESSMENT, payload,'',headers),
+  uploadQuestion : (payload)=> AxiosService.post(GLOBELCONSTANT.ASSESSMENT.UPLOAD_QUESTION, payload),
+  getAssessmentDashboard : (assId)=> AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT_DASHBOARD.replace("{aasId}",assId)),
 
-
+  
   // instructor
 
   // assessment 
