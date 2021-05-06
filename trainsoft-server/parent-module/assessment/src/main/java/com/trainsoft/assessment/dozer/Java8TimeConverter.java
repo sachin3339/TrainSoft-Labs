@@ -13,7 +13,7 @@ public class Java8TimeConverter extends DozerConverter<Instant,Long>
     @Override
     public Long convertTo(Instant source, Long destination)
     {
-        return source!=null?source.getEpochSecond():null;
+        return source!=null?source.toEpochMilli():null;
     }
 
     @Override
