@@ -149,6 +149,7 @@ public class AssessmentController {
           @ApiParam("Virtual Account Sid") @PathVariable("vSid") String virtualAccountSid){
       return ResponseEntity.ok(assessmentService.getScoreBoard(quizSetSid,virtualAccountSid));
     }
+
     @GetMapping("get/user/assessment/responses/{sid}")
     @ApiOperation(value = "get user assessment responses.",notes = "API to get User submitted Assessment Question Answers details.")
     public ResponseEntity<?> findUserAssessmentRespones(
@@ -221,4 +222,12 @@ public class AssessmentController {
         UserTO createUser = bulkUploadService.createVirtualAccountWithAssessmentUser(request, userTO, assessSid);
         return ResponseEntity.ok(createUser);
     }
+
+    @GetMapping("get/assessdetails/{aSid}")
+    @ApiOperation(value = "getAssessDetails", notes = "API to get Assess Details")
+    public ResponseEntity<?> getAssessDetails(@ApiParam(value = "Assessment Sid", required = true) @PathVariable("aSid") String assessmentSid)
+    {
+        return ResponseEntity.ok(assessmentService.getAssessDetails(assessmentSid));
+    }
+
 }
