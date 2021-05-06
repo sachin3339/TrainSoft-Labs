@@ -8,6 +8,6 @@ public class SubmitAnswerRequestTO implements Serializable {
     private static final long serialVersionUID = 1177972439476645805L;
     private String virtualAccountSid;
     private String questionSid;
-    private String answer;
+    private String answerSid;
     private String quizSetSid;
 }
