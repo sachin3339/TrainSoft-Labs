@@ -6,6 +6,8 @@ import AssesmentInfoTab from "./TopicsAssesments/AssesmentsInfoTab";
 import DashboardTab from "./TopicsAssesments/DashboardTab";
 import TopicsTable from "./TopicsAssesments/TopicsTable";
 import AssesmentsTable from "./TopicsAssesments/AssesmentTable";
+import CreateAssessment from "./TopicsAssesments/CreateAssessment/CreateAssessment";
+import { AssessmentProvider } from "../../../Store/AssessmentContext";
 
 const AssesmentDetails = ({ location }) => {
   const [active, setActive] = useState("Dashboard");
@@ -38,11 +40,14 @@ const AssesmentDetails = ({ location }) => {
 
 const TopicAssesment = () => {
   return (
+    <AssessmentProvider>
     <Router>
       <TopicsTable path="/" />
+      <CreateAssessment path="create-assessment"/>
       <AssesmentsTable path="topic-details" />
       <AssesmentDetails path="topic-details/assesment-details" />
     </Router>
+    </AssessmentProvider>
   );
 };
 

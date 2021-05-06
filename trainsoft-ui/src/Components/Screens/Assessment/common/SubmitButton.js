@@ -3,7 +3,7 @@ const Submit = ({ children, disabled, assessment = false, style, ...props }) => 
     <div
       style={{
         backgroundColor: assessment ? "#1C9030" : "#49167E",
-        padding: "12px 40px",
+        padding: "8px 30px",
         display: "inline-flex",
         justifyContent: "center",
         alignItems: "center",

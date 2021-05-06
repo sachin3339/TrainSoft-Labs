@@ -1,3 +1,7 @@
+import { useEffect, useState,useContext } from "react";
+import RestService from "../../../../Services/api.service";
+import AppContext from "../../../../Store/AppContext";
+import useToast from "../../../../Store/ToastHook";
 import { Formik } from "formik";
 import {
   TextInput,
@@ -6,13 +10,36 @@ import {
   TextArea,
 } from "../../../Common/InputField/InputField";
 import { Form } from "react-bootstrap";
-import { useState } from "react";
 import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
 import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
 import CardHeader from "../../../Common/CardHeader";
+
+import "./question.css";
 import Submit from "../../Assessment/common/SubmitButton";
 
 const CreateQuestion = ({ location }) => {
+  const Toast = useToast()
+  const {spinner} = useContext(AppContext)
+
+// Create Topic
+const createAssessment = async (payload) => {
+  spinner.hide("Loading... wait");
+  try {
+     RestService.createQuestion(payload).then(
+         response => {
+           Toast.success({ message: "Topic added successfully" })
+         },
+         err => {
+             spinner.hide();
+         }
+     ).finally(() => {
+         spinner.hide();
+     });
+   } catch (err) {
+     console.error("error occur on createTopic()", err)
+   }
+  }
+
   return (
     <>
       <CardHeader
@@ -28,11 +55,17 @@ const CreateQuestion = ({ location }) => {
       <div className="table-shadow " style={{ padding: "40px" }}>
         {true ? (
           <Formik
-            // onSubmit={(value) => onSubmit(value)}
+            onSubmit={(value) => createAssessment(value)}
             initialValues={{
-              name: "",
-              phoneNo: "",
-              email: "",
+              answerExplanation: "Yes C++ is Object Oriented Language",
+              description: "C++",
+              difficulty: "BEGINNER",
+              name: "C++ is Object Oriented Language ?",
+              negativeQuestionPoint: 1,
+              questionPoint: 1,
+              questionType: "MCQ",
+              status: "ENABLED",
+              technologyName: "C++"
             }}
             // validationSchema={schema}
           >

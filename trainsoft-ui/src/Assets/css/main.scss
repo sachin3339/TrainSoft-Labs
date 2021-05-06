@@ -16,7 +16,7 @@
 	font-weight: 600;
   }
   .btn-am{
-	background-color: #2D62ED;
+	background-color: #49167E;
 	border: none;
 	padding: 12px 10px !important;
 	border-radius: 25px;
@@ -24,7 +24,7 @@
 	font-weight: 600;
   }
   .btn-am:hover, .btn-am:active, .btn-am:focus{
-	background-color: #214dbf !important; 
+	background-color: #49167E !important; 
   }
 body {
 	font-size: 14px !important;
@@ -106,7 +106,7 @@ p {
 	width: 35px;
 	height: 35px;
 	border-radius: 50%;
-	background: #00ccf2;
+	background: #49167E !important;
 	color: white;
 	cursor: pointer;
 }
@@ -298,3 +298,13 @@ p {
 #zmmtg-root {
 	display: none;
   }
+  .custom-file-upload {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 8px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+    text-align: right;
+    margin-bottom: 0px;
+}
