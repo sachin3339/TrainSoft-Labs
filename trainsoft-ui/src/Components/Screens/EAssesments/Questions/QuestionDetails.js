@@ -1,7 +1,7 @@
 import { Form } from "react-bootstrap";
 import { useState } from "react";
 import CardHeader from "../../../Common/CardHeader";
-import Submit from "../../Assesment/common/SubmitButton";
+import Submit from "../../Assessment/common/SubmitButton";
 
 const QuestionDetails = ({ location }) => {
   return (

@@ -60,5 +60,11 @@ public class TopicController {
         return ResponseEntity.ok(topicService.softDeleteTopic(topicSid));
     }
 
-
+    @GetMapping("search/topic/{searchString}/{sid}")
+    @ApiOperation(value = "search topic",notes = "API to Search Topic.")
+    public ResponseEntity<?> searchTopic(
+            @ApiParam("Search String")@PathVariable("searchString") String searchString,
+            @ApiParam("Company Sid")@PathVariable("sid") String companySid){
+        return ResponseEntity.ok(topicService.searchTopic(searchString,companySid));
+    }
 }

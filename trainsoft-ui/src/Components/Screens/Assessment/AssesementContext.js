@@ -1,18 +1,17 @@
 import { createContext, useEffect, useState } from "react";
-import { questions } from "./mock";
+import { dummyQuestions } from "./mock";
 
-export const AssesmentContext = createContext(null);
+export const AssessmentContext = createContext(null);
 
-export const AssesmentProvider = ({ children }) => {
-  const [activeQuestion, setActiveQuestion] = useState();
-  const [questionIndex, setquestionIndex] = useState(0);
+export const AssessmentProvider = ({ children }) => {
+  const [activeQuestion, setActiveQuestion] = useState({});
+  const [questionIndex, setQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [finished, setFinished] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(true);
-
-  useEffect(() => {
-    setQuestion(questions[0]);
-  }, []);
+  const [instruction, setInstruction] = useState({});
+  const [selectedAnswer, setSelectedAnswer] = useState("")
+  const [questions, setQuestions] = useState(dummyQuestions);
 
   const setAnswer = (questionID, answerID) => {
     setSelectedAnswers((_selectedAnswers) => ({
@@ -29,11 +28,13 @@ export const AssesmentProvider = ({ children }) => {
 
   useEffect(() => {
     if (questionIndex === -1) {
+        setSelectedAnswer("");
+        setActiveQuestion({});
     } else if (questionIndex < questions.length) {
       setQuestion(questions[questionIndex]);
     } else {
       setQuestion(null);
-      setquestionIndex(-1);
+      setQuestionIndex(-1);
     }
   }, [questionIndex]);
 
@@ -45,15 +46,19 @@ export const AssesmentProvider = ({ children }) => {
     selectedAnswers,
     setFinished,
     finished,
-    setquestionIndex,
+    setQuestionIndex,
     questionIndex,
     dialogOpen,
     setDialogOpen,
+    instruction, 
+    setInstruction,
+    selectedAnswer, 
+    setSelectedAnswer
   };
 
   return (
-    <AssesmentContext.Provider value={exportedValues}>
+    <AssessmentContext.Provider value={exportedValues}>
       {children}
-    </AssesmentContext.Provider>
+    </AssessmentContext.Provider>
   );
 };

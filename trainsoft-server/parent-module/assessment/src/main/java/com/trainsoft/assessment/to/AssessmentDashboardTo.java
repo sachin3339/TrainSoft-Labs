@@ -20,7 +20,7 @@ public class AssessmentDashboardTo
     private Double assessAttendance;
     private Integer totalQuestions;
     private Double batchAvgScore;
-    private Integer totalAttended;
+    private Integer totalUsers;
     private List<AssessTo> assessToList;
 
 }

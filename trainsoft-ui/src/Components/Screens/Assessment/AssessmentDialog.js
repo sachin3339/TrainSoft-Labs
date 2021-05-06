@@ -10,12 +10,12 @@ import {
   TextInput,
 } from "../../Common/InputField/InputField";
 import { BtnInfo } from "../../Common/Buttons/Buttons";
-import { AssesmentContext } from "./AssesementContext";
+import { AssessmentContext } from "./AssesementContext";
 import { navigate } from "../../Common/Router";
 
-export const AssesmnetDialog = () => {
+export const AssessmentDialog = () => {
   const { dialogOpen: open, setDialogOpen: setOpen } = useContext(
-    AssesmentContext
+    AssessmentContext
   );
 
   return (
