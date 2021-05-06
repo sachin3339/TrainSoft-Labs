@@ -60,4 +60,7 @@ public class Question extends BaseEntity{
     @Column(name = "negative_point")
     private Integer negativeQuestionPoint;
 
+    @Column(name = "is_alphabet")
+    private boolean isAlphabet;
+
 }

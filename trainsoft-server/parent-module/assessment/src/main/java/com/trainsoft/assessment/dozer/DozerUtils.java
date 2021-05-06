@@ -19,6 +19,7 @@ public class DozerUtils {
         mapper=new DozerBeanMapper();
         List<String> mappingList = new ArrayList<String>();
         mappingList.add("dozerBeanMapping.xml");
+        mappingList.add("java8TimeMapping.xml");
         mapper.setMappingFiles(mappingList);
     }
     public <T> T convert(Object srcObject, Class<T> destnationObj){
