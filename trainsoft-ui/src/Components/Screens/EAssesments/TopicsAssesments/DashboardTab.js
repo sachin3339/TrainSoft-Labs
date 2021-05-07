@@ -138,7 +138,7 @@ const Headers = ({ initialAssessment, dashboardDate }) => {
       </HeaderElement>
       <HeaderElement
         stat={dashboardDate?.totalSubmitted}
-        substat={"13"}
+        substat={dashboardDate?.totalUsers}
         icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
       >
         Total <br />
@@ -159,7 +159,7 @@ const Headers = ({ initialAssessment, dashboardDate }) => {
         Questions
       </HeaderElement>
       <HeaderElement
-        stat={dashboardDate?.batchAvgScore}
+        stat={dashboardDate.batchAvgScore ? dashboardDate.batchAvgScore : 0}
         icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
       >
         Batch <br />

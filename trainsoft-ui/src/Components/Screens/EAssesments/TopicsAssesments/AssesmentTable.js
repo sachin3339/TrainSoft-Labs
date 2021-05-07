@@ -1,11 +1,12 @@
 import { Category } from "@material-ui/icons";
+import moment from "moment";
 import { useEffect, useState,useContext } from "react";
 import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import RestService from "../../../../Services/api.service";
 import AppContext from "../../../../Store/AppContext";
 import AssessmentContext from "../../../../Store/AssessmentContext";
 import useToast from "../../../../Store/ToastHook";
-import { Button } from "../../../Common/Buttons/Buttons";
+import { Button, Cancel } from "../../../Common/Buttons/Buttons";
 
 import CardHeader from "../../../Common/CardHeader";
 import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
@@ -17,7 +18,7 @@ let val ={
   category: "",
   description: "",
   difficulty: "BEGINNER",
-  duration: 0,
+  duration: false,
   mandatory: true,
   multipleSitting: true,
   negative: true,
@@ -36,7 +37,6 @@ const AssesmentsTable = ({ location }) => {
   const Toast = useToast()
   const {spinner,user} = useContext(AppContext)
   const {topicSid,setInitialAssessment,category} = useContext(AssessmentContext)
-  const [count, setCount] = useState(0);
   const [assessment,setAssessment] = useState([])
 
   const [configuration, setConfiguration] = useState({
@@ -51,7 +51,7 @@ const AssesmentsTable = ({ location }) => {
             <Link onClick={()=>setInitialAssessment(data)}
               to={"assesment-details"}
               state={{
-                title: "Topic",
+                title: "Topics",
                 subTitle: "Assesment",
                 path: "topicAssesment",
                 rowData: data,
@@ -90,11 +90,24 @@ const AssesmentsTable = ({ location }) => {
         sortEnabled: true,
         isSearchEnabled: false,
       },
-      validity: {
+      validUpto: {
         title: "Validity",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
+        render: (data) => data.validUpto === 0 ? "No Limit" : moment(data.validUpto).format("DD/MM/YYYY")
+      },
+      validUpto: {
+        title: "",
+        sortDirection: null,
+        sortEnabled: true,
+        isSearchEnabled: false,
+        render: (data) => <>
+        <div className="copy-url-btn" onClick={()=>copyUrl()}><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Copy Url</div>
+        <div className="copy-url-disp" id="copy_url2">
+            {`https://www.trainsoft.io/assessment/${data.sid}/${user.companySid}/0`}
+            </div>
+        </>
       },
     },
     headerTextColor: "#454E50", // user can change table header text color
@@ -145,7 +158,7 @@ const AssesmentsTable = ({ location }) => {
       validUpto: values.validUpto === 0 ? true : false,
       date: values.validUpto === 0 ? '' : values.validUpto,
       duration: values.duration === 0 ? true : false,
-      timeLimit: values.duration == 0 ? 0 : values.duration 
+      timeLimit: values.duration === 0 ? new Date() : values.duration 
     }
     setInitialAssessment(data)
   }
@@ -156,7 +169,7 @@ const AssesmentsTable = ({ location }) => {
 
   // get All Assessment By Topic sid
   const getAssessmentByTopic = async (pageNo="1") => {
-         spinner.hide("Loading... wait");
+         spinner.show("Loading... wait");
     try {
         RestService.getAssessmentByTopic(topicSid,GLOBELCONSTANT.PAGE_SIZE,pageNo-1).then(
             response => {
@@ -187,18 +200,28 @@ const AssesmentsTable = ({ location }) => {
     }
   }
 
-      // search assesment 
-      const searchAssessment = async (value) => {
-        spinner.show("Loading... wait");
-        try {
-          let {data} = await RestService.searchAssessment(value,user.companySid,topicSid)
-          setAssessment(data);
-          spinner.hide();
-        } catch (err) {
-          spinner.hide();
-          console.error("error occur on searchTopic()", err)
-        }
-      }
+  // search assesment 
+  const searchAssessment = async (value) => {
+    spinner.show("Loading... wait");
+    try {
+      let {data} = await RestService.searchAssessment(value,user.companySid,topicSid)
+      setAssessment(data);
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on searchTopic()", err)
+    }
+  }
+ 
+  const copyUrl = () =>{
+    let copyText = document.getElementById("copy_url2");
+    let textArea = document.createElement("textarea");
+    textArea.value = copyText.textContent;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand("Copy");
+    Toast.success({ message: 'Url is copy successfully', time: 2000});
+  }
 
 useEffect(()=>{
   getAssessmentByTopic()
@@ -213,8 +236,8 @@ useEffect(()=>{
         }}
       >
         <Button className=" ml-2" 
-           onClick={()=>{ setInitialAssessment(val); navigate("create-assessment",{state :{ title: "TOPIC",
-           subTitle: "Topic",
+           onClick={()=>{ setInitialAssessment(val); navigate("create-assessment",{state :{ title: "Topics",
+           subTitle: "Topics",
            path: "topicAssesment",}})}}
         >+ New Assesment</Button>
       </CardHeader>
@@ -224,8 +247,8 @@ useEffect(()=>{
           {...{
             configuration,
             sourceData: assessment,
-            // onPageChange: (e) => getCourse(e),
-            count,
+            onPageChange: (e) => getAssessmentByTopic(e),
+            count: location?.state?.count === 0 ? 1 : location?.state?.count,
           }}
         />
       </div>

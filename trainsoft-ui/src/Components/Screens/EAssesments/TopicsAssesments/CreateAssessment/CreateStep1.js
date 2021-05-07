@@ -64,7 +64,7 @@ const CreateStep1 = ({  handleNext }) => {
                     </div>
                   </div>
                   <div>
-                    <DateInput name="date" setFieldValue={setFieldValue} values={values} label=""/> 
+                   {!values.validUpto &&  <DateInput name="date" setFieldValue={setFieldValue} values={values} label=""/> }
                   </div>
                 </Form.Group>
               </Form.Group>
@@ -75,10 +75,10 @@ const CreateStep1 = ({  handleNext }) => {
               </div>
 
               <div>
-                <Submit onClick={()=>{navigate("topic-details",{state :{ title: "Topic",
-                                 subTitle: "Topic",
+                <Submit onClick={()=>{navigate("topic-details",{state :{ title: "Topics",
+                                 subTitle: "Topics",
                                  path: "topicAssesment",}})}} style={{ background: "#0000003E", color: "black", marginRight: "10px", }}>
-                  Cancel
+                         Cancel
                   </Submit>
                 <Submit onClick={() => { handleNext(); setAssessmentVal(values);setInitialAssessment(values) }}>Next</Submit>
               </div>

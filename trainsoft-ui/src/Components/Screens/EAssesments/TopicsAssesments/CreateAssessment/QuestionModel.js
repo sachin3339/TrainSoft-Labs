@@ -3,14 +3,8 @@ import DynamicTable from "../../../../Common/DynamicTable/DynamicTable";
 import { Dropdown, Form } from 'react-bootstrap'
 import { Formik } from 'formik';
 import { ICN_EDIT, ICN_DELETE, ICN_TRASH } from "../../../../Common/Icon";
-import { Button } from "../../../../Common/Buttons/Buttons";
-import { TextInput, SelectInput } from "../../../../Common/InputField/InputField";
-import { BsModal, Toggle } from "../../../../Common/BsUtils";
-// import CardHeader from "../../Common/CardHeader";
-import * as Yup from 'yup';
-import moment from 'moment'
-// import GLOBELCONSTANT from "../../../Constant/GlobleConstant";
-
+import { Button,Cancel } from "../../../../Common/Buttons/Buttons";
+import { BsModal } from "../../../../Common/BsUtils";
 import SearchBox from "../../../../Common/SearchBox/SearchBox";
 import RestService from "../../../../../Services/api.service";
 import AppContext from "../../../../../Store/AppContext";
@@ -18,7 +12,7 @@ import useToast from "../../../../../Store/ToastHook";
 import AssessmentContext from "../../../../../Store/AssessmentContext";
 
 const QuestionModel = ({ show, setShow, sid, getParticipant,allQuestion }) => {
-  const {assessmentVal} = useContext(AssessmentContext)
+  const {assessmentVal,initialAssessment} = useContext(AssessmentContext)
     const { user, spinner, ROLE } = useContext(AppContext)
     const [count, setCount] = useState(0)
     const Toast = useToast()
@@ -80,12 +74,11 @@ const QuestionModel = ({ show, setShow, sid, getParticipant,allQuestion }) => {
 
 
     // get All topic
-  const getAllQuestion = async (pageNo = "1") => {
+  const getAllQuestion = async () => {
     spinner.show("Loading... wait");
     try {
-      let { data } = await RestService.getAllQuestion(200,0)
+      let { data } = await RestService.getNotAssociateQuestion(initialAssessment.sid)
       setQuestion(data);
-
       spinner.hide();
     } catch (err) {
       spinner.hide();
@@ -145,6 +138,7 @@ const QuestionModel = ({ show, setShow, sid, getParticipant,allQuestion }) => {
                 <DynamicTable {...{ configuration, sourceData: question, onSelected: (e) => {console.log(e); setSelectedSid(e.map(r => r.sid)); } }} />
             </div>
             <div className="jce mt-2">
+               <Cancel className="mx-2" onClick={() => { setShow(false) }}>Cancel</Cancel>
                 <Button className="mx-2" onClick={() => { setShow(true); associateQuestion() }}>Add Question({selectedSid.length})</Button>
             </div>
         </BsModal>

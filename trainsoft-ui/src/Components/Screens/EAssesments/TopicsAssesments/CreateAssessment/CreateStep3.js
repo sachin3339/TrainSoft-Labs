@@ -15,7 +15,7 @@ import "../topic.css";
 
 const CreateStep3 = ({ location, handleNext, handleBack }) => {
     const Toast = useToast()
-    const {  assessmentVal } = useContext(AssessmentContext)
+    const {  initialAssessment } = useContext(AssessmentContext)
 
     const { spinner } = useContext(AppContext)
     const [questions, setQuestion] = useState([])
@@ -36,12 +36,6 @@ const CreateStep3 = ({ location, handleNext, handleBack }) => {
                 isSearchEnabled: false,
 
             },
-            "technologyName": {
-                "title": "Tag",
-                "sortDirection": null,
-                "sortEnabled": true,
-                isSearchEnabled: false
-            },
             "difficulty": {
                 "title": "Difficulty",
                 "sortDirection": null,
@@ -59,11 +53,10 @@ const CreateStep3 = ({ location, handleNext, handleBack }) => {
             setConfiguration({ ...configuration });
         },
         actions: [
-
             {
                 "title": "Delete",
                 "icon": ICN_DELETE,
-                "onClick": (data) => { }
+                "onClick": (data) => {deleteQuestion(data.sid) }
             }
         ],
         actionCustomClass: "no-chev esc-btn-dropdown", // user can pass their own custom className name to add/remove some css style on action button
@@ -73,15 +66,15 @@ const CreateStep3 = ({ location, handleNext, handleBack }) => {
         // this search is working for search enable fields(column) eg. isSearchEnabled: true, in tale column configuration
         searchQuery: "",
         tableCustomClass: "ng-table sort-enabled", // table custom class
-        showCheckbox: true,
+        showCheckbox: false,
         clearSelection: false
     });
 
-    // get All topic
+    // get All question
     const getAllQuestion = async (pageNo = "1") => {
         spinner.show("Loading... wait");
         try {
-            let { data } = await RestService.getAssociateQuestion(assessmentVal.sid, 200, 0)
+            let { data } = await RestService.getAssociateQuestion(initialAssessment.sid, 200, 0)
             setQuestion(data);
             spinner.hide();
         } catch (err) {
@@ -89,6 +82,22 @@ const CreateStep3 = ({ location, handleNext, handleBack }) => {
             console.error("error occur on getAllTopic()", err)
         }
     }
+
+    // delete associate question
+    const deleteQuestion = async (sid) => {
+        spinner.show("Loading... wait");
+        try {
+            let { data } = await RestService.deleteAssociateQuestion(sid)
+            Toast.success({ message: 'Question deleted successfully', time: 2000 });
+            getAllQuestion()
+            spinner.hide();
+        } catch (err) {
+            spinner.hide();
+            console.error("error occur on getAllTopic()", err)
+        }
+    }
+
+
 
     useEffect(() => {
         getAllQuestion()
@@ -108,15 +117,15 @@ const CreateStep3 = ({ location, handleNext, handleBack }) => {
                 </div>
 
                 <div>
-                    <Submit onClick={()=>{navigate("topic-details",{state :{ title: "Topic",
-                                 subTitle: "Topic",
+                    <Submit  onClick={()=>{navigate("topic-details",{state :{ title: "Topics",
+                                 subTitle: "Topics",
                                  path: "topicAssesment",}})}} style={{ background: "#0000003E", color: "black", marginRight: "10px", }}>
                         Cancel
                   </Submit>
                     <Submit onClick={handleNext}>Next</Submit>
                 </div>
             </div>
-            <QuestionModel {...{ show: showQuestion, setShow: setShowQuestion, allQuestion: getAllQuestion }} />
+            { showQuestion && <QuestionModel {...{ show: showQuestion, setShow: setShowQuestion, allQuestion: getAllQuestion }} /> }
         </>
 
 

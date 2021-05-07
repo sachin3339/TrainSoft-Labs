@@ -53,14 +53,14 @@ export const AdminConfig = [
     },
     {
         icon: ICN_ASSESSMENT,
-        title: "Assessment",
+        title: "Topics",
         pathname: "topicAssesments",
         disabled: true,
         role: [ GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]
     },
     {
         icon: ICN_SUPPORT_HOME,
-        title: "Question",
+        title: "Questions",
         pathname: "questions",
         disabled: true,
         role: [ GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]

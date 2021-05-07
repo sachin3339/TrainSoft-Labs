@@ -192,7 +192,18 @@ const QuestionsTable = ({ location }) => {
         }
     }
 
+      // get batch count
+       const getQuestionCount = async () => {
+        try {
+           let {data} =await RestService.getCount("question")
+            setCount(data);
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
+        }
+    }
+
   useEffect(() => {
+    getQuestionCount()
     getAllQuestion()
   }, [])
   return (
@@ -219,7 +230,7 @@ const QuestionsTable = ({ location }) => {
           {...{
             configuration,
             sourceData: questions,
-            // onPageChange: (e) => getCourse(e),
+            onPageChange: (e) => getAllQuestion(e),
             count,
           }}
         />
@@ -241,7 +252,7 @@ const QuestionsTable = ({ location }) => {
                           </label>
                       </div>
                   </div>
-                  <a href={GLOBELCONSTANT.UPLOAD_ASSES_TEMPLATE} className="mt-3 link">Download Template</a>
+                  <a href={GLOBELCONSTANT.UPLOAD_QUESTION_TEMPLES} className="mt-3 link">Download Template</a>
               </div>
             </div>
             <div className="jce mt-3">
