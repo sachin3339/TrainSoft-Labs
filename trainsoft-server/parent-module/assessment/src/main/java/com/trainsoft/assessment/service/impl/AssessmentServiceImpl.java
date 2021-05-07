@@ -344,6 +344,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         vTo.setCreatedOn(virtualAccountHasQuestionAnswerDetails.getCreatedOn());
         vTo.setQuestionPoint(virtualAccountHasQuestionAnswerDetails.getQuestionPoint());
         return vTo;
+        
     }
 
     @Override
