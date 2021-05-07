@@ -418,7 +418,7 @@ public class QuestionServiceImpl implements IQuestionService {
     public List<QuestionTo> searchQuestion(String searchString,String companySid) {
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         if (company==null) throw new InvalidSidException("invalid company sid");
-      List<Question> question = customRepository.searchQuestion(searchString, company);
+      List<Question> question = customRepository.searchQuestion(searchString.trim(), company);
         List<QuestionTo> questionTo = mapper.convertList(question, QuestionTo.class);
         questionTo.forEach(qt->{
             for (Question q:question){
