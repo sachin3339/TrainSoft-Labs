@@ -123,6 +123,8 @@ const RestService = {
   getAssessmentDashboard : (assId)=> AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT_DASHBOARD.replace("{aasId}",assId)),
   getAssUser : (assId)=> AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT_DASHBOARD.replace("{aasId}",assId)),
   getAssestUser: (assId) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT_USER.replace("{assID}",assId)),
+  getQuestionById: (qId) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_QUESTION_BY_SID.replace("{qId}",qId)),
+  
 
 
   
