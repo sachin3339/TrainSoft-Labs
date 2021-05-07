@@ -781,32 +781,72 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<VirtualAccountHasQuizSetAssessmentTO> getLeaderBoardForAssessmentForToday(String quizSetSid) {
+    public List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForToday(String quizSetSid) {
         Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         if (assessment!=null){
+            ArrayList<LeaderBoardRequestTO> leaderBoardTO = new ArrayList<>();
+
             List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
                     .findByAssessmentForCurrentDate(assessment.getId());
+            if (assessmentList.size()==0)throw new RecordNotFoundException("no records found");
+           if (assessmentList.size()<10){
+               for (int i=0;i<assessmentList.size();i++){
+                   topTen.add(i,assessmentList.get(i));
+               }
+               topTen.forEach(tp->{
+                   LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                   leaderBoardRequestTO.setPercentage(tp.getPercentage());
+                   leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
+                   leaderBoardTO.add(leaderBoardRequestTO);
+               });
+               return leaderBoardTO;
+           }
             for (int i=0;i<10;i++){
                 topTen.add(i,assessmentList.get(i));
             }
-            return   mapper.convertList(topTen,VirtualAccountHasQuizSetAssessmentTO.class);
+            topTen.forEach(tp->{
+                LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                leaderBoardRequestTO.setPercentage(tp.getPercentage());
+                leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
+                leaderBoardTO.add(leaderBoardRequestTO);
+            });
+         return leaderBoardTO;
         }
         throw new InvalidSidException("invalid Assessment sid");
     }
 
     @Override
-    public List<VirtualAccountHasQuizSetAssessmentTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid) {
+    public List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid) {
         Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
-        if (assessment!=null){
+        if (assessment != null) {
+            ArrayList<LeaderBoardRequestTO> leaderBoardTO = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
                     .findByAssessment(assessment.getId());
-            for (int i=0;i<10;i++){
-                topTen.add(i,assessmentList.get(i));
+            if (assessmentList.size()==0)throw new RecordNotFoundException("no records found");
+            if (assessmentList.size()<10){
+                for (int i=0;i<assessmentList.size();i++){
+                    topTen.add(i,assessmentList.get(i));
+                }
+                topTen.forEach(tp->{
+                    LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                    leaderBoardRequestTO.setPercentage(tp.getPercentage());
+                    leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
+                    leaderBoardTO.add(leaderBoardRequestTO);
+                });
+                return leaderBoardTO;
             }
-            return   mapper.convertList(topTen,VirtualAccountHasQuizSetAssessmentTO.class);
-        }
-        throw new InvalidSidException("invalid Assessment sid");
+            for (int i = 0; i < 10; i++) {
+                    topTen.add(i, assessmentList.get(i));
+            }
+            topTen.forEach(tp -> {
+                LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                leaderBoardRequestTO.setPercentage(tp.getPercentage());
+                leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(), VirtualAccountTO.class));
+                leaderBoardTO.add(leaderBoardRequestTO);
+            });
+            return leaderBoardTO;
+        } throw new InvalidSidException("invalid Assessment sid");
     }
 }
