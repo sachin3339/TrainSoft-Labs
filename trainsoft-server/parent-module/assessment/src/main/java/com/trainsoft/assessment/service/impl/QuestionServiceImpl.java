@@ -427,4 +427,27 @@ public class QuestionServiceImpl implements IQuestionService {
                 qt.setCreatedByVirtualAccountSid(q.getCreatedBy().getStringSid());
             } });return questionTo;
     }
+
+    @Override
+    public QuestionTo updateQuestionStatus(String questionSid, String status)
+    {
+        if(questionSid!=null && status!=null)
+        {
+           Question question = questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid));
+           if(question!=null)
+           {
+               for (AssessmentEnum.Status questionStatus :AssessmentEnum.Status.values())
+               {
+                 if(status.equalsIgnoreCase(questionStatus.toString())) {
+                     question.setStatus(questionStatus);
+                     break;
+                 }
+               }
+                return mapper.convert(questionRepository.save(question),QuestionTo.class);
+           }
+             throw  new InvalidSidException("Invalid Question Sid: "+questionSid);
+        }
+        throw new InvalidSidException("Question Sid is null OR Question Status is null ! Question Sid: "
+                +questionSid+" Question Status: "+status);
+    }
 }

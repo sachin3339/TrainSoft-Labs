@@ -113,4 +113,14 @@ public class QuestionController {
     {
         return ResponseEntity.ok(questionService.searchQuestion(searchString, companySid,pageable));
     }
+
+    @PutMapping("question/status/update/{qsid}/{status}")
+    @ApiOperation(value = "updateQuestionStatus",notes = "API to update question status")
+    public ResponseEntity<?> updateQuestionStatus(
+            @ApiParam(value ="Question Sid",required = true)@PathVariable("qsid") String questionSid,
+            @ApiParam(value = "Question Status",required = true)@PathVariable("status") String status)
+    {
+        return ResponseEntity.ok(questionService.updateQuestionStatus(questionSid,status));
+    }
+
 }

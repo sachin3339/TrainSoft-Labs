@@ -19,4 +19,5 @@ public interface IQuestionService {
     void deleteQuestion(String question);
 
     List<QuestionTo> searchQuestion(String searchString,String companySid,Pageable pageable);
+    QuestionTo updateQuestionStatus(String questionSid,String status);
 }
