@@ -160,7 +160,7 @@ public class AssessmentController {
     @PutMapping("update/assessment")
     @ApiOperation(value = "Update Assessment",notes = "API to update Assessment.")
     public ResponseEntity<?> updateAssessment(
-            @ApiParam(value = "Authorization token",required = true) @RequestHeader String token,
+            @ApiParam(value = "Authorization token",required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Update payload",required = true)  @RequestBody AssessmentTo assessmentTo){
         JWTTokenTO jwtTokenTO = JWTDecode.parseJWT(token);
         assessmentTo.setUpdatedBySid(jwtTokenTO.getVirtualAccountSid());
@@ -230,4 +230,10 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.getAssessDetails(assessmentSid));
     }
 
-}
+    @GetMapping("get/configuredusers/{aSid}")
+    @ApiOperation(value = "getConfiguredUserDetailsForAssessment", notes = "API to get configured assess details based on Assessment Sid")
+    public ResponseEntity<?> getConfiguredUserDetailsForAssessment(@ApiParam(value = "Assessment Sid", required = true) @PathVariable("aSid") String assessmentSid)
+    {
+        return ResponseEntity.ok(assessmentService.getConfiguredUserDetailsForAssessment(assessmentSid));
+    }
+} 

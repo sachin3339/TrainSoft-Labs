@@ -175,7 +175,7 @@ public class CourseServiceImpl implements ICourseService {
                 VirtualAccount virtualAccount= virtualAccountRepository.findVirtualAccountBySid(
                         BaseEntity.hexStringToByteArray(courseSessionTO.getUpdatedByVASid()));
                 courseSession.setTopicName(courseSessionTO.getTopicName());
-                courseSessionTO.setTopicDescription(courseSessionTO.getTopicDescription());
+                courseSession.setTopicDescription(courseSessionTO.getTopicDescription());
                 courseSession.setUpdatedBy(virtualAccount);
                 courseSession.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
                 CourseSessionTO savedSession=mapper.convert(courseSessionRepository.save(courseSession),CourseSessionTO.class);
