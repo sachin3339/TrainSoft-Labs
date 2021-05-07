@@ -118,7 +118,7 @@ const CreateStep3 = ({ location, handleNext, handleBack }) => {
 
                 <div>
                     <Submit  onClick={()=>{navigate("topic-details",{state :{ title: "Topics",
-                                 subTitle: "Topics",
+                                 subTitle: "Assessment",
                                  path: "topicAssesment",}})}} style={{ background: "#0000003E", color: "black", marginRight: "10px", }}>
                         Cancel
                   </Submit>
