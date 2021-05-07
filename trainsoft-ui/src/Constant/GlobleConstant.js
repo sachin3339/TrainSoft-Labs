@@ -111,17 +111,22 @@ const GLOBELCONSTANT = {
             CREATE_QUESTION: API_ASSES +"create/question/individual",
             ASSOCIATE_QUESTION:API_ASSES + "associate/Question",
             GET_ASSOCIATE_QUESTION:API_ASSES + "assessment/Questions/{assId}?pageSize={pageSize}&pageNo={pageNo}",
-            GET_NOT_ASS_QUESTION:API_ASSES + "display/assessment/question",
+            GET_NOT_ASS_QUESTION:API_ASSES + "display/assessment/question/{assId}",
             GET_ALL_QUESTION:API_ASSES + "questions/?pageSize=",
-            DELETE_ASS_QUESTION: API_ASSES + "remove/associated/question/",
+            DELETE_ASS_QUESTION: API_ASSES + "remove/associated/question/{qId}",
             GET_CATEGORY: API_ASSES + "categories",
             UPDATE_ASSESSMENT: API_ASSES + "update/assessment",
             DELETE_QUESTION: API_ASSES + "delete/question/{questionId}",
             SEARCH_TOPIC: API_ASSES + "search/topic/",
             SEARCH_ASSESSMENT: API_ASSES + "search/assessment/{query}/{companySid}/{topicSid}",
-            SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}"
+            SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}",
+            GENERATE_URL : API_ASSES + "generate/assessment/url/{assId}",
+            UPLOAD_ASSESSMENT: API_ASSES + "upload/list/assess/participants",
+            UPLOAD_QUESTION: API_ASSES + "question/bulkupload",
+            GET_ASSESSMENT_DASHBOARD : API_ASSES + "get/assessdetails/{aasId}",
+            GET_ASSESSMENT_USER : API_ASSES + "get/configuredusers/{assID}"
 
-        },
+        },  
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},
             {key: "BATCH_MGMT",name: "Batch Management"},
@@ -141,6 +146,8 @@ const GLOBELCONSTANT = {
             LEARNER:"LEARNER",
         },
         SAMPLE_TEMPLATE: "https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx",
+        UPLOAD_ASSES_TEMPLATE : "https://sessionassests.s3.ap-south-1.amazonaws.com/Assement_User_Upload_template.xlsx",
+        UPLOAD_QUESTION_TEMPLES: "https://sessionassests.s3.ap-south-1.amazonaws.com/1620374091555_SampleTemplet.csv",
         QUILL: {
                 toolbar: [
                     [{ font: [] }, { 'header': [1, 2, 3, 4, 5, 6, false] }],
