@@ -15,8 +15,8 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AnswerTo extends BaseTO{
 
-    @NonNull
-    @ApiModelProperty(value = "It is required to create Answer , this represents answer option ex : A or B or C or D",required = true)
+    private static final long serialVersionUID = 3209389164412015384L;
+    @ApiModelProperty(value = "It is required to create Answer , this represents answer option ex : A or B or C or D")
     private String answerOption;
     @NonNull
     @ApiModelProperty(value = "It is required to create Answer, this value represents actual answer",required = true)

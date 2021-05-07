@@ -24,7 +24,7 @@ public class AssessmentTo extends BaseTO{
     private boolean isPremium;
     private String category;
     private AssessmentEnum.QuizSetDifficulty difficulty;
-    private Date validUpto;
+    private Long validUpto;
     private Integer duration;
     private boolean isMultipleSitting;
     private boolean isMandatory;

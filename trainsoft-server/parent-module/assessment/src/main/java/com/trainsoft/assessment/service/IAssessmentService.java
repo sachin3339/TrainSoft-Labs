@@ -1,5 +1,6 @@
 package com.trainsoft.assessment.service;
 
+import com.trainsoft.assessment.entity.VirtualAccountHasQuizSetAssessment;
 import com.trainsoft.assessment.to.*;
 import org.springframework.data.domain.Pageable;
 
@@ -38,5 +39,9 @@ public interface IAssessmentService
     BigInteger getCountByClass(String classz, String companySid);
 
     List<AssessmentTo> searchAssessment(String searchString,String companySid,String topicSid);
+
+    AssessmentDashboardTo getAssessDetails(String assessmentSid);
+
+    //List<VirtualAccountHasQuizSetAssessmentTO> get
 
 }

@@ -54,26 +54,6 @@ const AddParticipant = ({ show, setShow, sid, getParticipant }) => {
                 "sortEnabled": true,
                 isSearchEnabled: false
             },
-            // "department": {
-            //     "title": "Department",
-            //     "sortDirection": null,
-            //     "sortEnabled": true,
-            //     isSearchEnabled: false
-            // },
-            // "role": {
-            //     "title": "Department Role",
-            //     "sortDirection": null,
-            //     "sortEnabled": true,
-            //     isSearchEnabled: false,
-            //     render: (data) => data.role
-            // },
-            // "status": {
-            //     "title": "Status",
-            //     "sortDirection": null,
-            //     "sortEnabled": false,
-            //     isSearchEnabled: false,
-            //     render: (data) => <Toggle id={data.sid} checked={data.status === 'ENABLED' ? true : false} />
-            // },
         },
         headerTextColor: '#454E50', // user can change table header text color
         sortBy: null,  // by default sort table by name key

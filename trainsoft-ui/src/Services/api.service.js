@@ -96,8 +96,36 @@ const RestService = {
   zoomParticipant: ()=> AxiosService.get('https://api.zoom.us/v2/users/kumarkanhiya21@gmail.com/meetings?page_size=30&type=live',zoomAuth),
   // getTrainingByRole: (pageNo,pageSize) => AxiosService.get(GLOBELCONSTANT.TRAINING.PARTICIPANT_BY_ROLE.replace("{pageNo}",pageNo).replace("{pageSize}",pageSize)),
 
+  // assessment
+  getAllTopic: (pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_TOPIC + pageSize +"&pageNo="+ pageNo),
+  deleteTopic: (sid) => AxiosService.delete(GLOBELCONSTANT.ASSESSMENT.DELETE_TOPIC.replace("{topicSid}",sid)),
+  updateTopic: (payload) => AxiosService.put(GLOBELCONSTANT.ASSESSMENT.UPDATE_TOPIC,payload),
+  getAllQuestion: (pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ALL_QUESTION + pageSize +"&pageNo="+ pageNo),
+  createQuestion: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_QUESTION,payload),
+  createTopic: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_TOPIC,payload),
+  getAssessmentByTopic: (assID,pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT.replace("{assId}",assID).replace("{pageSize}",pageSize).replace("{pageNo}",pageNo)),
+  deleteAssessment: (sid) => AxiosService.delete(GLOBELCONSTANT.ASSESSMENT.DELETE_ASSESSMENT.replace("{assId}",sid) ),
+  deleteQuestion: (sid) => AxiosService.delete(GLOBELCONSTANT.ASSESSMENT.DELETE_QUESTION.replace("{questionId}",sid) ),
+  associateQuestion: (assID,payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.ASSOCIATE_QUESTION.replace("{assID}",assID), payload),
+  getAssociateQuestion: (assID,pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSOCIATE_QUESTION.replace("{assId}",assID).replace("{pageSize}",pageSize).replace("{pageNo}",pageNo)),  
+  getAllCategory: ()=> AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_CATEGORY),
+  createAssessment:(payload)=>AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_ASSESSMENT,payload),
+  updateAssessment:(payload)=>AxiosService.put(GLOBELCONSTANT.ASSESSMENT.UPDATE_ASSESSMENT,payload),
+  searchTopic: (query,companySid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.SEARCH_TOPIC + query + "/" + companySid),
+  searchAssessment: (query,companySid,topicSid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.SEARCH_ASSESSMENT.replace("{query}",query).replace("{companySid}",companySid).replace("{topicSid}",topicSid)),
+  searchQuestion: (query,companySid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.SEARCH_QUESTION.replace("{query}",query).replace("{companySid}",companySid)),
+
 
   // instructor
+
+  // assessment 
+  getAssessmentInstruction: (payload)=> AxiosService.post(GLOBELCONSTANT.API.ASSESSMENT.GET_INSTRUCTION, payload),
+  getQuestionAnswer: (assessmentSid, virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.GET_QUESTIONS.replace("{assessmentSid}", assessmentSid).replace("{virtualAccountSid}", virtualAccountSid)),
+  submitAnswer: (payload)=> AxiosService.post(GLOBELCONSTANT.API.ASSESSMENT.SUBMIT_ANSWER, payload),
+  reviewAssessmentResponse: (virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.REVIEW_RESPONSE.replace("{virtualAccountSid}", virtualAccountSid)),
+  submitAssessment: (payload)=> AxiosService.post(GLOBELCONSTANT.API.ASSESSMENT.SUBMIT_ASSESSMENT, payload),
+  getAssessmentScore: (assessmentSid, virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.GET_SCORE.replace("{assessmentSid}", assessmentSid).replace("{virtualAccountSid}", virtualAccountSid)),
+  getSubmittedResponse: (virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.SUBMIT_RESPONSE.replace("{virtualAccountSid}", virtualAccountSid)),
 
 
   
