@@ -160,7 +160,7 @@ public class AssessmentController {
     @PutMapping("update/assessment")
     @ApiOperation(value = "Update Assessment",notes = "API to update Assessment.")
     public ResponseEntity<?> updateAssessment(
-            @ApiParam(value = "Authorization token",required = true) @RequestHeader String token,
+            @ApiParam(value = "Authorization token",required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Update payload",required = true)  @RequestBody AssessmentTo assessmentTo){
         JWTTokenTO jwtTokenTO = JWTDecode.parseJWT(token);
         assessmentTo.setUpdatedBySid(jwtTokenTO.getVirtualAccountSid());
