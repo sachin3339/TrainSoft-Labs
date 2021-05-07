@@ -1053,6 +1053,9 @@ p {
 	pointer-events: none;
 	cursor: default;
 }
+.f13 .btn-primary{
+  font-size: 13px !important;
+}
 
 /* Alignments */
 .ibvm {
