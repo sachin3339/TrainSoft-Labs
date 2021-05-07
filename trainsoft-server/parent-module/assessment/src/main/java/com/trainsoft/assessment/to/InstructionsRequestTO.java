@@ -11,4 +11,5 @@ public class InstructionsRequestTO implements Serializable {
 
     private String difficulty;
     private String tagSid;
+    private String companySid;
 }

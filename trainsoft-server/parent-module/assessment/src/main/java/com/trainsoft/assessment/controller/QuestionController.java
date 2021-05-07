@@ -64,13 +64,15 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getAnswersQuestionBySid(questionSid));
     }
 
-    @GetMapping("display/assessment/question")
+    @GetMapping("display/assessment/question/{assessmentSid}")
     @ApiOperation(value = "displayQuestionsForAssessment", notes = "API to get all Questions which are not associated to any Assessments.")
     public ResponseEntity<?> displayQuestionsForAssessment(
-            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token)
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam(value = "Assessment Sid", required = true) @PathVariable("assessmentSid") String assessmentSid)
+
     {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(questionService.displayQuestionsForAssessment(jwt.getCompanySid()));
+        return ResponseEntity.ok(questionService.displayQuestionsForAssessment(jwt.getCompanySid(),assessmentSid));
     }
 
     @PutMapping("update/question")
