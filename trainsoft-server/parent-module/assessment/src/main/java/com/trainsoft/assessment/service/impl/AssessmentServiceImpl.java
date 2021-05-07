@@ -153,6 +153,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                     assessmentQuestion.setCreatedOn(new Date(Instant.now().toEpochMilli()));
                     assessmentQuestion.setQuestionId(question);
                     assessmentQuestion.setAssessmentId(assessment);
+                    assessmentQuestion.setQuestionPoint(question.getQuestionPoint());
                     assessmentQuestionList.add(assessmentQuestion);
                 });
                 List<AssessmentQuestion> savedAssessmentQuestions = assessmentQuestionRepository.saveAll(assessmentQuestionList);
