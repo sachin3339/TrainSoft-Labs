@@ -328,7 +328,7 @@ public class AssessmentServiceImpl implements IAssessmentService
             virtualAccountHasQuestionAnswerDetails.setCompanyId(assessment.getCompany());
             virtualAccountHasQuestionAnswerDetails.setCreatedBy(assessment.getCreatedBy());
             virtualAccountHasQuestionAnswerDetails.setCreatedOn(assessment.getCreatedOn());
-        if (answer.isCorrect()==true) virtualAccountHasQuestionAnswerDetails.setCorrect(true);
+        if (answer!=null && answer.isCorrect()==true) virtualAccountHasQuestionAnswerDetails.setCorrect(true);
         Integer questionPoint = questionRepository.findQuestionPoint(question.getId());
         virtualAccountHasQuestionAnswerDetails.setQuestionPoint(questionPoint);
         virtualAccountHasQuestionAnswerDetailsRepository.save(virtualAccountHasQuestionAnswerDetails);
@@ -753,5 +753,35 @@ public class AssessmentServiceImpl implements IAssessmentService
                 assessmentTo.next().setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessment1.next().getStringSid()));
             }return assessmentToList;
         }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
+    }
+
+    @Override
+    public List<VirtualAccountHasQuizSetAssessmentTO> getLeaderBoardForAssessmentForToday(String quizSetSid) {
+        Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
+        if (assessment!=null){
+            List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
+            List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
+                    .findByAssessmentForCurrentDate(assessment.getId());
+            for (int i=0;i<10;i++){
+                topTen.add(i,assessmentList.get(i));
+            }
+            return   mapper.convertList(topTen,VirtualAccountHasQuizSetAssessmentTO.class);
+        }
+        throw new InvalidSidException("invalid Assessment sid");
+    }
+
+    @Override
+    public List<VirtualAccountHasQuizSetAssessmentTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid) {
+        Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
+        if (assessment!=null){
+            List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
+            List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
+                    .findByAssessment(assessment.getId());
+            for (int i=0;i<10;i++){
+                topTen.add(i,assessmentList.get(i));
+            }
+            return   mapper.convertList(topTen,VirtualAccountHasQuizSetAssessmentTO.class);
+        }
+        throw new InvalidSidException("invalid Assessment sid");
     }
 }

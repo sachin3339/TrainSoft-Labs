@@ -230,4 +230,17 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.getAssessDetails(assessmentSid));
     }
 
+    @GetMapping("get/today/assessment/leaderboard/{sid}")
+    @ApiOperation(value = "get leaderboard for today",notes = "API to get Leaderboard for an Assessment for today.")
+    public ResponseEntity<?> getLeaderBoardForAssessmentForToday(
+            @ApiParam("Assessment Sid")@PathVariable("sid") String quizSetSid){
+        return ResponseEntity.ok(assessmentService.getLeaderBoardForAssessmentForToday(quizSetSid));
+    }
+
+    @GetMapping("get/allTime/assessment/leaderboard/{sid}")
+    @ApiOperation(value = "get leadrboard for all time. ",notes = "API to get leaderboard for an Assessment for All Time.")
+    public ResponseEntity<?> getLeaderBoardAssessmentForAllTime(
+            @ApiParam("Assessment Sid")@PathVariable("sid") String quizSetSid){
+        return ResponseEntity.ok(assessmentService.getLeaderBoardForAssessmentForAllTime(quizSetSid));
+    }
 }

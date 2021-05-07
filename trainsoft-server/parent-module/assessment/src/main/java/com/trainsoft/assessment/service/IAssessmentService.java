@@ -42,6 +42,8 @@ public interface IAssessmentService
 
     AssessmentDashboardTo getAssessDetails(String assessmentSid);
 
-    //List<VirtualAccountHasQuizSetAssessmentTO> get
+    List<VirtualAccountHasQuizSetAssessmentTO> getLeaderBoardForAssessmentForToday(String quizSetSid);
+
+    List<VirtualAccountHasQuizSetAssessmentTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
 
 }
