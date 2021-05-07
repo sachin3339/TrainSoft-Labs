@@ -745,13 +745,13 @@ public class AssessmentServiceImpl implements IAssessmentService
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
         if (company!=null && topic!=null){
-            List<Assessment> assessment = customRepository.searchAssessment(searchString, company, topic);
-            List<AssessmentTo> assessmentToList1 = mapper.convertList(assessment, AssessmentTo.class);
+            List<Assessment> assessment = customRepository.searchAssessment(searchString.trim(), company, topic);
+            List<AssessmentTo> assessmentToList = mapper.convertList(assessment, AssessmentTo.class);
             Iterator<Assessment> assessment1 = assessment.stream().iterator();
-            Iterator<AssessmentTo> assessmentTo = assessmentToList1.stream().iterator();
+            Iterator<AssessmentTo> assessmentTo = assessmentToList.stream().iterator();
             while (assessment1.hasNext() && assessmentTo.hasNext()) {
                 assessmentTo.next().setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessment1.next().getStringSid()));
-            }return assessmentToList1;
+            }return assessmentToList;
         }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
     }
 }
