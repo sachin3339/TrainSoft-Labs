@@ -87,7 +87,7 @@ const CreateStep3 = ({ location, handleNext, handleBack }) => {
     const deleteQuestion = async (sid) => {
         spinner.show("Loading... wait");
         try {
-            let { data } = await RestService.deleteAssociateQuestion(sid)
+            let { data } = await RestService.deleteAssociateQuestion(sid,initialAssessment.sid)
             Toast.success({ message: 'Question deleted successfully', time: 2000 });
             getAllQuestion()
             spinner.hide();
