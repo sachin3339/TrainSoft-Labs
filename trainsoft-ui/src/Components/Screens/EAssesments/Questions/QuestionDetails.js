@@ -1,9 +1,32 @@
+import { useState ,useEffect,useContext } from "react";
 import { Form } from "react-bootstrap";
-import { useState } from "react";
 import CardHeader from "../../../Common/CardHeader";
 import Submit from "../../Assessment/common/SubmitButton";
+import RestService from "../../../../Services/api.service";
+import AppContext from "../../../../Store/AppContext";
+import { navigate } from "../../../Common/Router";
 
 const QuestionDetails = ({ location }) => {
+      const {spinner} = useContext(AppContext)
+      const [question,setQuestion] = useState([])
+
+  // get All question 
+  const getQuestionById = async (page = 1) => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getQuestionById(location.state.sid)
+      setQuestion(data);
+      spinner.hide();
+    } catch (err) {
+      // spinner.hide();
+      console.error("error occur on getQuestionById()", err)
+    }
+  }
+
+  useEffect(() => {
+    getQuestionById()
+  }, [])
+
   return (
     <>
       <CardHeader
@@ -17,19 +40,18 @@ const QuestionDetails = ({ location }) => {
         <Form.Group>
           <Form.Label>Question Type</Form.Label>
           <br />
-          <Form.Label style={{ fontWeight: 600 }}>Multiple Choice</Form.Label>
+          <Form.Label style={{ fontWeight: 600 }}>{question.questionType}</Form.Label>
         </Form.Group>
         <Form.Group>
           <Form.Label>Question Title</Form.Label>
           <br />
           <Form.Label style={{ fontWeight: 600 }}>
-            Which of the following option leads to the portability and security
-            of Java?
+          {question.name}
           </Form.Label>
         </Form.Group>
-        <AnswerSelector />
+        <AnswerSelector {...{question}} />
         <Form.Group>
-          <Form.Label>Tags</Form.Label>
+          {/* <Form.Label>Tags</Form.Label>
           <br />
           <div
             style={{
@@ -43,15 +65,13 @@ const QuestionDetails = ({ location }) => {
             }}
           >
             Java
-          </div>
+          </div> */}
         </Form.Group>
         <Form.Group>
           <Form.Label>Answer Explaination</Form.Label>
           <br />
           <Form.Label style={{ fontWeight: 600 }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam
+           {question?.answerExplanation}
           </Form.Label>
         </Form.Group>
         <div
@@ -64,6 +84,9 @@ const QuestionDetails = ({ location }) => {
           }}
         >
           <Submit
+          onClick={() => {
+            navigate("../questions", { state: { title: "Question", path: "questions", } })
+            }}
             style={{
               background: "#0000003E",
               color: "black",
@@ -77,17 +100,15 @@ const QuestionDetails = ({ location }) => {
   );
 };
 
-const AnswerSelector = ({ ordering = "number" }) => {
-  const [answers, setAnswers] = useState([{}, {}, {}]);
+const AnswerSelector = ({ ordering = "number",question }) => {
   const [correctAnswer, setCorrectAnswer] = useState(0);
 
   return (
     <div style={{ margin: "45px 0" }}>
-      {answers && (
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ marginRight: "30px" }}>
             <Form.Label>Answers</Form.Label>
-            {answers.map((_answer, index) => (
+            {question?.answer?.map((_answer, index) => (
               <div
                 style={{
                   padding: "15px 0",
@@ -114,7 +135,7 @@ const AnswerSelector = ({ ordering = "number" }) => {
                       outline: "none",
                     }}
                   >
-                    Bytecode is executed by JVM
+                    {_answer?.answerOptionValue}
                   </div>
                 </div>
               </div>
@@ -122,7 +143,7 @@ const AnswerSelector = ({ ordering = "number" }) => {
           </div>
           <div>
             <Form.Label>Market Correct Answer </Form.Label>
-            {answers.map((_, index) => (
+            {question?.answer?.map((_, index) => (
               <div
                 style={{
                   padding: "15px 0",
@@ -140,7 +161,7 @@ const AnswerSelector = ({ ordering = "number" }) => {
                     marginRight: "10px",
                     cursor: "pointer",
                     border:
-                      correctAnswer === index
+                        _.correct
                         ? "10px solid blue"
                         : "10px solid #D4D6DB",
                   }}
@@ -149,7 +170,6 @@ const AnswerSelector = ({ ordering = "number" }) => {
             ))}
           </div>
         </div>
-      )}
     </div>
   );
 };

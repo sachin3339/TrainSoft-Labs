@@ -177,7 +177,8 @@ const GLOBELCONSTANT = {
             UPLOAD_ASSESSMENT: API_ASSES + "upload/list/assess/participants",
             UPLOAD_QUESTION: API_ASSES + "question/bulkupload",
             GET_ASSESSMENT_DASHBOARD : API_ASSES + "get/assessdetails/{aasId}",
-            GET_ASSESSMENT_USER : API_ASSES + "get/configuredusers/{assID}"
+            GET_ASSESSMENT_USER : API_ASSES + "get/configuredusers/{assID}",
+            GET_QUESTION_BY_SID : API_ASSES + "question/{qId}"
 
         },  
         ACCESS_LEVEL: [
