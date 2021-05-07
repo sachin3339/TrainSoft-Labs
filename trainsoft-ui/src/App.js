@@ -28,7 +28,7 @@ function App() {
             <LandingHome path="/"/>
             <ResetPwd path="/reset/:token"/>
             <Login path="/login"/>
-            <Assessment path="/assesment"/>
+            <Assessment path="/assessment/:assessmentSid/:companySid/:virtualAccountSid"/>
             <Dashboard path="/*"/>
             <ClassLab path="class/*"/>
             <VsCode path="vscode"/>
