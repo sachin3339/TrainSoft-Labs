@@ -79,7 +79,7 @@ const CreateStep5 = ({ location, handleNext, handleBack }) => {
                         <div className=" jcc my-3">
                             <div>
                                 <Submit onClick={handleNext} onClick={()=>{navigate("topic-details",{state :{ title: "Topics",
-                                 subTitle: "Topics",
+                                 subTitle: "Assessment",
                                  path: "topicAssesment",}})}}>Finish</Submit>
                             </div>
                         </div>

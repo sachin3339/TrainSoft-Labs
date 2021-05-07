@@ -93,7 +93,7 @@ const CreateStep2 = ({ location, handleNext, handleBack }) => {
           <form onSubmit={handleSubmit} className="create-batch">
             <div>
 
-              <Form.Group className="flx">
+              <Form.Group className="aic">
                 <div >
                   <Form.Label className="label">
                     Time limit
@@ -103,7 +103,7 @@ const CreateStep2 = ({ location, handleNext, handleBack }) => {
                   </div>
                 </div>
                 <div>
-                  {!values.duration && <TextInput type="number" name="timeLimit" />}
+                  {!values.duration &&<div className="form-duration"> <TextInput className="" type="number" name="timeLimit" /> <div>Mins</div> </div>}
                 </div>
               </Form.Group>
               <Form.Group style={{ width: "60%" }}>
@@ -134,7 +134,7 @@ const CreateStep2 = ({ location, handleNext, handleBack }) => {
 
               <div>
                 <Submit  onClick={()=>{navigate("topic-details",{state :{ title: "Topics",
-                                 subTitle: "Topics",
+                                 subTitle: "Assessment",
                                  path: "topicAssesment",}})}} style={{ background: "#0000003E", color: "black", marginRight: "10px", }}>
                           Cancel
                   </Submit>

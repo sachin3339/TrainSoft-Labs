@@ -87,7 +87,7 @@ const CreateStep3 = ({ location, handleNext, handleBack }) => {
     const deleteQuestion = async (sid) => {
         spinner.show("Loading... wait");
         try {
-            let { data } = await RestService.deleteAssociateQuestion(sid)
+            let { data } = await RestService.deleteAssociateQuestion(sid,initialAssessment.sid)
             Toast.success({ message: 'Question deleted successfully', time: 2000 });
             getAllQuestion()
             spinner.hide();
@@ -118,7 +118,7 @@ const CreateStep3 = ({ location, handleNext, handleBack }) => {
 
                 <div>
                     <Submit  onClick={()=>{navigate("topic-details",{state :{ title: "Topics",
-                                 subTitle: "Topics",
+                                 subTitle: "Assessment",
                                  path: "topicAssesment",}})}} style={{ background: "#0000003E", color: "black", marginRight: "10px", }}>
                         Cancel
                   </Submit>
