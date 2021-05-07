@@ -1,6 +1,7 @@
 package com.trainsoft.assessment.service.impl;
 
 import com.trainsoft.assessment.commons.CommonUtils;
+import com.trainsoft.assessment.commons.Utility;
 import com.trainsoft.assessment.customexception.ApplicationException;
 import com.trainsoft.assessment.customexception.DuplicateRecordException;
 import com.trainsoft.assessment.customexception.FunctionNotAllowedException;
@@ -479,11 +480,8 @@ public class AssessmentServiceImpl implements IAssessmentService
         {
             Assessment assessment=assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
             if(assessment!=null) {
-                String URL = request.getRequestURL().toString();
-                String URI = request.getRequestURI();
-                int port = request.getServerPort();
-                String Host = URL.replace(":" + port + URI, "");
-                String generatedUrl = Host.concat("/assessment?assessmentSid="+assessmentSid+"&companySid="+assessment.getCompany().getStringSid());
+                String URL = Utility.getSiteURL(request);
+                String generatedUrl = URL.concat("/assessment/"+assessmentSid+"/"+assessment.getCompany().getStringSid())+"/0";
                 assessment.setUrl(generatedUrl);
                 assessmentRepository.save(assessment);
                 return generatedUrl;
