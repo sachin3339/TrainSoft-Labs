@@ -236,4 +236,4 @@ public class AssessmentController {
     {
         return ResponseEntity.ok(assessmentService.getConfiguredUserDetailsForAssessment(assessmentSid));
     }
-}
+} 
