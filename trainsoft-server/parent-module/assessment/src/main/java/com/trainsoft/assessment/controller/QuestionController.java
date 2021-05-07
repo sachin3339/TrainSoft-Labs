@@ -109,7 +109,8 @@ public class QuestionController {
     @ApiOperation(value = "search question",notes = "API to Search Question")
     public ResponseEntity<?> searchQuestion(
             @ApiParam(value ="Search String",required = true)@PathVariable("searchString") String searchString,
-            @ApiParam(value = "Company Sid",required = true)@PathVariable("sid") String companySid){
-        return ResponseEntity.ok(questionService.searchQuestion(searchString, companySid));
+            @ApiParam(value = "Company Sid",required = true)@PathVariable("sid") String companySid,Pageable pageable)
+    {
+        return ResponseEntity.ok(questionService.searchQuestion(searchString, companySid,pageable));
     }
 }

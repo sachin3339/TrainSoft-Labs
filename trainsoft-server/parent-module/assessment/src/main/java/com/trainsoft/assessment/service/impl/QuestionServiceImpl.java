@@ -415,10 +415,11 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public List<QuestionTo> searchQuestion(String searchString,String companySid) {
+    public List<QuestionTo> searchQuestion(String searchString,String companySid,Pageable pageable)
+    {
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         if (company==null) throw new InvalidSidException("invalid company sid");
-      List<Question> question = customRepository.searchQuestion(searchString.trim(), company);
+        List<Question> question = questionRepository.searchQuestion("%"+searchString.trim()+"%", company,pageable);
         List<QuestionTo> questionTo = mapper.convertList(question, QuestionTo.class);
         questionTo.forEach(qt->{
             for (Question q:question){

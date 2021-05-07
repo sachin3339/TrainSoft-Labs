@@ -744,11 +744,12 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<AssessmentTo> searchAssessment(String searchString, String companySid, String topicSid) {
+    public List<AssessmentTo> searchAssessment(String searchString, String companySid, String topicSid,Pageable pageable)
+    {
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
         if (company!=null && topic!=null){
-            List<Assessment> assessment = customRepository.searchAssessment(searchString.trim(), company, topic);
+            List<Assessment> assessment = assessmentRepository.searchAssessment("%"+searchString.trim()+"%", company, topic,pageable);
             List<AssessmentTo> assessmentToList = mapper.convertList(assessment, AssessmentTo.class);
             Iterator<Assessment> assessment1 = assessment.stream().iterator();
             Iterator<AssessmentTo> assessmentTo = assessmentToList.stream().iterator();

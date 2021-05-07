@@ -16,9 +16,9 @@ public interface ITrainsoftCustomRepository
 {
     BigInteger noOfCountByClass(String classz, Company company);
 
-    List<Question> searchQuestion(String searchString, Company company);
+    /*List<Question> searchQuestion(String searchString, Company company);*/
 
-    List<Assessment> searchAssessment(String searchString,Company company,Topic topic);
+  /*  List<Assessment> searchAssessment(String searchString,Company company,Topic topic);*/
 
-    List<Topic> searchTopic(String searchString,Company company);
+    /*List<Topic> searchTopic(String searchString,Company company);*/
 }
