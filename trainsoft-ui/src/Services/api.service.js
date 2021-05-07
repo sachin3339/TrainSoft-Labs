@@ -102,6 +102,7 @@ const RestService = {
   updateTopic: (payload) => AxiosService.put(GLOBELCONSTANT.ASSESSMENT.UPDATE_TOPIC,payload),
   getAllQuestion: (pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ALL_QUESTION + pageSize +"&pageNo="+ pageNo),
   createQuestion: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_QUESTION,payload),
+  GetQuestionType: () => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_QUESTION_TYPE),
   createTopic: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_TOPIC,payload),
   getAssessmentByTopic: (assID,pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT.replace("{assId}",assID).replace("{pageSize}",pageSize).replace("{pageNo}",pageNo)),
   deleteAssessment: (sid) => AxiosService.delete(GLOBELCONSTANT.ASSESSMENT.DELETE_ASSESSMENT.replace("{assId}",sid) ),
@@ -123,6 +124,7 @@ const RestService = {
   getAssUser : (assId)=> AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT_DASHBOARD.replace("{aasId}",assId)),
   getAssestUser: (assId) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT_USER.replace("{assID}",assId)),
 
+
   
   // instructor
 
@@ -134,9 +136,9 @@ const RestService = {
   submitAssessment: (payload)=> AxiosService.post(GLOBELCONSTANT.API.ASSESSMENT.SUBMIT_ASSESSMENT, payload),
   getAssessmentScore: (assessmentSid, virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.GET_SCORE.replace("{assessmentSid}", assessmentSid).replace("{virtualAccountSid}", virtualAccountSid)),
   getSubmittedResponse: (virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.SUBMIT_RESPONSE.replace("{virtualAccountSid}", virtualAccountSid)),
-
-
-  
+  getTopics: () => AxiosService.get(GLOBELCONSTANT.API.GET_TOPIC),
+  createAssessmentUser: (payload, header) => AxiosService.post(GLOBELCONSTANT.API.CREATE_ASS_USER, payload, "", header),
+  getAssessmentBySid: (assSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.GET_ASSESSMENT_BY_SID + assSid)
 };
 
 export default RestService;

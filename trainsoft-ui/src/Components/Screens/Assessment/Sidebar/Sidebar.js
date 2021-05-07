@@ -5,8 +5,9 @@ import { AssessmentContext } from "../AssesementContext";
 import styles from "./Sidebar.module.css";
 import QuestionItem from "./QuestionItem";
 import LeaderBoard from "./LeaderBoard";
+import AppUtils from "../../../../Services/Utils";
 
-const Sidebar = ({ questions }) => {
+const Sidebar = () => {
   const {
     setQuestion,
     selectedAnswers,
@@ -14,7 +15,8 @@ const Sidebar = ({ questions }) => {
     setQuestionIndex,
     questionIndex,
     finished,
-    setSelectedAnswer
+    setSelectedAnswer,
+    questions
   } = useContext(AssessmentContext);
   return <div style={{
         flex: 3,
@@ -34,7 +36,8 @@ const Sidebar = ({ questions }) => {
       {
         !finished ? <>
             {
-              questions.map((_question, index) => (
+              AppUtils.isNotEmptyArray(questions)
+              && questions.map((_question, index) => (
                 <div onClick={() => { setQuestion(_question); setSelectedAnswer({}); setQuestionIndex(index);}}>
                   <QuestionItem
                     {..._question}

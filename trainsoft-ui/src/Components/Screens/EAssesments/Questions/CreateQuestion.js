@@ -1,4 +1,4 @@
-import { useEffect, useState,useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import RestService from "../../../../Services/api.service";
 import AppContext from "../../../../Store/AppContext";
 import useToast from "../../../../Store/ToastHook";
@@ -6,40 +6,71 @@ import { Formik } from "formik";
 import {
   TextInput,
   SelectInput,
-  RadioBox,
   TextArea,
+  RadioBoxKey,
 } from "../../../Common/InputField/InputField";
 import { Form } from "react-bootstrap";
-import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
-import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
 import CardHeader from "../../../Common/CardHeader";
-
-import "./question.css";
 import Submit from "../../Assessment/common/SubmitButton";
+import AnswerSelector from "./AnswerSelector";
+import AppUtils from "../../../../Services/Utils";
+import { navigate } from "../../../Common/Router";
+import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
+import "./question.css";
 
 const CreateQuestion = ({ location }) => {
+  const goBack = () => navigate("./");
   const Toast = useToast()
-  const {spinner} = useContext(AppContext)
+  const { spinner } = useContext(AppContext);
+  const [questionType, setQuestionType] = useState([]);
 
-// Create Topic
-const createAssessment = async (payload) => {
-  spinner.hide("Loading... wait");
-  try {
-     RestService.createQuestion(payload).then(
-         response => {
-           Toast.success({ message: "Topic added successfully" })
-         },
-         err => {
-             spinner.hide();
-         }
-     ).finally(() => {
-         spinner.hide();
-     });
-   } catch (err) {
-     console.error("error occur on createTopic()", err)
-   }
+  // Create question
+  const createNewQuestion = async (values) => {
+    spinner.hide("Loading... Please wait...");
+    try {
+      let payload = {...values}
+      delete payload.answerOrderType;
+      RestService.createQuestion(payload).then(
+        response => {
+          spinner.hide();
+          goBack();
+          Toast.success({ message: "Question created successfully" })
+        },
+        err => {
+          spinner.hide();
+        }
+      ).finally(() => {
+        spinner.hide();
+      });
+    } catch (err) {
+      console.error("error occur on createNewQuestion()", err)
+    }
   }
 
+   // Create Topic
+   const getQuestionType = async () => {
+    spinner.hide("Loading... Please wait...");
+    try {
+      RestService.GetQuestionType().then(
+        response => {
+          spinner.hide();
+          setQuestionType(response.data);
+        },
+        err => {
+          spinner.hide();
+        }
+      ).finally(() => {
+        spinner.hide();
+      });
+    } catch (err) {
+      console.error("error occur on getQuestionType()", err)
+    }
+  }
+
+  // initialize component
+  useEffect(() => {
+    getQuestionType();
+  }, [])
   return (
     <>
       <CardHeader
@@ -55,28 +86,20 @@ const createAssessment = async (payload) => {
       <div className="table-shadow " style={{ padding: "40px" }}>
         {true ? (
           <Formik
-            onSubmit={(value) => createAssessment(value)}
-            initialValues={{
-              answerExplanation: "Yes C++ is Object Oriented Language",
-              description: "C++",
-              difficulty: "BEGINNER",
-              name: "C++ is Object Oriented Language ?",
-              negativeQuestionPoint: 1,
-              questionPoint: 1,
-              questionType: "MCQ",
-              status: "ENABLED",
-              technologyName: "C++"
-            }}
-            // validationSchema={schema}
+            onSubmit={(value) => createNewQuestion(value)}
+            initialValues={GLOBELCONSTANT.DATA.CREATE_QUESTION}
           >
-            {({ handleSubmit, isSubmitting, dirty, setFieldValue }) => (
+            {({ handleSubmit, values, setFieldValue, resetForm, isSubmitting, dirty, touched }) => (
               <form onSubmit={handleSubmit} className="create-batch">
                 <div>
                   <Form.Group style={{ width: "60%" }}>
                     <SelectInput
                       label="Question Type"
-                      option={["Multiple Choice"]}
-                      name="trainingBatchs"
+                      option={AppUtils.isNotEmptyArray(questionType) ? questionType : []}
+                      name="questionType"
+                      bindKey="name"
+                      valueKey="value"
+                      value="Multiple Choice"
                     />
                   </Form.Group>
                   <Form.Group>
@@ -87,26 +110,50 @@ const createAssessment = async (payload) => {
                     />
                   </Form.Group>
                   <Form.Group>
+                    <TextInput
+                      label="Technology Name"
+                      placeholder="Technology Name"
+                      name="technologyName"
+                    />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label className="label">
+                       Difficulty
+                     </Form.Label>
+                    <div style={{ marginBottom: "10px" }}>
+                      <RadioBoxKey name="difficulty" options={GLOBELCONSTANT.DIFFICULTY} />
+                    </div>
+                  </Form.Group>
+                  <Form.Group>
                     <Form.Label className="label">
                       Answer Choice Ordering
                     </Form.Label>
                     <div style={{ marginBottom: "10px" }}>
-                      <RadioBox name="hi" options={["Alphabets", "Number"]} />
+                      <RadioBoxKey name="answerOrderType" options={GLOBELCONSTANT.ANSWER_ORDER_TYPE} />
                     </div>
                   </Form.Group>
 
-                  <AnswerSelector />
+                  <AnswerSelector {...{
+                      values, 
+                      ordering: values.answerOrderType, 
+                      setFieldValue
+                  }}/>
 
                   <Form.Group>
                     <TextArea
-                      label="Answer Explaination"
-                      // placeholder="Name"
-                      name="name"
+                      label="Answer Explanation"
+                      name="answerExplanation"
                     />
                   </Form.Group>
 
                   <Form.Group>
-                    <TextArea label="Tags" name="name" />
+                    <TextArea
+                      label="Description"
+                      name="description"
+                    />
+                  </Form.Group>
+                  <Form.Group>
+                    <TextArea label="Tags" name="tags" />
                   </Form.Group>
                 </div>
                 <div
@@ -118,16 +165,14 @@ const createAssessment = async (payload) => {
                     justifyContent: "flex-end",
                   }}
                 >
-                  <Submit
-                    style={{
+                  <Submit style={{
                       background: "#0000003E",
                       color: "black",
                       marginRight: "10px",
                     }}
-                  >
-                    Cancel
-                  </Submit>
-                  <Submit>Create</Submit>
+                    onClick={() => {resetForm(); goBack()}}
+                  >Cancel</Submit>
+                  <Submit onClick={()=> createNewQuestion(values)} disabled={isSubmitting || !dirty || !touched}>Create</Submit>
                 </div>
               </form>
             )}
@@ -135,123 +180,11 @@ const createAssessment = async (payload) => {
         ) : (
           <div>
             <div className="text-center title-ss text-success">
-              {/* Hi, {contact.name} Our sales team will get back to you ASAP */}
             </div>
           </div>
         )}
       </div>
     </>
-  );
-};
-
-const AnswerSelector = ({ ordering = "number" }) => {
-  const [answers, setAnswers] = useState([{}, {}, {}]);
-  const [correctAnswer, setCorrectAnswer] = useState();
-
-  return (
-    <div style={{ margin: "45px 0" }}>
-      {answers && (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ marginRight: "30px" }}>
-            <Form.Label className="label">Answers</Form.Label>
-            {answers.map((_answer, index) => (
-              <div
-                style={{
-                  padding: "15px 0",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <div
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    borderRadius: "10px",
-                    background: "#D4D6DB",
-                    marginRight: "10px",
-                  }}
-                />
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <div style={{ width: "20px" }}>{index + 1}.</div>
-                  <input
-                    style={{
-                      width: "500px",
-                      border: "none",
-                      borderBottom: "1px solid rgba(0,0,0,0.2)",
-                      outline: "none",
-                    }}
-                  />
-                  <div
-                    onClick={() =>
-                      setAnswers(
-                        answers.filter((_, _index) => _index !== index)
-                      )
-                    }
-                    style={{
-                      width: "15px",
-                      height: "15px",
-                      borderRadius: "10px",
-                      background: "#ED7A7A",
-                      marginRight: "10px",
-                      marginLeft: "20px",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <RemoveOutlinedIcon
-                      style={{ color: "white", fontSize: "14px" }}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div>
-            <Form.Label className="label">Market Correct Answer </Form.Label>
-            {answers.map((_, index) => (
-              <div
-                style={{
-                  padding: "15px 0",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <div
-                  onClick={() => setCorrectAnswer(index)}
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    borderRadius: "10px",
-                    background: "#D4D6DB",
-                    marginRight: "10px",
-                    cursor: "pointer",
-                    border:
-                      correctAnswer === index
-                        ? "4px solid blue"
-                        : "4px solid #D4D6DB",
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      <div
-        onClick={() => setAnswers([...answers, {}])}
-        style={{
-          color: "#2D62ED",
-          display: "flex",
-          alignItems: "center",
-          fontWeight: 600,
-          cursor: "pointer",
-        }}
-      >
-        <AddCircleOutlinedIcon style={{ marginRight: "5px" }} />
-        Add Option
-      </div>
-    </div>
   );
 };
 

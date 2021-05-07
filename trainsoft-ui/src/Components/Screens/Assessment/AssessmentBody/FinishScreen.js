@@ -9,16 +9,21 @@ import AppContext from '../../../../Store/AppContext';
 import RestService from '../../../../Services/api.service';
 import AppUtils from '../../../../Services/Utils';
 import useToast from "../../../../Store/ToastHook";
+import { AssessmentContext } from "../AssesementContext";
 
 const FinishScreen = ({ questions }) => {
+    const {
+        instruction,
+        assUserInfo
+    } = useContext(AssessmentContext);
     const { spinner } = useContext(AppContext);
     const Toast = useToast();
     const [score, setScore] = useState({});
 
     // this method to get assessment score
     const getAssessmentScore = (
-        assessmentSid = "659253CF91270AD9421C17EA0EB550305576E7943120E023722C03A9877E92BD",
-        virtualAccountSid = "479F0242214E4AA4B3D8A9866FD2B5BED5671ABFA27E4C77A75CAA5E0B3D527B"
+        assessmentSid = instruction.sid,
+        virtualAccountSid = assUserInfo.sid
         ) => {
         try {
             spinner.show("Submitting assessment.. Please wait...");
@@ -39,7 +44,7 @@ const FinishScreen = ({ questions }) => {
     }
 
     useEffect(() => {
-        getAssessmentScore();
+        if(instruction && assUserInfo) getAssessmentScore();
     }, []);
     return (
         <div className={styles.finishScreen}>
