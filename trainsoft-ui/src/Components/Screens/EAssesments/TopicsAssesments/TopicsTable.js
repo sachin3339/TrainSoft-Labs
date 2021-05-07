@@ -38,6 +38,7 @@ const TopicsTable = ({ location }) => {
                 title: "Topics",
                 subTitle: "Assesments",
                 path: "topicAssesments",
+                count: data.noOfAssessments,
                 rowData: data,
                 sid: data.sid,
               }}
@@ -142,6 +143,7 @@ const TopicsTable = ({ location }) => {
       let data = !isEdit ? await RestService.createTopic(payload) : await RestService.updateTopic(payload)
         Toast.success({ message: `Topic ${isEdit ? "updated": 'added'} successfully` })
         getAllTopic()
+        getTopicCount()
         setShow(false)
         setIsEdit(false)
     } catch (err) {
@@ -164,9 +166,18 @@ const TopicsTable = ({ location }) => {
       }
     }
   
-
+      // get batch count
+      const getTopicCount = async () => {
+        try {
+           let {data} =await RestService.getCount("quiz")
+            setCount(data);
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
+        }
+    }
 
   useEffect(() => {
+    getTopicCount()
     getAllTopic()
     getAllCategory()
   }, [])
@@ -179,7 +190,6 @@ const TopicsTable = ({ location }) => {
           onChange: (e) => e.length === 0 && getAllTopic(),
           onEnter: (e) => searchTopic(e),
         }}
-        
         
       >
         <Button
@@ -222,7 +232,7 @@ const TopicsTable = ({ location }) => {
             configuration,
             sourceData: topic,
             onPageChange: (e) => getAllTopic(e),
-            count: 10,
+            count
           }}
         />
       </div>

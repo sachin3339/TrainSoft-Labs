@@ -232,9 +232,9 @@ const User = ({ location }) => {
         try {
             let val = data
             val.appuser.accessType = data.appuser.accessType.key
-            val.departmentVA.department.name = data.departmentVA.department.name
-            val.departmentVA.departmentRole = data.departmentVA.departmentRole.key
-            val.departmentVA.department = data.departmentVA.department
+            val.departmentVA.department.name = data.departmentVA?.department?.name
+            val.departmentVA.departmentRole = data.departmentVA?.departmentRole?.key
+            val.departmentVA.department = data.departmentVA?.department
 
             RestService.updateParticipant(val).then(resp => {
                 setShow(false)

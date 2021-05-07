@@ -295,8 +295,8 @@ const Batch = ({ location }) => {
         }
     }
 
-    // get batches by sid
-
+    
+    // get batch count
     const getBatchCount = async () => {
         try {
             RestService.getCount("vw_batch").then(

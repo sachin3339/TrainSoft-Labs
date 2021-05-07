@@ -1,124 +1,149 @@
-import { useEffect, useState,useContext } from "react";
+import { useContext } from "react";
 import RestService from "../../../../../Services/api.service";
 import AppContext from "../../../../../Store/AppContext";
 import useToast from "../../../../../Store/ToastHook";
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
 import { Formik } from "formik";
 import {
   TextInput,
-  SelectInput,
-  RadioBox,
-  TextArea,
-  DateInput,
   RadioBoxKey,
 } from "../../../../Common/InputField/InputField";
 import { Form } from "react-bootstrap";
-import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
-import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
-import CardHeader from "../../../../Common/CardHeader";
 import Submit from "../../../Assessment/common/SubmitButton";
+import { navigate } from "../../../../Common/Router";
+
 
 
 import "../topic.css";
 import AssessmentContext from "../../../../../Store/AssessmentContext";
 
-const CreateStep2 = ({ location,handleNext,handleBack }) => {
-  const {setAssessmentVal,assessmentVal,topicSid,initialAssessment} = useContext(AssessmentContext)
+const CreateStep2 = ({ location, handleNext, handleBack }) => {
+  const { setAssessmentVal, assessmentVal, topicSid, initialAssessment, setInitialAssessment } = useContext(AssessmentContext)
 
   const Toast = useToast()
-  const {spinner} = useContext(AppContext)
+  const { spinner } = useContext(AppContext)
 
 
-// Create Topic
-const createAssessment = async (val) => {
-  spinner.hide("Loading... wait");
-  try {
-   let payload = assessmentVal
-       payload.duration = 45
-       payload.mandatory = val.mandatory 
-       payload.multipleSitting = val.multipleSitting 
-       payload.topicSid = topicSid
-       payload.tagSid = assessmentVal.tagSid.sid ? assessmentVal.tagSid.sid : assessmentVal.tagSid 
-       payload.category = assessmentVal.category.name ? assessmentVal.category.name : assessmentVal.category
-       if(assessmentVal.sid !== undefined){
-          let {data} = await RestService.updateAssessment(payload)
-          Toast.success({ message: "Assessment updated successfully" })
-          setAssessmentVal(data)
-       }else{
-        let {data} = await RestService.createAssessment(payload)
+  // Create Topic
+  const createAssessment = async (val) => {
+    spinner.show("Loading... wait");
+    try {
+      let payload = {
+        autoSubmitted: true,
+        category: initialAssessment.category.name ? initialAssessment.category.name : initialAssessment.category,
+        description: val.description,
+        difficulty: val.difficulty,
+        duration: val.duration === true ? 0 : val.timeLimit,
+        mandatory: val.mandatory,
+        multipleSitting: val.multipleSitting,
+        negative: true,
+        nextEnabled: true,
+        pauseEnable: true,
+        premium: val.premium,
+        previousEnabled: true,
+        status: "ENABLED",
+        tagSid: initialAssessment.tagSid.sid ? initialAssessment.tagSid.sid : initialAssessment.tagSid,
+        title: val.title,
+        topicSid: topicSid,
+        validUpto: val.validUpto ? 0 : val.date,
+      }
+      if (initialAssessment.sid !== undefined) {
+        let uploadPayload = {
+          ...payload,
+          sid: val.sid,
+          url: val.url,
+          multipleAttempts: false,
+          questionRandomize: false,
+          reduceMarks: false,
+          paymentReceived: false,
+        }
+        let res = await RestService.updateAssessment(uploadPayload)
+        Toast.success({ message: "Assessment updated successfully" })
+        setAssessmentVal(res?.data)
+        setInitialAssessment(res?.data)
+      } else {
+        let res = await RestService.createAssessment(payload)
         Toast.success({ message: "Assessment created successfully" })
-        setAssessmentVal(data)
-       }
-        handleNext()
-        spinner.hide()
-   } catch (err) {
-    spinner.hide()
-     console.error("error occur on createAssessment()", err)
-   }
+        setAssessmentVal(res?.data)
+        setInitialAssessment({
+          ...initialAssessment,
+          sid: res.data.sid,
+          url:res.data.url
+        })
+      }
+      handleNext()
+      spinner.hide()
+    } catch (err) {
+      spinner.hide()
+      Toast.success({ message: "Duplicate record will not be created" })
+      console.error("error occur on createAssessment()", err)
+    }
   }
 
   return (
     <>
-          <Formik
-            onSubmit={(value) => createAssessment(value)}
-            initialValues={initialAssessment}  
-            // validationSchema={schema}
-          >
-            {({ handleSubmit, isSubmitting, dirty, setFieldValue ,values}) => (
-              <form onSubmit={handleSubmit} className="create-batch">
-                <div>
-            
-                  <Form.Group className="flx">
-                    <div >
-                    <Form.Label className="label">
+      <Formik
+        onSubmit={(value) => createAssessment(value)}
+        initialValues={{
+          ...initialAssessment,
+          timeLimit: 10
+        }}
+      // validationSchema={schema}
+      >
+        {({ handleSubmit, isSubmitting, dirty, setFieldValue, values }) => (
+          <form onSubmit={handleSubmit} className="create-batch">
+            <div>
+
+              <Form.Group className="flx">
+                <div >
+                  <Form.Label className="label">
                     Time limit
                     </Form.Label>
-                    <div style={{ marginBottom: "10px" }}>
-                      <RadioBoxKey name="duration" options={[{label:"No Limit",value:true}, {label:"Set Limit",value:false}]} />
-                    </div>
-                    </div>
-                    <div>
-                        {/* <DateInput name="duration"/> */}
-                    </div>
-                  </Form.Group>
-                  <Form.Group style={{ width: "60%" }}>
-                   
-                    <Form.Group>
-                    <Form.Label className="label">
-                       Assessment Sitting
-                     </Form.Label>
-                    <div style={{ marginBottom: "10px" }}>
-                      <RadioBoxKey name="multipleSitting" options={[{label:"Single",value:true}, {label:"Multiple",value:false}]} />
-                    </div>
-                  </Form.Group>
+                  <div style={{ marginBottom: "10px" }}>
+                    <RadioBoxKey name="duration" options={[{ label: "No Limit", value: true }, { label: "Set Limit", value: false }]} />
+                  </div>
+                </div>
+                <div>
+                  {!values.duration && <TextInput type="number" name="timeLimit" />}
+                </div>
+              </Form.Group>
+              <Form.Group style={{ width: "60%" }}>
 
-                  <Form.Group>
-                    <Form.Label className="label">
-                       All Questions mandatory
+                <Form.Group>
+                  <Form.Label className="label">
+                    Assessment Sitting
                      </Form.Label>
-                    <div style={{ marginBottom: "10px" }}>
-                      <RadioBoxKey name="mandatory" options={[{label:"Yes",value:true}, {label:"No",value:false}]} />
-                    </div>
-                  </Form.Group>
-                  </Form.Group>
-                </div>
-                <div className="ass-foo-border">
-                  <div>
-                    <Submit onClick={handleBack} style={{background: "#0000003E", color: "black",marginRight: "10px", }}> Back</Submit>
+                  <div style={{ marginBottom: "10px" }}>
+                    <RadioBoxKey name="multipleSitting" options={[{ label: "Single", value: true }, { label: "Multiple", value: false }]} />
                   </div>
-                  
-                  <div>
-                  <Submit style={{background: "#0000003E", color: "black",marginRight: "10px", }}>
-                    Cancel
+                </Form.Group>
+
+                <Form.Group>
+                  <Form.Label className="label">
+                    All Questions mandatory
+                     </Form.Label>
+                  <div style={{ marginBottom: "10px" }}>
+                    <RadioBoxKey name="mandatory" options={[{ label: "Yes", value: true }, { label: "No", value: false }]} />
+                  </div>
+                </Form.Group>
+              </Form.Group>
+            </div>
+            <div className="ass-foo-border">
+              <div>
+                <Submit onClick={handleBack} style={{ background: "#0000003E", color: "black", marginRight: "10px", }}> Back</Submit>
+              </div>
+
+              <div>
+                <Submit  onClick={()=>{navigate("topic-details",{state :{ title: "Topics",
+                                 subTitle: "Topics",
+                                 path: "topicAssesment",}})}} style={{ background: "#0000003E", color: "black", marginRight: "10px", }}>
+                          Cancel
                   </Submit>
-                  <Submit onClick={()=>createAssessment(values) }>Next</Submit>
-                  </div>
-                </div>
-              </form>
-            )}
-          </Formik> 
+                <Submit onClick={() => createAssessment(values)}>Next</Submit>
+              </div>
+            </div>
+          </form>
+        )}
+      </Formik>
     </>
   );
 };

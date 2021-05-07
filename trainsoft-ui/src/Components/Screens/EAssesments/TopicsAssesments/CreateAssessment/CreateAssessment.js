@@ -1,48 +1,14 @@
-import { useEffect, useState,useContext } from "react";
-import RestService from "../../../../../Services/api.service";
-import AppContext from "../../../../../Store/AppContext";
-import useToast from "../../../../../Store/ToastHook";
+import { useState } from "react";
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import { Formik } from "formik";
-import {
-  TextInput,
-  SelectInput,
-  RadioBox,
-  TextArea,
-} from "../../../../Common/InputField/InputField";
-import { Form } from "react-bootstrap";
-import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
-import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
 import CreateStep1 from "./CreateStep1";
 import CreateStep2 from "./CreateStep2";
-
-import "../topic.css";
 import CreateStep3 from "./CreateStep3";
 import CreateStep4 from "./CreateStep4";
 import CreateStep5 from "./CreateStep5";
-import AssessmentContext from "../../../../../Store/AssessmentContext";
+import "../topic.css";
 
-const val = {
-  autoSubmitted: true,
-  category: "",
-  description: "",
-  difficulty: "",
-  duration: 0,
-  mandatory: true,
-  multipleSitting: true,
-  negative: true,
-  nextEnabled: true,
-  pauseEnable: true,
-  premium: false,
-  previousEnabled: true,
-  status: "ENABLED",
-  tagSid: "",
-  title: "",
-  topicSid: "",
-  validUpto: "",
-}
 
 const CreateAssessment = ({ location }) => {
   const [activeStep, setActiveStep] = useState(0);
@@ -61,20 +27,8 @@ const CreateAssessment = ({ location }) => {
     return ['Assessment Info', 'Assessment Rules', 'Questions',"Assessees","Complete"];
   }
 
-
-
   return (
     <>
-      {/* <CardHeader
-        hideSearch
-        location={{
-          ...location,
-          state: {
-            title: "Topics",
-            subTitle: "Assessment",
-          },
-        }}
-      /> */}
       <div className="ass-step">
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label) => (
