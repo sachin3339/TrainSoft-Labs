@@ -15,6 +15,9 @@ const GLOBELCONSTANT = {
         ZOOM_PATH:  window.location.origin + '/zoom',
         VSCODE_PATH:  window.location.origin + '/vscode',
 
+        USER_ROLE: {
+            USER: "USER",
+        },
         STATUS: {
             ENABLED: "ENABLED",
             DISABLED: "DISABLED",
@@ -68,7 +71,6 @@ const GLOBELCONSTANT = {
             FORGOT: API_HOST + "forgot/password/",
             RESET: API_HOST + "reset/{token}",
             UPDATE_PWD: API_HOST + "update/password/token/{token}/user/{appUserSid}/pass/{password}",
-
         },
         COURSE: {
             GET_COURSE: API_HOST + "courses",
@@ -134,6 +136,7 @@ const GLOBELCONSTANT = {
         },
         API: {
             ASSESSMENT: {
+                GET_ASSESSMENT_BY_SID: ASSESSMENT_V1 + "assessment/",
                 GET_INSTRUCTION: ASSESSMENT_V1 + "get/instructions",
                 GET_QUESTIONS: ASSESSMENT_V1 + "start/assessment/{assessmentSid}/{virtualAccountSid}",
                 SUBMIT_ANSWER: ASSESSMENT_V1 + "/submit/answer",
@@ -141,8 +144,9 @@ const GLOBELCONSTANT = {
                 SUBMIT_ASSESSMENT: ASSESSMENT_V1 + "submit/assessment",
                 GET_SCORE: ASSESSMENT_V1 + "get/assessment/score/{assessmentSid}/{virtualAccountSid}",
                 SUBMIT_RESPONSE: ASSESSMENT_V1 + "get/user/assessment/responses/{virtualAccountSid}"
-            }
-
+            },
+            GET_TOPIC: ASSESSMENT_V1 + "display/topics",
+            CREATE_ASS_USER: ASSESSMENT_V1 + "create/assess/user"
         },
         INSTRUCTOR: {
             GET_INSTRUCTOR: API_HOST +  'depatments'
@@ -169,10 +173,6 @@ const GLOBELCONSTANT = {
             SEARCH_TOPIC: API_ASSES + "search/topic/",
             SEARCH_ASSESSMENT: API_ASSES + "search/assessment/{query}/{companySid}/{topicSid}",
             SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}"
-        },
-        ASSESMENT: {
-            CREATE_E_ASSESMENT: API_HOST + "user/create",
-            GET_CATEGORY_LIST: API_HOST +"categories",
         },
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},
@@ -210,6 +210,23 @@ const GLOBELCONSTANT = {
         PAGE_SIZE: 10,
         ALPHABETS: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
         DATA: {
+            CREATE_ASS_USER: {
+                "appuser": {
+                  "emailId": "",
+                  "name": "",
+                  "phoneNumber": ""
+                },
+                "categoryTopicValue": {
+                  "category": "",
+                  "topic": "",
+                  "difficulty": "BEGINNER"
+                },
+                "companySid": null,
+                "departmentVA": {
+                  "departmentRole": null
+                },
+                "role": "USER"
+            },
             ANS_OBJ: {
                 "answerOption": "",
                 "answerOptionValue": "",

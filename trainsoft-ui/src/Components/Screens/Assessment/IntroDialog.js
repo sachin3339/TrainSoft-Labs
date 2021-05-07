@@ -10,39 +10,10 @@ import Submit from "./common/SubmitButton";
 import RestService from "../../../Services/api.service";
 import AppContext from "../../../Store/AppContext";
 import { AssessmentContext } from "./AssesementContext";
+
 export const IntroDialog = ({ open, setOpen }) => {
-  const { setInstruction } = useContext(AssessmentContext);
-  const { spinner } = useContext(AppContext)
-  const [introInfo, setIntroInfo] = useState({});
-
-  // get All session
-  const getAssessmentInstruction = async () => {
-    try {
-      spinner.show();
-      let payload = {
-        "difficulty": "BEGINNER",
-        "tagSid": "CF993A5F48E54E948418B7A0AFC1010E88AAB7458DE4C02DEE35FBDCE2C6AE49"
-      }
-      RestService.getAssessmentInstruction(payload).then(
-        response => {
-          setInstruction(response.data);
-          setIntroInfo(response.data);
-        },
-        err => {
-          spinner.hide();
-        }
-      ).finally(() => {
-        spinner.hide();
-      });
-    } catch (err) {
-      spinner.hide();
-      console.error("error occur on getAssessmentInstruction()--", err);
-    }
-  }
-
-  useEffect(() => {
-    getAssessmentInstruction();
-  }, []);
+  const { instruction, assUserInfo } = useContext(AssessmentContext);
+  
   return <Dialog
     open={open}
     onClose={() => {
@@ -56,7 +27,7 @@ export const IntroDialog = ({ open, setOpen }) => {
         gutterBottom
         style={{ font: "normal normal normal 16px/26px Montserrat" }}
       >
-        <span style={{ fontWeight: 600 }}>Welcome John,</span>
+        <span style={{ fontWeight: 600 }}>Welcome {assUserInfo.appuser?.name},</span>
         <br /> Please read the following instructions carefully before you
           start your assessment.
         </Typography>
@@ -71,18 +42,18 @@ export const IntroDialog = ({ open, setOpen }) => {
         INSTRUCTIONS
         </Typography>
       {
-        introInfo
+        instruction
         && <Typography gutterBottom>
-          1. Number of questions is <span style={{ fontWeight: 600 }}>{introInfo.noOfQuestions}</span>
+          1. Number of questions is <span style={{ fontWeight: 600 }}>{instruction.noOfQuestions}</span>
           <br />
             2. Time limit to complete is {" "}
-          <span style={{ fontWeight: 600 }}>{introInfo.duration} mins</span>
+          <span style={{ fontWeight: 600 }}>{instruction.duration}:00 mins</span>
           <br />
             3. Assessment should be completed in{" "}
-          <span style={{ fontWeight: 600 }}> {introInfo.multipleAttempts ? "multiple" : "one"} attempt</span>, you cannot save
+          <span style={{ fontWeight: 600 }}> {instruction.multipleAttempts ? "multiple" : "one"} attempt</span>, you cannot save
             in between <br /> 4. All questions are{" "}
-          <span style={{ fontWeight: 600 }}>{introInfo.mandatory ? "mandatory" : "not mandatory"} </span>
-          <br /> 5. You can <span style={{ fontWeight: 600 }}> {introInfo.previousEnabled ? "edit" : "not edit"} </span> your
+          <span style={{ fontWeight: 600 }}>{instruction.mandatory ? "mandatory" : "not mandatory"} </span>
+          <br /> 5. You can <span style={{ fontWeight: 600 }}> {instruction.previousEnabled ? "edit" : "not edit"} </span> your
             previous answer during the session{" "}
           <span style={{ fontWeight: 600 }}> any time </span>
         </Typography>

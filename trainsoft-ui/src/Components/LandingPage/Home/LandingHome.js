@@ -109,7 +109,7 @@ const LandingHome = () => {
                                <Cancel className=""><span>{ICN_PLAY_CIRCLE}</span>SEE HOW</Cancel>
                             </div>
                             <div className="">
-                                <BtnWarning onClick={()=>navigate('/assesment')}>TRY NOW</BtnWarning>
+                                <BtnWarning onClick={()=>navigate('/assessment/0/0/0')}>TRY NOW</BtnWarning>
                             </div>
                         </div>
                     </div>

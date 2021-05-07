@@ -17,7 +17,9 @@ const AssessmentCard = ({ question, review = false, index, correct, result = fal
         questionIndex,
         activeQuestion,
         selectedAnswer, 
-        setSelectedAnswer
+        setSelectedAnswer,
+        instruction,
+        assUserInfo
       } = useContext(AssessmentContext);
       const { spinner } = useContext(AppContext)
       const [activeOption, setActiveOption] = useState(selectedAnswers[question?.sid]);
@@ -28,10 +30,10 @@ const AssessmentCard = ({ question, review = false, index, correct, result = fal
           try {
             spinner.show("Submitting your answer.. Please wait...");
             let payload = {
-              "answer": selectedAnswer.answerOption,
+              "answerSid": selectedAnswer.sid,
               "questionSid": activeQuestion.questionId.sid,
-              "quizSetSid": "659253CF91270AD9421C17EA0EB550305576E7943120E023722C03A9877E92BD",
-              "virtualAccountSid": "479F0242214E4AA4B3D8A9866FD2B5BED5671ABFA27E4C77A75CAA5E0B3D527B"
+              "quizSetSid": instruction.sid,
+              "virtualAccountSid": assUserInfo.sid
             }
             RestService.submitAnswer(payload).then(
               response => {

@@ -117,7 +117,6 @@ const RestService = {
   searchQuestion: (query,companySid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.SEARCH_QUESTION.replace("{query}",query).replace("{companySid}",companySid)),
 
 
-  // ASSESMENT
 
   // assessment 
   getAssessmentInstruction: (payload)=> AxiosService.post(GLOBELCONSTANT.API.ASSESSMENT.GET_INSTRUCTION, payload),
@@ -127,9 +126,9 @@ const RestService = {
   submitAssessment: (payload)=> AxiosService.post(GLOBELCONSTANT.API.ASSESSMENT.SUBMIT_ASSESSMENT, payload),
   getAssessmentScore: (assessmentSid, virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.GET_SCORE.replace("{assessmentSid}", assessmentSid).replace("{virtualAccountSid}", virtualAccountSid)),
   getSubmittedResponse: (virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.SUBMIT_RESPONSE.replace("{virtualAccountSid}", virtualAccountSid)),
-
-
-  
+  getTopics: () => AxiosService.get(GLOBELCONSTANT.API.GET_TOPIC),
+  createAssessmentUser: (payload, header) => AxiosService.post(GLOBELCONSTANT.API.CREATE_ASS_USER, payload, "", header),
+  getAssessmentBySid: (assSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.GET_ASSESSMENT_BY_SID + assSid)
 };
 
 export default RestService;
