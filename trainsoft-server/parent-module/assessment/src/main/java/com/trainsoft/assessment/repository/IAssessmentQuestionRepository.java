@@ -18,7 +18,7 @@ public interface IAssessmentQuestionRepository extends JpaRepository<AssessmentQ
       List<AssessmentQuestion> getAssessmentQuestionsByAssessmentIdOrderByCreatedOnDesc(Assessment assessmentId, Pageable pageable);
       @Query(value = "select * from quiz_set_has_question where quiz_set_id=:id order by created_on desc",nativeQuery = true)
       List<AssessmentQuestion> findByTopicId(@Param("id") Integer quizSetId);
-      Optional<AssessmentQuestion> findAssessmentQuestionByQuestionId(Question question);
+      Optional<AssessmentQuestion> findAssessmentQuestionByQuestionIdAndAssessmentId(Question question,Assessment assessment);
       Integer countAssessmentQuestionByAssessmentId(Assessment assessmentId);
 
       @Query(value = "select sum(question_point) total_marks from quiz_set_has_question where quiz_set_id=:id",nativeQuery = true)
