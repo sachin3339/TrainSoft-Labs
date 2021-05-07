@@ -153,6 +153,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                     assessmentQuestion.setCreatedOn(new Date(Instant.now().toEpochMilli()));
                     assessmentQuestion.setQuestionId(question);
                     assessmentQuestion.setAssessmentId(assessment);
+                    assessmentQuestion.setQuestionPoint(question.getQuestionPoint());
                     assessmentQuestionList.add(assessmentQuestion);
                 });
                 List<AssessmentQuestion> savedAssessmentQuestions = assessmentQuestionRepository.saveAll(assessmentQuestionList);
@@ -457,21 +458,22 @@ public class AssessmentServiceImpl implements IAssessmentService
 
 
     @Override
-    public String removeAssociatedQuestionFromAssessment(String questionSid)
+    public String removeAssociatedQuestionFromAssessment(String questionSid,String assessmentSid)
     {
-        if(questionSid!=null)
+        if(questionSid!=null && assessmentSid!=null)
         {
+            Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
             Question question=questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid));
-            Optional<AssessmentQuestion> assessmentQuestion = assessmentQuestionRepository.findAssessmentQuestionByQuestionId(question);
+            Optional<AssessmentQuestion> assessmentQuestion = assessmentQuestionRepository.findAssessmentQuestionByQuestionIdAndAssessmentId(question,assessment);
             if(assessmentQuestion.isPresent())
             {
                 assessmentQuestionRepository.delete(assessmentQuestion.get());
                 return "Removed associated question successfully";
             }
             else
-              throw new RuntimeException("Record not found to delete");
+              throw new ApplicationException("Record not found to delete");
         }
-        else throw new InvalidSidException("Invalid Question Sid");
+        else throw new InvalidSidException("Invalid Question Sid OR Invalid Assessment Sid");
     }
 
     @Override

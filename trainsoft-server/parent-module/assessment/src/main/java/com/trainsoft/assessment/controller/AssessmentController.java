@@ -126,12 +126,13 @@ public class AssessmentController {
      return ResponseEntity.ok(assessmentService.submitAssessment(request));
   }
 
-    @DeleteMapping("/remove/associated/question/{qsid}")
+    @DeleteMapping("/remove/associated/question/{qsid}/{asid}")
     @ApiOperation(value = "Delete associated question",notes = "API to delete associated question based on given question sid.")
     public ResponseEntity<?> removeAssociatedQuestionFromAssessment(
-            @ApiParam(value = "Question Sid", required = true) @PathVariable("qsid") String questionSid)
+            @ApiParam(value = "Question Sid", required = true) @PathVariable("qsid") String questionSid,
+            @ApiParam(value = "Assessment Sid", required = true) @PathVariable("asid") String assessmentSid)
     {
-       return ResponseEntity.ok(assessmentService.removeAssociatedQuestionFromAssessment(questionSid));
+       return ResponseEntity.ok(assessmentService.removeAssociatedQuestionFromAssessment(questionSid,assessmentSid));
     }
 
     @GetMapping("generate/assessment/url/{aSid}")

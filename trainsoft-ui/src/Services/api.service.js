@@ -106,7 +106,7 @@ const RestService = {
   createTopic: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.CREATE_TOPIC,payload),
   getAssessmentByTopic: (assID,pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT.replace("{assId}",assID).replace("{pageSize}",pageSize).replace("{pageNo}",pageNo)),
   deleteAssessment: (sid) => AxiosService.delete(GLOBELCONSTANT.ASSESSMENT.DELETE_ASSESSMENT.replace("{assId}",sid) ),
-  deleteAssociateQuestion: (qId) => AxiosService.delete(GLOBELCONSTANT.ASSESSMENT.DELETE_ASS_QUESTION.replace("{qId}",qId) ),
+  deleteAssociateQuestion: (qId,aId) => AxiosService.delete(GLOBELCONSTANT.ASSESSMENT.DELETE_ASS_QUESTION.replace("{qsid}",qId).replace("{asid}",aId) ),
   deleteQuestion: (sid) => AxiosService.delete(GLOBELCONSTANT.ASSESSMENT.DELETE_QUESTION.replace("{questionId}",sid) ),
   associateQuestion: (assID,payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT.ASSOCIATE_QUESTION.replace("{assID}",assID), payload),
   getNotAssociateQuestion: (assId) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_NOT_ASS_QUESTION.replace("{assId}",assId)),
@@ -123,6 +123,8 @@ const RestService = {
   getAssessmentDashboard : (assId)=> AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT_DASHBOARD.replace("{aasId}",assId)),
   getAssUser : (assId)=> AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT_DASHBOARD.replace("{aasId}",assId)),
   getAssestUser: (assId) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT_USER.replace("{assID}",assId)),
+  getQuestionById: (qId) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_QUESTION_BY_SID.replace("{qId}",qId)),
+  
 
 
   

@@ -166,7 +166,7 @@ const GLOBELCONSTANT = {
             GET_ASSOCIATE_QUESTION:API_ASSES + "assessment/Questions/{assId}?pageSize={pageSize}&pageNo={pageNo}",
             GET_NOT_ASS_QUESTION:API_ASSES + "display/assessment/question/{assId}",
             GET_ALL_QUESTION:API_ASSES + "questions/?pageSize=",
-            DELETE_ASS_QUESTION: API_ASSES + "remove/associated/question/{qId}",
+            DELETE_ASS_QUESTION: API_ASSES + "remove/associated/question/{qsid}/{asid}",
             GET_CATEGORY: API_ASSES + "categories",
             UPDATE_ASSESSMENT: API_ASSES + "update/assessment",
             DELETE_QUESTION: API_ASSES + "delete/question/{questionId}",
@@ -177,7 +177,8 @@ const GLOBELCONSTANT = {
             UPLOAD_ASSESSMENT: API_ASSES + "upload/list/assess/participants",
             UPLOAD_QUESTION: API_ASSES + "question/bulkupload",
             GET_ASSESSMENT_DASHBOARD : API_ASSES + "get/assessdetails/{aasId}",
-            GET_ASSESSMENT_USER : API_ASSES + "get/configuredusers/{assID}"
+            GET_ASSESSMENT_USER : API_ASSES + "get/configuredusers/{assID}",
+            GET_QUESTION_BY_SID : API_ASSES + "question/{qId}"
 
         },  
         ACCESS_LEVEL: [

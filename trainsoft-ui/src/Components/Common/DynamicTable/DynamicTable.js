@@ -209,7 +209,7 @@ export const DynamicTable = (props) => {
         </tbody>
     </Table></div>
     <div className="pagination-div">
-        {props.onPageChange && <PaginationOne totalCount={props.count ? props.count : 60}  onNavigate={props.onPageChange}/> }
+        {props.onPageChange && <PaginationOne totalCount={props.count ? props.count : 5}  onNavigate={props.onPageChange}/> }
     </div>
 </>}
 export default DynamicTable;
