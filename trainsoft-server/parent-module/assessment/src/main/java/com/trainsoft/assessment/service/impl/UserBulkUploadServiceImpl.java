@@ -49,7 +49,7 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
                 userTOList.forEach(userTO -> {
                     if(StringUtils.isNotEmpty(userTO.getAppuser().getEmailId())) {
                         UserTO createVA  = createVirtualAccountWithAssessmentUser(request,userTO,assessmentSid);
-                        String assessmentURl = assessUrl+"&virtualAccountSid="+createVA.getSid();
+                        String assessmentURl = assessUrl+"/"+createVA.getSid();
                         companyService.sendAssessmentEmail(createVA.getAppuser().getEmailId(), userTO.getAppuser().getName(), assessmentURl);
                         log.info("We have sent a assessment link to your email. Please check.");
                     }

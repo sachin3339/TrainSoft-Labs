@@ -41,6 +41,7 @@ public interface IAssessmentService
     List<AssessmentTo> searchAssessment(String searchString,String companySid,String topicSid);
 
     AssessmentDashboardTo getAssessDetails(String assessmentSid);
+    List<AssessTo> getConfiguredUserDetailsForAssessment(String assessmentSid);
 
     List<VirtualAccountHasQuizSetAssessmentTO> getLeaderBoardForAssessmentForToday(String quizSetSid);
 

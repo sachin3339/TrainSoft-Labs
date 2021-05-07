@@ -1,6 +1,7 @@
 package com.trainsoft.assessment.service.impl;
 
 import com.trainsoft.assessment.commons.CommonUtils;
+import com.trainsoft.assessment.commons.Utility;
 import com.trainsoft.assessment.customexception.ApplicationException;
 import com.trainsoft.assessment.customexception.DuplicateRecordException;
 import com.trainsoft.assessment.customexception.FunctionNotAllowedException;
@@ -111,9 +112,9 @@ public class AssessmentServiceImpl implements IAssessmentService
     public List<AssessmentTo> getAssessmentsByTopic(String topicSid,Pageable pageable)
     {
             Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
-            List<Assessment> assessmentList = assessmentRepository.findAssessmentByTopicId(topic,pageable);
-            if (CollectionUtils.isNotEmpty(assessmentList))
+            if (topic!=null)
             {
+                List<Assessment> assessmentList = assessmentRepository.findAssessmentByTopicId(topic,pageable);
                 if (CollectionUtils.isNotEmpty(assessmentList)) {
                     List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList, AssessmentTo.class);
                     assessmentToList.forEach(assessmentTo ->
@@ -479,11 +480,8 @@ public class AssessmentServiceImpl implements IAssessmentService
         {
             Assessment assessment=assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
             if(assessment!=null) {
-                String URL = request.getRequestURL().toString();
-                String URI = request.getRequestURI();
-                int port = request.getServerPort();
-                String Host = URL.replace(":" + port + URI, "");
-                String generatedUrl = Host.concat("/assessment?assessmentSid="+assessmentSid+"&companySid="+assessment.getCompany().getStringSid());
+                String URL = Utility.getSiteURL(request);
+                String generatedUrl = URL.concat("/assessment/"+assessmentSid+"/"+assessment.getCompany().getStringSid())+"/0";
                 assessment.setUrl(generatedUrl);
                 assessmentRepository.save(assessment);
                 return generatedUrl;
@@ -679,16 +677,18 @@ public class AssessmentServiceImpl implements IAssessmentService
            List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessmentList
                    = virtualAccountHasQuizSetAssessmentRepository.findByAssessment(assessment.id);
            if(CollectionUtils.isEmpty(virtualAccountHasQuizSetAssessmentList))
-               throw new RecordNotFoundException("No one has submitted Assessment :"+assessmentSid);
+               log.error("No one has submitted Assessment :"+assessmentSid);
            int submitted = virtualAccountHasQuizSetAssessmentList.size();
            List<VirtualAccountHasQuizSetSessionTiming> notSubmittedList = virtualAccountHasQuizSetSessionTimingRepository.findByQuizSetId(assessment);
            int notSubmitted = notSubmittedList.size();
            assessmentDashboardTo.setTotalSubmitted(submitted);
            int totalNoOfUsers = virtualAccountAssessmentRepository.getCountByAssessment(assessment);
            assessmentDashboardTo.setTotalUsers(totalNoOfUsers);
-           if(totalNoOfUsers>=submitted) {
-               Double attendance = (new Double(submitted)/totalNoOfUsers)*100;
-               assessmentDashboardTo.setAssessAttendance(BigDecimal.valueOf(attendance).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+           if(totalNoOfUsers>=submitted)
+           {
+               double attendance = ((double)submitted)/totalNoOfUsers*100;
+               if (!Double.isNaN(attendance))
+                   assessmentDashboardTo.setAssessAttendance(BigDecimal.valueOf(attendance).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
            }
 
            // get Assessment submitted assess details
@@ -753,6 +753,30 @@ public class AssessmentServiceImpl implements IAssessmentService
                 assessmentTo.next().setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessment1.next().getStringSid()));
             }return assessmentToList;
         }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
+    }
+
+
+    @Override
+    public List<AssessTo> getConfiguredUserDetailsForAssessment(String assessmentSid)
+    {
+        if(assessmentSid!=null)
+        {
+            Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
+            List<VirtualAccountAssessment> virtualAccountAssessment = virtualAccountAssessmentRepository.findVirtualAccountAssessmentByAssessment(assessment);
+            List<AssessTo> assessToList = new ArrayList<>();
+            for (VirtualAccountAssessment entry: virtualAccountAssessment)
+            {
+                VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountById(entry.getVirtualAccount().id);
+                AppUser appUser = appUserRepository.findAppUserById(virtualAccount.getAppuser().id);
+                AssessTo assessTo = new AssessTo();
+                assessTo.setName(appUser.getName());
+                assessTo.setEmail(appUser.getEmailId());
+                assessTo.setStatus("PENDING");
+                assessToList.add(assessTo);
+            }
+            return assessToList;
+        }
+        throw new InvalidSidException("Assessment Sid is null");
     }
 
     @Override
