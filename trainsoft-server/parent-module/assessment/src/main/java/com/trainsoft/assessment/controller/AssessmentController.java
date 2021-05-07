@@ -230,4 +230,13 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.getAssessDetails(assessmentSid));
     }
 
+    @GetMapping("get/configuredusers/{aSid}")
+    @ApiOperation(value = "getConfiguredUserDetailsForAssessment", notes = "API to get configured assess details based on Assessment Sid")
+    public ResponseEntity<?> getConfiguredUserDetailsForAssessment(@ApiParam(value = "Assessment Sid", required = true) @PathVariable("aSid") String assessmentSid)
+    {
+        return ResponseEntity.ok(assessmentService.getConfiguredUserDetailsForAssessment(assessmentSid));
+    }
+
+
+
 }

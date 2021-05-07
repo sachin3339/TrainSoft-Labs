@@ -721,4 +721,28 @@ public class AssessmentServiceImpl implements IAssessmentService
 
         }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
     }
+
+
+    @Override
+    public List<AssessTo> getConfiguredUserDetailsForAssessment(String assessmentSid)
+    {
+        if(assessmentSid!=null)
+        {
+            Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
+            List<VirtualAccountAssessment> virtualAccountAssessment = virtualAccountAssessmentRepository.findVirtualAccountAssessmentByAssessment(assessment);
+            List<AssessTo> assessToList = new ArrayList<>();
+            for (VirtualAccountAssessment entry: virtualAccountAssessment)
+            {
+                VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountById(entry.getVirtualAccount().id);
+                AppUser appUser = appUserRepository.findAppUserById(virtualAccount.getAppuser().id);
+                AssessTo assessTo = new AssessTo();
+                assessTo.setName(appUser.getName());
+                assessTo.setEmail(appUser.getEmailId());
+                assessTo.setStatus("PENDING");
+                assessToList.add(assessTo);
+            }
+            return assessToList;
+        }
+        throw new InvalidSidException("Assessment Sid is null");
+    }
 }
