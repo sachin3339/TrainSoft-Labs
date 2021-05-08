@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Iterator;
@@ -131,6 +132,17 @@ public class TopicServiceImpl implements ITopicService {
         {
             List<Topic> topic = topicRepository.searchTopic("%"+searchString.trim()+"%", company,pageable);
            return mapper.convertList(topic,TopicTo.class);
+        }
+        throw new InvalidSidException("invalid company Sid");
+    }
+
+    @Override
+    public BigInteger pageableTopicCount(String searchString, String companySid) {
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        if (company!=null)
+        {
+            BigInteger topicCount = topicRepository.pageableTopicCount("%"+searchString.trim()+"%", company);
+            return topicCount;
         }
         throw new InvalidSidException("invalid company Sid");
     }
