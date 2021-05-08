@@ -24,7 +24,6 @@ const CreateQuestion = ({ location }) => {
   const Toast = useToast()
   const { spinner } = useContext(AppContext);
   const [questionType, setQuestionType] = useState([]);
-  const [questionInfo, setQuestionInfo] = useState(GLOBELCONSTANT.DATA.CREATE_QUESTION);
 
   // Create question
   const createNewQuestion = async (values) => {
@@ -70,23 +69,8 @@ const CreateQuestion = ({ location }) => {
     }
   }
 
-  // get All question 
-  const getQuestionById = async () => {
-    spinner.show("Loading... wait...");
-    try {
-      let { data } = await RestService.getQuestionById(questionData?.sid);
-      console.log(data);
-      setQuestionInfo(data);
-      spinner.hide();
-    } catch (err) {
-      spinner.hide();
-      console.error("error occur on getQuestionById()", err);
-    }
-  }
-
   // initialize component
   useEffect(() => {
-    if(isEdit && questionData?.sid) getQuestionById();
     getQuestionType();
   }, [])
   return (
@@ -97,7 +81,7 @@ const CreateQuestion = ({ location }) => {
           ...location,
           state: {
             title: "Questions",
-            subTitle: "New Question",
+            subTitle: isEdit ? questionData.name : "New Question",
           },
         }}
       />
@@ -105,7 +89,7 @@ const CreateQuestion = ({ location }) => {
         {true ? (
           <Formik
             onSubmit={(value) => createNewQuestion(value)}
-            initialValues={questionInfo}
+            initialValues={isEdit ? questionData : GLOBELCONSTANT.DATA.CREATE_QUESTION}
           >
             {({ handleSubmit, values, setFieldValue, resetForm, isSubmitting, dirty, touched }) => (
               <form onSubmit={handleSubmit} className="create-batch">
@@ -190,7 +174,7 @@ const CreateQuestion = ({ location }) => {
                     }}
                     onClick={() => {resetForm(); goBack()}}
                   >Cancel</Submit>
-                  <Submit onClick={()=> createNewQuestion(values)} disabled={isSubmitting || !dirty || !touched}>Create</Submit>
+                  <Submit onClick={()=> createNewQuestion(values)} disabled={isSubmitting || !dirty || !touched}>{isEdit ? "Update" : "Create"}</Submit>
                 </div>
               </form>
             )}
