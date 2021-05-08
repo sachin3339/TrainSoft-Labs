@@ -138,21 +138,21 @@ const Headers = ({ initialAssessment, dashboardDate }) => {
       </HeaderElement>
       <HeaderElement
         stat={dashboardDate?.totalSubmitted}
-        substat={dashboardDate?.totalUsers}
+        substat={`${dashboardDate?.totalUsers}`}
         icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
       >
         Total <br />
         Submitted
       </HeaderElement>
       <HeaderElement
-        stat={dashboardDate?.assessAttendance}
+        stat={dashboardDate?.assessAttendance ? dashboardDate?.assessAttendance : 0 }
         icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
       >
         Assensee <br />
         Attendance
       </HeaderElement>
       <HeaderElement
-        stat={dashboardDate?.totalQuestions}
+        stat={dashboardDate.totalQuestions ? dashboardDate.totalQuestions : 0}
         icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
       >
         Total <br />

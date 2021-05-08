@@ -415,15 +415,39 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public List<QuestionTo> searchQuestion(String searchString,String companySid) {
+    public List<QuestionTo> searchQuestion(String searchString,String companySid,Pageable pageable)
+    {
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         if (company==null) throw new InvalidSidException("invalid company sid");
-      List<Question> question = customRepository.searchQuestion(searchString.trim(), company);
+        List<Question> question = questionRepository.searchQuestion("%"+searchString.trim()+"%", company,pageable);
         List<QuestionTo> questionTo = mapper.convertList(question, QuestionTo.class);
         questionTo.forEach(qt->{
             for (Question q:question){
                 qt.setCompanySid(q.getCompany().getStringSid());
                 qt.setCreatedByVirtualAccountSid(q.getCreatedBy().getStringSid());
             } });return questionTo;
+    }
+
+    @Override
+    public QuestionTo updateQuestionStatus(String questionSid, String status)
+    {
+        if(questionSid!=null && status!=null)
+        {
+           Question question = questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid));
+           if(question!=null)
+           {
+               for (AssessmentEnum.Status questionStatus :AssessmentEnum.Status.values())
+               {
+                 if(status.equalsIgnoreCase(questionStatus.toString())) {
+                     question.setStatus(questionStatus);
+                     break;
+                 }
+               }
+                return mapper.convert(questionRepository.save(question),QuestionTo.class);
+           }
+             throw  new InvalidSidException("Invalid Question Sid: "+questionSid);
+        }
+        throw new InvalidSidException("Question Sid is null OR Question Status is null ! Question Sid: "
+                +questionSid+" Question Status: "+status);
     }
 }

@@ -19,5 +19,4 @@ public interface IVirtualAccountHasQuizSetAssessmentRepository extends JpaReposi
     @Query(value = "select * from virtual_account_has_quiz_set_assesment where quiz_set_id=:id and submitted_on>=current_date() order by percentage desc ",nativeQuery = true)
     List<VirtualAccountHasQuizSetAssessment> findByAssessmentForCurrentDate(@Param("id")Integer assessmentId);
 
-
 }

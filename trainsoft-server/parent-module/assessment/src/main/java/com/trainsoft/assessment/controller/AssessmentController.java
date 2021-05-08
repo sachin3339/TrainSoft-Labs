@@ -126,12 +126,13 @@ public class AssessmentController {
      return ResponseEntity.ok(assessmentService.submitAssessment(request));
   }
 
-    @DeleteMapping("/remove/associated/question/{qsid}")
+    @DeleteMapping("/remove/associated/question/{qsid}/{asid}")
     @ApiOperation(value = "Delete associated question",notes = "API to delete associated question based on given question sid.")
     public ResponseEntity<?> removeAssociatedQuestionFromAssessment(
-            @ApiParam(value = "Question Sid", required = true) @PathVariable("qsid") String questionSid)
+            @ApiParam(value = "Question Sid", required = true) @PathVariable("qsid") String questionSid,
+            @ApiParam(value = "Assessment Sid", required = true) @PathVariable("asid") String assessmentSid)
     {
-       return ResponseEntity.ok(assessmentService.removeAssociatedQuestionFromAssessment(questionSid));
+       return ResponseEntity.ok(assessmentService.removeAssociatedQuestionFromAssessment(questionSid,assessmentSid));
     }
 
     @GetMapping("generate/assessment/url/{aSid}")
@@ -191,8 +192,10 @@ public class AssessmentController {
     public ResponseEntity<?>searchAssessment(
            @ApiParam("Search String") @PathVariable("searchString") String searchString,
            @ApiParam("Company Sid") @PathVariable("cSid") String companySid,
-           @ApiParam("Topic Sid")@PathVariable("tSid") String topicSid){
-     return ResponseEntity.ok(assessmentService.searchAssessment(searchString,companySid,topicSid));
+           @ApiParam("Topic Sid")@PathVariable("tSid") String topicSid,
+           Pageable pageable)
+    {
+     return ResponseEntity.ok(assessmentService.searchAssessment(searchString,companySid,topicSid,pageable));
     }
 
     @PostMapping(value = "/upload/list/assess/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -236,4 +239,18 @@ public class AssessmentController {
     {
         return ResponseEntity.ok(assessmentService.getConfiguredUserDetailsForAssessment(assessmentSid));
     }
-} 
+
+    @GetMapping("get/today/assessment/leaderboard/{sid}")
+    @ApiOperation(value = "get leaderboard for today",notes = "API to get Leaderboard for an Assessment for today.")
+    public ResponseEntity<?> getLeaderBoardForAssessmentForToday(
+            @ApiParam("Assessment Sid")@PathVariable("sid") String quizSetSid){
+        return ResponseEntity.ok(assessmentService.getLeaderBoardForAssessmentForToday(quizSetSid));
+    }
+
+    @GetMapping("get/allTime/assessment/leaderboard/{sid}")
+    @ApiOperation(value = "get leadrboard for all time. ",notes = "API to get leaderboard for an Assessment for All Time.")
+    public ResponseEntity<?> getLeaderBoardAssessmentForAllTime(
+            @ApiParam("Assessment Sid")@PathVariable("sid") String quizSetSid){
+        return ResponseEntity.ok(assessmentService.getLeaderBoardForAssessmentForAllTime(quizSetSid));
+    }
+}

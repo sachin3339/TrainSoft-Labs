@@ -153,6 +153,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                     assessmentQuestion.setCreatedOn(new Date(Instant.now().toEpochMilli()));
                     assessmentQuestion.setQuestionId(question);
                     assessmentQuestion.setAssessmentId(assessment);
+                    assessmentQuestion.setQuestionPoint(question.getQuestionPoint());
                     assessmentQuestionList.add(assessmentQuestion);
                 });
                 List<AssessmentQuestion> savedAssessmentQuestions = assessmentQuestionRepository.saveAll(assessmentQuestionList);
@@ -329,7 +330,7 @@ public class AssessmentServiceImpl implements IAssessmentService
             virtualAccountHasQuestionAnswerDetails.setCompanyId(assessment.getCompany());
             virtualAccountHasQuestionAnswerDetails.setCreatedBy(assessment.getCreatedBy());
             virtualAccountHasQuestionAnswerDetails.setCreatedOn(assessment.getCreatedOn());
-        if (answer.isCorrect()==true) virtualAccountHasQuestionAnswerDetails.setCorrect(true);
+        if (answer!=null && answer.isCorrect()==true) virtualAccountHasQuestionAnswerDetails.setCorrect(true);
         Integer questionPoint = questionRepository.findQuestionPoint(question.getId());
         virtualAccountHasQuestionAnswerDetails.setQuestionPoint(questionPoint);
         virtualAccountHasQuestionAnswerDetailsRepository.save(virtualAccountHasQuestionAnswerDetails);
@@ -344,6 +345,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         vTo.setCreatedOn(virtualAccountHasQuestionAnswerDetails.getCreatedOn());
         vTo.setQuestionPoint(virtualAccountHasQuestionAnswerDetails.getQuestionPoint());
         return vTo;
+        
     }
 
     @Override
@@ -456,21 +458,22 @@ public class AssessmentServiceImpl implements IAssessmentService
 
 
     @Override
-    public String removeAssociatedQuestionFromAssessment(String questionSid)
+    public String removeAssociatedQuestionFromAssessment(String questionSid,String assessmentSid)
     {
-        if(questionSid!=null)
+        if(questionSid!=null && assessmentSid!=null)
         {
+            Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
             Question question=questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid));
-            Optional<AssessmentQuestion> assessmentQuestion = assessmentQuestionRepository.findAssessmentQuestionByQuestionId(question);
+            Optional<AssessmentQuestion> assessmentQuestion = assessmentQuestionRepository.findAssessmentQuestionByQuestionIdAndAssessmentId(question,assessment);
             if(assessmentQuestion.isPresent())
             {
                 assessmentQuestionRepository.delete(assessmentQuestion.get());
                 return "Removed associated question successfully";
             }
             else
-              throw new RuntimeException("Record not found to delete");
+              throw new ApplicationException("Record not found to delete");
         }
-        else throw new InvalidSidException("Invalid Question Sid");
+        else throw new InvalidSidException("Invalid Question Sid OR Invalid Assessment Sid");
     }
 
     @Override
@@ -741,11 +744,12 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<AssessmentTo> searchAssessment(String searchString, String companySid, String topicSid) {
+    public List<AssessmentTo> searchAssessment(String searchString, String companySid, String topicSid,Pageable pageable)
+    {
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
         Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
         if (company!=null && topic!=null){
-            List<Assessment> assessment = customRepository.searchAssessment(searchString.trim(), company, topic);
+            List<Assessment> assessment = assessmentRepository.searchAssessment("%"+searchString.trim()+"%", company, topic,pageable);
             List<AssessmentTo> assessmentToList = mapper.convertList(assessment, AssessmentTo.class);
             Iterator<Assessment> assessment1 = assessment.stream().iterator();
             Iterator<AssessmentTo> assessmentTo = assessmentToList.stream().iterator();
@@ -777,5 +781,75 @@ public class AssessmentServiceImpl implements IAssessmentService
             return assessToList;
         }
         throw new InvalidSidException("Assessment Sid is null");
+    }
+
+    @Override
+    public List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForToday(String quizSetSid) {
+        Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
+        if (assessment!=null){
+            ArrayList<LeaderBoardRequestTO> leaderBoardTO = new ArrayList<>();
+
+            List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
+            List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
+                    .findByAssessmentForCurrentDate(assessment.getId());
+            if (assessmentList.size()==0)throw new RecordNotFoundException("no records found");
+           if (assessmentList.size()<10){
+               for (int i=0;i<assessmentList.size();i++){
+                   topTen.add(i,assessmentList.get(i));
+               }
+               topTen.forEach(tp->{
+                   LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                   leaderBoardRequestTO.setPercentage(tp.getPercentage());
+                   leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
+                   leaderBoardTO.add(leaderBoardRequestTO);
+               });
+               return leaderBoardTO;
+           }
+            for (int i=0;i<10;i++){
+                topTen.add(i,assessmentList.get(i));
+            }
+            topTen.forEach(tp->{
+                LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                leaderBoardRequestTO.setPercentage(tp.getPercentage());
+                leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
+                leaderBoardTO.add(leaderBoardRequestTO);
+            });
+         return leaderBoardTO;
+        }
+        throw new InvalidSidException("invalid Assessment sid");
+    }
+
+    @Override
+    public List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid) {
+        Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
+        if (assessment != null) {
+            ArrayList<LeaderBoardRequestTO> leaderBoardTO = new ArrayList<>();
+            List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
+            List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
+                    .findByAssessment(assessment.getId());
+            if (assessmentList.size()==0)throw new RecordNotFoundException("no records found");
+            if (assessmentList.size()<10){
+                for (int i=0;i<assessmentList.size();i++){
+                    topTen.add(i,assessmentList.get(i));
+                }
+                topTen.forEach(tp->{
+                    LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                    leaderBoardRequestTO.setPercentage(tp.getPercentage());
+                    leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
+                    leaderBoardTO.add(leaderBoardRequestTO);
+                });
+                return leaderBoardTO;
+            }
+            for (int i = 0; i < 10; i++) {
+                    topTen.add(i, assessmentList.get(i));
+            }
+            topTen.forEach(tp -> {
+                LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                leaderBoardRequestTO.setPercentage(tp.getPercentage());
+                leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(), VirtualAccountTO.class));
+                leaderBoardTO.add(leaderBoardRequestTO);
+            });
+            return leaderBoardTO;
+        } throw new InvalidSidException("invalid Assessment sid");
     }
 }

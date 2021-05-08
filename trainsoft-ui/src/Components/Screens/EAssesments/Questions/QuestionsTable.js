@@ -29,7 +29,7 @@ const QuestionsTable = ({ location }) => {
         isSearchEnabled: false,
         render: (data) => (
           <div style={{ display: "flex", alginItems: "center" }}>
-            <Toggle />
+            <Toggle id={data.sid} onChange={() => {  }} checked={data.status === 'ENABLED' ? true : false} />
             <Link
               to={"question-details"}
               state={{

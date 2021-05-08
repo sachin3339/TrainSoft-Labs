@@ -192,10 +192,10 @@ const CreateStep4 = ({ location, handleNext, handleBack }) => {
 
                 <div>
                     <Submit onClick={() => {
-                        navigate("topic-details", { state: { title: "Topics", subTitle: "Topics", path: "topicAssesment", } })
+                        navigate("topic-details", { state: { title: "Topics", subTitle: "Assessment", path: "topicAssesment", } })
                     }} style={{ background: "#0000003E", color: "black", marginRight: "10px", }}>
                                 Cancel
-                               </Submit>
+                         </Submit>
                     <Submit onClick={handleNext}>Complete</Submit>
                 </div>
             </div>
