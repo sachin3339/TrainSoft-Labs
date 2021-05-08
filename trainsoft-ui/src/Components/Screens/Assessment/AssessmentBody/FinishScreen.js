@@ -52,8 +52,8 @@ const FinishScreen = ({ questions }) => {
                 <CheckIcon style={{ fontSize: "36px" }} />
             </div>
             <div className={styles.title}>
-                Congratulations! You have completed the assessment
-                <span style={{ fontWeight: 800 }}> "Java Fundamentals"</span>
+                <span className="pr5">Congratulations! You have completed the assessment</span>
+                <span style={{ fontWeight: 800 }}>{instruction ? `"${instruction.title}"` : ""}</span>
             </div>
             {
                 AppUtils.isNotEmptyObject(score) 

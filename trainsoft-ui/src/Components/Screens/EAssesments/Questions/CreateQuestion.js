@@ -19,10 +19,12 @@ import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import "./question.css";
 
 const CreateQuestion = ({ location }) => {
+  const { isEdit = false, questionData } = location.state;
   const goBack = () => navigate("./");
   const Toast = useToast()
   const { spinner } = useContext(AppContext);
   const [questionType, setQuestionType] = useState([]);
+  const [questionInfo, setQuestionInfo] = useState(GLOBELCONSTANT.DATA.CREATE_QUESTION);
 
   // Create question
   const createNewQuestion = async (values) => {
@@ -30,11 +32,12 @@ const CreateQuestion = ({ location }) => {
     try {
       let payload = {...values}
       delete payload.answerOrderType;
-      RestService.createQuestion(payload).then(
+      let method = isEdit ? RestService.updateQuestion : RestService.createQuestion;
+      method(payload).then(
         response => {
           spinner.hide();
           goBack();
-          Toast.success({ message: "Question created successfully" })
+          Toast.success({ message: `Question ${isEdit ? "updated" : "created"} successfully` })
         },
         err => {
           spinner.hide();
@@ -63,12 +66,27 @@ const CreateQuestion = ({ location }) => {
         spinner.hide();
       });
     } catch (err) {
-      console.error("error occur on getQuestionType()", err)
+      console.error("error occur on getQuestionType()", err);
+    }
+  }
+
+  // get All question 
+  const getQuestionById = async () => {
+    spinner.show("Loading... wait...");
+    try {
+      let { data } = await RestService.getQuestionById(questionData?.sid);
+      console.log(data);
+      setQuestionInfo(data);
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getQuestionById()", err);
     }
   }
 
   // initialize component
   useEffect(() => {
+    if(isEdit && questionData?.sid) getQuestionById();
     getQuestionType();
   }, [])
   return (
@@ -87,7 +105,7 @@ const CreateQuestion = ({ location }) => {
         {true ? (
           <Formik
             onSubmit={(value) => createNewQuestion(value)}
-            initialValues={GLOBELCONSTANT.DATA.CREATE_QUESTION}
+            initialValues={questionInfo}
           >
             {({ handleSubmit, values, setFieldValue, resetForm, isSubmitting, dirty, touched }) => (
               <form onSubmit={handleSubmit} className="create-batch">

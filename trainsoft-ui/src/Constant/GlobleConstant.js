@@ -2,7 +2,7 @@
 let HOSTNAME = window.location.origin; // Storing  a  Host  Name in global variable
 if (HOSTNAME !== null && ((HOSTNAME.indexOf('localhost') !== -1) || (HOSTNAME.indexOf('127.0.0.1') !== -1)))
     // HOSTNAME = "https://www.eservecloud.com"; 
-    HOSTNAME = "http://65.1.180.125:8089"; // Local development sever will be used from now onwards.
+    HOSTNAME = "https://www.trainsoft.io"; // Local development sever will be used from now onwards.
 export const API_PATH = HOSTNAME ;
 
 let API_HOST = HOSTNAME +"/insled/v1/"
@@ -143,7 +143,10 @@ const GLOBELCONSTANT = {
                 REVIEW_RESPONSE: ASSESSMENT_V1 + "review/response/{virtualAccountSid}",
                 SUBMIT_ASSESSMENT: ASSESSMENT_V1 + "submit/assessment",
                 GET_SCORE: ASSESSMENT_V1 + "get/assessment/score/{assessmentSid}/{virtualAccountSid}",
-                SUBMIT_RESPONSE: ASSESSMENT_V1 + "get/user/assessment/responses/{virtualAccountSid}"
+                SUBMIT_RESPONSE: ASSESSMENT_V1 + "get/user/assessment/responses/{virtualAccountSid}",
+                TODAY_LEADER: ASSESSMENT_V1 + "get/today/assessment/leaderboard/",
+                ALL_TIME_LEADER: ASSESSMENT_V1 + "get/allTime/assessment/leaderboard/",
+                UPDATE_QUESTION: ASSESSMENT_V1 + "update/question"
             },
             GET_TOPIC: ASSESSMENT_V1 + "display/topics",
             CREATE_ASS_USER: ASSESSMENT_V1 + "create/assess/user"
