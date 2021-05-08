@@ -108,19 +108,6 @@ const TopicsTable = ({ location }) => {
     }
   }
 
-   // get All topic
-   const getAllCategory = async (pageNo = "1") => {
-    spinner.show("Loading... wait");
-    try {
-      let { data } = await RestService.getAllCategory()
-      setCategory(data)
-      spinner.hide();
-    } catch (err) {
-      spinner.hide();
-      console.error("error occur on getAllTopic()", err)
-    }
-  }
-
   // delete Topic
   const deleteTopic = async (sid) => {
     spinner.show("Loading... wait");
@@ -179,7 +166,6 @@ const TopicsTable = ({ location }) => {
   useEffect(() => {
     getTopicCount()
     getAllTopic()
-    getAllCategory()
   }, [])
 
   return (

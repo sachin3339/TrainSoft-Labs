@@ -17,9 +17,11 @@ import AppUtils from "../../../../Services/Utils";
 import { navigate } from "../../../Common/Router";
 import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import "./question.css";
+import AssessmentContext from "../../../../Store/AssessmentContext";
 
 const CreateQuestion = ({ location }) => {
   const { isEdit = false, questionData } = location.state;
+  const { category } = useContext(AssessmentContext)
   const goBack = () => navigate("./");
   const Toast = useToast()
   const { spinner } = useContext(AppContext);
@@ -29,7 +31,10 @@ const CreateQuestion = ({ location }) => {
   const createNewQuestion = async (values) => {
     spinner.hide("Loading... Please wait...");
     try {
-      let payload = {...values}
+      let payload = {
+        ...values,
+        technologyName: values.technologyName.name
+      }
       delete payload.answerOrderType;
       let method = isEdit ? RestService.updateQuestion : RestService.createQuestion;
       method(payload).then(
@@ -111,12 +116,13 @@ const CreateQuestion = ({ location }) => {
                       name="name"
                     />
                   </Form.Group>
+            
+            
+                  <SelectInput label="Category" option={category} bindKey="name" name="technologyName" value={values.category}  payloadKey="name" />
+                  
                   <Form.Group>
-                    <TextInput
-                      label="Technology Name"
-                      placeholder="Technology Name"
-                      name="technologyName"
-                    />
+                  <SelectInput label="Tag"  value={values.tagSid} option={values.technologyName?.tags} bindKey="name" valueKey="sid" name="tags"/>
+                    {/* <TextArea label="Tags" name="tags" /> */}
                   </Form.Group>
                   <Form.Group>
                     <Form.Label className="label">
@@ -147,16 +153,14 @@ const CreateQuestion = ({ location }) => {
                       name="answerExplanation"
                     />
                   </Form.Group>
-
+                      { /* 
                   <Form.Group>
                     <TextArea
                       label="Description"
                       name="description"
                     />
-                  </Form.Group>
-                  <Form.Group>
-                    <TextArea label="Tags" name="tags" />
-                  </Form.Group>
+                  </Form.Group> */}
+                 
                 </div>
                 <div
                   style={{
