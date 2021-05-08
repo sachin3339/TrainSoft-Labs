@@ -19,6 +19,7 @@ import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import "./question.css";
 
 const CreateQuestion = ({ location }) => {
+  const { isEdit = false, questionInfo } = location.state;
   const goBack = () => navigate("./");
   const Toast = useToast()
   const { spinner } = useContext(AppContext);
@@ -30,11 +31,12 @@ const CreateQuestion = ({ location }) => {
     try {
       let payload = {...values}
       delete payload.answerOrderType;
-      RestService.createQuestion(payload).then(
+      let method = isEdit ? RestService.updateQuestion : RestService.createQuestion;
+      method(payload).then(
         response => {
           spinner.hide();
           goBack();
-          Toast.success({ message: "Question created successfully" })
+          Toast.success({ message: `Question ${isEdit ? "updated" : "created"} successfully` })
         },
         err => {
           spinner.hide();
@@ -87,7 +89,7 @@ const CreateQuestion = ({ location }) => {
         {true ? (
           <Formik
             onSubmit={(value) => createNewQuestion(value)}
-            initialValues={GLOBELCONSTANT.DATA.CREATE_QUESTION}
+            initialValues={isEdit ? questionInfo : GLOBELCONSTANT.DATA.CREATE_QUESTION}
           >
             {({ handleSubmit, values, setFieldValue, resetForm, isSubmitting, dirty, touched }) => (
               <form onSubmit={handleSubmit} className="create-batch">

@@ -69,7 +69,8 @@ const AnswerSelector = ({
           <div style={{ marginRight: "30px" }}>
             <Form.Label className="label">Answers</Form.Label>
             {
-              AppUtils.isNotEmptyArray(values.answer)
+              values.answer
+              && AppUtils.isNotEmptyArray(values.answer)
               && values.answer.map((_answer, index) => <div
                 style={{
                   padding: "15px 0",
@@ -123,7 +124,9 @@ const AnswerSelector = ({
           <div>
             <Form.Label className="label">Mark Correct Answer </Form.Label>
             {
-              values.answer.map((_, index) => <div
+               values.answer
+               && AppUtils.isNotEmptyArray(values.answer)
+               && values.answer.map((_, index) => <div
                 style={{
                   padding: "15px 0",
                   display: "flex",

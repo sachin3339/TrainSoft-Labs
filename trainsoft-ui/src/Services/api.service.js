@@ -141,6 +141,7 @@ const RestService = {
   getAssessmentBySid: (assSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.GET_ASSESSMENT_BY_SID + assSid),
   getTodayLeaders: (sid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.TODAY_LEADER + sid),
   getAllTimeLeaders: (sid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.ALL_TIME_LEADER + sid),
+  updateQuestion: (payload) => AxiosService.put(GLOBELCONSTANT.API.ASSESSMENT.UPDATE_QUESTION, payload),
 };
 
 export default RestService;
