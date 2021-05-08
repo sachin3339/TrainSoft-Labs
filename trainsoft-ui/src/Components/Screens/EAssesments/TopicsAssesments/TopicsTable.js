@@ -51,7 +51,7 @@ const TopicsTable = ({ location }) => {
         ),
       },
       noOfAssessments: {
-        title: "NO. OF ASSIGNMENT",
+        title: "No. Of Assessment",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
