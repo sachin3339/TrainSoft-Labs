@@ -162,7 +162,7 @@ const AssesmentsTable = ({ location }) => {
     let data = {
       ...values,
       category: getCategory(values.category),
-      tagSid: values.tagSid,
+      tagSid: values.tagSid ? values.tagSid : getCategory(values.category).tags[0],
       validUpto: values.validUpto === 0 ? true : false,
       date: values.validUpto === 0 ? '' : values.validUpto,
       duration: values.duration === 0 ? true : false,
