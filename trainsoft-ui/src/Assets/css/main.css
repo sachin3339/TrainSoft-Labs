@@ -1286,3 +1286,14 @@ p {
 .h100 {
 	height: 100%;
 }
+
+/* leader board */
+.leader-tab {
+  font: normal 13px/26px Montserrat;
+  color: #111111;
+  cursor: pointer;
+}
+.active-l {
+  font-weight: 600;
+  border-bottom: 3px solid #FECD48;
+}

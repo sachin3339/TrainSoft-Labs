@@ -122,7 +122,7 @@ export const AssessmentDialog = () => {
     }
   }
 
-  // get all category
+  // get assessment by assessment sid
   const getAssessmentBySid = async (sid) => {
     try {
       spinner.show("Loading... Please wait...");
@@ -143,11 +143,37 @@ export const AssessmentDialog = () => {
     }
   }
 
+  // get user by virtual account sid
+  const getUserByVirtualAccountSid = async (sid) => {
+    try {
+      spinner.show("Loading... Please wait...");
+      RestService.getUserDetails().then(
+        response => {
+          spinner.hide();
+          setAssUserInfo(response.data);
+          setOpen(false);
+        },
+        err => {
+          spinner.hide();
+        }
+      ).finally(() => {
+        spinner.hide();
+      });
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getUserByVirtualAccountSid()--", err);
+    }
+  }
+  
   // listening for params value
   useEffect(() => {
     if(AppUtils.isNotEmptyObject(params)) {
-      console.log(params);
-      if(JSON.parse(params.assessmentSid)) getAssessmentBySid(params.assessmentSid);
+      if(params.assessmentSid != 0 || params.virtualAccountSid != 0) {
+        getAssessmentBySid(params.assessmentSid);
+      }
+      if(params.virtualAccountSid != 0) {
+        getUserByVirtualAccountSid(params.virtualAccountSid);
+      }
     } 
   }, [params]);
 
@@ -196,7 +222,7 @@ export const AssessmentDialog = () => {
               <Formik
                 initialValues={userInfo}
                 validationSchema={SCHEMA}
-                onSubmit={(values) => JSON.parse(params.assessmentSid) ? createAssUser(values, params.assessmentSid) : getAssessmentInstruction(values)}
+                onSubmit={(values) => params.assessmentSid == 0 ? getAssessmentInstruction(values) : createAssUser(values, params.assessmentSid)}
               >
                 {({ handleSubmit, values, errors, touched, isSubmitting, isValid, dirty, setFieldValue }) => (
                   <form onSubmit={handleSubmit} className="create-batch">

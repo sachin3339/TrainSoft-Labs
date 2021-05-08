@@ -8,7 +8,7 @@ import AppContext from '../../../../Store/AppContext';
 import RestService from '../../../../Services/api.service';
 import AppUtils from '../../../../Services/Utils';
 
-const AssessmentCard = ({ question, review = false, index, correct, result = false, questions }) => {
+const AssessmentCard = ({ question, review = false, index, correct = false, result = false, questions }) => {
     const {
         setAnswer,
         selectedAnswers,
@@ -97,12 +97,26 @@ const AssessmentCard = ({ question, review = false, index, correct, result = fal
                 />
             </div>)
           }
-          {
-            result
-            && <div className="">
 
+          {/* <div className="row">
+            <div className="col-10">
+              {
+                finished 
+                && result
+                  ? ((correct && result) ? <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading f16">Correct Answer!</h4>
+                    <p>{question.questionId.answerExplanation}</p>
+                  </div> : <><div class="alert alert-danger f14" role="alert">
+                    <h4 class="alert-heading">Your answer is wrong! The correct answer is,</h4>
+                    <p>{question.questionId.answerExplanation}</p>
+                    </div></>) 
+                    : ""
+              }
             </div>
-          }
+          </div> */}
+
+          
+
           <div className={styles.divider} />
           {
             !review 

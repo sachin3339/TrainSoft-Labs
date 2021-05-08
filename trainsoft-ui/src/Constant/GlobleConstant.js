@@ -143,7 +143,9 @@ const GLOBELCONSTANT = {
                 REVIEW_RESPONSE: ASSESSMENT_V1 + "review/response/{virtualAccountSid}",
                 SUBMIT_ASSESSMENT: ASSESSMENT_V1 + "submit/assessment",
                 GET_SCORE: ASSESSMENT_V1 + "get/assessment/score/{assessmentSid}/{virtualAccountSid}",
-                SUBMIT_RESPONSE: ASSESSMENT_V1 + "get/user/assessment/responses/{virtualAccountSid}"
+                SUBMIT_RESPONSE: ASSESSMENT_V1 + "get/user/assessment/responses/{virtualAccountSid}",
+                TODAY_LEADER: ASSESSMENT_V1 + "get/today/assessment/leaderboard/",
+                ALL_TIME_LEADER: ASSESSMENT_V1 + "get/allTime/assessment/leaderboard/",
             },
             GET_TOPIC: ASSESSMENT_V1 + "display/topics",
             CREATE_ASS_USER: ASSESSMENT_V1 + "create/assess/user"
