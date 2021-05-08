@@ -43,8 +43,8 @@ public interface IAssessmentService
     AssessmentDashboardTo getAssessDetails(String assessmentSid);
     List<AssessTo> getConfiguredUserDetailsForAssessment(String assessmentSid);
 
-    List<VirtualAccountHasQuizSetAssessmentTO> getLeaderBoardForAssessmentForToday(String quizSetSid);
+    List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForToday(String quizSetSid);
 
-    List<VirtualAccountHasQuizSetAssessmentTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
+    List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
 
 }
