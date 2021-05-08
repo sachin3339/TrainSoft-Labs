@@ -42,3 +42,35 @@
 .ass-step .MuiPaper-root{
   background-color: rgba(255, 255, 255, 0) !important;
 }
+.upload-width{
+  width: 340px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.copy-url-disp{
+  visibility: none;
+  visibility: collapse;
+  position: absolute;
+}
+.copy-url-btn{
+  cursor: pointer;
+  background: #E8E8E8;
+  border-radius: 30px;
+  padding: 5px 10px;
+  text-align: center;
+  width: 111px;
+  font-size: 14px;
+}
+.form-duration{
+   display: flex;
+    align-items: center;
+    width: 175px;
+}
+.form-duration .input-wrapper {
+  min-height: 35px;
+  margin-right: 10px;
+}
+.form-duration .input-field{
+  background: rgba(255, 255, 255, 0) !important;
+}

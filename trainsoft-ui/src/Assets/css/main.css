@@ -209,7 +209,7 @@
 }
 
 .breadcrumb-item a {
-  color: #2c62ed;
+  color: #49167E;
   font-weight: 600;
 }
 
@@ -219,7 +219,7 @@
 
 .alert-primary {
   color: #ffffff;
-  background-color: #00ccf2;
+  background-color: #49167E;
   border-color: #d3d3d382;
   -webkit-box-shadow: 0px 0px 13px 0px #8080805e;
           box-shadow: 0px 0px 13px 0px #8080805e;
@@ -563,7 +563,7 @@
 }
 
 .btn-am:hover, .btn-am:active, .btn-am:focus {
-  background-color: #214dbf !important;
+  background-color: #49167E !important;
 }
 
 body {
@@ -1052,6 +1052,9 @@ p {
 	opacity: 0.4;
 	pointer-events: none;
 	cursor: default;
+}
+.f13 .btn-primary{
+  font-size: 13px !important;
 }
 
 /* Alignments */

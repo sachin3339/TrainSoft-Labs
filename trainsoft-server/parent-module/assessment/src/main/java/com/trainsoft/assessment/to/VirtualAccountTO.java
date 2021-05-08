@@ -16,7 +16,7 @@ public class VirtualAccountTO extends BaseTO{
 
     private InstructorEnum.Status status;
 
-    private Company company;
+    private CompanyTO company;
 
     private AppUserTO appuser;
 

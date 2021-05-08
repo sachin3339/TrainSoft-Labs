@@ -14,5 +14,5 @@ public interface ITopicService {
     TopicTo updateTopic(String topicSid,String topicName);
     TopicTo softDeleteTopic(String topicSid);
 
-    List<TopicTo> searchTopic(String searchString,String companySid);
+    List<TopicTo> searchTopic(String searchString,String companySid,Pageable pageable);
 }

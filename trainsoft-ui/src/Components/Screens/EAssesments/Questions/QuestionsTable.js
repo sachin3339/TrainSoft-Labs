@@ -1,20 +1,25 @@
+import { Button } from "@material-ui/core";
 import { useState, useContext, useEffect } from "react";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import RestService from "../../../../Services/api.service";
 import AppContext from "../../../../Store/AppContext";
 import useToast from "../../../../Store/ToastHook";
-import { Toggle } from "../../../Common/BsUtils";
-import { Button } from "../../../Common/Buttons/Buttons";
+import { BsModal, Toggle } from "../../../Common/BsUtils";
+import { Button as Buttons, Cancel } from "../../../Common/Buttons/Buttons";
 import CardHeader from "../../../Common/CardHeader";
 import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
-import { ICN_EDIT, ICN_TRASH } from "../../../Common/Icon";
+import { ICN_EDIT, ICN_TRASH, ICN_UPLOAD } from "../../../Common/Icon";
 import { Link, navigate } from "../../../Common/Router";
+
 
 const QuestionsTable = ({ location }) => {
   const Toast = useToast()
-  const { spinner,user } = useContext(AppContext)
+  const { spinner, user } = useContext(AppContext)
   const [count, setCount] = useState(0);
   const [questions, setQuestions] = useState([])
+  const [show, setShow] = useState(false)
+  const [files,setFiles] = useState()
   const [configuration, setConfiguration] = useState({
     columns: {
       name: {
@@ -24,7 +29,7 @@ const QuestionsTable = ({ location }) => {
         isSearchEnabled: false,
         render: (data) => (
           <div style={{ display: "flex", alginItems: "center" }}>
-            <Toggle />
+            <Toggle id={data.sid} onChange={() => {  }} checked={data.status === 'ENABLED' ? true : false} />
             <Link
               to={"question-details"}
               state={{
@@ -133,7 +138,7 @@ const QuestionsTable = ({ location }) => {
   const getAllQuestion = async (page = 1) => {
     spinner.show("Loading... wait");
     try {
-      let { data } = await RestService.getAllQuestion(GLOBELCONSTANT.PAGE_SIZE, page-1)
+      let { data } = await RestService.getAllQuestion(GLOBELCONSTANT.PAGE_SIZE, page - 1)
       setQuestions(data);
       spinner.hide();
     } catch (err) {
@@ -156,52 +161,109 @@ const QuestionsTable = ({ location }) => {
     }
   }
 
-      // search topic 
-      const searchQuestion = async (value) => {
-        spinner.show("Loading... wait");
-        try {
-          let {data} = await RestService.searchQuestion(value,user.companySid)
-          setQuestions(data);
-          spinner.hide();
-        } catch (err) {
-          spinner.hide();
-          console.error("error occur on searchTopic()", err)
-        }
-      }
+  // search topic 
+  const searchQuestion = async (value) => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.searchQuestion(value, user.companySid)
+      setQuestions(data);
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on searchTopic()", err)
+    }
+  }
 
+      // upload Question
+      const uploadQuestion = async ()=> {
+        try{
+        spinner.show("Please wait...");
+        let formData = new FormData();
+        formData.append('file', files);
+        let res = await  RestService.uploadQuestion(formData)
+        getAllQuestion()
+        setShow(false)
+        spinner.hide();
+        Toast.success({ message: 'Question Upload successfully', time: 2000});
+        }catch(err){
+          setShow(false)
+            spinner.hide();
+            console.error("error occur on uploadQuestion()",err)
+        }
+    }
+
+      // get batch count
+       const getQuestionCount = async () => {
+        try {
+           let {data} =await RestService.getCount("question")
+            setCount(data);
+        } catch (err) {
+            console.error("error occur on getAllBatch()", err)
+        }
+    }
 
   useEffect(() => {
+    getQuestionCount()
     getAllQuestion()
   }, [])
   return (
     <>
       <CardHeader
-        {...{location,
+        {...{
+          location,
           onChange: (e) => e.length === 0 && getAllQuestion(),
           onEnter: (e) => searchQuestion(e),
         }}
       >
-        <Button
-          className=" ml-2"
-          onClick={() => {
+        <DropdownButton className="btn-sm f13" title="+ New Question">
+          <Dropdown.Item onClick={() => {
             navigate("/questions/create", {
               state: { title: "Questions", subTitle: "New Question" },
             });
-          }}
-        >
-          + New Question
-        </Button>
+          }}>Create Individual</Dropdown.Item>
+          <Dropdown.Item onClick={()=>{setShow(true);setFiles()}}>Upload in Bulk</Dropdown.Item>
+        </DropdownButton>
+
       </CardHeader>
       <div className="table-shadow">
         <DynamicTable
           {...{
             configuration,
             sourceData: questions,
-            // onPageChange: (e) => getCourse(e),
+            onPageChange: (e) => getAllQuestion(e),
             count,
           }}
         />
       </div>
+      <BsModal {...{ show, setShow, headerTitle: "Upload Questions in Bulk", size: "lg" }}>
+            <div className="">
+            <div className="bulk-upload mt-2 border-0 ">
+                  {/* <div className="title-lg">Upload Assessees in Bulk</div> */}
+                  <div className="file-upload mb-2">
+                      <div>
+                          {  files?.name ? files.name : "No File Uploaded Yet"}
+                      </div>
+                      <div>
+                          <input accept=".csv" className={""} id="contained-button-file2" onChange={(e) => setFiles(e.target.files[0])} type="file" />
+                          <label className="mb-0" htmlFor="contained-button-file2">
+                              <Button variant="contained" color="primary" component="span">
+                                  <span className="mr-2">{ICN_UPLOAD}</span> Upload
+                              </Button>
+                          </label>
+                      </div>
+                  </div>
+                  <a href={GLOBELCONSTANT.UPLOAD_QUESTION_TEMPLES} className="mt-3 link">Download Template</a>
+              </div>
+            </div>
+            <div className="jce mt-3">
+              <div>
+              <Cancel onClick={()=>setShow(false)}>Cancel</Cancel>
+              <Buttons onClick={()=>uploadQuestion()}>Create</Buttons>
+              </div>
+              
+            </div>
+        </BsModal>
+
     </>
   );
 };

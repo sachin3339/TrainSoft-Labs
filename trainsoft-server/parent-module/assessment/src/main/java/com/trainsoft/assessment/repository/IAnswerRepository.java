@@ -14,7 +14,7 @@ public interface IAnswerRepository extends JpaRepository<Answer,Integer> {
     @Query(value = "select * from answer where is_correct=true and question_id=:id and status<>'DELETED'",nativeQuery = true)
     Answer findCorrectAnswer(@Param("id") Integer questionId);
 
-    @Query(value = "SELECT ans FROM Answer AS ans WHERE ans.isCorrect=true AND ans.sid=:sid AND ans.status<>'DELETED'")
+    @Query(value = "SELECT ans FROM Answer AS ans WHERE ans.sid=:sid AND ans.status<>'DELETED'")
     Answer findBySidAndQuestionIdAndCorrect(@Param("sid") byte [] sid);
 
 }

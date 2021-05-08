@@ -28,4 +28,7 @@ public interface IQuestionRepository extends JpaRepository<Question, Integer>
 
     @Query("FROM Question as ques WHERE ques.status<>'DELETED' AND ques.company=:company order by ques.createdOn desc")
     List<Question> findQuestionsByCompany(Company company, Pageable pageable);
+
+    @Query("SELECT ques FROM Question as ques WHERE ( ques.name like :searchString OR ques.description like :searchString OR ques.technologyName like :searchString ) AND ques.company =:company AND ques.status<>'DELETED' ")
+    List<Question> searchQuestion(String searchString, Company company,Pageable pageable);
 }

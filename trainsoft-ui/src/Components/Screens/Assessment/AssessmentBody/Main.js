@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { AssessmentContext } from "../AssesementContext";
 import Submit from "../common/SubmitButton";
 import AssessmentCard from "./AssesmentCard";
@@ -16,6 +16,8 @@ const Main = ({ questions }) => {
         selectedAnswers,
         setFinished,
         finished,
+        instruction,
+        assUserInfo
     } = useContext(AssessmentContext);
     const { spinner } = useContext(AppContext);
     const Toast = useToast();
@@ -23,11 +25,10 @@ const Main = ({ questions }) => {
     // this method to submit your answer
     const handleSubmitAssessment = () => {
         try {
-            setFinished(true);
             spinner.show("Submitting assessment.. Please wait...");
             let payload = {
-                "quizSetSid": "659253CF91270AD9421C17EA0EB550305576E7943120E023722C03A9877E92BD",
-                "virtualAccountSid": "479F0242214E4AA4B3D8A9866FD2B5BED5671ABFA27E4C77A75CAA5E0B3D527B"
+                "quizSetSid": instruction.sid,
+                "virtualAccountSid": assUserInfo.sid
             }
             RestService.submitAssessment(payload).then(
                 response => {
@@ -36,8 +37,8 @@ const Main = ({ questions }) => {
                     setFinished(true);
                 },
                 err => {
-                spinner.hide();
-                if(err && err.response && err.response.status === 403) Toast.error({ message: `You have already submitted your assessment.` });
+                    spinner.hide();
+                    if(err && err.response && err.response.status === 403) Toast.error({ message: `You have already submitted your assessment.` });
                 }
             ).finally(() => {
                 spinner.hide();
@@ -52,10 +53,12 @@ const Main = ({ questions }) => {
             { finished && <FinishScreen {...{ questions }} /> }
             {
                 !finished 
+                && AppUtils.isNotEmptyArray(questions)
                 && <>
                     {
                         questions 
-                        // && Object.keys(selectedAnswers).length === questions.length 
+                        // if all questions are mandatory
+                        //TO DO && Object.keys(selectedAnswers).length === questions.length 
                         && questionIndex === -1
                         && <div className={styles.doneBox}>
                             <div>
@@ -75,7 +78,8 @@ const Main = ({ questions }) => {
                         questionIndex === -1 
                         ? <>
                             {
-                                questions.map((question, index) => <AssessmentCard {...{
+                                AppUtils.isNotEmptyArray(questions)
+                                && questions.map((question, index) => <AssessmentCard {...{
                                     question, 
                                     index, 
                                     review: true,
