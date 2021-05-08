@@ -96,7 +96,7 @@ const CreateStep2 = ({ location, handleNext, handleBack }) => {
               <Form.Group className="aic">
                 <div >
                   <Form.Label className="label">
-                    Time limit
+                    Time Limit
                     </Form.Label>
                   <div style={{ marginBottom: "10px" }}>
                     <RadioBoxKey name="duration" options={[{ label: "No Limit", value: true }, { label: "Set Limit", value: false }]} />
@@ -119,7 +119,7 @@ const CreateStep2 = ({ location, handleNext, handleBack }) => {
 
                 <Form.Group>
                   <Form.Label className="label">
-                    All Questions mandatory
+                    All Questions Mandatory
                      </Form.Label>
                   <div style={{ marginBottom: "10px" }}>
                     <RadioBoxKey name="mandatory" options={[{ label: "Yes", value: true }, { label: "No", value: false }]} />

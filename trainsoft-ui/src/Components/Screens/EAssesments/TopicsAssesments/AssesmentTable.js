@@ -13,31 +13,33 @@ import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
 import { ICN_EDIT, ICN_TRASH } from "../../../Common/Icon";
 
 import { Link, navigate } from "../../../Common/Router";
-let val = {
-  autoSubmitted: true,
-  category: "",
-  description: "",
-  difficulty: "BEGINNER",
-  duration: false,
-  mandatory: true,
-  multipleSitting: true,
-  negative: true,
-  nextEnabled: true,
-  pauseEnable: true,
-  premium: false,
-  previousEnabled: true,
-  status: "ENABLED",
-  tagSid: "",
-  title: "",
-  topicSid: "",
-  validUpto: true,
-  date: '',
-}
+
 const AssesmentsTable = ({ location }) => {
   const Toast = useToast()
   const { spinner, user } = useContext(AppContext)
   const { topicSid, setInitialAssessment, category } = useContext(AssessmentContext)
   const [assessment, setAssessment] = useState([])
+
+  let val = {
+    autoSubmitted: true,
+    category: category[0],
+    description: "",
+    difficulty: "BEGINNER",
+    duration: false,
+    mandatory: true,
+    multipleSitting: true,
+    negative: true,
+    nextEnabled: true,
+    pauseEnable: true,
+    premium: false,
+    previousEnabled: true,
+    status: "ENABLED",
+    tagSid: category[0].tags[0],
+    title: "",
+    topicSid: "",
+    validUpto: true,
+    date: '',
+  }
 
   const [configuration, setConfiguration] = useState({
     columns: {
@@ -160,7 +162,7 @@ const AssesmentsTable = ({ location }) => {
     let data = {
       ...values,
       category: getCategory(values.category),
-      tagSid: getCategory(values.category, values.tagSid),
+      tagSid: values.tagSid ? values.tagSid : getCategory(values.category).tags[0],
       validUpto: values.validUpto === 0 ? true : false,
       date: values.validUpto === 0 ? '' : values.validUpto,
       duration: values.duration === 0 ? true : false,
@@ -169,16 +171,15 @@ const AssesmentsTable = ({ location }) => {
     setInitialAssessment(data)
   }
 
-  const getCategory = (vals, tagSid = null) => {
+  const getCategory = (vals) => {
     let value = '';
-    let tags = ''
     try {
       value = category.find(res => res.name === vals)
-      tags = tagSid && value.tags.find(res => res.sid === tagSid)
+      // tags = tagSid && value.tags.find(res => res.sid === tagSid)
     } catch (err) {
       console.error("error occur on getCategory()", err)
     }
-    return tagSid ? tags : value
+    return value
   }
 
   // get All Assessment By Topic sid
