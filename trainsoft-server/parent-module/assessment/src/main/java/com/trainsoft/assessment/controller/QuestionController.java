@@ -123,4 +123,13 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.updateQuestionStatus(questionSid,status));
     }
 
+    @GetMapping("count/question/{searchString}/{sid}")
+    @ApiOperation(value = "count question",notes = "API to count Question")
+    public ResponseEntity<?> pageableQuestionCount(
+            @ApiParam(value ="Search String",required = true)@PathVariable("searchString") String searchString,
+            @ApiParam(value = "Company Sid",required = true)@PathVariable("sid") String companySid,Pageable pageable)
+    {
+        return ResponseEntity.ok(questionService.pageableQuestionCount(searchString, companySid));
+    }
+
 }

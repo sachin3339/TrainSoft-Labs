@@ -26,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.time.Instant;
 import java.util.*;
 
@@ -450,4 +451,13 @@ public class QuestionServiceImpl implements IQuestionService {
         throw new InvalidSidException("Question Sid is null OR Question Status is null ! Question Sid: "
                 +questionSid+" Question Status: "+status);
     }
+
+    @Override
+    public BigInteger pageableQuestionCount(String searchString, String companySid) {
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        if (company == null) throw new InvalidSidException("invalid company sid");
+        BigInteger questionCount = questionRepository.pageableQuestionCount("%" + searchString.trim() + "%", company);
+        return questionCount;
+    }
+
 }

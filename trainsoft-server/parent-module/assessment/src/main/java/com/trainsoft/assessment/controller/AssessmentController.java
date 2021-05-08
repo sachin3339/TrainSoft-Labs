@@ -253,4 +253,14 @@ public class AssessmentController {
             @ApiParam("Assessment Sid")@PathVariable("sid") String quizSetSid){
         return ResponseEntity.ok(assessmentService.getLeaderBoardForAssessmentForAllTime(quizSetSid));
     }
+
+    @GetMapping("count/assessment/{searchString}/{cSid}/{tSid}")
+    @ApiOperation(value = "count assessment",notes = "API to count Assessment.")
+    public ResponseEntity<?> countAssessment(
+            @ApiParam("Search String") @PathVariable("searchString") String searchString,
+            @ApiParam("Company Sid") @PathVariable("cSid") String companySid,
+            @ApiParam("Topic Sid") @PathVariable("tSid") String topicSid)
+    {
+        return ResponseEntity.ok(assessmentService.pageableAssessmentCount(searchString,companySid,topicSid));
+    }
 }

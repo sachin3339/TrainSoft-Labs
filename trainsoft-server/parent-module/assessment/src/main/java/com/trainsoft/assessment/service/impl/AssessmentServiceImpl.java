@@ -852,4 +852,15 @@ public class AssessmentServiceImpl implements IAssessmentService
             return leaderBoardTO;
         } throw new InvalidSidException("invalid Assessment sid");
     }
+
+    @Override
+    public BigInteger pageableAssessmentCount(String searchString, String companySid, String topicSid)
+    {
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
+        if (company!=null && topic!=null){
+            BigInteger assessmentCount =  assessmentRepository.pageableAssessmentCount("%"+searchString.trim()+"%", company, topic);
+            return assessmentCount;
+        }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
+    }
 }
