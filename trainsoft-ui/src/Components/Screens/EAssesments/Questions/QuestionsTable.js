@@ -16,7 +16,7 @@ import { Link, navigate } from "../../../Common/Router";
 
 const QuestionsTable = ({ location }) => {
   const Toast = useToast()
-  const { spinner, user } = useContext(AppContext)
+  const { spinner, user } = useContext(AppContext);
   const [count, setCount] = useState(0);
   const [questions, setQuestions] = useState([])
   const [show, setShow] = useState(false)
@@ -117,11 +117,7 @@ const QuestionsTable = ({ location }) => {
       {
         title: "Edit",
         icon: ICN_EDIT,
-        onClick: (data, i) => {
-          // navigate("/questions/create", {
-          //   state: { title: "Questions", subTitle: data.name, "isEdit": true, "questionData": data },
-          // });
-        },
+        onClick: (data, i) => { getQuestionById(data.sid) },
       },
       {
         title: "Delete",
@@ -139,6 +135,22 @@ const QuestionsTable = ({ location }) => {
     // showCheckbox: true,
     clearSelection: false,
   });
+
+  // get All question 
+  const getQuestionById = async (sid) => {
+    spinner.show("Loading... wait...");
+    try {
+      let { data } = await RestService.getQuestionById(sid);
+      navigate("/questions/create", {
+        state: { title: "Questions", subTitle: data.name, "isEdit": true, "questionData": data },
+      });
+      console.log(data);
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getQuestionById()", err);
+    }
+  }
 
   // get All question 
   const getAllQuestion = async (page = 1) => {
@@ -197,33 +209,33 @@ const QuestionsTable = ({ location }) => {
     }
   }
 
-      // upload Question
-      const uploadQuestion = async ()=> {
-        try{
-        spinner.show("Please wait...");
-        let formData = new FormData();
-        formData.append('file', files);
-        let res = await  RestService.uploadQuestion(formData)
-        getAllQuestion()
-        setShow(false)
-        spinner.hide();
-        Toast.success({ message: 'Question Upload successfully', time: 2000});
-        }catch(err){
-          setShow(false)
-            spinner.hide();
-            console.error("error occur on uploadQuestion()",err)
-        }
+  // upload Question
+  const uploadQuestion = async () => {
+    try {
+      spinner.show("Please wait...");
+      let formData = new FormData();
+      formData.append('file', files);
+      let res = await RestService.uploadQuestion(formData)
+      getAllQuestion()
+      setShow(false)
+      spinner.hide();
+      Toast.success({ message: 'Question Upload successfully', time: 2000 });
+    } catch (err) {
+      setShow(false)
+      spinner.hide();
+      console.error("error occur on uploadQuestion()", err)
     }
+  }
 
-      // get batch count
-       const getQuestionCount = async () => {
-        try {
-           let {data} =await RestService.getCount("question")
-            setCount(data);
-        } catch (err) {
-            console.error("error occur on getAllBatch()", err)
-        }
+  // get batch count
+  const getQuestionCount = async () => {
+    try {
+      let { data } = await RestService.getCount("question")
+      setCount(data);
+    } catch (err) {
+      console.error("error occur on getAllBatch()", err)
     }
+  }
 
   useEffect(() => {
     getQuestionCount()
@@ -244,7 +256,7 @@ const QuestionsTable = ({ location }) => {
               state: { title: "Questions", subTitle: "New Question" },
             });
           }}>Create Individual</Dropdown.Item>
-          <Dropdown.Item onClick={()=>{setShow(true);setFiles()}}>Upload in Bulk</Dropdown.Item>
+          <Dropdown.Item onClick={() => { setShow(true); setFiles() }}>Upload in Bulk</Dropdown.Item>
         </DropdownButton>
 
       </CardHeader>
@@ -259,33 +271,33 @@ const QuestionsTable = ({ location }) => {
         />
       </div>
       <BsModal {...{ show, setShow, headerTitle: "Upload Questions in Bulk", size: "lg" }}>
-            <div className="">
-            <div className="bulk-upload mt-2 border-0 ">
-                  {/* <div className="title-lg">Upload Assessees in Bulk</div> */}
-                  <div className="file-upload mb-2">
-                      <div>
-                          {  files?.name ? files.name : "No File Uploaded Yet"}
-                      </div>
-                      <div>
-                          <input accept=".csv" className={""} id="contained-button-file2" onChange={(e) => setFiles(e.target.files[0])} type="file" />
-                          <label className="mb-0" htmlFor="contained-button-file2">
-                              <Button variant="contained" color="primary" component="span">
-                                  <span className="mr-2">{ICN_UPLOAD}</span> Upload
-                              </Button>
-                          </label>
-                      </div>
-                  </div>
-                  <a href={GLOBELCONSTANT.UPLOAD_QUESTION_TEMPLES} className="mt-3 link">Download Template</a>
-              </div>
-            </div>
-            <div className="jce mt-3">
+        <div className="">
+          <div className="bulk-upload mt-2 border-0 ">
+            {/* <div className="title-lg">Upload Assessees in Bulk</div> */}
+            <div className="file-upload mb-2">
               <div>
-              <Cancel onClick={()=>setShow(false)}>Cancel</Cancel>
-              <Buttons onClick={()=>uploadQuestion()}>Create</Buttons>
+                {files?.name ? files.name : "No File Uploaded Yet"}
               </div>
-              
+              <div>
+                <input accept=".csv" className={""} id="contained-button-file2" onChange={(e) => setFiles(e.target.files[0])} type="file" />
+                <label className="mb-0" htmlFor="contained-button-file2">
+                  <Button variant="contained" color="primary" component="span">
+                    <span className="mr-2">{ICN_UPLOAD}</span> Upload
+                              </Button>
+                </label>
+              </div>
             </div>
-        </BsModal>
+            <a href={GLOBELCONSTANT.UPLOAD_QUESTION_TEMPLES} className="mt-3 link">Download Template</a>
+          </div>
+        </div>
+        <div className="jce mt-3">
+          <div>
+            <Cancel onClick={() => setShow(false)}>Cancel</Cancel>
+            <Buttons onClick={() => uploadQuestion()}>Create</Buttons>
+          </div>
+
+        </div>
+      </BsModal>
 
     </>
   );
