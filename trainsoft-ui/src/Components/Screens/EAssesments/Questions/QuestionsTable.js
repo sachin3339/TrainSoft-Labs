@@ -1,4 +1,5 @@
 import { Button } from "@material-ui/core";
+import { Search } from "@material-ui/icons";
 import { useState, useContext, useEffect } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
@@ -20,6 +21,8 @@ const QuestionsTable = ({ location }) => {
   const [questions, setQuestions] = useState([])
   const [show, setShow] = useState(false)
   const [files,setFiles] = useState()
+  const [isSearch,setIsSearch] = useState(false)
+  const [searchValue,setSearchValue] = useState('')
   const [configuration, setConfiguration] = useState({
     columns: {
       name: {
@@ -29,7 +32,7 @@ const QuestionsTable = ({ location }) => {
         isSearchEnabled: false,
         render: (data) => (
           <div style={{ display: "flex", alginItems: "center" }}>
-            <Toggle id={data.sid} onChange={() => {  }} checked={data.status === 'ENABLED' ? true : false} />
+            <Toggle id={data.sid} onChange={() => { changeStatus(data.sid,data.status) }} checked={data.status === 'ENABLED' ? true : false} />
             <Link
               to={"question-details"}
               state={{
@@ -143,12 +146,28 @@ const QuestionsTable = ({ location }) => {
     try {
       let { data } = await RestService.getAllQuestion(GLOBELCONSTANT.PAGE_SIZE, page - 1)
       setQuestions(data);
+      setIsSearch(false)
+      setSearchValue('')
       spinner.hide();
     } catch (err) {
+      setIsSearch(false)
       spinner.hide();
       console.error("error occur on getAllQuestion()", err)
     }
   }
+
+    // change question status
+    const changeStatus = async (qSid,status) => {
+      spinner.show("Loading... wait");
+      try {
+        let { data } = await RestService.changeQuestionStatus(qSid,status === "DISABLED" ? "enabled": "disabled")
+        getAllQuestion()
+        spinner.hide();
+      } catch (err) {
+        spinner.hide();
+        console.error("error occur on getAllQuestion()", err)
+      }
+    }
 
   // Delete question
   const deleteQuestion = async (sid) => {
@@ -165,11 +184,12 @@ const QuestionsTable = ({ location }) => {
   }
 
   // search topic 
-  const searchQuestion = async (value) => {
+  const searchQuestion = async (value,pageNo=1) => {
     spinner.show("Loading... wait");
     try {
-      let { data } = await RestService.searchQuestion(value, user.companySid)
+      let { data } = await RestService.searchQuestion(value , user.companySid,GLOBELCONSTANT.PAGE_SIZE,pageNo-1)
       setQuestions(data);
+      setIsSearch(true)
       spinner.hide();
     } catch (err) {
       spinner.hide();
@@ -215,7 +235,7 @@ const QuestionsTable = ({ location }) => {
         {...{
           location,
           onChange: (e) => e.length === 0 && getAllQuestion(),
-          onEnter: (e) => searchQuestion(e),
+          onEnter: (e) => {setSearchValue(e);searchQuestion(e)},
         }}
       >
         <DropdownButton className="btn-sm f13" title="+ New Question">
@@ -233,7 +253,7 @@ const QuestionsTable = ({ location }) => {
           {...{
             configuration,
             sourceData: questions,
-            onPageChange: (e) => getAllQuestion(e),
+            onPageChange: (e) => {isSearch ? searchQuestion(searchValue, e) : getAllQuestion(e)},
             count,
           }}
         />

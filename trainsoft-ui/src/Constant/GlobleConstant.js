@@ -175,13 +175,14 @@ const GLOBELCONSTANT = {
             DELETE_QUESTION: API_ASSES + "delete/question/{questionId}",
             SEARCH_TOPIC: API_ASSES + "search/topic/",
             SEARCH_ASSESSMENT: API_ASSES + "search/assessment/{query}/{companySid}/{topicSid}",
-            SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}",
+            SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}?pageSize={pageSize}&pageNo={pageNo}",
             GENERATE_URL : API_ASSES + "generate/assessment/url/{assId}",
             UPLOAD_ASSESSMENT: API_ASSES + "upload/list/assess/participants",
             UPLOAD_QUESTION: API_ASSES + "question/bulkupload",
             GET_ASSESSMENT_DASHBOARD : API_ASSES + "get/assessdetails/{aasId}",
             GET_ASSESSMENT_USER : API_ASSES + "get/configuredusers/{assID}",
-            GET_QUESTION_BY_SID : API_ASSES + "question/{qId}"
+            GET_QUESTION_BY_SID : API_ASSES + "question/{qId}",
+            CHANGE_QUESTION_STATUS : API_ASSES + "question/status/update/{qId}/{status}"
 
         },  
         ACCESS_LEVEL: [
