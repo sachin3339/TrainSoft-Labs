@@ -50,9 +50,8 @@ export const AssessmentDialog = () => {
     try {
       spinner.show("Loading... Please wait...");
       let payload = { ...values };
-      // payload.categoryTopicValue.category = payload.categoryTopicValue.category.name;
       payload.categoryTopicValue = JSON.stringify(values.categoryTopicValue);
-      values.companySid = JSON.parse(params.companySid)? params.companySid : null;
+      values.companySid = params.companySid != 0 ? params.companySid : null;
       let header = {
         "assessSid": assessmentSid
       }
@@ -79,7 +78,7 @@ export const AssessmentDialog = () => {
     try {
       spinner.show();
       let payload = {
-        "companySid": JSON.parse(params.companySid)? params.companySid : null,
+        "companySid": params.companySid == 0 ? null : params.companySid,
         "difficulty": values.categoryTopicValue.difficulty,
         "tagSid": values.categoryTopicValue.topic
       }

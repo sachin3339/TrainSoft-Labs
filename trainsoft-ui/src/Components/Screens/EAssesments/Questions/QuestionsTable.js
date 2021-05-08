@@ -115,9 +115,9 @@ const QuestionsTable = ({ location }) => {
         title: "Edit",
         icon: ICN_EDIT,
         onClick: (data, i) => {
-          navigate("/questions/create", {
-            state: { title: "Questions", subTitle: data.name, "isEdit": true, "questionInfo": data },
-          });
+          // navigate("/questions/create", {
+          //   state: { title: "Questions", subTitle: data.name, "isEdit": true, "questionData": data },
+          // });
         },
       },
       {

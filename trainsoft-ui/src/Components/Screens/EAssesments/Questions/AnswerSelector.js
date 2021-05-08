@@ -41,7 +41,7 @@ const AnswerSelector = ({
 
   // this method to set option value
   const handleChangeOptionValue = () => {
-    let newVal = values.answer.map((r, i) => ({...r, answerOption: ordering === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? GLOBELCONSTANT.ALPHABETS[i] : i + 1}))
+    let newVal = values.answer && values.answer.map((r, i) => ({...r, answerOption: ordering === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? GLOBELCONSTANT.ALPHABETS[i] : i + 1}))
     setFieldValue("answer", newVal);
   }
 
@@ -49,7 +49,7 @@ const AnswerSelector = ({
   const handleSetCorrectAnswer = (index) => {
     try {
       setCorrectAnswer(index);
-      let newVal = values.answer.map((r, i) => ({...r, correct: i === index ? true : false}));
+      let newVal = values.answer && values.answer.map((r, i) => ({...r, correct: i === index ? true : false}));
       setFieldValue("answer", newVal);
     } catch (err) {
       console.error("Error occur in handleSetCorrectAnswer --", err);  
