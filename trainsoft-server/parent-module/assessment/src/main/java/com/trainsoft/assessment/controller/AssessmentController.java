@@ -192,8 +192,10 @@ public class AssessmentController {
     public ResponseEntity<?>searchAssessment(
            @ApiParam("Search String") @PathVariable("searchString") String searchString,
            @ApiParam("Company Sid") @PathVariable("cSid") String companySid,
-           @ApiParam("Topic Sid")@PathVariable("tSid") String topicSid){
-     return ResponseEntity.ok(assessmentService.searchAssessment(searchString,companySid,topicSid));
+           @ApiParam("Topic Sid")@PathVariable("tSid") String topicSid,
+           Pageable pageable)
+    {
+     return ResponseEntity.ok(assessmentService.searchAssessment(searchString,companySid,topicSid,pageable));
     }
 
     @PostMapping(value = "/upload/list/assess/participants",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

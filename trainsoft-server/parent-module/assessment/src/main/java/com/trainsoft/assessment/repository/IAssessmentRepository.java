@@ -1,6 +1,7 @@
 package com.trainsoft.assessment.repository;
 
 import com.trainsoft.assessment.entity.Assessment;
+import com.trainsoft.assessment.entity.Company;
 import com.trainsoft.assessment.entity.Topic;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,6 +23,8 @@ public interface IAssessmentRepository extends JpaRepository<Assessment,Integer>
     List<Assessment> findByTagAndDifficulty(@Param("id") Integer tagId,@Param("df") String difficulty,@Param("cid")Integer companyId);
     @Query("FROM Assessment  as assess WHERE assess.status <> 'DELETED' AND assess.topicId=:topic order by assess.createdOn desc")
     List<Assessment> findAssessmentByTopicId(Topic topic, Pageable pageable);
+    @Query("SELECT assess FROM Assessment as assess WHERE ( assess.title like :searchString OR assess.description like :searchString OR assess.category like :searchString ) AND assess.company =:company AND assess.topicId =:topic AND assess.status <> 'DELETED'")
+    List<Assessment> searchAssessment(String searchString, Company company, Topic topic,Pageable pageable);
 
 
 }

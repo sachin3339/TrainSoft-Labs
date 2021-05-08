@@ -124,10 +124,12 @@ public class TopicServiceImpl implements ITopicService {
     }
 
     @Override
-    public List<TopicTo> searchTopic(String searchString, String companySid) {
+    public List<TopicTo> searchTopic(String searchString, String companySid,Pageable pageable)
+    {
         Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
-        if (company!=null){
-            List<Topic> topic = customRepository.searchTopic(searchString.trim(), company);
+        if (company!=null)
+        {
+            List<Topic> topic = topicRepository.searchTopic("%"+searchString.trim()+"%", company,pageable);
            return mapper.convertList(topic,TopicTo.class);
         }
         throw new InvalidSidException("invalid company Sid");

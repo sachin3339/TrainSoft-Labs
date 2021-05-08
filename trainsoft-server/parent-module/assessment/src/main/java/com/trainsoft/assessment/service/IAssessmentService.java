@@ -38,13 +38,13 @@ public interface IAssessmentService
 
     BigInteger getCountByClass(String classz, String companySid);
 
-    List<AssessmentTo> searchAssessment(String searchString,String companySid,String topicSid);
+    List<AssessmentTo> searchAssessment(String searchString,String companySid,String topicSid,Pageable pageable);
 
     AssessmentDashboardTo getAssessDetails(String assessmentSid);
     List<AssessTo> getConfiguredUserDetailsForAssessment(String assessmentSid);
 
-    List<VirtualAccountHasQuizSetAssessmentTO> getLeaderBoardForAssessmentForToday(String quizSetSid);
+    List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForToday(String quizSetSid);
 
-    List<VirtualAccountHasQuizSetAssessmentTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
+    List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
 
 }

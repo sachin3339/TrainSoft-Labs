@@ -64,7 +64,8 @@ public class TopicController {
     @ApiOperation(value = "search topic",notes = "API to Search Topic.")
     public ResponseEntity<?> searchTopic(
             @ApiParam("Search String")@PathVariable("searchString") String searchString,
-            @ApiParam("Company Sid")@PathVariable("sid") String companySid){
-        return ResponseEntity.ok(topicService.searchTopic(searchString,companySid));
+            @ApiParam("Company Sid")@PathVariable("sid") String companySid,Pageable pageable)
+    {
+        return ResponseEntity.ok(topicService.searchTopic(searchString,companySid,pageable));
     }
 }
