@@ -4,11 +4,10 @@ import Submit from "../common/SubmitButton";
 import styles from "./AssessmentBody.module.css";
 import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import AnswerOption from './AnswerOption';
-import AppContext from '../../../../Store/AppContext';
 import RestService from '../../../../Services/api.service';
 import AppUtils from '../../../../Services/Utils';
 
-const AssessmentCard = ({ question, review = false, index, correct = false, result = false, questions }) => {
+const AssessmentCard = ({ question, review = false, setReview,  index, correct = false, result = false, questions }) => {
     const {
         setAnswer,
         selectedAnswers,
@@ -21,14 +20,15 @@ const AssessmentCard = ({ question, review = false, index, correct = false, resu
         instruction,
         assUserInfo
       } = useContext(AssessmentContext);
-      const { spinner } = useContext(AppContext)
       const [activeOption, setActiveOption] = useState(selectedAnswers[question?.sid]);
+      const [inReview, setInReview] = useState(false);
+      const [submitStatus, setSubmitStatus] = useState(false);
 
       // this method to submit your answer
       const handleSubmitAnswer = () => {
         if(AppUtils.isNotEmptyObject(selectedAnswer) && AppUtils.isNotEmptyObject(question)) {
           try {
-            spinner.show("Submitting your answer.. Please wait...");
+            setSubmitStatus(true);
             let payload = {
               "answerSid": selectedAnswer.sid,
               "questionSid": activeQuestion.questionId.sid,
@@ -37,16 +37,16 @@ const AssessmentCard = ({ question, review = false, index, correct = false, resu
             }
             RestService.submitAnswer(payload).then(
               response => {
-                spinner.hide();
+                setSubmitStatus(false);
+                setQuestionIndex(inReview ? -1 : questionIndex + 1);
                 setAnswer(question.sid, activeOption);
-                setQuestionIndex(questionIndex + 1);
                 setSelectedAnswer({});
               },
               err => {
-                spinner.hide();
+                setSubmitStatus(false);
               }
             ).finally(() => {
-              spinner.hide();
+              setSubmitStatus(false);
             });
           } catch (err) {
             console.error("Error occur in handleSubmitAnswer--", err);
@@ -67,7 +67,7 @@ const AssessmentCard = ({ question, review = false, index, correct = false, resu
             <div>
               {
                 review 
-                && <div className={styles.editButton} onClick={() => setQuestionIndex(index)}>
+                && <div className={styles.editButton} onClick={() => {setQuestionIndex(index); setInReview(true); setReview(true)}}>
                     <CreateOutlinedIcon style={{ fontSize: "12px", marginRight: "5px" }}/>Edit
                 </div>
               }
@@ -122,7 +122,7 @@ const AssessmentCard = ({ question, review = false, index, correct = false, resu
             !review 
             && !finished 
             && <div className={styles.button}>
-                <Submit onClick={() => handleSubmitAnswer()} disabled={AppUtils.isEmptyObject(selectedAnswer)} assessment={true}>Submit</Submit>
+                <Submit onClick={() => {handleSubmitAnswer();}} disabled={AppUtils.isEmptyObject(selectedAnswer)} assessment={true} loading={submitStatus}>{submitStatus ? "Submit..." : "Submit"}</Submit>
             </div>
           }
         </div>

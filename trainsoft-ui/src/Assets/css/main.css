@@ -1297,3 +1297,8 @@ p {
   font-weight: 600;
   border-bottom: 3px solid #FECD48;
 }
+.loading-btn{
+  height: 16px !important;
+  width: 16px !important;
+  margin-right: 5px !important;
+}
