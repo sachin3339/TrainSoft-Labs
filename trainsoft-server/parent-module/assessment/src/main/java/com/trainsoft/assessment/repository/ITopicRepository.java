@@ -17,4 +17,7 @@ public interface ITopicRepository extends JpaRepository<Topic,Integer> {
     List<Topic> findTopicByCompany(Company company, Pageable pageable);
     @Query(value = "SELECT COUNT(*) FROM quiz as qz WHERE qz.company_id=:company AND qz.status<>'DELETED'",nativeQuery = true)
     Integer findTopicCountByCompany(Company company);
+
+    @Query("SELECT tp from Topic as tp where ( tp.name like :searchString OR tp.description like :searchString ) And tp.company=:company And tp.status <>'DELETED' ")
+    List<Topic> searchTopic(String searchString,Company company,Pageable pageable);
 }
