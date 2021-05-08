@@ -68,4 +68,13 @@ public class TopicController {
     {
         return ResponseEntity.ok(topicService.searchTopic(searchString,companySid,pageable));
     }
+
+    @GetMapping("count/topic/{searchString}/{sid}")
+    @ApiOperation(value = "count topic",notes = "API to count Topic.")
+    public ResponseEntity<?> searchTopic(
+            @ApiParam("Search String")@PathVariable("searchString") String searchString,
+            @ApiParam("Company Sid")@PathVariable("sid") String companySid)
+    {
+        return ResponseEntity.ok(topicService.pageableTopicCount(searchString,companySid));
+    }
 }

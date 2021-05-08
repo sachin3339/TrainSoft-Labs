@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public interface ITopicRepository extends JpaRepository<Topic,Integer> {
@@ -20,4 +21,7 @@ public interface ITopicRepository extends JpaRepository<Topic,Integer> {
 
     @Query("SELECT tp from Topic as tp where ( tp.name like :searchString OR tp.description like :searchString ) And tp.company=:company And tp.status <>'DELETED' ")
     List<Topic> searchTopic(String searchString,Company company,Pageable pageable);
+
+    @Query("SELECT count (tp) from Topic as tp where ( tp.name like :searchString OR tp.description like :searchString ) And tp.company=:company And tp.status <>'DELETED' ")
+    BigInteger pageableTopicCount(String searchString, Company company);
 }

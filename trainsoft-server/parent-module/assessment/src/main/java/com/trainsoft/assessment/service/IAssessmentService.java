@@ -16,35 +16,24 @@ public interface IAssessmentService
     List<QuestionTo> associateSelectedQuestionsToAssessment(AssessmentQuestionTo  assessmentQuestionTo);
     AssessmentTo getAssessmentBySid(String assessmentSid);
     List<QuestionTo> getAssessmentQuestionsBySid(String assessmentSid, Pageable pageable);
-
     AssessmentTo getInstructionsForAssessment(InstructionsRequestTO instructionsRequestTO);
-
     List<AssessmentQuestionTo> startAssessment(String quizSetSid,String virtualAccountSid);
-
      VirtualAccountHasQuestionAnswerDetailsTO submitAnswer(SubmitAnswerRequestTO request);
-
      VirtualAccountHasQuizSetAssessmentTO submitAssessment(SubmitAssessmentTO request);
-
     List<VirtualAccountHasQuestionAnswerDetailsTO> reviewQuestionsAndAnswers(String virtualAccountSid);
     String removeAssociatedQuestionFromAssessment(String questionSid,String assessmentSid);
     String generateAssessmentURL(String assessmentSid, HttpServletRequest request);
-
     ScoreBoardTO getScoreBoard(String quizSetSid,String virtualAccountSid);
-
     List<VirtualAccountHasQuestionAnswerDetailsTO> findUserAssessmentResponses(String virtualAccountSid);
-
     AssessmentTo updateAssessment(AssessmentTo assessmentTo);
     void deleteAssessment(String QuizSetSid);
-
     BigInteger getCountByClass(String classz, String companySid);
-
     List<AssessmentTo> searchAssessment(String searchString,String companySid,String topicSid,Pageable pageable);
-
     AssessmentDashboardTo getAssessDetails(String assessmentSid);
     List<AssessTo> getConfiguredUserDetailsForAssessment(String assessmentSid);
-
     List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForToday(String quizSetSid);
-
     List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
+
+    BigInteger pageableAssessmentCount(String searchString,String companySid,String topicSid);
 
 }
