@@ -18,8 +18,8 @@ public interface IQuestionRepository extends JpaRepository<Question, Integer>
 {
     @Query("FROM Question as ques WHERE ques.status='ENABLED' AND ques.sid=:qSid")
     Question findQuestionBySid(byte[] qSid);
-    @Query(value = "SELECT ques FROM Question ques WHERE ques.status='ENABLED' AND ques.id NOT IN ( SELECT assess.questionId FROM AssessmentQuestion assess WHERE assess.assessmentId=:assessment) AND ques.company=:company order by ques.createdOn desc")
-    List<Question> findQuestionBySidNotInAssessments(Company company, Assessment assessment);
+    @Query(value = "SELECT ques FROM Question ques WHERE ques.status='ENABLED' AND ques.technologyName=:tagName AND ques.id NOT IN ( SELECT assess.questionId FROM AssessmentQuestion assess WHERE assess.assessmentId=:assessment) AND ques.company=:company order by ques.createdOn desc")
+    List<Question> findQuestionBySidNotInAssessments(Company company, Assessment assessment,String tagName);
 
     @Query(value = "select question_point from question where id=:id and status='ENABLED' ",nativeQuery = true)
     Integer findQuestionPoint(@Param("id") Integer questionId);

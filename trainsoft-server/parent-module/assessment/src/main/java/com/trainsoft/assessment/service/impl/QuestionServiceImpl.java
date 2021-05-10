@@ -147,7 +147,7 @@ public class QuestionServiceImpl implements IQuestionService {
         if(companySid!=null && assessmentSid!=null)
         {
             Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
-            List<Question> questionList = questionRepository.findQuestionBySidNotInAssessments(getCompany(companySid),assessment);
+            List<Question> questionList = questionRepository.findQuestionBySidNotInAssessments(getCompany(companySid),assessment,assessment.getTagId().getName());
             if (CollectionUtils.isNotEmpty(questionList)) {
                 return mapper.convertList(questionList, QuestionTo.class);
             }
