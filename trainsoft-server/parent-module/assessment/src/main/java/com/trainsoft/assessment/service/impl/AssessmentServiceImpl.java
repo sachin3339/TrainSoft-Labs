@@ -117,11 +117,18 @@ public class AssessmentServiceImpl implements IAssessmentService
                 List<Assessment> assessmentList = assessmentRepository.findAssessmentByTopicId(topic,pageable);
                 if (CollectionUtils.isNotEmpty(assessmentList)) {
                     List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList, AssessmentTo.class);
-                    assessmentToList.forEach(assessmentTo ->
+                    Iterator<AssessmentTo> assessmentToIterator=assessmentToList.stream().iterator();
+                    Iterator<Assessment> assessmentIterator= assessmentList.stream().iterator();
+                    String tSid = BaseEntity.bytesToHexStringBySid(topic.getSid());
+                    while (assessmentIterator.hasNext() && assessmentToIterator.hasNext())
                     {
-                        assessmentTo.setTopicSid(BaseEntity.bytesToHexStringBySid(topic.getSid()));
-                        assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessmentTo.getSid()));
-                    });
+                         AssessmentTo assessmentTo = assessmentToIterator.next();
+                         Assessment assessment = assessmentIterator.next();
+
+                         assessmentTo.setTopicSid(tSid);
+                         assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(BaseEntity.bytesToHexStringBySid(assessment.getSid())));
+                         assessmentTo.setTagSid(assessment.getTagId().getStringSid());
+                    }
                     return assessmentToList;
                 }
                 log.warn("No Assessments are present for this Topic");
