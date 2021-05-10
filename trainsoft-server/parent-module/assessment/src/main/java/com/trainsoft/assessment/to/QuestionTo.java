@@ -27,5 +27,5 @@ public class QuestionTo  extends BaseTO
    private String answerExplanation;
    private int negativeQuestionPoint;
    private Date createdOn;
-   private boolean isAlphabet;
+   private boolean alphabet;
 }
