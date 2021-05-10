@@ -17,7 +17,8 @@ const Main = ({ questions }) => {
         setFinished,
         finished,
         instruction,
-        assUserInfo
+        assUserInfo,
+        hasExamEnd
     } = useContext(AssessmentContext);
     const { spinner } = useContext(AppContext);
     const [review, setReview] = useState(true);
@@ -48,6 +49,14 @@ const Main = ({ questions }) => {
             console.error("Error occur in handleSubmitAssessment--", err);
         }
     }
+
+    // listening when time's up to submit assessment automatically
+    useEffect(() => {
+        if(hasExamEnd) {
+            Toast.success({ message: `Your time is up and your assessment is submitted automatically` });
+            handleSubmitAssessment();
+        }
+    }, [hasExamEnd])
 
     return (
         <div className={styles.main}>

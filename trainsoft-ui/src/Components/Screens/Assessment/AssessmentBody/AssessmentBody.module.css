@@ -50,7 +50,18 @@
   background: #ffe99f;
   font: normal normal 600 14px/18px monospace;
   padding: 8px 20px;
-  /* border-radius: 100px; */
+}
+.fourMinLeft{
+  color: black;
+  font: normal normal 600 14px/18px monospace;
+  padding: 8px 20px;
+  background-color: #FFCB9F !important;
+}
+.twoMinLeft{
+  color: #fff;
+  font: normal normal 600 14px/18px monospace;
+  padding: 8px 20px;
+  background-color: #F47575 !important;
 }
 
 .main {
