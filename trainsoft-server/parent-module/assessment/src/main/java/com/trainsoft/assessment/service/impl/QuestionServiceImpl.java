@@ -398,13 +398,17 @@ public class QuestionServiceImpl implements IQuestionService {
     // To avoid duplicates
     private boolean isDuplicateRecord(Question question)
     {
-            String name = question.getName();
-            Question existingQuestion = questionRepository.findQuestionsByName(name);
-            if (existingQuestion != null && name.equalsIgnoreCase(existingQuestion.getName()))
+        String name = question.getName();
+        List<Question> existingQuestionList = questionRepository.findQuestionsByName(name);
+        for (Question eq:existingQuestionList)
+        {
+            if (eq != null && name.equalsIgnoreCase(eq.getName()))
             {
-                question.setSid(existingQuestion.getSid());
+                question.setSid(eq.getSid());
                 return Boolean.TRUE;
             }
+        }
+
             return Boolean.FALSE;
     }
 
