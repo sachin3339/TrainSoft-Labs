@@ -44,6 +44,20 @@
   border-radius: 40px;
   cursor: pointer;
 }
+.quitButtonModal{
+  background-color: #FD6060;
+  color: #fff;
+  border: 1px solid#FD6060;
+  font: normal normal 600 12px/15px Montserrat;
+  text-transform: uppercase;
+  width: 91px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+  cursor: pointer;
+}
 
 .timer {
   color: black;

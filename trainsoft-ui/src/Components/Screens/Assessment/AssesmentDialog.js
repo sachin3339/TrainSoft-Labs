@@ -221,7 +221,7 @@ export const AssessmentDialog = () => {
         </div>
       </div>
       <div className="container-fluid row jcc dialog-pg">
-        <div className="col-6">
+        <div className="col-6 pb20 mb20">
           <div className="text-center mb-4">{ICN_TRAINSOFT}</div>
           <div className="pg-title2 text-center mb-2">
             Thank you for your interest in our e-Assessment tool

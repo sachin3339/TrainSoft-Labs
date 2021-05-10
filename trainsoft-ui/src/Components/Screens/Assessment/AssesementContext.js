@@ -14,7 +14,7 @@ export const AssessmentProvider = ({ children }) => {
   const [finished, setFinished] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(true);
   const [instruction, setInstruction] = useState({});
-  const [selectedAnswer, setSelectedAnswer] = useState("")
+  const [selectedAnswer, setSelectedAnswer] = useState("");
   const [questions, setQuestions] = useState([]);
   const [assUserInfo, setAssUserInfo] = useState({});
   const [hasExamEnd, setHasExamEnd] = useState(false);
