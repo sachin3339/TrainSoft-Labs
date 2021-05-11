@@ -190,7 +190,13 @@ public class AssessmentServiceImpl implements IAssessmentService
         try {
             if (assessmentSid != null) {
                 Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
-                return mapper.convert(assessment, AssessmentTo.class);
+                AssessmentTo assessmentTo= mapper.convert(assessment, AssessmentTo.class);
+                assessmentTo.setTagSid(assessment.getTagId().getStringSid());
+                assessmentTo.setCategorySid(assessment.getCategoryId().getStringSid());
+                assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessmentSid));
+                assessmentTo.setTopicSid(assessment.getTopicId().getStringSid());
+                assessmentTo.setCompanySid(assessment.getCompany().getStringSid());
+                return assessmentTo;
             } else
                 throw new RecordNotFoundException("No records found");
         } catch (Exception exp) {
