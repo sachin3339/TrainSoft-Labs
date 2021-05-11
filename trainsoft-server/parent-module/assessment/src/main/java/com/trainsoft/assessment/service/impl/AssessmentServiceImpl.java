@@ -74,9 +74,13 @@ public class AssessmentServiceImpl implements IAssessmentService
                 assessment.setCreatedOn(new Date(Instant.now().toEpochMilli()));
                 assessment.setTopicId(topicRepository.findTopicBySid
                         (BaseEntity.hexStringToByteArray(assessmentTo.getTopicSid())));
+                assessment.setCategoryId(categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(assessmentTo.getCategorySid())));
                 assessment.setTagId(tagRepository.findBySid(BaseEntity.hexStringToByteArray(assessmentTo.getTagSid())));
                 AssessmentTo savedAssessmentTo = mapper.convert(assessmentRepository.save(assessment),AssessmentTo.class);
                 savedAssessmentTo.setCompanySid(assessment.getStringSid());
+                savedAssessmentTo.setTagSid(assessmentTo.getTagSid());
+                savedAssessmentTo.setTopicSid(assessmentTo.getTopicSid());
+                savedAssessmentTo.setCategorySid(assessmentTo.getCategorySid());
                 return savedAssessmentTo;
             }
             else
@@ -641,7 +645,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         assessment.setMultipleSitting(assessmentTo.isMultipleSitting());
         assessment.setPauseEnable(assessmentTo.isPauseEnable());
         assessment.setMultipleSitting(assessmentTo.isMultipleSitting());
-        assessment.setCategory(assessmentTo.getCategory());
+        assessment.setCategoryId(categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(assessmentTo.getCategorySid())));
         assessment.setPaymentReceived(assessmentTo.isPaymentReceived());
         assessment.setReduceMarks(assessmentTo.isReduceMarks());
         assessment.setPreviousEnabled(assessmentTo.isPreviousEnabled());

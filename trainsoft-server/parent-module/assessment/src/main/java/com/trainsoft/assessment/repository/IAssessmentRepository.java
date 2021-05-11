@@ -24,10 +24,10 @@ public interface IAssessmentRepository extends JpaRepository<Assessment,Integer>
     List<Assessment> findByTagAndDifficulty(@Param("id") Integer tagId,@Param("df") String difficulty,@Param("cid")Integer companyId);
     @Query("FROM Assessment  as assess WHERE assess.status ='ENABLED' AND assess.topicId=:topic order by assess.createdOn desc")
     List<Assessment> findAssessmentByTopicId(Topic topic, Pageable pageable);
-    @Query("SELECT assess FROM Assessment as assess WHERE ( assess.title like :searchString OR assess.description like :searchString OR assess.category like :searchString ) AND assess.company =:company AND assess.topicId =:topic AND assess.status ='ENABLED'")
+    @Query("SELECT assess FROM Assessment as assess WHERE ( assess.title like :searchString OR assess.description like :searchString OR assess.categoryId.name like :searchString ) AND assess.company =:company AND assess.topicId =:topic AND assess.status ='ENABLED'")
     List<Assessment> searchAssessment(String searchString, Company company, Topic topic,Pageable pageable);
 
-    @Query("SELECT count(assess) FROM Assessment as assess WHERE ( assess.title like :searchString OR assess.description like :searchString OR assess.category like :searchString ) AND assess.company =:company AND assess.topicId =:topic AND assess.status ='ENABLED'")
+    @Query("SELECT count(assess) FROM Assessment as assess WHERE ( assess.title like :searchString OR assess.description like :searchString OR assess.categoryId.name like :searchString ) AND assess.company =:company AND assess.topicId =:topic AND assess.status ='ENABLED'")
     BigInteger pageableAssessmentCount(String searchString, Company company, Topic topic);
 
 
