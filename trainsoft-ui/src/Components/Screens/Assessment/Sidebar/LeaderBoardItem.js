@@ -1,7 +1,7 @@
 import React from 'react';
 import PersonOutlineOutlinedIcon from "@material-ui/icons/PersonOutlineOutlined";
 
-const LeaderBoardItem = ({ name, index, percent }) => {
+const LeaderBoardItem = ({ virtualAccountTO, index, percentage }) => {
     return <div
         style={{
             background: "white",
@@ -42,10 +42,10 @@ const LeaderBoardItem = ({ name, index, percent }) => {
                 <PersonOutlineOutlinedIcon style={{ fontSize: "14px" }} />
             </div>
             <div style={{ font: "normal normal normal 12px/26px Montserrat" }}>
-                {name}
+                {virtualAccountTO.appuser?.name}
             </div>
         </div>
-        <div style={{ font: "normal normal 600 12px/26px Montserrat" }}>{percent}%</div>
+        <div style={{ font: "normal normal 600 12px/26px Montserrat" }}>{percentage ? percentage : 0}%</div>
     </div>;
 }
 

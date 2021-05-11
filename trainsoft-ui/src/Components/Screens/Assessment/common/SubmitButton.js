@@ -1,4 +1,4 @@
-const Submit = ({ children, disabled, assessment = false, style, ...props }) => {
+const Submit = ({ children, disabled, assessment = false, style, loading = false, ...props }) => {
   return (
     <div
       style={{
@@ -17,6 +17,7 @@ const Submit = ({ children, disabled, assessment = false, style, ...props }) => 
       {...props}
       className={disabled ? "disabled" : ""}
     >
+      {loading ? <span class="spinner-border spinner-border-sm loading-btn" role="status" aria-hidden="true"></span> : ""}
       {children}
     </div>
   );

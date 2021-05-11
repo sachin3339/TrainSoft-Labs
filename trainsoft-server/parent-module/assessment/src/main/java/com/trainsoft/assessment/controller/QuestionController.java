@@ -78,9 +78,12 @@ public class QuestionController {
     @PutMapping("update/question")
     @ApiOperation(value = "update Question with it's associated answers",
             notes = "API to update question and it's associated answers.")
-    public ResponseEntity<?> updateQuestion(
-            @ApiParam("update question payload")@RequestBody QuestionTo request){
-      return   ResponseEntity.ok(questionService.updateQuestion(request));
+    public ResponseEntity<?> updateQuestion( @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
+            @ApiParam("update question payload")@RequestBody QuestionTo questionTo){
+               JWTTokenTO jwt = JWTDecode.parseJWT(token);
+               questionTo.setCreatedByVirtualAccountSid(jwt.getVirtualAccountSid());
+               questionTo.setCompanySid(jwt.getCompanySid());
+      return   ResponseEntity.ok(questionService.updateQuestion(questionTo));
     }
 
     @DeleteMapping("delete/question/{sid}")

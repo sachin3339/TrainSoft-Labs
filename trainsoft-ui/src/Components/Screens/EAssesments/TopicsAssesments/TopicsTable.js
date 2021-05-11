@@ -51,7 +51,7 @@ const TopicsTable = ({ location }) => {
         ),
       },
       noOfAssessments: {
-        title: "NO. OF ASSIGNMENT",
+        title: "No. Of Assessment",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
@@ -101,19 +101,6 @@ const TopicsTable = ({ location }) => {
     try {
       let { data } = await RestService.getAllTopic(GLOBELCONSTANT.PAGE_SIZE, pageNo - 1)
       setTopic(data);
-      spinner.hide();
-    } catch (err) {
-      spinner.hide();
-      console.error("error occur on getAllTopic()", err)
-    }
-  }
-
-   // get All topic
-   const getAllCategory = async (pageNo = "1") => {
-    spinner.show("Loading... wait");
-    try {
-      let { data } = await RestService.getAllCategory()
-      setCategory(data)
       spinner.hide();
     } catch (err) {
       spinner.hide();
@@ -179,7 +166,6 @@ const TopicsTable = ({ location }) => {
   useEffect(() => {
     getTopicCount()
     getAllTopic()
-    getAllCategory()
   }, [])
 
   return (

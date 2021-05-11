@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface ICompanyRepository extends JpaRepository<Company, Integer> {
-	@Query("FROM Company  as c WHERE c.status<>'DELETED' AND c.sid=:sid")
+	@Query("FROM Company  as c WHERE c.status='ENABLED' AND c.sid=:sid")
 	Company findCompanyBySid(byte[] sid);
 	List<Company> findCompanyByNameAndStatusNot(String name, InstructorEnum.Status status);
 	List<Company> findCompanyByName(String name);

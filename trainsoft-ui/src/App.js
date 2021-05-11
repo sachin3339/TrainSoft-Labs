@@ -14,6 +14,7 @@ import Assessment from "./Components/Screens/Assessment/Assessment";
 import { TrainingProvider } from "./Store/TrainingContext";
 import VsCode from "./Components/Screens/VsCode/VsCode";
 import MeetingClose from "./Components/Zoom/MeetingClose";
+import { AssessmentProvider } from "./Store/AssessmentContext";
 
 
 
@@ -23,6 +24,7 @@ function App() {
    const {spinner} = useContext(AppContext)
   return (<>
       <Spinner value={spinner}/>
+      <AssessmentProvider>
       <TrainingProvider>
          <Router>
             <LandingHome path="/"/>
@@ -35,6 +37,7 @@ function App() {
             <MeetingClose path="/zoomclose"/>
          </Router>
       </TrainingProvider>
+      </AssessmentProvider>
  </> );
 }
 

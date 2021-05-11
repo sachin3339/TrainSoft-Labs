@@ -116,7 +116,7 @@ const RestService = {
   updateAssessment:(payload)=>AxiosService.put(GLOBELCONSTANT.ASSESSMENT.UPDATE_ASSESSMENT,payload),
   searchTopic: (query,companySid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.SEARCH_TOPIC + query + "/" + companySid),
   searchAssessment: (query,companySid,topicSid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.SEARCH_ASSESSMENT.replace("{query}",query).replace("{companySid}",companySid).replace("{topicSid}",topicSid)),
-  searchQuestion: (query,companySid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.SEARCH_QUESTION.replace("{query}",query).replace("{companySid}",companySid)),
+  searchQuestion: (query,companySid,pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.SEARCH_QUESTION.replace("{query}",query).replace("{companySid}",companySid).replace("{pageSize}", pageSize).replace("{pageNo}",pageNo)),
   generateUrl: (assId) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GENERATE_URL.replace("{assId}",assId)),
   uploadAssParticipant : (payload,headers)=> AxiosService.post(GLOBELCONSTANT.ASSESSMENT.UPLOAD_ASSESSMENT, payload,'',headers),
   uploadQuestion : (payload)=> AxiosService.post(GLOBELCONSTANT.ASSESSMENT.UPLOAD_QUESTION, payload),
@@ -124,6 +124,7 @@ const RestService = {
   getAssUser : (assId)=> AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT_DASHBOARD.replace("{aasId}",assId)),
   getAssestUser: (assId) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT_USER.replace("{assID}",assId)),
   getQuestionById: (qId) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_QUESTION_BY_SID.replace("{qId}",qId)),
+  changeQuestionStatus: (qId,status) => AxiosService.put(GLOBELCONSTANT.ASSESSMENT.CHANGE_QUESTION_STATUS.replace("{qId}",qId).replace("{status}",status)),
   
 
 
@@ -140,7 +141,10 @@ const RestService = {
   getSubmittedResponse: (virtualAccountSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.SUBMIT_RESPONSE.replace("{virtualAccountSid}", virtualAccountSid)),
   getTopics: () => AxiosService.get(GLOBELCONSTANT.API.GET_TOPIC),
   createAssessmentUser: (payload, header) => AxiosService.post(GLOBELCONSTANT.API.CREATE_ASS_USER, payload, "", header),
-  getAssessmentBySid: (assSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.GET_ASSESSMENT_BY_SID + assSid)
+  getAssessmentBySid: (assSid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.GET_ASSESSMENT_BY_SID + assSid),
+  getTodayLeaders: (sid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.TODAY_LEADER + sid),
+  getAllTimeLeaders: (sid) => AxiosService.get(GLOBELCONSTANT.API.ASSESSMENT.ALL_TIME_LEADER + sid),
+  updateQuestion: (payload) => AxiosService.put(GLOBELCONSTANT.API.ASSESSMENT.UPDATE_QUESTION, payload),
 };
 
 export default RestService;

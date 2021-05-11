@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState} from "react";
 import { AssessmentContext } from "../AssesementContext";
 import Submit from "../common/SubmitButton";
 import AssessmentCard from "./AssesmentCard";
@@ -20,6 +20,7 @@ const Main = ({ questions }) => {
         assUserInfo
     } = useContext(AssessmentContext);
     const { spinner } = useContext(AppContext);
+    const [review, setReview] = useState(true);
     const Toast = useToast();
     
     // this method to submit your answer
@@ -82,7 +83,8 @@ const Main = ({ questions }) => {
                                 && questions.map((question, index) => <AssessmentCard {...{
                                     question, 
                                     index, 
-                                    review: true,
+                                    review,
+                                    setReview,
                                     questions
                                 }}/>)
                             }

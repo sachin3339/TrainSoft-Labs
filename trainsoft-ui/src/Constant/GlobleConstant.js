@@ -2,7 +2,7 @@
 let HOSTNAME = window.location.origin; // Storing  a  Host  Name in global variable
 if (HOSTNAME !== null && ((HOSTNAME.indexOf('localhost') !== -1) || (HOSTNAME.indexOf('127.0.0.1') !== -1)))
     // HOSTNAME = "https://www.eservecloud.com"; 
-    HOSTNAME = "http://52.66.232.107:8089"; // Local development sever will be used from now onwards.
+    HOSTNAME = "https://www.trainsoft.io"; // Local development sever will be used from now onwards.
 export const API_PATH = HOSTNAME ;
 
 let API_HOST = HOSTNAME +"/insled/v1/"
@@ -143,7 +143,10 @@ const GLOBELCONSTANT = {
                 REVIEW_RESPONSE: ASSESSMENT_V1 + "review/response/{virtualAccountSid}",
                 SUBMIT_ASSESSMENT: ASSESSMENT_V1 + "submit/assessment",
                 GET_SCORE: ASSESSMENT_V1 + "get/assessment/score/{assessmentSid}/{virtualAccountSid}",
-                SUBMIT_RESPONSE: ASSESSMENT_V1 + "get/user/assessment/responses/{virtualAccountSid}"
+                SUBMIT_RESPONSE: ASSESSMENT_V1 + "get/user/assessment/responses/{virtualAccountSid}",
+                TODAY_LEADER: ASSESSMENT_V1 + "get/today/assessment/leaderboard/",
+                ALL_TIME_LEADER: ASSESSMENT_V1 + "get/allTime/assessment/leaderboard/",
+                UPDATE_QUESTION: ASSESSMENT_V1 + "update/question"
             },
             GET_TOPIC: ASSESSMENT_V1 + "display/topics",
             CREATE_ASS_USER: ASSESSMENT_V1 + "create/assess/user"
@@ -172,13 +175,14 @@ const GLOBELCONSTANT = {
             DELETE_QUESTION: API_ASSES + "delete/question/{questionId}",
             SEARCH_TOPIC: API_ASSES + "search/topic/",
             SEARCH_ASSESSMENT: API_ASSES + "search/assessment/{query}/{companySid}/{topicSid}",
-            SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}",
+            SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}?pageSize={pageSize}&pageNo={pageNo}",
             GENERATE_URL : API_ASSES + "generate/assessment/url/{assId}",
             UPLOAD_ASSESSMENT: API_ASSES + "upload/list/assess/participants",
             UPLOAD_QUESTION: API_ASSES + "question/bulkupload",
             GET_ASSESSMENT_DASHBOARD : API_ASSES + "get/assessdetails/{aasId}",
             GET_ASSESSMENT_USER : API_ASSES + "get/configuredusers/{assID}",
-            GET_QUESTION_BY_SID : API_ASSES + "question/{qId}"
+            GET_QUESTION_BY_SID : API_ASSES + "question/{qId}",
+            CHANGE_QUESTION_STATUS : API_ASSES + "question/status/update/{qId}/{status}"
 
         },  
         ACCESS_LEVEL: [

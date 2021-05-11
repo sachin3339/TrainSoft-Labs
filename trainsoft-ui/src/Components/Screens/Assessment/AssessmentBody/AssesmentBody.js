@@ -10,7 +10,6 @@ const AssessmentBody = () => {
     instruction,
     questions
   } = useContext(AssessmentContext);
-  console.log(questions);
   const [introDialog, setIntroDialog] = useState(true);
 
   return (

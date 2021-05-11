@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ITagRepository extends JpaRepository<Tag,Integer>
 {
-    @Query("FROM Tag as tg WHERE tg.status<>'DELETED' AND tg.sid=:tagSid")
+    @Query("FROM Tag as tg WHERE tg.status='ENABLED' AND tg.sid=:tagSid")
     Tag findBySid(byte[] tagSid);
 }

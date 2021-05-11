@@ -28,4 +28,6 @@ public class QuestionTo  extends BaseTO
    private int negativeQuestionPoint;
    private Date createdOn;
    private boolean isAlphabet;
+   private Date updatedOn;
+   private String updatedByVASid;
 }

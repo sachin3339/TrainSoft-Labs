@@ -40,14 +40,12 @@ const AssesmentDetails = ({ location }) => {
 
 const TopicAssesment = () => {
   return (
-    <AssessmentProvider>
     <Router>
       <TopicsTable path="/" />
       <CreateAssessment path="create-assessment"/>
       <AssesmentsTable path="topic-details" />
       <AssesmentDetails path="topic-details/assesment-details" />
     </Router>
-    </AssessmentProvider>
   );
 };
 

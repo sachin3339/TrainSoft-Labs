@@ -1,6 +1,6 @@
 import { Category } from "@material-ui/icons";
 import moment from "moment";
-import { useEffect, useState,useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import RestService from "../../../../Services/api.service";
 import AppContext from "../../../../Store/AppContext";
@@ -13,31 +13,33 @@ import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
 import { ICN_EDIT, ICN_TRASH } from "../../../Common/Icon";
 
 import { Link, navigate } from "../../../Common/Router";
-let val ={
-  autoSubmitted: true,
-  category: "",
-  description: "",
-  difficulty: "BEGINNER",
-  duration: false,
-  mandatory: true,
-  multipleSitting: true,
-  negative: true,
-  nextEnabled: true,
-  pauseEnable: true,
-  premium: false,
-  previousEnabled: true,
-  status: "ENABLED",
-  tagSid: "",
-  title: "",
-  topicSid: "",
-  validUpto: true,
-  date:'',
-}
+
 const AssesmentsTable = ({ location }) => {
   const Toast = useToast()
-  const {spinner,user} = useContext(AppContext)
-  const {topicSid,setInitialAssessment,category} = useContext(AssessmentContext)
-  const [assessment,setAssessment] = useState([])
+  const { spinner, user } = useContext(AppContext)
+  const { topicSid, setInitialAssessment, category } = useContext(AssessmentContext)
+  const [assessment, setAssessment] = useState([])
+
+  let val = {
+    autoSubmitted: true,
+    category: category[0],
+    description: "",
+    difficulty: "BEGINNER",
+    duration: false,
+    mandatory: true,
+    multipleSitting: true,
+    negative: true,
+    nextEnabled: true,
+    pauseEnable: true,
+    premium: false,
+    previousEnabled: true,
+    status: "ENABLED",
+    tagSid: category[0].tags[0],
+    title: "",
+    topicSid: "",
+    validUpto: true,
+    date: '',
+  }
 
   const [configuration, setConfiguration] = useState({
     columns: {
@@ -48,7 +50,7 @@ const AssesmentsTable = ({ location }) => {
         isSearchEnabled: false,
         render: (data) => (
           <div style={{ display: "flex", alginItems: "center" }}>
-            <Link onClick={()=>setInitialAssessment(data)}
+            <Link onClick={() => setInitialAssessment(data)}
               to={"assesment-details"}
               state={{
                 title: "Topics",
@@ -76,7 +78,7 @@ const AssesmentsTable = ({ location }) => {
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
-        render:(data)=> data.type === true ? "Premium": "Free" 
+        render: (data) => data.type === true ? "Premium" : "Free"
       },
       category: {
         title: "Category",
@@ -103,10 +105,10 @@ const AssesmentsTable = ({ location }) => {
         sortEnabled: true,
         isSearchEnabled: false,
         render: (data) => <>
-        <div className="copy-url-btn" onClick={()=>copyUrl()}><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Copy Url</div>
-        <div className="copy-url-disp" id="copy_url2">
+          <div className="copy-url-btn" onClick={() => copyUrl()}><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" /></svg> Copy Url</div>
+          <div className="copy-url-disp" id="copy_url2">
             {`https://www.trainsoft.io/assessment/${data.sid}/${user.companySid}/0`}
-            </div>
+          </div>
         </>
       },
     },
@@ -117,8 +119,8 @@ const AssesmentsTable = ({ location }) => {
       configuration.sortBy = sortKey;
       Object.keys(configuration.columns).map(
         (key) =>
-          (configuration.columns[key].sortDirection =
-            key === sortKey ? !configuration.columns[key].sortDirection : false)
+        (configuration.columns[key].sortDirection =
+          key === sortKey ? !configuration.columns[key].sortDirection : false)
       );
       configuration.sortDirection =
         configuration.columns[sortKey].sortDirection;
@@ -128,10 +130,16 @@ const AssesmentsTable = ({ location }) => {
       {
         title: "Edit",
         icon: ICN_EDIT,
-        onClick: (data, i) => { initialStateConfig(data);navigate("create-assessment",{state :{ title: "Topic",
-        subTitle: "Assessment",
-        data: data,
-        path: "topicAssesment",}}) }
+        onClick: (data, i) => {
+          initialStateConfig(data); navigate("create-assessment", {
+            state: {
+              title: "Topics",
+              subTitle: "Assessment",
+              data: data,
+              path: "topicAssesment",
+            }
+          })
+        }
       },
       {
         title: "Delete",
@@ -150,41 +158,48 @@ const AssesmentsTable = ({ location }) => {
     clearSelection: false,
   });
 
-  const initialStateConfig = (values)=>{
+  const initialStateConfig = (values) => {
     let data = {
       ...values,
       category: getCategory(values.category),
-      tagSid: getCategory(values.category)?.tags.find(res=> res.sid === values.tagSid),
+      tagSid: values.tagSid ? values.tagSid : getCategory(values.category).tags[0],
       validUpto: values.validUpto === 0 ? true : false,
       date: values.validUpto === 0 ? '' : values.validUpto,
       duration: values.duration === 0 ? true : false,
-      timeLimit: values.duration === 0 ? new Date() : values.duration 
+      timeLimit: values.duration === 0 ? new Date() : values.duration
     }
     setInitialAssessment(data)
   }
 
-  const getCategory =(vals)=>{
-    return category.find(res=>res.name === vals)
+  const getCategory = (vals) => {
+    let value = '';
+    try {
+      value = category.find(res => res.name === vals)
+      // tags = tagSid && value.tags.find(res => res.sid === tagSid)
+    } catch (err) {
+      console.error("error occur on getCategory()", err)
+    }
+    return value
   }
 
   // get All Assessment By Topic sid
-  const getAssessmentByTopic = async (pageNo="1") => {
-         spinner.show("Loading... wait");
+  const getAssessmentByTopic = async (pageNo = "1") => {
+    spinner.show("Loading... wait");
     try {
-        RestService.getAssessmentByTopic(topicSid,GLOBELCONSTANT.PAGE_SIZE,pageNo-1).then(
-            response => {
-              setAssessment(response.data);
-            },
-            err => {
-                spinner.hide();
-            }
-        ).finally(() => {
-            spinner.hide();
-        });
+      RestService.getAssessmentByTopic(topicSid, GLOBELCONSTANT.PAGE_SIZE, pageNo - 1).then(
+        response => {
+          setAssessment(response.data);
+        },
+        err => {
+          spinner.hide();
+        }
+      ).finally(() => {
+        spinner.hide();
+      });
     } catch (err) {
-        console.error("error occur on getAllTopic()", err)
+      console.error("error occur on getAllTopic()", err)
     }
-}
+  }
 
   // delete assessmsnt
   const deleteAssessment = async (sid) => {
@@ -204,7 +219,7 @@ const AssesmentsTable = ({ location }) => {
   const searchAssessment = async (value) => {
     spinner.show("Loading... wait");
     try {
-      let {data} = await RestService.searchAssessment(value,user.companySid,topicSid)
+      let { data } = await RestService.searchAssessment(value, user.companySid, topicSid)
       setAssessment(data);
       spinner.hide();
     } catch (err) {
@@ -212,33 +227,40 @@ const AssesmentsTable = ({ location }) => {
       console.error("error occur on searchTopic()", err)
     }
   }
- 
-  const copyUrl = () =>{
+
+  const copyUrl = () => {
     let copyText = document.getElementById("copy_url2");
     let textArea = document.createElement("textarea");
     textArea.value = copyText.textContent;
     document.body.appendChild(textArea);
     textArea.select();
     document.execCommand("Copy");
-    Toast.success({ message: 'Url is copy successfully', time: 2000});
+    Toast.success({ message: 'Url is copy successfully', time: 2000 });
   }
 
-useEffect(()=>{
-  getAssessmentByTopic()
-},[])
+  useEffect(() => {
+    getAssessmentByTopic()
+  }, [])
 
   return (
     <>
       <CardHeader
-        {...{location,
+        {...{
+          location,
           onChange: (e) => e.length === 0 && getAssessmentByTopic(),
           onEnter: (e) => searchAssessment(e),
         }}
       >
-        <Button className=" ml-2" 
-           onClick={()=>{ setInitialAssessment(val); navigate("create-assessment",{state :{ title: "Topics",
-           subTitle: "Topics",
-           path: "topicAssesment",}})}}
+        <Button className=" ml-2"
+          onClick={() => {
+            setInitialAssessment(val); navigate("create-assessment", {
+              state: {
+                title: "Topics",
+                subTitle: "Topics",
+                path: "topicAssesment",
+              }
+            })
+          }}
         >+ New Assesment</Button>
       </CardHeader>
 
