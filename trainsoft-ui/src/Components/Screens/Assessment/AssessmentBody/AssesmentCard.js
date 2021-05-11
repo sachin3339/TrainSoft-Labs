@@ -115,18 +115,18 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
                           {
                             option.correct
                             && activeOption === option?.sid
-                            && <div class={`alert alert-success`} role="alert">
-                              <h4 class="alert-heading f16">{"Correct Answer!"}</h4>
-                              <p>{question.questionId.answerExplanation}</p>
+                            && <div class={`alert alert-success correct-answer-box mt5`} role="alert">
+                              <h4 class="alert-heading f16 text-semi-bold">{"Correct Answer!"}</h4>
+                              <p className="description">{question.questionId.answerExplanation}</p>
                             </div>
 
                           }
                           {
                             !option.correct
                             && activeOption === option?.sid
-                            && <div class={`alert alert-danger`} role="alert">
-                              <h4 class="alert-heading f16">{"Your answer is wrong! The correct answer is,"}</h4>
-                              <p>{question.questionId.answerExplanation}</p>
+                            && <div class={`alert alert-danger wrong-answer-box mt5`} role="alert">
+                              <h4 class="alert-heading f16 text-semi-bold">{"Your answer is wrong! The correct answer is,"}</h4>
+                              <p className="description">{question.questionId.answerExplanation}</p>
                             </div>
 
                           }

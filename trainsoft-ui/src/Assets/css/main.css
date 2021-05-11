@@ -1310,3 +1310,21 @@ p {
   width: 16px !important;
   margin-right: 5px !important;
 }
+.correct-answer-box{
+    color: #126125;
+    background-color: #f1fced;
+    border-color: #6cbd86;
+    border-radius: 10px;
+}
+.correct-answer-box .description{
+   color: #0f5719;
+}
+.wrong-answer-box{
+  color: #ce2b2b;
+  background-color: #f7f0f0;
+  border-color: #eab0b0;
+  border-radius: 10px;
+}
+.wrong-answer-box .description{
+ color: #b35756;
+}

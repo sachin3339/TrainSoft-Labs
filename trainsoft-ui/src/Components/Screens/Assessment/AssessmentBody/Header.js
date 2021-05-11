@@ -16,7 +16,7 @@ const Header = ({ instruction, title, startTime = 0, timeLimit = 2500, introDial
           && !finished 
           && <div>
               <div>
-                <AssessmentTimer {...{startTime, timeLimit: .5 * 60, callback: (time) => setHasExamEnd(true)}} />
+                <AssessmentTimer {...{startTime, timeLimit: instruction.duration * 60, callback: (time) => setHasExamEnd(true)}} />
               </div>
             </div>
         }

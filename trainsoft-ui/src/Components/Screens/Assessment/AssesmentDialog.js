@@ -149,7 +149,7 @@ export const AssessmentDialog = () => {
   const getUserByVirtualAccountSid = async (sid) => {
     try {
       spinner.show("Loading... Please wait...");
-      RestService.getUserDetails(sid).then(
+      RestService.getAssUserByVirtualAccountSid(sid).then(
         response => {
           spinner.hide();
           setAssUserInfo(response.data);

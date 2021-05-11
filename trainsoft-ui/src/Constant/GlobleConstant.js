@@ -149,7 +149,8 @@ const GLOBELCONSTANT = {
                 UPDATE_QUESTION: ASSESSMENT_V1 + "update/question"
             },
             GET_TOPIC: ASSESSMENT_V1 + "display/topics",
-            CREATE_ASS_USER: ASSESSMENT_V1 + "create/assess/user"
+            CREATE_ASS_USER: ASSESSMENT_V1 + "create/assess/user",
+            GET_ASSES_USER: ASSESSMENT_V1 + "assess/virtualaccount/"
         },
         INSTRUCTOR: {
             GET_INSTRUCTOR: API_HOST +  'depatments'
