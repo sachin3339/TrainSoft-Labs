@@ -63,4 +63,11 @@ public class Question extends BaseEntity{
     @Column(name = "is_alphabet")
     private boolean isAlphabet;
 
+    @ManyToOne
+    @JoinColumn(name = "updated_by", referencedColumnName = "id")
+    private VirtualAccount updatedBy;
+
+    @Column(name = "updated_on")
+    private Date updatedOn;
+
 }

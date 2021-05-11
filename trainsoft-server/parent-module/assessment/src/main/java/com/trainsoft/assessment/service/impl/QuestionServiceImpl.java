@@ -196,11 +196,28 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public QuestionTo updateQuestion(QuestionTo request) {
-        Question question = questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(request.getSid()));
+    public QuestionTo updateQuestion(QuestionTo updateQuestionTo) {
+        Question question = questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(updateQuestionTo.getSid()));
         if (question==null) throw new InvalidSidException("invalid question sid.");
-        List<Answer> answer = answerRepository.findAnswerByQuestionId(question.getId());
-        question.setName(request.getName());
+
+        // get Virtual Account
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
+                (BaseEntity.hexStringToByteArray(updateQuestionTo.getCreatedByVirtualAccountSid()));
+
+        Question updateQuestion=mapper.convert(updateQuestionTo,Question.class);
+        updateQuestion.setId(question.getId());
+        List<Answer> updateAnswerList = mapper.convertList(updateQuestionTo.getAnswer(),Answer.class);
+        updateQuestion.setCompany(getCompany(updateQuestionTo.getCompanySid()));
+        updateAnswerList.forEach(ans-> ans.setQuestionId(updateQuestion));
+        updateQuestion.setAnswers(updateAnswerList);
+        updateQuestion.setUpdatedBy(virtualAccount);
+        updateQuestion.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+        QuestionTo savedUpdatedQuestionTo=mapper.convert(questionRepository.save(updateQuestion),QuestionTo.class);
+        savedUpdatedQuestionTo.setAnswer(mapper.convertList(updateAnswerList,AnswerTo.class));
+        savedUpdatedQuestionTo.setUpdatedByVASid(virtualAccount.getStringSid());
+        savedUpdatedQuestionTo.setCompanySid(virtualAccount.getCompany().getStringSid());
+        return savedUpdatedQuestionTo;
+        /*question.setName(request.getName());
         question.setDifficulty(request.getDifficulty());
         question.setQuestionType(request.getQuestionType());
         question.setTechnologyName(request.getTechnologyName());
@@ -223,7 +240,7 @@ public class QuestionServiceImpl implements IQuestionService {
          questionTo.setAnswer(answerTO);
          questionTo.setCreatedByVirtualAccountSid(question.getCreatedBy().getStringSid());
          questionTo.setCompanySid(question.getCompany().getStringSid());
-         return questionTo;
+         return questionTo;*/
     }
 
     @Override
