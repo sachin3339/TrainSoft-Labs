@@ -33,7 +33,8 @@ const CreateQuestion = ({ location }) => {
     try {
       let payload = {
         ...values,
-        technologyName: values.technologyName.name
+        technologyName: values.technologyName.name,
+        alphabet : values.answerOrderType === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? true : false
       }
       delete payload.answerOrderType;
       let method = isEdit ? RestService.updateQuestion : RestService.createQuestion;
@@ -94,7 +95,7 @@ const CreateQuestion = ({ location }) => {
         {true ? (
           <Formik
             onSubmit={(value) => createNewQuestion(value)}
-            initialValues={isEdit ? questionData : GLOBELCONSTANT.DATA.CREATE_QUESTION}
+            initialValues={isEdit ? {...questionData, "answerOrderType": questionData.alphabet ? GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS : GLOBELCONSTANT.ANSWER_PATTERN.NUMBER} : GLOBELCONSTANT.DATA.CREATE_QUESTION}
           >
             {({ handleSubmit, values, setFieldValue, resetForm, isSubmitting, dirty, touched }) => (
               <form onSubmit={handleSubmit} className="create-batch">
@@ -117,13 +118,9 @@ const CreateQuestion = ({ location }) => {
                     />
                   </Form.Group>
             
-            
-                  <SelectInput label="Category" option={category} bindKey="name" name="technologyName" value={values.category}  payloadKey="name" />
-                  
-                  <Form.Group>
+                  <SelectInput label="Category" option={category} bindKey="name" name="technologyName" value={values.technologyName} />
                   <SelectInput label="Tag"  value={values.tagSid} option={values.technologyName?.tags} bindKey="name" valueKey="sid" name="tags"/>
-                    {/* <TextArea label="Tags" name="tags" /> */}
-                  </Form.Group>
+                  
                   <Form.Group>
                     <Form.Label className="label">
                        Difficulty

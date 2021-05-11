@@ -247,6 +247,7 @@ const GLOBELCONSTANT = {
                 "status": "ENABLED"
             },
             CREATE_QUESTION: {
+                "alphabet": false,
                 "answer": [
                     {
                         "answerOption": "",
