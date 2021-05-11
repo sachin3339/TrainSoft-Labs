@@ -169,6 +169,7 @@ public class QuestionServiceImpl implements IQuestionService {
                Question question=questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(questionSid));
                QuestionTo questionTo=mapper.convert(question,QuestionTo.class);
                questionTo.setAnswer(mapper.convertList(question.getAnswers(),AnswerTo.class));
+               questionTo.setCompanySid(question.getCompany().getStringSid());
                return questionTo;
             }
             else
