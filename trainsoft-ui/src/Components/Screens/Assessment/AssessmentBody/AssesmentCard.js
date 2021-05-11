@@ -79,7 +79,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
             && question.questionId
             && Array.isArray(question.questionId.answer)
             && question.questionId.answer.length > 0
-            && question.questionId.answer.map((option, i) => <div
+            && question.questionId.answer.map((option, i) => <><div
                 onClick={() => {
                   if (!finished) {
                     setActiveOption(option?.sid);
@@ -95,27 +95,49 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
                   active={activeOption === option?.sid}
                   result={result}
                 />
-            </div>)
-          }
-
-          {/* <div className="row">
-            <div className="col-10">
-              {
-                finished 
-                && result
-                  ? ((correct && result) ? <div class="alert alert-success" role="alert">
-                    <h4 class="alert-heading f16">Correct Answer!</h4>
-                    <p>{question.questionId.answerExplanation}</p>
-                  </div> : <><div class="alert alert-danger f14" role="alert">
-                    <h4 class="alert-heading">Your answer is wrong! The correct answer is,</h4>
-                    <p>{question.questionId.answerExplanation}</p>
-                    </div></>) 
-                    : ""
-              }
             </div>
-          </div> */}
+            </>)
+          }
+          {
+            question
+            && question.questionId
+            && Array.isArray(question.questionId.answer)
+            && question.questionId.answer.length > 0
+            && question.questionId.answer.map((option, i) => <>
+              {
+                result
+                && <div className="row">
+                  <div className="col-10">
+                    {
+                      finished
+                        && result
+                        ? (<>
+                          {
+                            option.correct
+                            && activeOption === option?.sid
+                            && <div class={`alert alert-success`} role="alert">
+                              <h4 class="alert-heading f16">{"Correct Answer!"}</h4>
+                              <p>{question.questionId.answerExplanation}</p>
+                            </div>
 
-          
+                          }
+                          {
+                            !option.correct
+                            && activeOption === option?.sid
+                            && <div class={`alert alert-danger`} role="alert">
+                              <h4 class="alert-heading f16">{"Your answer is wrong! The correct answer is,"}</h4>
+                              <p>{question.questionId.answerExplanation}</p>
+                            </div>
+
+                          }
+                        </>)
+                        : ""
+                    }
+                  </div>
+                </div>
+              }
+            </>)
+          }
 
           <div className={styles.divider} />
           {
