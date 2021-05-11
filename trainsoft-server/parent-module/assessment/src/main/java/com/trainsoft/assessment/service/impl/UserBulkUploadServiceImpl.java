@@ -9,6 +9,7 @@ import com.trainsoft.assessment.entity.*;
 import com.trainsoft.assessment.repository.*;
 import com.trainsoft.assessment.service.ICompanyService;
 import com.trainsoft.assessment.service.IUserBulkUploadService;
+import com.trainsoft.assessment.to.DepartmentVirtualAccountTO;
 import com.trainsoft.assessment.to.UserTO;
 import com.trainsoft.assessment.value.InstructorEnum;
 import lombok.AllArgsConstructor;
@@ -242,5 +243,15 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
             }
             return userTO;
         }
+    }
+
+    @Override
+    public UserTO getVirtualAccountByVASid(String virtualAccountSid){
+        VirtualAccount account= virtualAccountRepository.findVirtualAccountBySid(
+               BaseEntity.hexStringToByteArray(virtualAccountSid));
+        UserTO user=mapper.convert(account, UserTO.class);
+        DepartmentVirtualAccount dVA= departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(account);
+        user.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+        return user;
     }
 }
