@@ -47,7 +47,7 @@ export const IntroDialog = ({ open, setOpen }) => {
           1. Number of questions is <span style={{ fontWeight: 600 }}>{instruction.noOfQuestions || questions.length}</span>
           <br />
             2. Time limit to complete is {" "}
-          <span style={{ fontWeight: 600 }}>{instruction.duration}:00 mins</span>
+          <span style={{ fontWeight: 600 }}>{instruction.duration ? instruction.duration : "00 "}: 00 mins</span>
           <br />
             3. Assessment should be completed in{" "}
           <span style={{ fontWeight: 600 }}> {instruction.multipleAttempts ? "multiple" : "one"} attempt</span>, you cannot save

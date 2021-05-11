@@ -208,3 +208,49 @@
 
 .result {
 }
+.timesUpModal{
+  border-radius: 16px;
+}
+
+.timesUpCircle{
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+  background-color: #8E2505;
+  color: #fff;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+.timesUpHeader{
+  width: 100%;
+  background-color: #A82904;
+  color: #fff;
+  padding: 50px 0px;
+  font-size: 24px;
+  border-radius: 16px 16px 0 0;
+}
+
+.timesUpBody{
+  width: 100%;
+  background-color: #fff;
+  padding: 50px 0px;
+  display: flex;
+  justify-content: center;
+  border-radius: 0 0 16px 16px;
+  font-size: 20px;
+}
+.timesUpButton {
+  background-color: #111111;
+  color: #ffffff;
+  font: normal normal 600 12px/15px Montserrat;
+  width: 200px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+  cursor: pointer;
+}

@@ -8,6 +8,7 @@ import AppContext from '../../../../Store/AppContext';
 import RestService from '../../../../Services/api.service';
 import AppUtils from '../../../../Services/Utils';
 import useToast from "../../../../Store/ToastHook";
+import TimesUpModal from "./TimesUpModal";
 
 const Main = ({ questions }) => {
     const {
@@ -22,6 +23,7 @@ const Main = ({ questions }) => {
     } = useContext(AssessmentContext);
     const { spinner } = useContext(AppContext);
     const [review, setReview] = useState(true);
+    const [show, setShow] = useState(false);
     const Toast = useToast();
     
     // this method to submit your answer
@@ -35,7 +37,7 @@ const Main = ({ questions }) => {
             RestService.submitAssessment(payload).then(
                 response => {
                     spinner.hide();
-                    Toast.success({ message: `Congratulation! You have submitted your assessment successfully` });
+                    Toast.success({ message: `Congratulation! You have submitted your assessment successfully`, time: 3000 });
                     setFinished(true);
                 },
                 err => {
@@ -53,8 +55,7 @@ const Main = ({ questions }) => {
     // listening when time's up to submit assessment automatically
     useEffect(() => {
         if(hasExamEnd) {
-            Toast.success({ message: `Your time is up and your assessment is submitted automatically` });
-            handleSubmitAssessment();
+            setShow(true);
         }
     }, [hasExamEnd])
 
@@ -102,6 +103,7 @@ const Main = ({ questions }) => {
                     }
                 </>
             }
+            {show && <TimesUpModal {...{show, setShow, callBack: () => handleSubmitAssessment()}}/>}
         </div>
     );
 }
