@@ -806,10 +806,10 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForToday(String quizSetSid) {
+    public List<LeaderBoardTO> getLeaderBoardForAssessmentForToday(String quizSetSid) {
         Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         if (assessment!=null){
-            ArrayList<LeaderBoardRequestTO> leaderBoardTO = new ArrayList<>();
+            ArrayList<LeaderBoardTO> leaderBoardTO = new ArrayList<>();
 
             List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
@@ -820,7 +820,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                    topTen.add(i,assessmentList.get(i));
                }
                topTen.forEach(tp->{
-                   LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                   LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
                    leaderBoardRequestTO.setPercentage(tp.getPercentage());
                    leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
                    leaderBoardTO.add(leaderBoardRequestTO);
@@ -831,7 +831,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                 topTen.add(i,assessmentList.get(i));
             }
             topTen.forEach(tp->{
-                LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
                 leaderBoardRequestTO.setPercentage(tp.getPercentage());
                 leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
                 leaderBoardTO.add(leaderBoardRequestTO);
@@ -842,10 +842,10 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid) {
+    public List<LeaderBoardTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid) {
         Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         if (assessment != null) {
-            ArrayList<LeaderBoardRequestTO> leaderBoardTO = new ArrayList<>();
+            ArrayList<LeaderBoardTO> leaderBoardTO = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
                     .findByAssessment(assessment.getId());
@@ -855,7 +855,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                     topTen.add(i,assessmentList.get(i));
                 }
                 topTen.forEach(tp->{
-                    LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                    LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
                     leaderBoardRequestTO.setPercentage(tp.getPercentage());
                     leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
                     leaderBoardTO.add(leaderBoardRequestTO);
@@ -866,7 +866,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                     topTen.add(i, assessmentList.get(i));
             }
             topTen.forEach(tp -> {
-                LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
                 leaderBoardRequestTO.setPercentage(tp.getPercentage());
                 leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(), VirtualAccountTO.class));
                 leaderBoardTO.add(leaderBoardRequestTO);

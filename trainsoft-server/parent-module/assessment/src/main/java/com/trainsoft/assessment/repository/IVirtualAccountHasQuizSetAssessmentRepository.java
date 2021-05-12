@@ -1,5 +1,7 @@
 package com.trainsoft.assessment.repository;
 
+import com.trainsoft.assessment.entity.Category;
+import com.trainsoft.assessment.entity.Company;
 import com.trainsoft.assessment.entity.VirtualAccount;
 import com.trainsoft.assessment.entity.VirtualAccountHasQuizSetAssessment;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,5 +22,17 @@ public interface IVirtualAccountHasQuizSetAssessmentRepository extends JpaReposi
 
     @Query(value = "SELECT AVG(vs.percentage) FROM VirtualAccountHasQuizSetAssessment AS vs WHERE vs.virtualAccountId=:virtualAccount")
     Integer findAllAssessmentAverageScore(VirtualAccount virtualAccount);
+
+    @Query(value = "SELECT va.categoryId,AVG (va.percentage) AS average FROM VirtualAccountHasQuizSetAssessment AS va " +
+                   "WHERE va.virtualAccountId=:virtualAccount GROUP BY va.categoryId")
+    List<Object[]> getCategoryAverageScore(VirtualAccount virtualAccount);
+
+    @Query(value = "select * from virtual_account_has_quiz_set_assesment where company_id=:id " +
+            "order by percentage desc limit 10",nativeQuery = true)
+    List<VirtualAccountHasQuizSetAssessment>getTopTenListForAllCategory(@Param("id") Integer companyId);
+
+    @Query(value = "select * from virtual_account_has_quiz_set_assesment where company_id=:id and category_id=:cid " +
+            "order by percentage desc limit 10",nativeQuery = true)
+    List<VirtualAccountHasQuizSetAssessment>getTopTenListByCategory(@Param("id") Integer companyId,@Param("cid") Integer categoryId);
 
 }

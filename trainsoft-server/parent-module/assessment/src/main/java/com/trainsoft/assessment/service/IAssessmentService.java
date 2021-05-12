@@ -29,8 +29,8 @@ public interface IAssessmentService
     List<AssessmentTo> searchAssessment(String searchString,String companySid,String topicSid,Pageable pageable);
     AssessmentDashboardTo getAssessDetails(String assessmentSid);
     List<AssessTo> getConfiguredUserDetailsForAssessment(String assessmentSid);
-    List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForToday(String quizSetSid);
-    List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
+    List<LeaderBoardTO> getLeaderBoardForAssessmentForToday(String quizSetSid);
+    List<LeaderBoardTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
 
     BigInteger pageableAssessmentCount(String searchString,String companySid,String topicSid);
 
