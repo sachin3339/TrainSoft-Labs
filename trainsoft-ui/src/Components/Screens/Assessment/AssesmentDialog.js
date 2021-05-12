@@ -149,7 +149,7 @@ export const AssessmentDialog = () => {
   const getUserByVirtualAccountSid = async (sid) => {
     try {
       spinner.show("Loading... Please wait...");
-      RestService.getUserDetails(sid).then(
+      RestService.getAssUserByVirtualAccountSid(sid).then(
         response => {
           spinner.hide();
           setAssUserInfo(response.data);
@@ -221,7 +221,7 @@ export const AssessmentDialog = () => {
         </div>
       </div>
       <div className="container-fluid row jcc dialog-pg">
-        <div className="col-6">
+        <div className="col-6 pb20 mb20">
           <div className="text-center mb-4">{ICN_TRAINSOFT}</div>
           <div className="pg-title2 text-center mb-2">
             Thank you for your interest in our e-Assessment tool
@@ -265,23 +265,12 @@ export const AssessmentDialog = () => {
                       {
                         params.assessmentSid == 0
                         && <>
-                          <Form.Group>
                             <SelectInput 
                               label="Select Category" 
                               name="categoryTopicValue.category" 
                               bindKey="name" 
                               option={category} 
                             />
-                          </Form.Group>
-                          <Form.Group>
-                            <Form.Label className="label">
-                              Select Difficulty
-                              </Form.Label>
-                            <div style={{ marginBottom: "10px" }}>
-                              <RadioBoxKey name="categoryTopicValue.difficulty" options={GLOBELCONSTANT.DIFFICULTY} />
-                            </div>
-                          </Form.Group>
-                          <Form.Group>
                             <SelectInput
                               label="Select Topic"
                               option={values.categoryTopicValue?.category?.tags}
@@ -289,6 +278,13 @@ export const AssessmentDialog = () => {
                               bindKey="name"
                               valueKey="sid"
                             />
+                          <Form.Group>
+                            <Form.Label className="label">
+                              Select Difficulty
+                              </Form.Label>
+                            <div style={{ marginBottom: "10px" }}>
+                              <RadioBoxKey name="categoryTopicValue.difficulty" options={GLOBELCONSTANT.DIFFICULTY} />
+                            </div>
                           </Form.Group>
                         </>
                       }
@@ -299,7 +295,7 @@ export const AssessmentDialog = () => {
                         <BtnInfo
                           type="submit"
                           className="btn-block btn-block"
-                          //onClick={() => setOpen(false)}
+                          // onClick={() => setOpen(false)}
                         
                         >
                           LET’S BEGIN! IT’S FREE
