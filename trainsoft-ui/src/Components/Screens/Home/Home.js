@@ -12,6 +12,7 @@ import { Router } from '../../Common/Router';
 import "react-circular-progressbar/dist/styles.css";
 import './home.css'
 import RestService from '../../../Services/api.service';
+import AssessmentContext from '../../../Store/AssessmentContext';
 
 
 
@@ -199,7 +200,9 @@ const AdminHome = () => {
 }
 
 const Home = () => {
-    const { setCourse,setBatches,setDepartment } = useContext(AppContext)
+    const { setCourse,setBatches,setDepartment,spinner } = useContext(AppContext)
+    const {setCategory} = useContext(AssessmentContext)
+
 
     // get all courses
     const allCourse = useFetch({
@@ -221,10 +224,22 @@ const Home = () => {
     errorMsg: 'error occur on get Batches'
  });
 
+// get All topic
+const getAllCategory = async (pageNo = "1") => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getAllCategory()
+      setCategory(data)
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
+    }
+  }
   
 
     useEffect(() => {
-    
+        getAllCategory()
         allCourse.response && setCourse(allCourse.response)
         allBatches.response && setBatches(allBatches.response)
         allDepartment.response && setDepartment(allDepartment.response)

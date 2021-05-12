@@ -9,6 +9,9 @@ import java.util.List;
 public interface ICategoryRepository extends JpaRepository<Category,Integer> {
 
     @Override
-    @Query("FROM Category as cg WHERE cg.status<>'DELETED'")
+    @Query("FROM Category as cg WHERE cg.status='ENABLED'")
     List<Category> findAll();
+
+    @Query(" FROM Category as cg WHERE cg.sid=:sId AND cg.status='ENABLED'")
+    Category findCategoryBySid(byte[] sId);
 }

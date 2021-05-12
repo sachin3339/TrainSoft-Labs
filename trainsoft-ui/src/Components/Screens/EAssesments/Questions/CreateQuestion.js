@@ -17,20 +17,25 @@ import AppUtils from "../../../../Services/Utils";
 import { navigate } from "../../../Common/Router";
 import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import "./question.css";
+import AssessmentContext from "../../../../Store/AssessmentContext";
 
 const CreateQuestion = ({ location }) => {
   const { isEdit = false, questionData } = location.state;
+  const { category } = useContext(AssessmentContext)
   const goBack = () => navigate("./");
   const Toast = useToast()
   const { spinner } = useContext(AppContext);
   const [questionType, setQuestionType] = useState([]);
-  const [questionInfo, setQuestionInfo] = useState(GLOBELCONSTANT.DATA.CREATE_QUESTION);
 
   // Create question
   const createNewQuestion = async (values) => {
     spinner.hide("Loading... Please wait...");
     try {
-      let payload = {...values}
+      let payload = {
+        ...values,
+        technologyName: values.technologyName.name,
+        alphabet : values.answerOrderType === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? true : false
+      }
       delete payload.answerOrderType;
       let method = isEdit ? RestService.updateQuestion : RestService.createQuestion;
       method(payload).then(
@@ -70,23 +75,8 @@ const CreateQuestion = ({ location }) => {
     }
   }
 
-  // get All question 
-  const getQuestionById = async () => {
-    spinner.show("Loading... wait...");
-    try {
-      let { data } = await RestService.getQuestionById(questionData?.sid);
-      console.log(data);
-      setQuestionInfo(data);
-      spinner.hide();
-    } catch (err) {
-      spinner.hide();
-      console.error("error occur on getQuestionById()", err);
-    }
-  }
-
   // initialize component
   useEffect(() => {
-    if(isEdit && questionData?.sid) getQuestionById();
     getQuestionType();
   }, [])
   return (
@@ -97,7 +87,7 @@ const CreateQuestion = ({ location }) => {
           ...location,
           state: {
             title: "Questions",
-            subTitle: "New Question",
+            subTitle: isEdit ? questionData.name : "New Question",
           },
         }}
       />
@@ -105,7 +95,7 @@ const CreateQuestion = ({ location }) => {
         {true ? (
           <Formik
             onSubmit={(value) => createNewQuestion(value)}
-            initialValues={questionInfo}
+            initialValues={isEdit ? {...questionData, "answerOrderType": questionData.alphabet ? GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS : GLOBELCONSTANT.ANSWER_PATTERN.NUMBER} : GLOBELCONSTANT.DATA.CREATE_QUESTION}
           >
             {({ handleSubmit, values, setFieldValue, resetForm, isSubmitting, dirty, touched }) => (
               <form onSubmit={handleSubmit} className="create-batch">
@@ -127,13 +117,10 @@ const CreateQuestion = ({ location }) => {
                       name="name"
                     />
                   </Form.Group>
-                  <Form.Group>
-                    <TextInput
-                      label="Technology Name"
-                      placeholder="Technology Name"
-                      name="technologyName"
-                    />
-                  </Form.Group>
+            
+                  <SelectInput label="Category" option={category} bindKey="name" name="category" value={values.category} />
+                  <SelectInput label="Tag"  value={values.technologyName} option={values.category?.tags} bindKey="name" name="technologyName"/>
+                  
                   <Form.Group>
                     <Form.Label className="label">
                        Difficulty
@@ -163,16 +150,14 @@ const CreateQuestion = ({ location }) => {
                       name="answerExplanation"
                     />
                   </Form.Group>
-
+                      { /* 
                   <Form.Group>
                     <TextArea
                       label="Description"
                       name="description"
                     />
-                  </Form.Group>
-                  <Form.Group>
-                    <TextArea label="Tags" name="tags" />
-                  </Form.Group>
+                  </Form.Group> */}
+                 
                 </div>
                 <div
                   style={{
@@ -190,7 +175,7 @@ const CreateQuestion = ({ location }) => {
                     }}
                     onClick={() => {resetForm(); goBack()}}
                   >Cancel</Submit>
-                  <Submit onClick={()=> createNewQuestion(values)} disabled={isSubmitting || !dirty || !touched}>Create</Submit>
+                  <Submit onClick={()=> createNewQuestion(values)} disabled={isSubmitting || !dirty || !touched}>{isEdit ? "Update" : "Create"}</Submit>
                 </div>
               </form>
             )}

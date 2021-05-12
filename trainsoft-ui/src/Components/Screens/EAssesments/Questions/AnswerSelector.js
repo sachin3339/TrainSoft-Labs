@@ -126,7 +126,7 @@ const AnswerSelector = ({
             {
                values.answer
                && AppUtils.isNotEmptyArray(values.answer)
-               && values.answer.map((_, index) => <div
+               && values.answer.map((ans, index) => <div
                 style={{
                   padding: "15px 0",
                   display: "flex",
@@ -143,7 +143,7 @@ const AnswerSelector = ({
                     marginRight: "10px",
                     cursor: "pointer",
                     border:
-                      correctAnswer === index
+                      correctAnswer === index || ans.correct
                         ? "4px solid blue"
                         : "4px solid #D4D6DB",
                   }}

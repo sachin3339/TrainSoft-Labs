@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface IQuestionTypeRepository extends JpaRepository<QuestionType,Integer> {
 
-    @Query("FROM QuestionType as qt WHERE qt.status<>'DELETED'")
+    @Query("FROM QuestionType as qt WHERE qt.status='ENABLED'")
     List<QuestionType> findAll();
 }

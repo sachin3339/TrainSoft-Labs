@@ -10,4 +10,5 @@ public interface IUserBulkUploadService {
 
     UserTO createVirtualAccountWithAssessmentUser(HttpServletRequest request, UserTO userTO, String assessmentSid);
     void uploadAssessementParticipants(MultipartFile file, HttpServletRequest request,String assessmentSid,String assessUrl);
+    UserTO getVirtualAccountByVASid(String virtualAccountSid);
 }

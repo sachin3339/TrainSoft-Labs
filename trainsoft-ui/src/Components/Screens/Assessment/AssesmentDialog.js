@@ -26,10 +26,10 @@ const SCHEMA = Yup.object().shape({
     emailId: Yup.string().email("Please enter valid email").required("Email id is required"),
     phoneNumber: Yup.string().required("Mobile number is required"),
   }),
-  categoryTopicValue: Yup.object().shape({
-    // category: Yup.string().required("Choose a Category"),
-    topic: Yup.string().required("Please select topic"),
-  }),
+  // categoryTopicValue: Yup.object().shape({
+  //   // category: Yup.string().required("Choose a Category"),
+  //   topic: Yup.string().required("Please select topic"),
+  // }),
 })
 
 export const AssessmentDialog = () => {
@@ -122,13 +122,16 @@ export const AssessmentDialog = () => {
   }
 
   // get assessment by assessment sid
-  const getAssessmentBySid = async (sid) => {
+  const getAssessmentBySid = async (values, sid) => {
     try {
       spinner.show("Loading... Please wait...");
-      RestService.getAssessmentBySid().then(
+      RestService.getAssessmentBySid(sid).then(
         response => {
           spinner.hide();
           setInstruction(response.data);
+          params?.virtualAccountSid == 0 
+          ? createAssUser(values, params.assessmentSid) 
+          : getUserByVirtualAccountSid(params?.virtualAccountSid);
         },
         err => {
           spinner.hide();
@@ -146,7 +149,7 @@ export const AssessmentDialog = () => {
   const getUserByVirtualAccountSid = async (sid) => {
     try {
       spinner.show("Loading... Please wait...");
-      RestService.getUserDetails().then(
+      RestService.getAssUserByVirtualAccountSid(sid).then(
         response => {
           spinner.hide();
           setAssUserInfo(response.data);
@@ -163,18 +166,28 @@ export const AssessmentDialog = () => {
       console.error("error occur on getUserByVirtualAccountSid()--", err);
     }
   }
+
+  // handleSubmit
+  const handleSubmit1 = (values) => {
+    try {
+      if(params.assessmentSid == 0) {
+        getAssessmentInstruction(values);
+      } else {
+        getAssessmentBySid(values, params?.assessmentSid);
+      }
+    } catch (err) {
+      console.log("Error occur in handleSubmit --- ", err);
+    }
+  }
   
   // listening for params value
   useEffect(() => {
     if(AppUtils.isNotEmptyObject(params)) {
-      if(params.assessmentSid != 0 || params.virtualAccountSid != 0) {
-        getAssessmentBySid(params.assessmentSid);
-      }
-      if(params.virtualAccountSid != 0) {
-        getUserByVirtualAccountSid(params.virtualAccountSid);
+      if(params?.virtualAccountSid != 0) {
+        getAssessmentBySid("", params?.assessmentSid);
       }
     } 
-  }, [params]);
+  }, []);
 
   // initialize component
   useEffect(() => {
@@ -208,7 +221,7 @@ export const AssessmentDialog = () => {
         </div>
       </div>
       <div className="container-fluid row jcc dialog-pg">
-        <div className="col-6">
+        <div className="col-6 pb20 mb20">
           <div className="text-center mb-4">{ICN_TRAINSOFT}</div>
           <div className="pg-title2 text-center mb-2">
             Thank you for your interest in our e-Assessment tool
@@ -221,7 +234,7 @@ export const AssessmentDialog = () => {
               <Formik
                 initialValues={userInfo}
                 validationSchema={SCHEMA}
-                onSubmit={(values) => params.assessmentSid == 0 ? getAssessmentInstruction(values) : createAssUser(values, params.assessmentSid)}
+                onSubmit={handleSubmit1}
               >
                 {({ handleSubmit, values, errors, touched, isSubmitting, isValid, dirty, setFieldValue }) => (
                   <form onSubmit={handleSubmit} className="create-batch">
@@ -249,34 +262,32 @@ export const AssessmentDialog = () => {
                           name="appuser.phoneNumber"
                         />
                       </Form.Group>
-
-
-                      <Form.Group>
-                        <SelectInput 
-                          label="Select Category" 
-                          name="categoryTopicValue.category" 
-                          bindKey="name" 
-                          option={category} 
-                        />
-                      </Form.Group>
-
-                      <Form.Group>
-                        <Form.Label className="label">
-                          Select Difficulty
-                          </Form.Label>
-                        <div style={{ marginBottom: "10px" }}>
-                          <RadioBoxKey name="categoryTopicValue.difficulty" options={GLOBELCONSTANT.DIFFICULTY} />
-                        </div>
-                      </Form.Group>
-                      <Form.Group>
-                        <SelectInput
-                          label="Select Topic"
-                          option={values.categoryTopicValue?.category?.tags}
-                          name="categoryTopicValue.topic"
-                          bindKey="name"
-                          valueKey="sid"
-                        />
-                      </Form.Group>
+                      {
+                        params.assessmentSid == 0
+                        && <>
+                            <SelectInput 
+                              label="Select Category" 
+                              name="categoryTopicValue.category" 
+                              bindKey="name" 
+                              option={category} 
+                            />
+                            <SelectInput
+                              label="Select Topic"
+                              option={values.categoryTopicValue?.category?.tags}
+                              name="categoryTopicValue.topic"
+                              bindKey="name"
+                              valueKey="sid"
+                            />
+                          <Form.Group>
+                            <Form.Label className="label">
+                              Select Difficulty
+                              </Form.Label>
+                            <div style={{ marginBottom: "10px" }}>
+                              <RadioBoxKey name="categoryTopicValue.difficulty" options={GLOBELCONSTANT.DIFFICULTY} />
+                            </div>
+                          </Form.Group>
+                        </>
+                      }
                     </div>
                     <footer className="mt-4">
                       <div> </div>
@@ -284,8 +295,8 @@ export const AssessmentDialog = () => {
                         <BtnInfo
                           type="submit"
                           className="btn-block btn-block"
-                          //onClick={() => setOpen(false)}
-                          disabled={isSubmitting || !isValid || !dirty}
+                          // onClick={() => setOpen(false)}
+                        
                         >
                           LET’S BEGIN! IT’S FREE
                         </BtnInfo>

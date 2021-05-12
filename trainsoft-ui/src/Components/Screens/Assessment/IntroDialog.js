@@ -12,7 +12,7 @@ import AppContext from "../../../Store/AppContext";
 import { AssessmentContext } from "./AssesementContext";
 
 export const IntroDialog = ({ open, setOpen }) => {
-  const { instruction, assUserInfo } = useContext(AssessmentContext);
+  const { instruction, assUserInfo, questions } = useContext(AssessmentContext);
   
   return <Dialog
     open={open}
@@ -44,18 +44,17 @@ export const IntroDialog = ({ open, setOpen }) => {
       {
         instruction
         && <Typography gutterBottom>
-          1. Number of questions is <span style={{ fontWeight: 600 }}>{instruction.noOfQuestions}</span>
+          1. Number of questions is <span style={{ fontWeight: 600 }}>{instruction.noOfQuestions || questions.length}</span>
           <br />
             2. Time limit to complete is {" "}
-          <span style={{ fontWeight: 600 }}>{instruction.duration}:00 mins</span>
+          <span style={{ fontWeight: 600 }}>{instruction.duration ? instruction.duration : "00 "}: 00 mins</span>
           <br />
             3. Assessment should be completed in{" "}
           <span style={{ fontWeight: 600 }}> {instruction.multipleAttempts ? "multiple" : "one"} attempt</span>, you cannot save
             in between <br /> 4. All questions are{" "}
           <span style={{ fontWeight: 600 }}>{instruction.mandatory ? "mandatory" : "not mandatory"} </span>
           <br /> 5. You can <span style={{ fontWeight: 600 }}> {instruction.previousEnabled ? "edit" : "not edit"} </span> your
-            previous answer during the session{" "}
-          <span style={{ fontWeight: 600 }}> any time </span>
+           <span style={{ fontWeight: 600 }} className="px5">previous answer</span> during the session any time
         </Typography>
       }
     </DialogContent>
