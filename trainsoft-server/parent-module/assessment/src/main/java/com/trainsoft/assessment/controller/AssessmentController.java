@@ -272,4 +272,12 @@ public class AssessmentController {
         UserTO createUserTO= bulkUploadService.getVirtualAccountByVASid(VASid);
         return ResponseEntity.ok(createUserTO);
     }
+
+    @GetMapping("count/assessment/{cSid}")
+    @ApiOperation(value = "getCountOfAssessmentsByTagsAndDifficulty ", notes = "API to get Assessments based on Tags and Difficulty")
+    public ResponseEntity<?> getCountOfAssessmentsByTagsAndDifficulty(
+            @ApiParam(value = "", required = true) @PathVariable("cSid") String companySid)
+    {
+        return ResponseEntity.ok(assessmentService.getCountOfAssessmentsByTagsAndDifficulty(companySid));
+    }
 }

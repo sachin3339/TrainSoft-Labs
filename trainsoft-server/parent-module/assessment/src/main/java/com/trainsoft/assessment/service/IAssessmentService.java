@@ -35,5 +35,5 @@ public interface IAssessmentService
     List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
 
     BigInteger pageableAssessmentCount(String searchString,String companySid,String topicSid);
-
+    AssessmentsCountTo getCountOfAssessmentsByTagsAndDifficulty(String companySid);
 }

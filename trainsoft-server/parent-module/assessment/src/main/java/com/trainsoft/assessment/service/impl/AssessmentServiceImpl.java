@@ -880,4 +880,43 @@ public class AssessmentServiceImpl implements IAssessmentService
             return assessmentCount;
         }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
     }
+
+    @Override
+    public AssessmentsCountTo getCountOfAssessmentsByTagsAndDifficulty(String companySid)
+    {
+        if(companySid==null)
+           throw  new InvalidSidException("Company Sid is null");
+
+           Company company = getCompany(companySid);
+           AssessmentsCountTo assessmentsCountTo = new AssessmentsCountTo();
+
+           // Assessment Count based on Tags
+           List<Tag> tagList = tagRepository.findTagsByStatus();
+           List<AssessmentCountTagTo> assessmentCountTagToList = new ArrayList<>();
+           if(CollectionUtils.isNotEmpty(tagList))
+           {
+               tagList.forEach(tag->{
+                   AssessmentCountTagTo assessmentCountTagTo = new AssessmentCountTagTo();
+                   assessmentCountTagTo.setTagName(tag.getName());
+                   assessmentCountTagTo.setCount(assessmentRepository.getCountAssessmentsByTag(company,tag));
+                   assessmentCountTagToList.add(assessmentCountTagTo);
+               });
+           }
+           assessmentsCountTo.setAssessmentCountTagToList(assessmentCountTagToList);
+
+           // Assessment Count based on Difficulty
+          List<AssessmentCountDifficultyTo> assessmentCountDifficultyToList = new ArrayList<>();
+          for (AssessmentEnum.QuizSetDifficulty qd:AssessmentEnum.QuizSetDifficulty.values())
+          {
+              AssessmentCountDifficultyTo assessmentCountDifficultyTo = new AssessmentCountDifficultyTo();
+              assessmentCountDifficultyTo.setDifficultyName(qd.toString());
+              assessmentCountDifficultyTo.setCount(assessmentRepository.getCountAssessmentByDifficulty(company,qd));
+              assessmentCountDifficultyToList.add(assessmentCountDifficultyTo);
+          }
+          assessmentsCountTo.setAssessmentCountDifficultyToList(assessmentCountDifficultyToList);
+          return  assessmentsCountTo;
+
+    }
+
+
 }
