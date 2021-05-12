@@ -1,11 +1,10 @@
 import {useContext } from 'react'
 import { Form } from "react-bootstrap";
 import AssessmentContext from "../../../../Store/AssessmentContext";
-import moment from 'moment'
 
 
 const AssesmentInfoTab = () => {
-  const {topicSid,initialAssessment} = useContext(AssessmentContext)
+  const {topicSid, initialAssessment} = useContext(AssessmentContext)
 
   return (
     <>
@@ -15,12 +14,12 @@ const AssesmentInfoTab = () => {
       >
         <Form.Group>
           <diV style={{ fontWeight: 600, fontSize: "18px" }}>
-            Assesment Info
+            Assessment Info
           </diV>
         </Form.Group>
 
         <Form.Group>
-          <Form.Label>Assesment Title</Form.Label>
+          <Form.Label>Assessment Title</Form.Label>
           <br />
           <Form.Label style={{ fontWeight: 600 }}>{initialAssessment?.title}</Form.Label>
         </Form.Group>
@@ -49,14 +48,14 @@ const AssesmentInfoTab = () => {
       >
         <Form.Group>
           <diV style={{ fontWeight: 600, fontSize: "18px" }}>
-            Assesment Rules
+            Assessment Rules
           </diV>
         </Form.Group>
 
         <Form.Group>
           <Form.Label>Time Limit</Form.Label>
           <br />
-          <Form.Label style={{ fontWeight: 600 }}>{initialAssessment?.validUpto === 0 ? "No Limit": moment(initialAssessment?.validUpto).format("DD/MM/YYYY") }</Form.Label>
+          <Form.Label style={{ fontWeight: 600 }}>{ initialAssessment?.duration === 0 ? "No Limit": `${initialAssessment?.duration} Mins` }</Form.Label>
         </Form.Group>
 
         <Form.Group>
