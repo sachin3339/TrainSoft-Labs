@@ -15,6 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class CourseView extends BaseEntity{
 
+    private static final long serialVersionUID = 3795014412041803607L;
     @Column(name = "name")
     private String name;
 

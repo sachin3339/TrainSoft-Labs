@@ -13,6 +13,7 @@ import java.util.Date;
 @Getter @Setter @NoArgsConstructor
 public class CourseSession extends BaseEntity{
 
+    private static final long serialVersionUID = -7097426876314130179L;
     @Column(name = "topic_name")
     private String topicName;
 

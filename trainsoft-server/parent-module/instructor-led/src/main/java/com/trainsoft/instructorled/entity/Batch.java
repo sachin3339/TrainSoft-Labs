@@ -14,6 +14,7 @@ import java.util.List;
 @Table(name = "batch")
 @Getter @Setter @NoArgsConstructor
 public class Batch extends BaseEntity {
+	private static final long serialVersionUID = 4553546358268698010L;
 	@Column(name = "name")
 	private String name;
 

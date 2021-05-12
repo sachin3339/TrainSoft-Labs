@@ -14,6 +14,7 @@ import java.util.Date;
 @Getter @Setter @NoArgsConstructor
 @AllArgsConstructor
 public class AppUser extends BaseEntity{
+	private static final long serialVersionUID = -2651480037730326794L;
 	@Column(name = "name")
 	private String name;
 

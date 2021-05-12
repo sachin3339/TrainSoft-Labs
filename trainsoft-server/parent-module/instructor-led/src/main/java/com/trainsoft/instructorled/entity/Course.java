@@ -14,6 +14,7 @@ import java.util.List;
 @Table(name = "course")
 @Getter @Setter @NoArgsConstructor
 public class Course extends BaseEntity {
+    private static final long serialVersionUID = -7980468080623420358L;
     @Column(name = "name")
     private String name;
 
