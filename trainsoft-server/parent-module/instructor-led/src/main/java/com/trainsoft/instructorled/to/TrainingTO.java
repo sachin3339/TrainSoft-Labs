@@ -13,6 +13,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TrainingTO extends BaseTO{
 
+    private static final long serialVersionUID = 3664311319641437187L;
     private String name;
     private long startDate;
     private long endDate;

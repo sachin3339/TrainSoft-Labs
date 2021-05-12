@@ -13,6 +13,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CourseTO extends BaseTO{
 
+    private static final long serialVersionUID = -1606626022778856355L;
     private String name;
     private String description;
     private InstructorEnum.Status status;

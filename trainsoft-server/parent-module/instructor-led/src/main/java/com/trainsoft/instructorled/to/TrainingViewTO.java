@@ -13,6 +13,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TrainingViewTO extends BaseTO{
 
+    private static final long serialVersionUID = 8499150089941128019L;
     private String name;
     private int noOfBatches;
     private String course;
