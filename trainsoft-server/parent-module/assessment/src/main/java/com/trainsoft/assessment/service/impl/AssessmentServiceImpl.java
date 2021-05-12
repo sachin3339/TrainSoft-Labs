@@ -9,6 +9,7 @@ import com.trainsoft.assessment.customexception.InvalidSidException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
 import com.trainsoft.assessment.entity.*;
+import com.trainsoft.assessment.enums.QuizStatus;
 import com.trainsoft.assessment.repository.*;
 import com.trainsoft.assessment.repository.IAssessmentRepository;
 import com.trainsoft.assessment.repository.ITopicRepository;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.*;
 
@@ -284,6 +284,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         Assessment assessment = assessmentRepository
                 .findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         if (assessment!=null){
+            virtualAccountAssessmentRepository.updateStatus(QuizStatus.STARTED,virtualAccount,assessment);
             List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.findByTopicId(assessment.getId());
             List<AssessmentQuestionTo> assessmentQuestionTo=new ArrayList<>();
             assessmentQuestionList.forEach(as->{
@@ -389,7 +390,6 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
 
-
     @Override
     public VirtualAccountHasQuizSetAssessmentTO submitAssessment(SubmitAssessmentTO request) {
         VirtualAccount virtualAccount = virtualAccountRepository
@@ -403,6 +403,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(request.getQuizSetSid()));
         if (assessment==null) throw new InvalidSidException("Invalid Quiz Set Sid");
             virtualAccountHasQuizSetAssessment.setQuizSetId(assessment);
+            virtualAccountHasQuizSetAssessment.setCategoryId(assessment.getCategoryId());
             virtualAccountHasQuizSetAssessment.setCompanyId(assessment.getCompany());
             virtualAccountHasQuizSetAssessment.setQuizId(assessment.getTopicId());
             virtualAccountHasQuizSetAssessment.setCreatedBy(assessment.getCreatedBy());
@@ -434,6 +435,8 @@ public class AssessmentServiceImpl implements IAssessmentService
         double percentage=((double)gainMarks1*100/(double)totalMarks );
         virtualAccountHasQuizSetAssessment1.setPercentage(percentage);
         virtualAccountHasQuizSetAssessmentRepository.save(virtualAccountHasQuizSetAssessment1);
+        //once assessment submitted setting status in virtual_account_has_assessment to COMPLETED.
+        virtualAccountAssessmentRepository.updateStatus(QuizStatus.COMPLETED,virtualAccount,assessment);
         VirtualAccountHasQuizSetAssessmentTO vto = new VirtualAccountHasQuizSetAssessmentTO();
         vto.setSid(virtualAccountHasQuizSetAssessment.getStringSid());
         vto.setQuizSid(assessment.getTopicId().getStringSid());
@@ -452,6 +455,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         vto.setTotalNumberOfQuestions(virtualAccountHasQuizSetAssessment1.getTotalNumberOfQuestions());
         vto.setSubmittedOn(virtualAccountHasQuizSetAssessment1.getSubmittedOn());
         vto.setPercentage(virtualAccountHasQuizSetAssessment1.getPercentage());
+        vto.setCategorySid(virtualAccountHasQuizSetAssessment1.getCategoryId().getStringSid());
         return vto;
     }
 
@@ -634,7 +638,8 @@ public class AssessmentServiceImpl implements IAssessmentService
         assessment.setMultipleSitting(assessmentTo.isMultipleSitting());
         assessment.setPauseEnable(assessmentTo.isPauseEnable());
         assessment.setMultipleSitting(assessmentTo.isMultipleSitting());
-        assessment.setCategory(assessmentTo.getCategory());
+        Category category = categoryRepository.findBySid(BaseEntity.hexStringToByteArray(assessmentTo.getCategorySid()));
+        assessment.setCategoryId(category);
         assessment.setPaymentReceived(assessmentTo.isPaymentReceived());
         assessment.setReduceMarks(assessmentTo.isReduceMarks());
         assessment.setPreviousEnabled(assessmentTo.isPreviousEnabled());
@@ -863,4 +868,54 @@ public class AssessmentServiceImpl implements IAssessmentService
             return assessmentCount;
         }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
     }
+
+    @Override
+    public VirtualAccountAssessmentTo quitAssessment(String quizSetSid, String virtualAccountSid) {
+        Assessment assessment = assessmentRepository
+                .findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
+        VirtualAccount virtualAccount = virtualAccountRepository
+                .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
+        if (assessment!=null && virtualAccount!=null){
+          virtualAccountAssessmentRepository.updateStatus(QuizStatus.QUIT,virtualAccount,assessment);
+            VirtualAccountAssessment virtualAccountAssessment = virtualAccountAssessmentRepository
+                    .findByAssessmentAndVirtualAccount(assessment, virtualAccount);
+            VirtualAccountAssessmentTo virtualAccountAssessmentTo = mapper
+                    .convert(virtualAccountAssessment, VirtualAccountAssessmentTo.class);
+            virtualAccountAssessmentTo.setAssessmentSid(assessment.getStringSid());
+            virtualAccountAssessmentTo.setVirtualAccountSid(virtualAccount.getStringSid());
+            return virtualAccountAssessmentTo;
+        }
+        throw new InvalidSidException("invalid Assessment Sid Or Virtual Account Sid");
+    }
+
+    private Integer [] findCountsForDashBoard(VirtualAccount virtualAccount){
+        Integer assessmentTaken = virtualAccountAssessmentRepository.findCountOfAssessmentTaken(virtualAccount);
+        Integer onGoing = virtualAccountAssessmentRepository.findCountOfOnGoingAssessments(virtualAccount);
+        Integer completed = virtualAccountAssessmentRepository.findCountOfCompletedAssessments(virtualAccount);
+        Integer quit = virtualAccountAssessmentRepository.findCountOfQuitAssessments(virtualAccount);
+        Integer yourScore = virtualAccountHasQuizSetAssessmentRepository.findAllAssessmentAverageScore(virtualAccount);
+        Integer[] counts = new Integer[5];
+        counts[0]=assessmentTaken;
+        counts[1]=onGoing;
+        counts[2]=completed;
+        counts[3]=quit;
+        counts[4]=yourScore;
+        return counts;
+    }
+    @Override
+    public DashBoardTO getUserDashboard(String virtualAccountSid){
+        VirtualAccount virtualAccount = virtualAccountRepository
+                .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
+        if (virtualAccount!=null){
+            Integer[] counts = findCountsForDashBoard(virtualAccount);
+            DashBoardTO dashBoardTO = new DashBoardTO();
+            dashBoardTO.setAssessmentTaken(counts[0]);
+            dashBoardTO.setOnGoing(counts[1]);
+            dashBoardTO.setCompleted(counts[2]);
+            dashBoardTO.setQuit(counts[3]);
+            dashBoardTO.setYourScore(counts[4]);
+            return dashBoardTO;
+        }throw new InvalidSidException("Invalid virtual Account Sid");
+    }
+
 }

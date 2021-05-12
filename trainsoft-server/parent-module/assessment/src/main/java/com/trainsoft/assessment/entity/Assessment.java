@@ -94,8 +94,9 @@ public class Assessment extends BaseEntity{
     @Column(name = "valid_upto")
     private Instant validUpto;
 
-    @Column(name = "category")
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "category_id",referencedColumnName = "id")
+    private Category categoryId;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "quiz_id", referencedColumnName = "id")

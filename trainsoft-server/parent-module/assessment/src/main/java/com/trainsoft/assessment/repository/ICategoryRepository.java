@@ -11,4 +11,6 @@ public interface ICategoryRepository extends JpaRepository<Category,Integer> {
     @Override
     @Query("FROM Category as cg WHERE cg.status<>'DELETED'")
     List<Category> findAll();
+
+    Category findBySid(byte [] sid);
 }

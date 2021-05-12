@@ -1,9 +1,7 @@
 package com.trainsoft.assessment.service;
 
-import com.trainsoft.assessment.entity.VirtualAccountHasQuizSetAssessment;
 import com.trainsoft.assessment.to.*;
 import org.springframework.data.domain.Pageable;
-
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.util.List;
@@ -35,5 +33,10 @@ public interface IAssessmentService
     List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
 
     BigInteger pageableAssessmentCount(String searchString,String companySid,String topicSid);
+
+    VirtualAccountAssessmentTo quitAssessment(String quizSetSid,String virtualAccountSid);
+
+    DashBoardTO getUserDashboard(String virtualAccountSid);
+
 
 }

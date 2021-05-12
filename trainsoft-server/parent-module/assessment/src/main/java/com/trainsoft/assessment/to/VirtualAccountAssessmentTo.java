@@ -3,6 +3,7 @@ package com.trainsoft.assessment.to;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.trainsoft.assessment.entity.Assessment;
 import com.trainsoft.assessment.entity.VirtualAccount;
+import com.trainsoft.assessment.enums.QuizStatus;
 import com.trainsoft.assessment.value.AssessmentEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -20,4 +21,5 @@ public class VirtualAccountAssessmentTo extends BaseTO{
 
     private String assessmentSid;
     private String virtualAccountSid;
+    private QuizStatus status;
 }

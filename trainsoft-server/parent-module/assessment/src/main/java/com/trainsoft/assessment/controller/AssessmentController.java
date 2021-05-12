@@ -263,4 +263,20 @@ public class AssessmentController {
     {
         return ResponseEntity.ok(assessmentService.pageableAssessmentCount(searchString,companySid,topicSid));
     }
+
+    @GetMapping("quit/assessment/{qSid}/{vSid}")
+    @ApiOperation(value = "quit assessment",notes = "API to quit Assessment.")
+    public ResponseEntity<?> quitAssessment(
+            @ApiParam(value = "Assessment Sid",required = true)@PathVariable("qSid")String quizSetSid,
+            @ApiParam(value = "Virtual Account Sid",required = true)@PathVariable("vSid") String virtualAccountSid){
+      return ResponseEntity.ok(assessmentService.quitAssessment(quizSetSid,virtualAccountSid));
+    }
+
+    @GetMapping("get/user/dashboard/{sid}")
+    @ApiOperation(value = "get user dashboard",notes = "API to get Assessment states and User Avg percentage while" +
+            " considering all categories based upon virtual account Sid")
+    public ResponseEntity<?> getUserDashBoard(
+            @ApiParam(value = "Virtual Account Sid",required = true) @PathVariable("sid") String virtualAccountSid){
+     return   ResponseEntity.ok(assessmentService.getUserDashboard(virtualAccountSid));
+    }
 }

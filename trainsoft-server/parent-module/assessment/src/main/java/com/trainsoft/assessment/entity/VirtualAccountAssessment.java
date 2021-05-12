@@ -1,6 +1,7 @@
 package com.trainsoft.assessment.entity;
 
 
+import com.trainsoft.assessment.enums.QuizStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,5 +22,9 @@ public class VirtualAccountAssessment extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "virtual_account_id", referencedColumnName = "id",nullable = false)
     private VirtualAccount virtualAccount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private QuizStatus status;
 
 }
