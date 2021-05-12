@@ -12,6 +12,7 @@ import java.util.Date;
 @Table(name = "department")
 @Getter @Setter @NoArgsConstructor
 public class Department extends BaseEntity {
+	private static final long serialVersionUID = -1746508148146253418L;
 	@Column(name = "name")
 	private String name;
 

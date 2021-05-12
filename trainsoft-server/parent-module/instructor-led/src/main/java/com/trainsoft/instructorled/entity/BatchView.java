@@ -15,6 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class BatchView extends BaseEntity {
 
+    private static final long serialVersionUID = -5890781831298179767L;
     @Column(name = "name")
     private String name;
 

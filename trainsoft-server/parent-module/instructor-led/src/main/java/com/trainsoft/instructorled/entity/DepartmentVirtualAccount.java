@@ -12,6 +12,7 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor
 public class DepartmentVirtualAccount extends BaseEntity {
 
+    private static final long serialVersionUID = -744513085619921647L;
     @Column(name="department_role")
     @Enumerated(EnumType.STRING)
     private InstructorEnum.DepartmentRole departmentRole;

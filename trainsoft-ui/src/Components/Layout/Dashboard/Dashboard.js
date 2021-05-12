@@ -23,6 +23,9 @@ import VsCodePage from "../../Screens/VsCode/VsCodePage";
 import { Helmet } from "react-helmet";
 import QuestionBank from "../../Screens/EAssesments/Questions";
 import TopicAssesment from "../../Screens/EAssesments/TopicAssesments";
+import AssessmentDashboard from "../../Screens/AssessmentScreen/AssessmentDashbord/AssessmentDashbord";
+import Catalogue from "../../Screens/AssessmentScreen/Catalogue/Catalogue";
+import MyAssessment from "../../Screens/AssessmentScreen/MyAssessment/MyAssessment";
 
 const Dashboard = ({ location }) => {
   return (
@@ -64,6 +67,9 @@ const Dashboard = ({ location }) => {
               <CodeEditor path="compiler/*" />
               <Zoom path="zoom/:id" />
               <VsCodePage path="vs-code" />
+              <AssessmentDashboard path="assessment"/>
+              <Catalogue path="catalogue/*"/>
+              <MyAssessment path="myAssessment"/>
             </Router>
           </div>
         </div>

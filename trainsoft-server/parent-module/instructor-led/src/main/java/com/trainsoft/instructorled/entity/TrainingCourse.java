@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Getter @Setter @NoArgsConstructor
 public class TrainingCourse extends BaseEntity {
 
+    private static final long serialVersionUID = -2227279008787033237L;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "training_id", referencedColumnName = "id")
     private Training training;

@@ -162,7 +162,7 @@ const AssesmentsTable = ({ location }) => {
     let data = {
       ...values,
       category: getCategory(values.category),
-      tagSid: values.tagSid ? values.tagSid : getCategory(values.category).tags[0],
+      tagSid:  getCategory(values.category,values.tagSid),
       validUpto: values.validUpto === 0 ? true : false,
       date: values.validUpto === 0 ? '' : values.validUpto,
       duration: values.duration === 0 ? true : false,
@@ -171,15 +171,16 @@ const AssesmentsTable = ({ location }) => {
     setInitialAssessment(data)
   }
 
-  const getCategory = (vals) => {
+  const getCategory = (vals,tagSid=null) => {
     let value = '';
+    let tags = '';
     try {
       value = category.find(res => res.name === vals)
-      // tags = tagSid && value.tags.find(res => res.sid === tagSid)
+      tags = tagSid && value.tags.find(res => res.sid === tagSid)
     } catch (err) {
       console.error("error occur on getCategory()", err)
     }
-    return value
+    return tagSid ?  tags : value
   }
 
   // get All Assessment By Topic sid

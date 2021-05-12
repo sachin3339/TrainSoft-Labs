@@ -11,6 +11,7 @@ import java.util.Date;
 @Getter@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BatchTO extends BaseTO{
+    private static final long serialVersionUID = 1611538279811813167L;
     private String name;
     private InstructorEnum.Status status;
     private InstructorEnum.TrainingType trainingType;

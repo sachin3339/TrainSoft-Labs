@@ -79,7 +79,7 @@ const Session = ({ location }) => {
     const deleteTraining = (e) => {
         try {
             spinner.show();
-            RestService.unScheduleSession(e.sid,"DELETED",e.meetingInfo.meetingId).then(res => {
+            RestService.deleteTrainingSession(e.sid).then(res => {
                 spinner.hide();
                 getSessionByPage()
                 Toast.success({ message: `Training is Deleted Successfully ` });
@@ -93,8 +93,9 @@ const Session = ({ location }) => {
         }
     }
 
-        // delete course
+        // delete session
         const unSchedule = (e) => {
+            console.log(e.meetingInfo)
             try {
                 spinner.show();
                 RestService.unScheduleSession(e.sid,"DISABLED",e.meetingInfo.meetingId).then(res => {

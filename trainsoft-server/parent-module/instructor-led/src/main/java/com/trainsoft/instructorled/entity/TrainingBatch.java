@@ -11,7 +11,8 @@ import java.util.Date;
 @Table(name = "training_has_batch")
 @Getter @Setter @NoArgsConstructor
 public class TrainingBatch extends BaseEntity {
-    
+
+    private static final long serialVersionUID = -6068600450465237934L;
     @ManyToOne
     @JoinColumn(name = "batch_id", referencedColumnName = "id",nullable = false)
     private Batch batch;
