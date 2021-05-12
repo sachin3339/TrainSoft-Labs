@@ -273,10 +273,10 @@ public class AssessmentController {
         return ResponseEntity.ok(createUserTO);
     }
 
-    @GetMapping("count/assessment/{cSid}")
-    @ApiOperation(value = "getCountOfAssessmentsByTagsAndDifficulty ", notes = "API to get Assessments based on Tags and Difficulty")
+    @GetMapping("count/assessment/{companySid}")
+    @ApiOperation(value = "getCountOfAssessmentsByTagsAndDifficulty ", notes = "API to get Assessments count based on Tags and Difficulty")
     public ResponseEntity<?> getCountOfAssessmentsByTagsAndDifficulty(
-            @ApiParam(value = "", required = true) @PathVariable("cSid") String companySid)
+            @ApiParam(value = "", required = true) @PathVariable("companySid") String companySid)
     {
         return ResponseEntity.ok(assessmentService.getCountOfAssessmentsByTagsAndDifficulty(companySid));
     }
