@@ -45,4 +45,5 @@ public class AssessmentTo extends BaseTO{
     private boolean isPaymentReceived;
     private boolean isReduceMarks;
     private boolean isQuestionRandomize;
+    private String categorySid;
 }

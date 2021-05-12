@@ -264,6 +264,15 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.pageableAssessmentCount(searchString,companySid,topicSid));
     }
 
+    @GetMapping("assess/virtualaccount/{VASid}")
+    @ApiOperation(value = "getUserDetailsByVASid ", notes = "Get user details by VASid")
+    public ResponseEntity<?> getUserDetailsByVASid(
+            @ApiParam(value = "virtualAccount Sid", required = true) @PathVariable("VASid") String VASid) {
+        log.info(String.format("Request received : User for GET /v1/users"));
+        UserTO createUserTO= bulkUploadService.getVirtualAccountByVASid(VASid);
+        return ResponseEntity.ok(createUserTO);
+    }
+
     @GetMapping("quit/assessment/{qSid}/{vSid}")
     @ApiOperation(value = "quit assessment",notes = "API to quit Assessment.")
     public ResponseEntity<?> quitAssessment(

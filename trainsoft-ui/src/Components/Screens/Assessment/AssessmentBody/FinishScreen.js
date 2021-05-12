@@ -125,7 +125,7 @@ const FinishScreen = ({ questions }) => {
                         <div style={{
                                 font: "normal normal 600 26px/16px Montserrat",
                                 color: "#49167E",
-                            }}>{score.yourRankToday}{" "}
+                            }}>#{score.yourRankToday}{" "}
                             <span style={{
                                 font: " normal normal 600 16px/16px Montserrat",
                                 color: "#333333",

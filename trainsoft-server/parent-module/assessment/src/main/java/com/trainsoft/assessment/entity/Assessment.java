@@ -109,5 +109,7 @@ public class Assessment extends BaseEntity{
     @JoinColumn(name = "tag", referencedColumnName = "id")
     private Tag tagId;
 
+    @Column(name = "category")
+    private String category;
 
 }

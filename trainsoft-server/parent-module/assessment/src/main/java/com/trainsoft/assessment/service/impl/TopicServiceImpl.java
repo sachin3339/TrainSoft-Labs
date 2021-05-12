@@ -105,13 +105,13 @@ public class TopicServiceImpl implements ITopicService {
         if(topicSid!=null)
         {
             Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
-            if(topic!=null && CollectionUtils.isEmpty(topic.getAssessments()))
+            if(topic!=null)
             {
                 topic.setStatus(AssessmentEnum.Status.DELETED);
                 return mapper.convert(topicRepository.save(topic), TopicTo.class);
             }
             else
-                throw new ApplicationException("Topic does not exist OR Contains Assessments , which cannot be Deleted until related Assessments are deleted");
+                throw new ApplicationException("Topic does not exist");
         }
         else throw new InvalidSidException("Invalid Topic Sid !");
     }
