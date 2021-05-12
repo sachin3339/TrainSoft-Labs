@@ -918,5 +918,34 @@ public class AssessmentServiceImpl implements IAssessmentService
 
     }
 
+    @Override
+    public List<AssessmentTo> getAssessmentsByCategory(String companySid,String categorySid,Pageable pageable)
+    {
+        if(categorySid==null)
+            throw  new InvalidSidException("Category Sid is null !");
+        if(companySid==null)
+            throw new InvalidSidException("Company Sid is null !");
+
+         List<Assessment> assessmentList = assessmentRepository.getAssessmentByCategory(getCompany(companySid),
+                 categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)),pageable);
+
+         List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList,AssessmentTo.class);
+
+        Iterator<AssessmentTo> assessmentToIterator=assessmentToList.stream().iterator();
+        Iterator<Assessment> assessmentIterator= assessmentList.stream().iterator();
+        while (assessmentIterator.hasNext() && assessmentToIterator.hasNext())
+        {
+            AssessmentTo assessmentTo = assessmentToIterator.next();
+            Assessment assessment = assessmentIterator.next();
+
+            assessmentTo.setTopicSid(assessment.getTopicId().getStringSid());
+            assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessment.getStringSid()));
+            assessmentTo.setTagSid(assessment.getTagId().getStringSid());
+            assessmentTo.setCategorySid(assessment.getCategoryId().getStringSid());
+            assessmentTo.setCompanySid(assessment.getCompany().getStringSid());
+        }
+        return assessmentToList;
+    }
+
 
 }

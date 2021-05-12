@@ -1,9 +1,6 @@
 package com.trainsoft.assessment.repository;
 
-import com.trainsoft.assessment.entity.Assessment;
-import com.trainsoft.assessment.entity.Company;
-import com.trainsoft.assessment.entity.Tag;
-import com.trainsoft.assessment.entity.Topic;
+import com.trainsoft.assessment.entity.*;
 import com.trainsoft.assessment.value.AssessmentEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,4 +35,6 @@ public interface IAssessmentRepository extends JpaRepository<Assessment,Integer>
     @Query("SELECT COUNT(assess) FROM Assessment  as assess WHERE assess.difficulty=:difficulty AND assess.status='ENABLED' AND assess.company=:company")
     Integer getCountAssessmentByDifficulty(Company company,AssessmentEnum.QuizSetDifficulty difficulty);
 
+    @Query("SELECT assess FROM Assessment  as assess Where assess.categoryId=:category AND assess.status='ENABLED' AND assess.company=:company")
+    List<Assessment> getAssessmentByCategory(Company company,Category category,Pageable pageable);
 }

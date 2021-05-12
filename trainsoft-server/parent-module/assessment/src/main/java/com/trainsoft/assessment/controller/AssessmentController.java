@@ -280,4 +280,13 @@ public class AssessmentController {
     {
         return ResponseEntity.ok(assessmentService.getCountOfAssessmentsByTagsAndDifficulty(companySid));
     }
+
+    @GetMapping("/assessments/category/{companySid}/{categorySid}")
+    @ApiOperation(value = "getAssessmentsByCategory ", notes = "API to get Assessments based on Category and Company")
+    public ResponseEntity<?> getAssessmentsByCategory(
+            @ApiParam(value = "", required = true) @PathVariable("companySid") String companySid,
+            @ApiParam(value = "", required = true) @PathVariable("categorySid") String categorySid,Pageable pageable)
+    {
+        return ResponseEntity.ok(assessmentService.getAssessmentsByCategory(companySid,categorySid,pageable));
+    }
 }
