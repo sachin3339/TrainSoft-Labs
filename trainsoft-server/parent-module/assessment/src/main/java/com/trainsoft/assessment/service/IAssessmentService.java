@@ -39,4 +39,5 @@ public interface IAssessmentService
     AssessmentsCountTo getCountOfAssessmentsByTagsAndDifficulty(String companySid);
     List<AssessmentTo> getAssessmentsByCategory(String companySid,String categorySid,Pageable pageable);
     Integer getAssessmentCountByCategory(String companySid,String categorySid);
+    List<AssessmentTo> searchAssessmentByCategory(String searchString,String companySid,String categorySid,Pageable pageable);
 }

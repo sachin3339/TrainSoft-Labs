@@ -276,7 +276,7 @@ public class AssessmentController {
     @GetMapping("count/assessment/{companySid}")
     @ApiOperation(value = "getCountOfAssessmentsByTagsAndDifficulty ", notes = "API to get Assessments count based on Tags and Difficulty")
     public ResponseEntity<?> getCountOfAssessmentsByTagsAndDifficulty(
-            @ApiParam(value = "", required = true) @PathVariable("companySid") String companySid)
+            @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid)
     {
         return ResponseEntity.ok(assessmentService.getCountOfAssessmentsByTagsAndDifficulty(companySid));
     }
@@ -284,8 +284,8 @@ public class AssessmentController {
     @GetMapping("/assessments/category/{companySid}/{categorySid}")
     @ApiOperation(value = "getAssessmentsByCategory ", notes = "API to get Assessments based on Category and Company")
     public ResponseEntity<?> getAssessmentsByCategory(
-            @ApiParam(value = "", required = true) @PathVariable("companySid") String companySid,
-            @ApiParam(value = "", required = true) @PathVariable("categorySid") String categorySid,Pageable pageable)
+            @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid,
+            @ApiParam(value = "Category Sid", required = true) @PathVariable("categorySid") String categorySid,Pageable pageable)
     {
         return ResponseEntity.ok(assessmentService.getAssessmentsByCategory(companySid,categorySid,pageable));
     }
@@ -293,9 +293,20 @@ public class AssessmentController {
     @GetMapping("/assessments/count/category/{companySid}/{categorySid}")
     @ApiOperation(value = "getAssessmentCountByCategory ", notes = "API to get Assessments count based on Category and Company")
     public ResponseEntity<?> getAssessmentCountByCategory(
-            @ApiParam(value = "", required = true) @PathVariable("companySid") String companySid,
-            @ApiParam(value = "", required = true) @PathVariable("categorySid") String categorySid)
+            @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid,
+            @ApiParam(value = "Category Sid", required = true) @PathVariable("categorySid") String categorySid)
     {
         return ResponseEntity.ok(assessmentService.getAssessmentCountByCategory(companySid,categorySid));
     }
+
+    @GetMapping("search/assessments/category/{searchString}/{companySid}/{categorySid}")
+    @ApiOperation(value = "searchAssessmentByCategory",notes = "API to search Assessment by Category and Company.")
+    public ResponseEntity<?>searchAssessmentByCategory(
+            @ApiParam("Search String") @PathVariable("searchString") String searchString,
+            @ApiParam("Company Sid") @PathVariable("companySid") String companySid,
+            @ApiParam("Category Sid")@PathVariable("categorySid") String categorySid,Pageable pageable)
+    {
+        return ResponseEntity.ok(assessmentService.searchAssessmentByCategory(searchString,companySid,categorySid,pageable));
+    }
+
 }

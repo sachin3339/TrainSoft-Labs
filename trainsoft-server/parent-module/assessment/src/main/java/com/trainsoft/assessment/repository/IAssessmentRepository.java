@@ -40,4 +40,7 @@ public interface IAssessmentRepository extends JpaRepository<Assessment,Integer>
 
     @Query("SELECT COUNT(assess) FROM Assessment  as assess WHERE assess.categoryId=:category AND assess.status='ENABLED' AND assess.company=:company")
     Integer getAssessmentCountByCategory(Company company,Category category);
+
+    @Query("SELECT assess FROM Assessment as assess WHERE ( assess.title like :searchString OR assess.description like :searchString) AND assess.company =:company AND assess.categoryId =:category AND assess.status ='ENABLED'")
+    List<Assessment> searchAssessmentByCategory(Company company,Category category, String searchString,Pageable pageable);
 }

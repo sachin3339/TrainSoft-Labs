@@ -928,9 +928,40 @@ public class AssessmentServiceImpl implements IAssessmentService
 
          List<Assessment> assessmentList = assessmentRepository.getAssessmentByCategory(getCompany(companySid),
                  categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)),pageable);
+        return getAssessmentToList(assessmentList);
+    }
 
-         List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList,AssessmentTo.class);
+    public Integer getAssessmentCountByCategory(String companySid, String categorySid)
+    {
+        if(companySid==null)
+            throw new InvalidSidException("Company Sid is null !");
+        if(categorySid==null)
+            throw new InvalidSidException("Category Sid is null !");
+        return assessmentRepository.getAssessmentCountByCategory(getCompany(companySid)
+                ,categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)));
+    }
 
+    @Override
+    public List<AssessmentTo> searchAssessmentByCategory(String searchString, String companySid, String categorySid,Pageable pageable)
+    {
+        if(companySid==null)
+          throw new InvalidSidException("check CompanySid is null !");
+        if(categorySid==null)
+            throw new InvalidSidException("check Category Sid is null !");
+
+         List<Assessment> assessmentList = assessmentRepository.searchAssessmentByCategory(getCompany(companySid),
+                categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)),
+                "%"+searchString.trim()+"%",pageable);
+         return getAssessmentToList(assessmentList);
+    }
+
+
+    private List<AssessmentTo> getAssessmentToList(List<Assessment> assessmentList)
+    {
+        if(CollectionUtils.isEmpty(assessmentList))
+            return Collections.EMPTY_LIST;
+
+        List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList,AssessmentTo.class);
         Iterator<AssessmentTo> assessmentToIterator=assessmentToList.stream().iterator();
         Iterator<Assessment> assessmentIterator= assessmentList.stream().iterator();
         while (assessmentIterator.hasNext() && assessmentToIterator.hasNext())
@@ -946,15 +977,4 @@ public class AssessmentServiceImpl implements IAssessmentService
         }
         return assessmentToList;
     }
-
-    public Integer getAssessmentCountByCategory(String companySid, String categorySid)
-    {
-        if(companySid==null)
-            throw new InvalidSidException("Company Sid is null !");
-        if(categorySid==null)
-            throw new InvalidSidException("Category Sid is null !");
-        return assessmentRepository.getAssessmentCountByCategory(getCompany(companySid)
-                ,categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)));
-    }
-
 }
