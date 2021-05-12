@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Getter @Setter @NoArgsConstructor
 public class BatchParticipant extends BaseEntity {
 
+    private static final long serialVersionUID = -508336232307509478L;
     @ManyToOne
     @JoinColumn(name = "batch_id", referencedColumnName = "id",nullable = false)
     private Batch batch;

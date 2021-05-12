@@ -120,34 +120,34 @@ export const AdminConfig = [
         disabled: true,
         role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]
     },
-    {
-        icon: ICN_SUPPORT_HOME,
-        title: "Dashboard",
-        pathname: "assessment",
-        disabled: true,
-        role: [GLOBELCONSTANT.ROLE.LEARNER]
-    },
-    {
-        icon: ICN_SUPPORT_HOME,
-        title: "Catalogue",
-        pathname: "catalogue",
-        disabled: true,
-        role: [GLOBELCONSTANT.ROLE.LEARNER,]
-    },
-    {
-        icon: ICN_SUPPORT_HOME,
-        title: "My Assessment",
-        pathname: "myAssessment",
-        disabled: true,
-        role: [GLOBELCONSTANT.ROLE.LEARNER]
-    },
-    {
-        icon: ICN_SUPPORT_HOME,
-        title: "Setting",
-        pathname: "setting",
-        disabled: true,
-        role: [GLOBELCONSTANT.ROLE.LEARNER]
-    },
+    // {
+    //     icon: ICN_SUPPORT_HOME,
+    //     title: "Dashboard",
+    //     pathname: "assessment",
+    //     disabled: true,
+    //     role: [GLOBELCONSTANT.ROLE.LEARNER]
+    // },
+    // {
+    //     icon: ICN_SUPPORT_HOME,
+    //     title: "Catalogue",
+    //     pathname: "catalogue",
+    //     disabled: true,
+    //     role: [GLOBELCONSTANT.ROLE.LEARNER,]
+    // },
+    // {
+    //     icon: ICN_SUPPORT_HOME,
+    //     title: "My Assessment",
+    //     pathname: "myAssessment",
+    //     disabled: true,
+    //     role: [GLOBELCONSTANT.ROLE.LEARNER]
+    // },
+    // {
+    //     icon: ICN_SUPPORT_HOME,
+    //     title: "Setting",
+    //     pathname: "setting",
+    //     disabled: true,
+    //     role: [GLOBELCONSTANT.ROLE.LEARNER]
+    // },
    
     // {
     //     icon: ICN_VSCODE,
