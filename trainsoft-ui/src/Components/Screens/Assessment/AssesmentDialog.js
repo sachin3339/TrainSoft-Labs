@@ -19,12 +19,14 @@ import AppContext from "../../../Store/AppContext";
 import AppUtils from "../../../Services/Utils";
 import useToast from "../../../Store/ToastHook";
 import { useParams } from "@reach/router";
+const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+
 
 const SCHEMA = Yup.object().shape({
   appuser: Yup.object().shape({
     name: Yup.string().required("Name is required"),
     emailId: Yup.string().email("Please enter valid email").required("Email id is required"),
-    phoneNumber: Yup.string().required("Mobile number is required"),
+    phoneNumber: Yup.string().required("Mobile number is required").matches(phoneRegExp,"Mobile number is not valid"),
   }),
   // categoryTopicValue: Yup.object().shape({
   //   // category: Yup.string().required("Choose a Category"),
