@@ -6,10 +6,8 @@ import com.trainsoft.instructorled.dozer.DozerUtils;
 import com.trainsoft.instructorled.entity.*;
 import com.trainsoft.instructorled.repository.*;
 import com.trainsoft.instructorled.service.IBatchService;
-import com.trainsoft.instructorled.service.ICourseService;
 import com.trainsoft.instructorled.to.*;
 import com.trainsoft.instructorled.value.InstructorEnum;
-import javassist.bytecode.stackmap.BasicBlock;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +34,7 @@ public class BatchServiceImpl implements IBatchService {
     private DozerUtils mapper;
     private ICompanyRepository companyRepository;
     IBatchParticipantRepository batchParticipantRepository;
+    IDepartmentVirtualAccountRepository departmentVARepo;
 
     @Override
     public BatchTO createBatch(BatchTO batchTO) {
@@ -222,6 +221,13 @@ public class BatchServiceImpl implements IBatchService {
             virtualAccountList.add(virtualAccount);
         });
         return virtualAccountList;
+    }
+
+    @Override
+    public List<UserTO> getActiveVirtualAccountWithBatch(String batchSid,String companySid){
+
+        List<VirtualAccount> virtualAccounts= customRepository.findActiveVirtualAccountWithBatch(batchSid,companySid);
+        return mapper.convertList(virtualAccounts,UserTO.class);
     }
 
 }

@@ -1,5 +1,5 @@
 import GLOBELCONSTANT from '../../../Constant/GlobleConstant'
-import {ICN_HOME,ICN_CALENDER,ICN_ORG_MGT,  ICN_REPORT, ICN_PARTICIPANT, ICN_BATCHES,  ICN_SUPPORT_HOME, ICN_COURSE, ICN_DASHBOARD, ICN_COMPILER, ICN_LAB_STORE, ICN_VSCODE} from '../../Common/Icon'
+import {ICN_HOME,ICN_CALENDER,ICN_ORG_MGT,ICN_ASSESSMENT,  ICN_REPORT, ICN_PARTICIPANT, ICN_BATCHES,  ICN_SUPPORT_HOME, ICN_COURSE, ICN_DASHBOARD, ICN_COMPILER, ICN_LAB_STORE, ICN_VSCODE} from '../../Common/Icon'
 export const AdminConfig = [
     {
         icon: ICN_HOME,
@@ -50,6 +50,20 @@ export const AdminConfig = [
         pathname: "course",
         disabled: true,
         role:[GLOBELCONSTANT.ROLE.SUPERVISOR]
+    },
+    {
+        icon: ICN_ASSESSMENT,
+        title: "Topics",
+        pathname: "topicAssesments",
+        disabled: true,
+        role: [ GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]
+    },
+    {
+        icon: ICN_SUPPORT_HOME,
+        title: "Questions",
+        pathname: "questions",
+        disabled: true,
+        role: [ GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]
     },
     {
         icon: ICN_LAB_STORE,
@@ -106,6 +120,35 @@ export const AdminConfig = [
         disabled: true,
         role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]
     },
+    // {
+    //     icon: ICN_SUPPORT_HOME,
+    //     title: "Dashboard",
+    //     pathname: "assessment",
+    //     disabled: true,
+    //     role: [GLOBELCONSTANT.ROLE.LEARNER]
+    // },
+    // {
+    //     icon: ICN_SUPPORT_HOME,
+    //     title: "Catalogue",
+    //     pathname: "catalogue",
+    //     disabled: true,
+    //     role: [GLOBELCONSTANT.ROLE.LEARNER,]
+    // },
+    // {
+    //     icon: ICN_SUPPORT_HOME,
+    //     title: "My Assessment",
+    //     pathname: "myAssessment",
+    //     disabled: true,
+    //     role: [GLOBELCONSTANT.ROLE.LEARNER]
+    // },
+    // {
+    //     icon: ICN_SUPPORT_HOME,
+    //     title: "Setting",
+    //     pathname: "setting",
+    //     disabled: true,
+    //     role: [GLOBELCONSTANT.ROLE.LEARNER]
+    // },
+   
     // {
     //     icon: ICN_VSCODE,
     //     title: "Class",

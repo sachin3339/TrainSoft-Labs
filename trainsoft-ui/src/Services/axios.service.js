@@ -13,7 +13,8 @@ const AxiosService = {
     get:(resource)=>  axios.get(resource),
     post:(resource, data, params, headers)=> {
         const config = {
-            headers: headers
+            headers: headers,
+            params: params
         }
         return axios.post(resource, data, config)
     },

@@ -10,10 +10,11 @@ import AxiosService from './Services/axios.service';
 import AppContext from "./Store/AppContext";
 import LandingHome from "./Components/LandingPage/Home/LandingHome";
 import ResetPwd from "./Components/Screens/Auth/ResetPwd";
-import Assesment from "./Components/Screens/Assesment/Assesment";
+import Assessment from "./Components/Screens/Assessment/Assessment";
 import { TrainingProvider } from "./Store/TrainingContext";
 import VsCode from "./Components/Screens/VsCode/VsCode";
 import MeetingClose from "./Components/Zoom/MeetingClose";
+import { AssessmentProvider } from "./Store/AssessmentContext";
 
 
 
@@ -23,18 +24,20 @@ function App() {
    const {spinner} = useContext(AppContext)
   return (<>
       <Spinner value={spinner}/>
+      <AssessmentProvider>
       <TrainingProvider>
          <Router>
             <LandingHome path="/"/>
             <ResetPwd path="/reset/:token"/>
             <Login path="/login"/>
-            <Assesment path="/assesment"/>
+            <Assessment path="/assessment/:assessmentSid/:companySid/:virtualAccountSid"/>
             <Dashboard path="/*"/>
             <ClassLab path="class/*"/>
             <VsCode path="vscode"/>
             <MeetingClose path="/zoomclose"/>
          </Router>
       </TrainingProvider>
+      </AssessmentProvider>
  </> );
 }
 

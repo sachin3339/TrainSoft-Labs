@@ -1,0 +1,38 @@
+.wrapper {
+  flex: 1;
+  background: #49167e;
+  padding: 35px 25px;
+}
+
+.container {
+  color: white;
+  text-align: center;
+  font-family: "Montserrat";
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 35px;
+}
+
+.questionItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 20px;
+  margin: 8px 0;
+  cursor: pointer;
+  border-radius: 28px;
+}
+
+.number {
+  color: #111;
+  display: flex;
+  font-size: 14px;
+  font: normal normal 600 14px/18px Montserrat;
+  align-items: center;
+}
+
+.icon {
+  /* width: 10px;/ */
+  /* height: 10px; */
+  border-radius: 15px;
+}

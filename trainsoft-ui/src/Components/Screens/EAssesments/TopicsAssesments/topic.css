@@ -1,0 +1,76 @@
+.ass-foo-border{
+  border-top: 1px solid #0000003E;
+  padding-top: 20px;
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+}
+.bulk-upload{
+  padding: 40px 20px;
+  border: 1px solid #DDDDDD;
+  width: 100%;
+
+}
+.custom-file-upload {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+  text-align: right;
+  margin-bottom: 0px;
+}
+.bulk-upload input{
+  display: none;
+}
+.file-upload{
+  border: 1px solid #DDDDDD;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    height: 62px;
+    padding: 19px;
+}
+.MuiButton-containedPrimary:hover {
+  background-color: #000000 !important;
+}
+.MuiButton-containedPrimary {
+  color: #fff;
+  background-color: #000109 !important;
+}
+.ass-step .MuiPaper-root{
+  background-color: rgba(255, 255, 255, 0) !important;
+}
+.upload-width{
+  width: 340px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.copy-url-disp{
+  visibility: none;
+  visibility: collapse;
+  position: absolute;
+}
+.copy-url-btn{
+  cursor: pointer;
+  background: #E8E8E8;
+  border-radius: 30px;
+  padding: 5px 10px;
+  text-align: center;
+  width: 111px;
+  font-size: 14px;
+}
+.form-duration{
+   display: flex;
+    align-items: center;
+    width: 175px;
+}
+.form-duration .input-wrapper {
+  min-height: 35px;
+  margin-right: 10px;
+}
+.form-duration .input-field{
+  background: rgba(255, 255, 255, 0) !important;
+}

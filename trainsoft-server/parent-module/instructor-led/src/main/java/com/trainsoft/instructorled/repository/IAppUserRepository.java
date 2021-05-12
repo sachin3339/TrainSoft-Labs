@@ -20,6 +20,4 @@ public interface IAppUserRepository extends JpaRepository<AppUser, Integer>{
 	AppUser findAppUsersByTpToken(String tpToken);
 	AppUser findAppUserBySidAndTpToken(byte[] appUserSid, String token);
 	AppUser findAppUsersByEmailId(String email);
-
-
 }

@@ -2,10 +2,12 @@
 let HOSTNAME = window.location.origin; // Storing  a  Host  Name in global variable
 if (HOSTNAME !== null && ((HOSTNAME.indexOf('localhost') !== -1) || (HOSTNAME.indexOf('127.0.0.1') !== -1)))
     // HOSTNAME = "https://www.eservecloud.com"; 
-    HOSTNAME = "http://52.66.232.107:8089"; // Local development sever will be used from now onwards.
+    HOSTNAME = "https://www.trainsoft.io"; // Local development sever will be used from now onwards.
 export const API_PATH = HOSTNAME ;
 
 let API_HOST = HOSTNAME +"/insled/v1/"
+let API_ASSES = "https://www.trainsoft.io/assessnet/v1/"
+const ASSESSMENT_V1 = "https://www.trainsoft.io/assessnet/v1/"
 
 const GLOBELCONSTANT = {
         BASE_URL: API_HOST,
@@ -13,12 +15,62 @@ const GLOBELCONSTANT = {
         ZOOM_PATH:  window.location.origin + '/zoom',
         VSCODE_PATH:  window.location.origin + '/vscode',
 
+        USER_ROLE: {
+            USER: "USER",
+        },
+        STATUS: {
+            ENABLED: "ENABLED",
+            DISABLED: "DISABLED",
+            DELETED: "DELETED"
+        },
+        QUESTION_LABEL: {
+            BEGINNER: "BEGINNER",
+            INTERMEDIATE: "INTERMEDIATE",
+            EXPERT: "EXPERT",
+        },
+        ANSWER_PATTERN: {
+            ALPHABETS: "ALPHABETS",
+            NUMBER: "NUMBER"
+        },
+        QUESTION_TYPE: [
+            {
+              laebl: "Single Choice",
+              value: "SCQ"
+            },
+            {
+              laebl: "Multiple Choice",
+              value: "MCQ"
+            },
+        ],
+        ANSWER_ORDER_TYPE: [
+            {
+              label: "Alphabets",
+              value: "ALPHABETS"
+            },
+            {
+              label: "Number",
+              value: "NUMBER"
+            },
+        ],
+        DIFFICULTY: [
+            {
+                label:"Beginner",
+                value:"BEGINNER"
+            }, 
+            {
+                label:"Intermediate",
+                value:"INTERMEDIATE"
+            },
+            {
+                label:"Expert",
+                value:"EXPERT"
+            }
+        ],
         AUTH: {
             LOGIN: API_HOST + "login",
             FORGOT: API_HOST + "forgot/password/",
             RESET: API_HOST + "reset/{token}",
             UPDATE_PWD: API_HOST + "update/password/token/{token}/user/{appUserSid}/pass/{password}",
-
         },
         COURSE: {
             GET_COURSE: API_HOST + "courses",
@@ -81,11 +133,59 @@ const GLOBELCONSTANT = {
             GET_INSTRUCTOR_TRAINING: API_HOST +  "trainer/trainings/{pageNo}/{pageSize}",
             GET_LEARNER_TRAINING: API_HOST +  "learner/trainings",
             UPDATE_SE_TRAINING : API_HOST + "update/session/{sessionSid}/{status}/{meetingId}"
-
+        },
+        API: {
+            ASSESSMENT: {
+                GET_ASSESSMENT_BY_SID: ASSESSMENT_V1 + "assessment/",
+                GET_INSTRUCTION: ASSESSMENT_V1 + "get/instructions",
+                GET_QUESTIONS: ASSESSMENT_V1 + "start/assessment/{assessmentSid}/{virtualAccountSid}",
+                SUBMIT_ANSWER: ASSESSMENT_V1 + "/submit/answer",
+                REVIEW_RESPONSE: ASSESSMENT_V1 + "review/response/{virtualAccountSid}",
+                SUBMIT_ASSESSMENT: ASSESSMENT_V1 + "submit/assessment",
+                GET_SCORE: ASSESSMENT_V1 + "get/assessment/score/{assessmentSid}/{virtualAccountSid}",
+                SUBMIT_RESPONSE: ASSESSMENT_V1 + "get/user/assessment/responses/{virtualAccountSid}",
+                TODAY_LEADER: ASSESSMENT_V1 + "get/today/assessment/leaderboard/",
+                ALL_TIME_LEADER: ASSESSMENT_V1 + "get/allTime/assessment/leaderboard/",
+                UPDATE_QUESTION: ASSESSMENT_V1 + "update/question"
+            },
+            GET_TOPIC: ASSESSMENT_V1 + "display/topics",
+            CREATE_ASS_USER: ASSESSMENT_V1 + "create/assess/user",
+            GET_ASSES_USER: ASSESSMENT_V1 + "assess/virtualaccount/"
         },
         INSTRUCTOR: {
             GET_INSTRUCTOR: API_HOST +  'depatments'
         },
+        ASSESSMENT: {
+            GET_TOPIC: API_ASSES + "display/topics?pageSize=",
+            DELETE_TOPIC: API_ASSES + "delete/topic/{topicSid}",
+            UPDATE_TOPIC:API_ASSES +  "update/topic",
+            GET_ASSESSMENT: API_ASSES + "assessments/{assId}?pageSize={pageSize}&pageNo={pageNo}",
+            CREATE_TOPIC: API_ASSES + "create/topic",
+            GET_ASS_QUESTION:API_ASSES + "question/types",
+            DELETE_ASSESSMENT: API_ASSES + "delete/assessment/{assId}",
+            CREATE_ASSESSMENT: API_ASSES +"create/assessment",
+            CREATE_QUESTION: API_ASSES +"create/question/individual",
+            GET_QUESTION_TYPE: API_ASSES + "question/types",
+            ASSOCIATE_QUESTION:API_ASSES + "associate/Question",
+            GET_ASSOCIATE_QUESTION:API_ASSES + "assessment/Questions/{assId}?pageSize={pageSize}&pageNo={pageNo}",
+            GET_NOT_ASS_QUESTION:API_ASSES + "display/assessment/question/{assId}",
+            GET_ALL_QUESTION:API_ASSES + "questions/?pageSize=",
+            DELETE_ASS_QUESTION: API_ASSES + "remove/associated/question/{qsid}/{asid}",
+            GET_CATEGORY: API_ASSES + "categories",
+            UPDATE_ASSESSMENT: API_ASSES + "update/assessment",
+            DELETE_QUESTION: API_ASSES + "delete/question/{questionId}",
+            SEARCH_TOPIC: API_ASSES + "search/topic/",
+            SEARCH_ASSESSMENT: API_ASSES + "search/assessment/{query}/{companySid}/{topicSid}",
+            SEARCH_QUESTION: API_ASSES + "search/question/{query}/{companySid}?pageSize={pageSize}&pageNo={pageNo}",
+            GENERATE_URL : API_ASSES + "generate/assessment/url/{assId}",
+            UPLOAD_ASSESSMENT: API_ASSES + "upload/list/assess/participants",
+            UPLOAD_QUESTION: API_ASSES + "question/bulkupload",
+            GET_ASSESSMENT_DASHBOARD : API_ASSES + "get/assessdetails/{aasId}",
+            GET_ASSESSMENT_USER : API_ASSES + "get/configuredusers/{assID}",
+            GET_QUESTION_BY_SID : API_ASSES + "question/{qId}",
+            CHANGE_QUESTION_STATUS : API_ASSES + "question/status/update/{qId}/{status}"
+
+        },  
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},
             {key: "BATCH_MGMT",name: "Batch Management"},
@@ -105,6 +205,8 @@ const GLOBELCONSTANT = {
             LEARNER:"LEARNER",
         },
         SAMPLE_TEMPLATE: "https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx",
+        UPLOAD_ASSES_TEMPLATE : "https://sessionassests.s3.ap-south-1.amazonaws.com/Assement_User_Upload_template.xlsx",
+        UPLOAD_QUESTION_TEMPLES: "https://sessionassests.s3.ap-south-1.amazonaws.com/1620805756133_SampleTemplet.csv",
         QUILL: {
                 toolbar: [
                     [{ font: [] }, { 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -119,6 +221,73 @@ const GLOBELCONSTANT = {
                     // ['clean'] // remove formatting button
                 ],
         },
+        PAGE_SIZE: 10,
+        ALPHABETS: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+        DATA: {
+            CREATE_ASS_USER: {
+                "appuser": {
+                  "emailId": "",
+                  "name": "",
+                  "phoneNumber": ""
+                },
+                "categoryTopicValue": {
+                  "category": "",
+                  "topic": "",
+                  "difficulty": "BEGINNER"
+                },
+                "companySid": null,
+                "departmentVA": {
+                  "departmentRole": null
+                },
+                "role": "USER"
+            },
+            ANS_OBJ: {
+                "answerOption": "",
+                "answerOptionValue": "",
+                "correct": false,
+                "status": "ENABLED"
+            },
+            CREATE_QUESTION: {
+                "alphabet": false,
+                "answer": [
+                    {
+                        "answerOption": "",
+                        "answerOptionValue": "",
+                        "correct": false,
+                        "status": "ENABLED"
+                    },
+                    {
+                        "answerOption": "",
+                        "answerOptionValue": "",
+                        "correct": false,
+                        "status": "ENABLED"
+                    },
+                    {
+                        "answerOption": "",
+                        "answerOptionValue": "",
+                        "correct": false,
+                        "status": "ENABLED"
+                    },
+                    {
+                        "answerOption": "",
+                        "answerOptionValue": "",
+                        "correct": false,
+                        "status": "ENABLED"
+                    }
+                ],
+                "answerExplanation": "",
+                "description": "",
+                "difficulty": "BEGINNER",
+                "name": "",
+                "negativeQuestionPoint": 1,
+                "questionPoint": 1,
+                "questionType": "MCQ",
+                "status": "ENABLED",
+                "technologyName": "",
+                "answerOrderType": "ALPHABETS"
+            },
+
+        }
     }
 
 export default GLOBELCONSTANT;

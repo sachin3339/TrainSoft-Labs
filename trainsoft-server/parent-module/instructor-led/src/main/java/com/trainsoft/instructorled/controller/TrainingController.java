@@ -7,21 +7,15 @@ import com.trainsoft.instructorled.service.IBatchService;
 import com.trainsoft.instructorled.service.IBulkUploadService;
 import com.trainsoft.instructorled.service.ITrainingService;
 import com.trainsoft.instructorled.to.*;
-import com.trainsoft.instructorled.value.InstructorEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
@@ -74,7 +68,7 @@ public class TrainingController {
             @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
             @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingsWithPagination(pageNo-1,pageSize,jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.getTrainingsWithPagination(pageNo - 1, pageSize, jwt.getCompanySid()));
     }
 
     @GetMapping("/trainings")
@@ -91,18 +85,19 @@ public class TrainingController {
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Training sid", required = true) @PathVariable("trainingSid") String trainingSid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.deleteTrainingBySid(trainingSid, jwt.getVirtualAccountSid(),jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.deleteTrainingBySid(trainingSid, jwt.getVirtualAccountSid(), jwt.getCompanySid()));
     }
 
-    @PostMapping(value="trainingSession/create")
+    @PostMapping(value = "trainingSession/create/{instructorSid}")
     @ApiOperation(value = "createTrainingSession", notes = "API to create new TrainingSession.")
     public ResponseEntity<?> createTrainingSession(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "Create TrainingSession payload", required = true) @RequestBody TrainingSessionTO trainingSessionTO) {
+            @ApiParam(value = "Create TrainingSession payload", required = true) @RequestBody TrainingSessionTO trainingSessionTO,
+            @ApiParam(value = "Instructor sid", required = true) @PathVariable("instructorSid") String instructorSid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         trainingSessionTO.setCreatedByVASid(jwt.getVirtualAccountSid());
         trainingSessionTO.setCompanySid(jwt.getCompanySid());
-        TrainingSessionTO createTrainingSessionTO = trainingService.createTrainingSession(trainingSessionTO);
+        TrainingSessionTO createTrainingSessionTO = trainingService.createTrainingSession(trainingSessionTO,instructorSid);
         return ResponseEntity.ok(createTrainingSessionTO);
     }
 
@@ -114,14 +109,16 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.getTrainingSessionBySid(trainingSessionSid));
     }
 
-    @PostMapping("update/trainingsession")
+    @PostMapping({"update/trainingsession/","update/trainingsession/{meetingId}"})
     @ApiOperation(value = "updateTrainingSession", notes = "API to update existing Training session.")
     public ResponseEntity<?> updateTrainingSession(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
-            @ApiParam(value = "update Training Session payload", required = true) @RequestBody TrainingSessionTO trainingSessionTO) {
+            @ApiParam(value = "update Training Session payload", required = true) @RequestBody TrainingSessionTO trainingSessionTO,
+            @ApiParam(value = "Zoom Meeting Id", required = false) @PathVariable("meetingId")  String meetingId) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
         trainingSessionTO.setUpdatedByVASid(jwt.getVirtualAccountSid());
-        TrainingSessionTO updateTrainingSession = trainingService.updateTrainingSession(trainingSessionTO);
+        String meetingID = meetingId.equalsIgnoreCase("undefined")||meetingId.equalsIgnoreCase("null") ? null : meetingId;
+        TrainingSessionTO updateTrainingSession = trainingService.updateTrainingSession(trainingSessionTO,meetingID);
         return ResponseEntity.ok(updateTrainingSession);
     }
 
@@ -131,7 +128,7 @@ public class TrainingController {
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Training Sid", required = true) @PathVariable("trainingSid") String trainingSid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSid(trainingSid,jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSid(trainingSid, jwt.getCompanySid()));
     }
 
     @GetMapping("/trainingsession/training/{trainingSid}/course/{courseSid}")
@@ -139,9 +136,9 @@ public class TrainingController {
     public ResponseEntity<?> getTrainingSessionByTrainingAndCourseSid(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Training Sid", required = true) @PathVariable("trainingSid") String trainingSid,
-    @ApiParam(value = "Course Sid", required = true) @PathVariable("courseSid") String courseSid) {
+            @ApiParam(value = "Course Sid", required = true) @PathVariable("courseSid") String courseSid) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSidAndCourseSid(trainingSid,courseSid,jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.getTrainingSessionByTrainingSidAndCourseSid(trainingSid, courseSid, jwt.getCompanySid()));
     }
 
     @GetMapping("trainings/{name}")
@@ -150,7 +147,7 @@ public class TrainingController {
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "Training name", required = true) @PathVariable("name") String name) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingsByName(name,jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.getTrainingsByName(name, jwt.getCompanySid()));
     }
 
     @GetMapping("trainingsessions/training/{trainingSid}/session/{name}")
@@ -160,7 +157,7 @@ public class TrainingController {
             @ApiParam(value = "Training sid", required = true) @PathVariable("trainingSid") String trainingSid,
             @ApiParam(value = "Training Session name", required = true) @PathVariable("name") String name) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingSessionsByName(trainingSid,name,jwt.getCompanySid()));
+        return ResponseEntity.ok(trainingService.getTrainingSessionsByName(trainingSid, name, jwt.getCompanySid()));
     }
 
     @DeleteMapping("delete/trainingsession/{trainingSesssionSid}")
@@ -172,23 +169,36 @@ public class TrainingController {
         return ResponseEntity.ok(trainingService.deleteTrainingSessionBySid(trainingSesssionSid, jwt.getVirtualAccountSid()));
     }
 
-    @PostMapping("update/session/{sessionSid}/{status}")
+    @PostMapping({"update/session/{sessionSid}/{status}/","update/session/{sessionSid}/{status}/{meetingId}"})
     @ApiOperation(value = "updateTraining", notes = "API to update existing Training.")
     public void updateSessionStatus(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "session sid", required = true) @PathVariable("sessionSid") String sessionSid,
-            @ApiParam(value = "status", required = true) @PathVariable("status") String status) {
+            @ApiParam(value = "status", required = true) @PathVariable("status") String status,
+            @ApiParam(value = "Zoom meeting Id", required = true) @PathVariable("meetingId") String meetingId) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        trainingService.updateTrainingSessionStatus(sessionSid,status,jwt.getVirtualAccountSid());
+        String meetingID = meetingId.equalsIgnoreCase("undefined")||meetingId.equalsIgnoreCase("null") ? null : meetingId;
+        trainingService.updateTrainingSessionStatus(sessionSid, status, jwt.getVirtualAccountSid(), meetingID);
     }
 
-    @GetMapping("/trainings/role/{pageNo}/{pageSize}")
+    @GetMapping("/trainer/trainings/{pageNo}/{pageSize}")
     @ApiOperation(value = "getTrainingsOnRole", notes = "Get list of training by role")
     public ResponseEntity<?> getTrainingsOnRole(
             @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token,
             @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
             @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize) {
         JWTTokenTO jwt = JWTDecode.parseJWT(token);
-        return ResponseEntity.ok(trainingService.getTrainingsOnRoleWithPagination(pageNo-1,pageSize,jwt.getCompanySid(),jwt.getVirtualAccountSid()));
+        return ResponseEntity.ok(trainingService.getTrainingsOnRoleWithPagination(pageNo - 1, pageSize, jwt.getCompanySid(), jwt.getVirtualAccountSid()));
+    }
+
+   // @GetMapping("/trainings/learner/{pageNo}/{pageSize}")
+   @GetMapping("/learner/trainings")
+    @ApiOperation(value = "getLearnersTrainings", notes = "Get list of training by leaners")
+    public ResponseEntity<?> getLearnersTrainings(
+            @ApiParam(value = "Authorization token", required = true) @RequestHeader(value = "Authorization") String token)
+/*            @ApiParam(value = "pageNo", required = true) @PathVariable("pageNo") int pageNo,
+            @ApiParam(value = "pageSize", required = true) @PathVariable("pageSize") int pageSize)*/ {
+        JWTTokenTO jwt = JWTDecode.parseJWT(token);
+     return ResponseEntity.ok(trainingService.getTrainingsForLeaner(jwt.getVirtualAccountSid(), jwt.getCompanySid()));
     }
 }

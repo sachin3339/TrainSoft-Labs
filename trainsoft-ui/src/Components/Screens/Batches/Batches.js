@@ -295,8 +295,8 @@ const Batch = ({ location }) => {
         }
     }
 
-    // get batches by sid
-
+    
+    // get batch count
     const getBatchCount = async () => {
         try {
             RestService.getCount("vw_batch").then(
@@ -374,7 +374,7 @@ const Batch = ({ location }) => {
                                 </Form.Group>
                                 <div>
                                     {!isEdit && <div className="mb-4">
-                                        <div><span className="title-sm">Upload participants</span></div> <div><input placeholder="Browse File" onChange={(e) => { setFieldValue("file", e.target.files) }} type="file" /></div>
+                                        <div><span className="title-sm">Upload participants</span></div> <div><input multiple placeholder="Browse File" onChange={(e) => { setFieldValue("file", e.target.files) }} type="file" /></div>
                                     </div>
                                     }
                                 </div>

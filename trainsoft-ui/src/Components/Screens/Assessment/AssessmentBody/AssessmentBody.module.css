@@ -1,0 +1,256 @@
+.container {
+  flex: 8;
+  /* display: flex; */
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 6px #00000010;
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  font: normal normal bold 16px/19px Montserrat;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.05);
+}
+
+.exitButton {
+  background-color: #464646;
+  color: #ffffff;
+  font: normal normal 600 12px/15px Montserrat;
+  text-transform: uppercase;
+  width: 100px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+  cursor: pointer;
+}
+.quitButton {
+  background-color: #fff;
+  color: #FD6060;
+  border:1px solid#FD6060;
+  font: normal normal 600 12px/15px Montserrat;
+  text-transform: uppercase;
+  width: 91px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+  cursor: pointer;
+}
+.quitButtonModal{
+  background-color: #FD6060;
+  color: #fff;
+  border: 1px solid#FD6060;
+  font: normal normal 600 12px/15px Montserrat;
+  text-transform: uppercase;
+  width: 91px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+  cursor: pointer;
+}
+
+.timer {
+  color: black;
+  background: #ffe99f;
+  font: normal normal 600 14px/18px monospace;
+  padding: 8px 20px;
+}
+.fourMinLeft{
+  color: black;
+  font: normal normal 600 14px/18px monospace;
+  padding: 8px 20px;
+  background-color: #FFCB9F !important;
+}
+.twoMinLeft{
+  color: #fff;
+  font: normal normal 600 14px/18px monospace;
+  padding: 8px 20px;
+  background-color: #F47575 !important;
+}
+
+.main {
+  background: #fff;
+  flex: 1;
+  padding: 30px 15px;
+}
+
+.main .title {
+  font: normal normal normal 18px/25px Montserrat;
+  margin-bottom: 30px;
+}
+
+.AssessmentCard {
+  background: #ffffff 0% 0% no-repeat padding-box;
+  /* box-shadow: 0px 3px 9px #00000012; */
+  /* border: 1px solid #dbdbdb; */
+  padding: 25px;
+  border-radius: 8px;
+}
+
+.AssessmentCard .number {
+  font: normal normal 600 14px/18px Montserrat;
+  color: #555555;
+  display: flex;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.AssessmentCard .title {
+  font: normal normal 600 16px/19px Montserrat;
+  color: #111111;
+  margin-bottom: 25px;
+}
+
+.divider {
+  height: 1px;
+  background: #dbdbdb;
+  width: 100%;
+  margin: 25px 0;
+}
+
+.AssessmentCard .button {
+  display: flex;
+  /* justify-content: flex-end; */
+}
+
+.finishScreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.finishScreen .check {
+  border: 3px solid #66d179;
+  height: 60px;
+  width: 60px;
+  border-radius: 30px;
+  margin: 25px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #66d179;
+}
+
+.finishScreen .title {
+  font: normal normal 600 16px/19px Montserrat;
+}
+
+.finishScreen .pointsTitle {
+  font: normal normal normal 16px/19px Montserrat;
+  font: #111;
+  margin: 25px 0 5px;
+}
+
+.finishScreen .points {
+  font: normal normal 600 32px/39px Montserrat;
+  font: #111;
+  margin: 0 0 25px;
+}
+
+.answer {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.answer .option {
+  width: 16px;
+  height: 16px;
+  border-radius: 10px;
+  background: #d4d6db;
+  cursor: pointer;
+  margin-right: 15px;
+  border: 4px solid #d4d6db;
+}
+
+.amswer .answerTitle {
+  font: normal normal normal 16px/19px "Montserrat";
+  color: #111;
+}
+
+.doneBox {
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #00000029;
+  border: 1px solid #b1b1b1;
+  height: 73px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  padding: 0 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.editButton {
+  background: #f59321;
+  height: 23px;
+  width: 72px;
+  color: white;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  border-radius: 25px;
+  font: normal normal 600 10px/13px Montserrat;
+  margin-left: 15px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.result {
+}
+.timesUpModal{
+  border-radius: 16px;
+}
+
+.timesUpCircle{
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+  background-color: #8E2505;
+  color: #fff;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+.timesUpHeader{
+  width: 100%;
+  background-color: #A82904;
+  color: #fff;
+  padding: 50px 0px;
+  font-size: 24px;
+  border-radius: 16px 16px 0 0;
+}
+
+.timesUpBody{
+  width: 100%;
+  background-color: #fff;
+  padding: 50px 0px;
+  display: flex;
+  justify-content: center;
+  border-radius: 0 0 16px 16px;
+  font-size: 20px;
+}
+.timesUpButton {
+  background-color: #111111;
+  color: #ffffff;
+  font: normal normal 600 12px/15px Montserrat;
+  width: 200px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+  cursor: pointer;
+}
