@@ -13,6 +13,7 @@ import java.util.Date;
 @Getter @Setter @NoArgsConstructor
 public class VirtualAccount extends BaseEntity {
 
+	private static final long serialVersionUID = 626540705619203620L;
 	@Column(name= "roles")
 	@Enumerated(EnumType.STRING)
 	private InstructorEnum.VirtualAccountRole role;

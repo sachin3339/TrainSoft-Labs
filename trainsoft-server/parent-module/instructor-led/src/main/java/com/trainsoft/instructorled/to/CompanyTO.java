@@ -12,6 +12,7 @@ import javax.persistence.Column;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CompanyTO extends BaseTO{
 
+    private static final long serialVersionUID = -4860682215779638254L;
     private String name;
     private String emailId;
     private String phoneNumber;

@@ -16,6 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class TrainingView extends BaseEntity {
+    private static final long serialVersionUID = -2921409585797569473L;
     @Column(name = "name")
     private String name;
 

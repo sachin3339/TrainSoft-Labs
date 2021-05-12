@@ -13,6 +13,7 @@ import java.util.Date;
 @Table(name = "company")
 @Getter @Setter @NoArgsConstructor
 public class Company extends BaseEntity {
+	private static final long serialVersionUID = 2858984831332438818L;
 	@Column(name = "name")
 	private String name;
 

@@ -218,7 +218,7 @@ public class TrainingServiceImpl implements ITrainingService {
     }
 
     @Override
-    public TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO,String instructorSid) {
+    public TrainingSessionTO createTrainingSession(TrainingSessionTO trainingSessionTO) {
         ZoomMeetingResponse response = null;
         try {
             if (trainingSessionTO != null) {
@@ -229,8 +229,6 @@ public class TrainingServiceImpl implements ITrainingService {
                 Course course = courseRepository.findCourseBySid
                         (BaseEntity.hexStringToByteArray(trainingSessionTO.getCourseSid()));
                 Settings zoomSettings=settingRepository.findSettingBySid(BaseEntity.hexStringToByteArray(zoomSettingSid));
-                VirtualAccount instructor = virtualAccountRepository.findVirtualAccountBySid(
-                        BaseEntity.hexStringToByteArray(instructorSid));
                 Long startDate=trainingSessionTO.getStartTime();
                 Long endDate=trainingSessionTO.getEndTime();
                 trainingSessionTO.setStartTime(null);
@@ -244,7 +242,6 @@ public class TrainingServiceImpl implements ITrainingService {
                 trainingSession.setPassword(password);
                 trainingSession.setUserId(userId);
                 trainingSession.setType(type);
-                trainingSession.setSchedule_for(instructor.getAppuser().getEmailId());
                 trainingSession.setAssets(trainingSessionTO.getAssets());
                 if(trainingSession.getDuration()!=null) {
                     trainingSession.setStatus(Status.ENABLED);
