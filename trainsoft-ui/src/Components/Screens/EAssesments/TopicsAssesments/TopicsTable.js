@@ -12,6 +12,8 @@ import { ICN_EDIT, ICN_TRASH } from "../../../Common/Icon";
 import useToast from "../../../../Store/ToastHook";
 import { Button } from "../../../Common/Buttons/Buttons";
 import AssessmentContext from "../../../../Store/AssessmentContext";
+import * as Yup from 'yup';
+
 
 const TopicsTable = ({ location }) => {
   const { spinner,user } = useContext(AppContext)
@@ -22,6 +24,12 @@ const TopicsTable = ({ location }) => {
   const [initialValue,setInitialValue] = useState({name:""})
   const [isEdit,setIsEdit] = useState(false)
   const Toast = useToast()
+
+  
+     //validation
+     const schema = Yup.object().shape({
+      name: Yup.object().required('Required!') ,
+   });
 
   const [configuration, setConfiguration] = useState({
     columns: {
@@ -193,6 +201,7 @@ const TopicsTable = ({ location }) => {
             <Formik
               initialValues={initialValue}
               onSubmit={(values) =>  createTopic(values)}
+              validationSchema={schema}
             >
               {({ handleSubmit }) => (
                 <>

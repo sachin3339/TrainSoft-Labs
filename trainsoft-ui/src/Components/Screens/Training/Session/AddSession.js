@@ -50,12 +50,12 @@ const AddSession = ({ show, setShow, getSessionByPage, isEdit, initialValue }) =
                 "trainingSid": training.sid,
             }
             payload.status = "ENABLED"
-            RestService.CreateTrainingSession(payload,training.virtualAccountSid).then(res => {
+            RestService.CreateTrainingSession(payload).then(res => {
                 Toast.success({ message: `Agenda is Successfully Created` });
                 getSessionByPage()
                 setShow(false)
                 spinner.hide();
-            }, err => { console.log(err); spinner.hide(); }
+             }, err => { console.log(err); spinner.hide(); }
             );
         }
         catch (err) {
