@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
 import {  Form , Dropdown} from 'react-bootstrap'
-import {  Formik } from 'formik';
+import {  Formik, yupToFormErrors } from 'formik';
 import { ICN_TRASH, ICN_EDIT } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
 import { TextInput, SelectInput } from "../../Common/InputField/InputField";
@@ -39,16 +39,24 @@ const User = ({ location }) => {
 
     //validation
     const schema = Yup.object().shape({
-        name: Yup.string()
-            .min(2, 'Too Short!')
-            .required("Required!"),
-        emailId: Yup.string()
-            .email("Email is not valid")
-            .required("Required!"),
-        phoneNumber: Yup.string()
-            .matches(phoneRegExp, 'Phone number is not valid')
-            .max(10, "Phone number is not valid")
-            .required("Required!"),
+       appuser: Yup.object().shape({
+            name: Yup.string()
+             .min(2, 'Too Short!')
+             .required("Required!"),
+            emailId: Yup.string()
+              .email("Email is not valid")
+              .required("Required!"),
+            phoneNumber: Yup.string()
+              .matches(phoneRegExp, 'Phone number is not valid')
+              .max(10, "Phone number is not valid")
+              .required("Required!"),
+            accessType: Yup.object().required('Required!'),
+            password: Yup.string().required('Required!')
+            }),
+            departmentVA: Yup.object().shape({
+             department: Yup.object().required('Required!') ,
+             departmentRole: Yup.object().required('Required!')
+        })
     });
 
     const [configuration, setConfiguration] = useState({
@@ -188,21 +196,21 @@ const User = ({ location }) => {
             val.departmentVA.departmentRole = data.departmentVA.departmentRole.key
             RestService.createParticipant(data).then(resp => {
                 setShow(false)
-                spinner.show();
+                spinner.hide();
                 getUsers()
                 Toast.success({ message: `User is Successfully Created` });
-            }, err => console.log(err)
+            }, err => {console.log(err);spinner.hide();}
             );
         }
         catch (err) {
-            spinner.show();
+            spinner.hide();
             console.error('error occur on createCourse', err)
         }
     }
     // get all training
     const getUsersDetails = async (sid, edit = false) => {
         try {
-            spinner.show();
+            spinner.show('Loading... please wait')
             RestService.getUserDetails(sid).then(
                 response => {
                     if (edit) {
@@ -230,6 +238,7 @@ const User = ({ location }) => {
     // update participant
     const updateParticipant = (data) => {
         try {
+            spinner.show('Loading... please wait')
             let val = data
             val.appuser.accessType = data.appuser.accessType.key
             val.departmentVA.department.name = data.departmentVA?.department?.name
@@ -240,11 +249,13 @@ const User = ({ location }) => {
                 setShow(false)
                 getUsers()
                 Toast.success({ message: `User is Successfully Created` });
-            }, err => console.log(err)
+            spinner.hide()
+        }, err => {console.log(err);spinner.hide()}
             );
         }
         catch (err) {
             console.error('error occur on createCourse', err)
+            spinner.hide()
         }
     }
 
@@ -252,7 +263,7 @@ const User = ({ location }) => {
     const getUsers = async (pagination = 1) => {
         try {
             let pageSize = 10
-            spinner.show();
+            spinner.show('Loading... please wait')
             RestService.getAllUserByPage("ALL", pagination, pageSize).then(
                 response => {
                     let val = response.data.map(res => {
@@ -282,7 +293,7 @@ const User = ({ location }) => {
     // search user by name/email
     const searchUser = (name) => {
         try {
-            spinner.show();
+            spinner.show('Loading... please wait')
             RestService.searchUser(name).then(resp => {
                 let val = resp.data.map(res => {
                     let data = res.appuser
@@ -310,7 +321,7 @@ const User = ({ location }) => {
     // delete course
     const deleteUser = (status, vSid) => {
         try {
-            spinner.show();
+            spinner.show('Loading... please wait')
             RestService.changeAndDeleteStatus(status, vSid).then(res => {
                 spinner.hide();
                 getUsers()
@@ -339,6 +350,7 @@ const User = ({ location }) => {
                 spinner.hide();
             });
         } catch (err) {
+            spinner.hide();
             console.error("error occur on getAllBatch()", err)
         }
     }
@@ -497,7 +509,7 @@ const User = ({ location }) => {
                             },
                             "role": "USER"
                         } : initialValue}
-                    // validationSchema={schema}
+                    validationSchema={schema}
                     >
                         {({ handleSubmit, isSubmitting, dirty, setFieldValue,values }) => <form onSubmit={handleSubmit} className="create-batch" >
                             <div>

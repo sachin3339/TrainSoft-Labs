@@ -9,6 +9,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AppUserTO extends BaseTO{
 
+    private static final long serialVersionUID = -2110408160709237919L;
     private String name;
     private String emailId;
     private String employeeId;

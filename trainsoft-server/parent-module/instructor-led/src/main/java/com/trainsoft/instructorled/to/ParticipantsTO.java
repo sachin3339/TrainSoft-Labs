@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ParticipantsTO extends BaseTO{
 
+    private static final long serialVersionUID = 4554198650040973711L;
     private String name;
     private String emailId;
     private String phoneNumber;

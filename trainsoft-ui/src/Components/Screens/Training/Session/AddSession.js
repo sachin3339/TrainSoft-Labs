@@ -55,7 +55,7 @@ const AddSession = ({ show, setShow, getSessionByPage, isEdit, initialValue }) =
                 getSessionByPage()
                 setShow(false)
                 spinner.hide();
-            }, err => { console.log(err); spinner.hide(); }
+             }, err => { console.log(err); spinner.hide(); }
             );
         }
         catch (err) {
@@ -82,7 +82,7 @@ const AddSession = ({ show, setShow, getSessionByPage, isEdit, initialValue }) =
             val.endTime = endTime
             val.startTime = startTime
             val.meetingInfo = data.meetingInfo ? JSON.stringify(data.meetingInfo) : null
-            RestService.editTrainingSession(val, meetingId).then(res => {
+            RestService.editTrainingSession(val,meetingId).then(res => {
                 Toast.success({ message: `Session updated successfully ` });
                 getSessionByPage()
                 setShow(false)

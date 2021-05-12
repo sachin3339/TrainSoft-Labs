@@ -12,6 +12,7 @@ import javax.persistence.Enumerated;
 @Getter@Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CourseSessionTO extends BaseTO{
+    private static final long serialVersionUID = 8837224798361468733L;
     private String topicName;
     private String topicDescription;
     private InstructorEnum.Status status;
