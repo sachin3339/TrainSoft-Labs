@@ -260,7 +260,7 @@
 
 .title-lg {
   font-size: 18px;
-  color: #272D3B;
+  color: #49167E;
   font-weight: 600;
   margin-bottom: 10px;
   line-height: 30px;
@@ -269,7 +269,7 @@
 .title-md {
   font-size: 16px;
   font-weight: 600;
-  color: #272D3B;
+  color: #49167E;
   margin-bottom: 10px;
   line-height: 22px;
 }
@@ -277,7 +277,7 @@
 .title-sm {
   font-size: 13px;
   font-weight: 600;
-  color: #272D3B;
+  color: #49167E;
 }
 
 .cat-title-md {
@@ -413,7 +413,15 @@
       -ms-flex-pack: end;
           justify-content: flex-end;
 }
-
+.fdc{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
 .jcse {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1301,4 +1309,22 @@ p {
   height: 16px !important;
   width: 16px !important;
   margin-right: 5px !important;
+}
+.correct-answer-box{
+    color: #126125;
+    background-color: #f1fced;
+    border-color: #6cbd86;
+    border-radius: 10px;
+}
+.correct-answer-box .description{
+   color: #0f5719;
+}
+.wrong-answer-box{
+  color: #ce2b2b;
+  background-color: #f7f0f0;
+  border-color: #eab0b0;
+  border-radius: 10px;
+}
+.wrong-answer-box .description{
+ color: #b35756;
 }

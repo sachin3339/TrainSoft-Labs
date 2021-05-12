@@ -149,7 +149,8 @@ const GLOBELCONSTANT = {
                 UPDATE_QUESTION: ASSESSMENT_V1 + "update/question"
             },
             GET_TOPIC: ASSESSMENT_V1 + "display/topics",
-            CREATE_ASS_USER: ASSESSMENT_V1 + "create/assess/user"
+            CREATE_ASS_USER: ASSESSMENT_V1 + "create/assess/user",
+            GET_ASSES_USER: ASSESSMENT_V1 + "assess/virtualaccount/"
         },
         INSTRUCTOR: {
             GET_INSTRUCTOR: API_HOST +  'depatments'
@@ -205,7 +206,7 @@ const GLOBELCONSTANT = {
         },
         SAMPLE_TEMPLATE: "https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx",
         UPLOAD_ASSES_TEMPLATE : "https://sessionassests.s3.ap-south-1.amazonaws.com/Assement_User_Upload_template.xlsx",
-        UPLOAD_QUESTION_TEMPLES: "https://sessionassests.s3.ap-south-1.amazonaws.com/1620374091555_SampleTemplet.csv",
+        UPLOAD_QUESTION_TEMPLES: "https://sessionassests.s3.ap-south-1.amazonaws.com/1620805756133_SampleTemplet.csv",
         QUILL: {
                 toolbar: [
                     [{ font: [] }, { 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -247,6 +248,7 @@ const GLOBELCONSTANT = {
                 "status": "ENABLED"
             },
             CREATE_QUESTION: {
+                "alphabet": false,
                 "answer": [
                     {
                         "answerOption": "",

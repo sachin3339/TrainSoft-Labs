@@ -79,6 +79,7 @@ const QuestionModel = ({ show, setShow, sid, getParticipant,allQuestion }) => {
     try {
       let { data } = await RestService.getNotAssociateQuestion(initialAssessment.sid)
       setQuestion(data);
+      setSearchValue(data)
       spinner.hide();
     } catch (err) {
       spinner.hide();
@@ -135,7 +136,7 @@ const QuestionModel = ({ show, setShow, sid, getParticipant,allQuestion }) => {
             size: "xl"
         }}>
             <div className="partiContainer">
-                <DynamicTable {...{ configuration, sourceData: question, onSelected: (e) => {console.log(e); setSelectedSid(e.map(r => r.sid)); } }} />
+                <DynamicTable {...{ configuration, sourceData: searchValue, onSelected: (e) => {console.log(e); setSelectedSid(e.map(r => r.sid)); } }} />
             </div>
             <div className="jce mt-2">
                <Cancel className="mx-2" onClick={() => { setShow(false) }}>Cancel</Cancel>
