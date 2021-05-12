@@ -7,12 +7,12 @@ import AssessmentRender from './AssessmentRender';
 
 
 const data = [
-    {title: "Advanced Java",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins"},
-    {title: "Java Essesntials",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins"},
-    {title: "Object Oriented Programming with Java",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins"},
-    {title: "Personality Index",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins"},
-    {title: "Angular JS Fundamentals",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins"},
-    {title: "Domain Tests",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins"},
+    {title: "Advanced Java",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins",status:"progress"},
+    {title: "Java Essesntials",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins",status:"ongoing"},
+    {title: "Object Oriented Programming with Java",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins",status:"quit"},
+    {title: "Personality Index",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins",status:"completed"},
+    {title: "Angular JS Fundamentals",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins",status:"ongoing"},
+    {title: "Domain Tests",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins",status:"completed"},
 ]
 
 
