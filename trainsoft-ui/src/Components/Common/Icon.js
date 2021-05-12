@@ -46,6 +46,9 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
 
 export const ICN_TRAINSOFT = <img src={TRAINSOFT}/>
+export const ICN_MARK  = <svg xmlns="http://www.w3.org/2000/svg" width="10.833" height="13.5" viewBox="0 0 10.833 13.5"><path fill="none" stroke="#9f9f9f" strokeWidth="1.5px" strokeLinecap="round" strokeLinejoin="round"  class="a" d="M16.833,16.5l-4.667-3.333L7.5,16.5V5.833A1.333,1.333,0,0,1,8.833,4.5H15.5a1.333,1.333,0,0,1,1.333,1.333Z" transform="translate(-6.75 -3.75)"/></svg>
+export const ICN_ARROW = <svg xmlns="http://www.w3.org/2000/svg" width="20.243" height="13.501" viewBox="0 0 20.243 13.501"><path class="a"  fill="#49167e" d="M20.784,11.51a.919.919,0,0,0-.007,1.294l4.275,4.282H8.782a.914.914,0,0,0,0,1.828H25.045L20.77,23.2a.925.925,0,0,0,.007,1.294.91.91,0,0,0,1.287-.007l5.794-5.836h0a1.026,1.026,0,0,0,.19-.288.872.872,0,0,0,.07-.352.916.916,0,0,0-.26-.64l-5.794-5.836A.9.9,0,0,0,20.784,11.51Z" transform="translate(-7.875 -11.252)"/></svg>
+export const ICN_USERS = <svg xmlns="http://www.w3.org/2000/svg" width="13.051" height="14.557" viewBox="0 0 13.051 14.557"><g transform="translate(0.5 0.5)"><path strokeLinecap="round" strokeLinejoin="round" fill="none" stroke="#939191" class="a" d="M18.051,27.019V25.513A3.013,3.013,0,0,0,15.038,22.5H9.013A3.013,3.013,0,0,0,6,25.513v1.506" transform="translate(-6 -13.462)"/><path strokeLinecap="round" strokeLinejoin="round" fill="none" stroke="#939191" class="a" d="M18.025,7.513A3.013,3.013,0,1,1,15.013,4.5a3.013,3.013,0,0,1,3.013,3.013Z" transform="translate(-8.987 -4.5)"/></g></svg>
 export const ICN_PUSHED = <PauseIcon/>
 export const ICN_PLAY_CIRCLE = <PlayCircleFilledWhiteIcon/>
 export const ICN_NAV_BEFORE = <NavigateBeforeIcon/>

@@ -1,0 +1,134 @@
+.mark-color{
+    background: #FFEB98;
+    position: relative;
+    overflow: hidden;
+}
+.img-score{
+    position: absolute;
+    top: 0px;
+    /* width: 120px; */
+    right: 0px;
+}
+.mark-color .title-lg{
+    font-size: 35px;
+    margin-top: 30px;
+
+}
+.catalog-img img{
+    height: 100%
+}
+.category-info-list{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.category-info{
+    text-align: center;
+    width: 33%;
+    padding: 30px;
+   
+}
+.catTitle{
+    font: normal normal 600 32px/27px Montserrat;
+    letter-spacing: 0px;
+    color: #49167E;
+    margin-bottom: 10px;
+}
+
+.ass{
+    color: #5146CB;
+}
+.Ongoing{
+    color: #C96DFA;
+}
+.comp{
+    color: #01A207;
+}
+.quit{
+    color: #F86868;
+}
+.user-score{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    /* border: 1px solid black; */
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    border: 1px solid #DBDBDB;
+    opacity: 1;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 2px 0px #00000012;
+}
+.user-icon{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #DBDBDB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-items: center;
+}
+
+/* catalog */
+.catalog-box{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.catalog-list{
+
+    width: 330px;
+    height: 219px;
+    margin-bottom: 20px;
+}
+.catalog-img{
+    width: 100%;
+    height: 150px;
+    text-align: center;
+
+}
+.catalog-link{
+    display: flex;
+    justify-content: space-between;
+}
+.assList{
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 0px 2px #00000026;
+    opacity: 1;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+.assestRight{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: right;
+    margin-left: 20px;
+}
+.nav-pills .nav-link {
+    border-radius: 0;
+}
+.nav-pills .nav-link.active {
+    color: #111;
+    border-bottom: 3px solid #fed609;
+    background: #fff;
+    font-weight: 600;
+}
+.nav-pills {
+    border-bottom: 1px solid #dcdcdc;
+}
+.nav-pills a {
+    color: #676767;
+    text-decoration: none;
+    background-color: transparent;
+}
+.nav-link {
+    display: block;
+    padding: 10px 2rem;
+    font-size: 14px;
+}

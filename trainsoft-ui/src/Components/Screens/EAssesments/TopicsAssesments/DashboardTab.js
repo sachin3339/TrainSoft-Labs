@@ -94,6 +94,14 @@ const DashboardTab = () => {
     }
   }
 
+//   const onSearch = (e) => {
+//     try {
+//         setSearchValue(dashboardDate?.assessToList.filter(res => res.name.toUpperCase().indexOf(e.toUpperCase()) > -1))
+//     } catch (err) {
+//         console.error("error occur on onSearch()", err)
+//     }
+// }
+
   useEffect(() => {
     getDashBoard()
   }, [])

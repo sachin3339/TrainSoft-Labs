@@ -162,6 +162,7 @@ const QuestionsTable = ({ location }) => {
       try {
         let { data } = await RestService.changeQuestionStatus(qSid,status === "DISABLED" ? "enabled": "disabled")
         getAllQuestion()
+        Toast.success({ message: "Status updated successfully" })
         spinner.hide();
       } catch (err) {
         spinner.hide();
