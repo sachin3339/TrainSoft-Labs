@@ -38,4 +38,5 @@ public interface IAssessmentService
     BigInteger pageableAssessmentCount(String searchString,String companySid,String topicSid);
     AssessmentsCountTo getCountOfAssessmentsByTagsAndDifficulty(String companySid);
     List<AssessmentTo> getAssessmentsByCategory(String companySid,String categorySid,Pageable pageable);
+    Integer getAssessmentCountByCategory(String companySid,String categorySid);
 }

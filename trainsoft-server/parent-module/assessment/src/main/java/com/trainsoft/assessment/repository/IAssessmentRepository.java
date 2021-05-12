@@ -30,11 +30,14 @@ public interface IAssessmentRepository extends JpaRepository<Assessment,Integer>
     BigInteger pageableAssessmentCount(String searchString, Company company, Topic topic);
 
     @Query("SELECT COUNT(assess) FROM Assessment  as assess WHERE assess.tagId=:tag  AND assess.status='ENABLED' AND assess.company=:company")
-    Integer getCountAssessmentsByTag(Company company,Tag tag);
+    Integer getAssessmentsCountByTag(Company company,Tag tag);
 
     @Query("SELECT COUNT(assess) FROM Assessment  as assess WHERE assess.difficulty=:difficulty AND assess.status='ENABLED' AND assess.company=:company")
-    Integer getCountAssessmentByDifficulty(Company company,AssessmentEnum.QuizSetDifficulty difficulty);
+    Integer getAssessmentCountByDifficulty(Company company,AssessmentEnum.QuizSetDifficulty difficulty);
 
-    @Query("SELECT assess FROM Assessment  as assess Where assess.categoryId=:category AND assess.status='ENABLED' AND assess.company=:company")
+    @Query("SELECT assess FROM Assessment  as assess WHERE assess.categoryId=:category AND assess.status='ENABLED' AND assess.company=:company")
     List<Assessment> getAssessmentByCategory(Company company,Category category,Pageable pageable);
+
+    @Query("SELECT COUNT(assess) FROM Assessment  as assess WHERE assess.categoryId=:category AND assess.status='ENABLED' AND assess.company=:company")
+    Integer getAssessmentCountByCategory(Company company,Category category);
 }

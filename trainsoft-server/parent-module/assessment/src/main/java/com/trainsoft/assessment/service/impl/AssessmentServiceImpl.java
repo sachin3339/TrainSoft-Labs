@@ -898,7 +898,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                tagList.forEach(tag->{
                    AssessmentCountTagTo assessmentCountTagTo = new AssessmentCountTagTo();
                    assessmentCountTagTo.setTagName(tag.getName());
-                   assessmentCountTagTo.setCount(assessmentRepository.getCountAssessmentsByTag(company,tag));
+                   assessmentCountTagTo.setCount(assessmentRepository.getAssessmentsCountByTag(company,tag));
                    assessmentCountTagToList.add(assessmentCountTagTo);
                });
            }
@@ -910,7 +910,7 @@ public class AssessmentServiceImpl implements IAssessmentService
           {
               AssessmentCountDifficultyTo assessmentCountDifficultyTo = new AssessmentCountDifficultyTo();
               assessmentCountDifficultyTo.setDifficultyName(qd.toString());
-              assessmentCountDifficultyTo.setCount(assessmentRepository.getCountAssessmentByDifficulty(company,qd));
+              assessmentCountDifficultyTo.setCount(assessmentRepository.getAssessmentCountByDifficulty(company,qd));
               assessmentCountDifficultyToList.add(assessmentCountDifficultyTo);
           }
           assessmentsCountTo.setAssessmentCountDifficultyToList(assessmentCountDifficultyToList);
@@ -947,5 +947,14 @@ public class AssessmentServiceImpl implements IAssessmentService
         return assessmentToList;
     }
 
+    public Integer getAssessmentCountByCategory(String companySid, String categorySid)
+    {
+        if(companySid==null)
+            throw new InvalidSidException("Company Sid is null !");
+        if(categorySid==null)
+            throw new InvalidSidException("Category Sid is null !");
+        return assessmentRepository.getAssessmentCountByCategory(getCompany(companySid)
+                ,categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)));
+    }
 
 }
