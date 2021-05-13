@@ -300,6 +300,7 @@ public class QuestionServiceImpl implements IQuestionService {
                     questionTo.setNegativeQuestionPoint(Integer.parseInt(record.get("negative_question_point").trim()));
                     questionTo.setAnswerExplanation(record.get("answer_explanation").trim());
                     questionTo.setQuestionType(AssessmentEnum.QuestionType.MCQ);
+                    questionTo.setCategory(record.get("category").trim());
                     List<AnswerTo> answerToList=getAnswers(record);
                     if(CollectionUtils.isNotEmpty(answerToList))
                     questionTo.setAnswer(answerToList);
@@ -370,7 +371,8 @@ public class QuestionServiceImpl implements IQuestionService {
                 || record.get("answer_is_correct_A").isEmpty() || record.get("answer_is_correct_B").isEmpty()
                 || record.get("answer_is_correct_C").isEmpty() || record.get("answer_is_correct_D").isEmpty()
                 || record.get("answer_option_value_A").isEmpty() || record.get("answer_option_value_B").isEmpty()
-                || record.get("answer_option_value_C").isEmpty() || record.get("answer_option_value_D").isEmpty();
+                || record.get("answer_option_value_C").isEmpty() || record.get("answer_option_value_D").isEmpty()
+                || record.get("category").isEmpty();
     }
 
     private boolean validateCsvFieldValues(CSVRecord record)

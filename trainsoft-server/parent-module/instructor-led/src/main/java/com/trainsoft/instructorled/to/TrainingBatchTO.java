@@ -9,6 +9,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TrainingBatchTO extends BaseTO{
 
+    private static final long serialVersionUID = 8739961294066274775L;
     private String batchSid;
     private String trainingSid;
     private long createdOn;

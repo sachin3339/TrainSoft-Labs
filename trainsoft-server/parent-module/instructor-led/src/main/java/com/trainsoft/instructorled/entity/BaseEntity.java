@@ -16,7 +16,8 @@ import lombok.Setter;
 public abstract class BaseEntity implements Serializable{
 
 	final protected static char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-	
+	private static final long serialVersionUID = -6149542430534313736L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer id;

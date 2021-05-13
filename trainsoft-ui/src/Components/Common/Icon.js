@@ -44,7 +44,9 @@ import PauseIcon from '@material-ui/icons/Pause';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
+import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 
+export const ICN_EXPANDED = <AspectRatioIcon/>
 export const ICN_TRAINSOFT = <img src={TRAINSOFT}/>
 export const ICN_CIRCLE_C = <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><g stroke="#c96dfa" strokeWidth="3px" fill="#fff" class="a"><circle stroke="none" class="b" cx="7" cy="7" r="7"/><circle fill="none" class="c" cx="7" cy="7" r="5.5"/></g></svg>
 export const ICN_MARK  = <svg xmlns="http://www.w3.org/2000/svg" width="10.833" height="13.5" viewBox="0 0 10.833 13.5"><path fill="none" stroke="#9f9f9f" strokeWidth="1.5px" strokeLinecap="round" strokeLinejoin="round"  class="a" d="M16.833,16.5l-4.667-3.333L7.5,16.5V5.833A1.333,1.333,0,0,1,8.833,4.5H15.5a1.333,1.333,0,0,1,1.333,1.333Z" transform="translate(-6.75 -3.75)"/></svg>

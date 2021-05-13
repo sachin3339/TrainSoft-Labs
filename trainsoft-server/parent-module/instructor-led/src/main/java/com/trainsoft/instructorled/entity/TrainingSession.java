@@ -14,6 +14,7 @@ import java.util.Date;
 @Table(name = "training_session")
 @Getter @Setter @NoArgsConstructor
 public class TrainingSession extends BaseEntity {
+	private static final long serialVersionUID = -2770042524730544029L;
 	@Column(name = "agenda_name")
 	private String topic;
 
