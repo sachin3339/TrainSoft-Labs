@@ -880,4 +880,104 @@ public class AssessmentServiceImpl implements IAssessmentService
             return assessmentCount;
         }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
     }
+
+    @Override
+    public AssessmentsCountTo getCountOfAssessmentsByTagsAndDifficulty(String companySid,String categorySid)
+    {
+        if(companySid==null)
+           throw  new InvalidSidException("Company Sid is null");
+        if(categorySid==null)
+            throw  new InvalidSidException("Category Sid is null");
+
+           Company company = getCompany(companySid);
+           AssessmentsCountTo assessmentsCountTo = new AssessmentsCountTo();
+           Category category=categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid));
+
+           // Assessment Count based on Tags
+           List<Tag> tagList = tagRepository.findTagsByStatus();
+           List<AssessmentCountTagTo> assessmentCountTagToList = new ArrayList<>();
+           if(CollectionUtils.isNotEmpty(tagList))
+           {
+               tagList.forEach(tag->{
+                   AssessmentCountTagTo assessmentCountTagTo = new AssessmentCountTagTo();
+                   assessmentCountTagTo.setTagName(tag.getName());
+                   assessmentCountTagTo.setCount(assessmentRepository.getAssessmentsCountByTag(company,tag,category));
+                   assessmentCountTagToList.add(assessmentCountTagTo);
+               });
+           }
+           assessmentsCountTo.setAssessmentCountTagToList(assessmentCountTagToList);
+
+           // Assessment Count based on Difficulty
+          List<AssessmentCountDifficultyTo> assessmentCountDifficultyToList = new ArrayList<>();
+          for (AssessmentEnum.QuizSetDifficulty qd:AssessmentEnum.QuizSetDifficulty.values())
+          {
+              AssessmentCountDifficultyTo assessmentCountDifficultyTo = new AssessmentCountDifficultyTo();
+              assessmentCountDifficultyTo.setDifficultyName(qd.toString());
+              assessmentCountDifficultyTo.setCount(assessmentRepository.getAssessmentCountByDifficulty(company,qd,category));
+              assessmentCountDifficultyToList.add(assessmentCountDifficultyTo);
+          }
+          assessmentsCountTo.setAssessmentCountDifficultyToList(assessmentCountDifficultyToList);
+          return  assessmentsCountTo;
+
+    }
+
+    @Override
+    public List<AssessmentTo> getAssessmentsByCategory(String companySid,String categorySid,Pageable pageable)
+    {
+        if(categorySid==null)
+            throw  new InvalidSidException("Category Sid is null !");
+        if(companySid==null)
+            throw new InvalidSidException("Company Sid is null !");
+
+         List<Assessment> assessmentList = assessmentRepository.getAssessmentByCategory(getCompany(companySid),
+                 categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)),pageable);
+        return getAssessmentToList(assessmentList);
+    }
+
+    public Integer getAssessmentCountByCategory(String companySid, String categorySid)
+    {
+        if(companySid==null)
+            throw new InvalidSidException("Company Sid is null !");
+        if(categorySid==null)
+            throw new InvalidSidException("Category Sid is null !");
+        return assessmentRepository.getAssessmentCountByCategory(getCompany(companySid)
+                ,categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)));
+    }
+
+    @Override
+    public List<AssessmentTo> searchAssessmentByCategory(String searchString, String companySid, String categorySid,Pageable pageable)
+    {
+        if(companySid==null)
+          throw new InvalidSidException("check CompanySid is null !");
+        if(categorySid==null)
+            throw new InvalidSidException("check Category Sid is null !");
+
+         List<Assessment> assessmentList = assessmentRepository.searchAssessmentByCategory(getCompany(companySid),
+                categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)),
+                "%"+searchString.trim()+"%",pageable);
+         return getAssessmentToList(assessmentList);
+    }
+
+
+    private List<AssessmentTo> getAssessmentToList(List<Assessment> assessmentList)
+    {
+        if(CollectionUtils.isEmpty(assessmentList))
+            return Collections.EMPTY_LIST;
+
+        List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList,AssessmentTo.class);
+        Iterator<AssessmentTo> assessmentToIterator=assessmentToList.stream().iterator();
+        Iterator<Assessment> assessmentIterator= assessmentList.stream().iterator();
+        while (assessmentIterator.hasNext() && assessmentToIterator.hasNext())
+        {
+            AssessmentTo assessmentTo = assessmentToIterator.next();
+            Assessment assessment = assessmentIterator.next();
+
+            assessmentTo.setTopicSid(assessment.getTopicId().getStringSid());
+            assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessment.getStringSid()));
+            assessmentTo.setTagSid(assessment.getTagId().getStringSid());
+            assessmentTo.setCategorySid(assessment.getCategoryId().getStringSid());
+            assessmentTo.setCompanySid(assessment.getCompany().getStringSid());
+        }
+        return assessmentToList;
+    }
 }
