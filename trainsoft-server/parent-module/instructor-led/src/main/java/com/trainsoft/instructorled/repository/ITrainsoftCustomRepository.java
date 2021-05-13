@@ -15,7 +15,7 @@ import java.util.List;
 public interface ITrainsoftCustomRepository {
 
     Integer findIdBySid(String classz, String sid);
-    BigInteger noOfCountByClass(String classz, Company company);
+    BigInteger noOfCountByClass(String classz, String companySid);
     List<VirtualAccount> findActiveVirtualAccountWithBatch(String batchSid,String companySid);
    // Page<Training> findTrainingsForLeaner(String vASid);
     List<TrainingView> findTrainingsForLeaner(String vASid,String companySid);
