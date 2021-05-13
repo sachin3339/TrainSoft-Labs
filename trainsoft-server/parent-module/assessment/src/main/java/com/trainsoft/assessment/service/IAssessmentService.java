@@ -43,6 +43,11 @@ public interface IAssessmentService
     List<CategoryAverageTO> getUserCategoryAverage(String virtualAccountSid);
 
     List<LeaderBoardTO> getTopTenForLeaderBoard(String companySid,String categorySid);
+    AssessmentsCountTo getCountOfAssessmentsByTagsAndDifficulty(String companySid,String categorySid);
+    List<AssessmentTo> getAssessmentsByCategory(String companySid,String categorySid,Pageable pageable);
+    Integer getAssessmentCountByCategory(String companySid,String categorySid);
+    List<AssessmentTo> searchAssessmentByCategory(String searchString,String companySid,String categorySid,Pageable pageable);
+
 
 
 }
