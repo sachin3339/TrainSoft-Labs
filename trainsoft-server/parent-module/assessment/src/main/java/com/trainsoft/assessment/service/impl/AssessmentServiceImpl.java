@@ -882,13 +882,16 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public AssessmentsCountTo getCountOfAssessmentsByTagsAndDifficulty(String companySid)
+    public AssessmentsCountTo getCountOfAssessmentsByTagsAndDifficulty(String companySid,String categorySid)
     {
         if(companySid==null)
            throw  new InvalidSidException("Company Sid is null");
+        if(categorySid==null)
+            throw  new InvalidSidException("Category Sid is null");
 
            Company company = getCompany(companySid);
            AssessmentsCountTo assessmentsCountTo = new AssessmentsCountTo();
+           Category category=categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid));
 
            // Assessment Count based on Tags
            List<Tag> tagList = tagRepository.findTagsByStatus();
@@ -898,7 +901,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                tagList.forEach(tag->{
                    AssessmentCountTagTo assessmentCountTagTo = new AssessmentCountTagTo();
                    assessmentCountTagTo.setTagName(tag.getName());
-                   assessmentCountTagTo.setCount(assessmentRepository.getAssessmentsCountByTag(company,tag));
+                   assessmentCountTagTo.setCount(assessmentRepository.getAssessmentsCountByTag(company,tag,category));
                    assessmentCountTagToList.add(assessmentCountTagTo);
                });
            }
@@ -910,7 +913,7 @@ public class AssessmentServiceImpl implements IAssessmentService
           {
               AssessmentCountDifficultyTo assessmentCountDifficultyTo = new AssessmentCountDifficultyTo();
               assessmentCountDifficultyTo.setDifficultyName(qd.toString());
-              assessmentCountDifficultyTo.setCount(assessmentRepository.getAssessmentCountByDifficulty(company,qd));
+              assessmentCountDifficultyTo.setCount(assessmentRepository.getAssessmentCountByDifficulty(company,qd,category));
               assessmentCountDifficultyToList.add(assessmentCountDifficultyTo);
           }
           assessmentsCountTo.setAssessmentCountDifficultyToList(assessmentCountDifficultyToList);

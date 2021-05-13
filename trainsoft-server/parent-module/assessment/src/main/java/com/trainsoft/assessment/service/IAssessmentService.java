@@ -36,7 +36,7 @@ public interface IAssessmentService
     List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
 
     BigInteger pageableAssessmentCount(String searchString,String companySid,String topicSid);
-    AssessmentsCountTo getCountOfAssessmentsByTagsAndDifficulty(String companySid);
+    AssessmentsCountTo getCountOfAssessmentsByTagsAndDifficulty(String companySid,String categorySid);
     List<AssessmentTo> getAssessmentsByCategory(String companySid,String categorySid,Pageable pageable);
     Integer getAssessmentCountByCategory(String companySid,String categorySid);
     List<AssessmentTo> searchAssessmentByCategory(String searchString,String companySid,String categorySid,Pageable pageable);
