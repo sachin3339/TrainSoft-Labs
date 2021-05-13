@@ -9,6 +9,7 @@ import com.trainsoft.assessment.customexception.InvalidSidException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
 import com.trainsoft.assessment.entity.*;
+import com.trainsoft.assessment.enums.QuizStatus;
 import com.trainsoft.assessment.repository.*;
 import com.trainsoft.assessment.repository.IAssessmentRepository;
 import com.trainsoft.assessment.repository.ITopicRepository;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.*;
 
@@ -301,6 +301,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         Assessment assessment = assessmentRepository
                 .findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         if (assessment!=null){
+            virtualAccountAssessmentRepository.updateStatus(QuizStatus.STARTED,virtualAccount,assessment);
             List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.findByTopicId(assessment.getId());
             List<AssessmentQuestionTo> assessmentQuestionTo=new ArrayList<>();
             assessmentQuestionList.forEach(as->{
@@ -420,6 +421,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(request.getQuizSetSid()));
         if (assessment==null) throw new InvalidSidException("Invalid Quiz Set Sid");
             virtualAccountHasQuizSetAssessment.setQuizSetId(assessment);
+            virtualAccountHasQuizSetAssessment.setCategoryId(assessment.getCategoryId());
             virtualAccountHasQuizSetAssessment.setCompanyId(assessment.getCompany());
             virtualAccountHasQuizSetAssessment.setQuizId(assessment.getTopicId());
             virtualAccountHasQuizSetAssessment.setCreatedBy(assessment.getCreatedBy());
@@ -451,6 +453,8 @@ public class AssessmentServiceImpl implements IAssessmentService
         double percentage=((double)gainMarks1*100/(double)totalMarks );
         virtualAccountHasQuizSetAssessment1.setPercentage(percentage);
         virtualAccountHasQuizSetAssessmentRepository.save(virtualAccountHasQuizSetAssessment1);
+        //once assessment submitted setting status in virtual_account_has_assessment to COMPLETED.
+        virtualAccountAssessmentRepository.updateStatus(QuizStatus.COMPLETED,virtualAccount,assessment);
         VirtualAccountHasQuizSetAssessmentTO vto = new VirtualAccountHasQuizSetAssessmentTO();
         vto.setSid(virtualAccountHasQuizSetAssessment.getStringSid());
         vto.setQuizSid(assessment.getTopicId().getStringSid());
@@ -469,6 +473,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         vto.setTotalNumberOfQuestions(virtualAccountHasQuizSetAssessment1.getTotalNumberOfQuestions());
         vto.setSubmittedOn(virtualAccountHasQuizSetAssessment1.getSubmittedOn());
         vto.setPercentage(virtualAccountHasQuizSetAssessment1.getPercentage());
+        vto.setCategorySid(virtualAccountHasQuizSetAssessment1.getCategoryId().getStringSid());
         return vto;
     }
 
@@ -651,7 +656,8 @@ public class AssessmentServiceImpl implements IAssessmentService
         assessment.setMultipleSitting(assessmentTo.isMultipleSitting());
         assessment.setPauseEnable(assessmentTo.isPauseEnable());
         assessment.setMultipleSitting(assessmentTo.isMultipleSitting());
-        assessment.setCategoryId(categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(assessmentTo.getCategorySid())));
+        Category category = categoryRepository.findBySid(BaseEntity.hexStringToByteArray(assessmentTo.getCategorySid()));
+        assessment.setCategoryId(category);
         assessment.setPaymentReceived(assessmentTo.isPaymentReceived());
         assessment.setReduceMarks(assessmentTo.isReduceMarks());
         assessment.setPreviousEnabled(assessmentTo.isPreviousEnabled());
@@ -801,10 +807,10 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForToday(String quizSetSid) {
+    public List<LeaderBoardTO> getLeaderBoardForAssessmentForToday(String quizSetSid) {
         Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         if (assessment!=null){
-            ArrayList<LeaderBoardRequestTO> leaderBoardTO = new ArrayList<>();
+            ArrayList<LeaderBoardTO> leaderBoardTO = new ArrayList<>();
 
             List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
@@ -815,7 +821,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                    topTen.add(i,assessmentList.get(i));
                }
                topTen.forEach(tp->{
-                   LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                   LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
                    leaderBoardRequestTO.setPercentage(tp.getPercentage());
                    leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
                    leaderBoardTO.add(leaderBoardRequestTO);
@@ -826,7 +832,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                 topTen.add(i,assessmentList.get(i));
             }
             topTen.forEach(tp->{
-                LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
                 leaderBoardRequestTO.setPercentage(tp.getPercentage());
                 leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
                 leaderBoardTO.add(leaderBoardRequestTO);
@@ -837,10 +843,10 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid) {
+    public List<LeaderBoardTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid) {
         Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         if (assessment != null) {
-            ArrayList<LeaderBoardRequestTO> leaderBoardTO = new ArrayList<>();
+            ArrayList<LeaderBoardTO> leaderBoardTO = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
                     .findByAssessment(assessment.getId());
@@ -850,7 +856,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                     topTen.add(i,assessmentList.get(i));
                 }
                 topTen.forEach(tp->{
-                    LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                    LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
                     leaderBoardRequestTO.setPercentage(tp.getPercentage());
                     leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
                     leaderBoardTO.add(leaderBoardRequestTO);
@@ -861,7 +867,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                     topTen.add(i, assessmentList.get(i));
             }
             topTen.forEach(tp -> {
-                LeaderBoardRequestTO leaderBoardRequestTO = new LeaderBoardRequestTO();
+                LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
                 leaderBoardRequestTO.setPercentage(tp.getPercentage());
                 leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(), VirtualAccountTO.class));
                 leaderBoardTO.add(leaderBoardRequestTO);
@@ -879,5 +885,203 @@ public class AssessmentServiceImpl implements IAssessmentService
             BigInteger assessmentCount =  assessmentRepository.pageableAssessmentCount("%"+searchString.trim()+"%", company, topic);
             return assessmentCount;
         }throw new InvalidSidException("invalid Company Sid Or Topic Sid");
+    }
+
+    @Override
+    public VirtualAccountAssessmentTo quitAssessment(String quizSetSid, String virtualAccountSid) {
+        Assessment assessment = assessmentRepository
+                .findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
+        VirtualAccount virtualAccount = virtualAccountRepository
+                .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
+        if (assessment!=null && virtualAccount!=null){
+          virtualAccountAssessmentRepository.updateStatus(QuizStatus.QUIT,virtualAccount,assessment);
+            VirtualAccountAssessment virtualAccountAssessment = virtualAccountAssessmentRepository
+                    .findByAssessmentAndVirtualAccount(assessment, virtualAccount);
+            VirtualAccountAssessmentTo virtualAccountAssessmentTo = mapper
+                    .convert(virtualAccountAssessment, VirtualAccountAssessmentTo.class);
+            virtualAccountAssessmentTo.setAssessmentSid(assessment.getStringSid());
+            virtualAccountAssessmentTo.setVirtualAccountSid(virtualAccount.getStringSid());
+            return virtualAccountAssessmentTo;
+        }
+        throw new InvalidSidException("invalid Assessment Sid Or Virtual Account Sid");
+    }
+
+    private Integer [] findCountsForDashBoard(VirtualAccount virtualAccount){
+        Integer assessmentTaken = virtualAccountAssessmentRepository.findCountOfAssessmentTaken(virtualAccount);
+        Integer onGoing = virtualAccountAssessmentRepository.findCountOfOnGoingAssessments(virtualAccount);
+        Integer completed = virtualAccountAssessmentRepository.findCountOfCompletedAssessments(virtualAccount);
+        Integer quit = virtualAccountAssessmentRepository.findCountOfQuitAssessments(virtualAccount);
+        Integer yourScore = virtualAccountHasQuizSetAssessmentRepository.findAllAssessmentAverageScore(virtualAccount);
+        Integer[] counts = new Integer[5];
+        counts[0]=assessmentTaken;
+        counts[1]=onGoing;
+        counts[2]=completed;
+        counts[3]=quit;
+        counts[4]=yourScore;
+        return counts;
+    }
+    @Override
+    public DashBoardTO getUserDashboard(String virtualAccountSid){
+        VirtualAccount virtualAccount = virtualAccountRepository
+                .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
+        if (virtualAccount!=null){
+            Integer[] counts = findCountsForDashBoard(virtualAccount);
+            DashBoardTO dashBoardTO = new DashBoardTO();
+            dashBoardTO.setAssessmentTaken(counts[0]);
+            dashBoardTO.setOnGoing(counts[1]);
+            dashBoardTO.setCompleted(counts[2]);
+            dashBoardTO.setQuit(counts[3]);
+            dashBoardTO.setYourScore(counts[4]);
+            return dashBoardTO;
+        }throw new InvalidSidException("Invalid virtual Account Sid");
+    }
+    @Override
+    public List<CategoryAverageTO> getUserCategoryAverage(String virtualAccountSid) {
+        VirtualAccount virtualAccount = virtualAccountRepository
+                .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
+        if (virtualAccount!=null) {
+            List<Object[]> averageScoreByCategory = virtualAccountHasQuizSetAssessmentRepository
+                    .getCategoryAverageScore(virtualAccount);
+            ArrayList<CategoryAverageTO> list = new ArrayList<>();
+            averageScoreByCategory.forEach(av->{
+                CategoryAverageTO categoryAverageTO = new CategoryAverageTO();
+                Category category = (Category) av[0];
+                categoryAverageTO.setCategoryTO(mapper.convert(category,CategoryTO.class));
+                categoryAverageTO.setAverageScore((Double)av[1]);
+                list.add(categoryAverageTO);
+            });
+            return list;
+        }throw new InvalidSidException("Invalid Virtual Account Sid.");
+    }
+
+    @Override
+    public List<LeaderBoardTO> getTopTenForLeaderBoard(String companySid,String categorySid){
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        ArrayList<LeaderBoardTO> list = new ArrayList<>();
+        if (company!=null && categorySid.equals("ALL")){
+            List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessments =
+                    virtualAccountHasQuizSetAssessmentRepository.getTopTenListForAllCategory(company.getId());
+            virtualAccountHasQuizSetAssessments.forEach(va->{
+                LeaderBoardTO leaderBoardTO = new LeaderBoardTO();
+                leaderBoardTO.setPercentage(va.getPercentage());
+                leaderBoardTO.setVirtualAccountTO(mapper.convert(va.getVirtualAccountId(),VirtualAccountTO.class));
+                list.add(leaderBoardTO);
+            });
+            return list;
+        }else if (company!=null && categorySid!=null){
+            Category category = categoryRepository.findBySid(BaseEntity.hexStringToByteArray(categorySid));
+            if (category!=null){
+                List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessments =
+                        virtualAccountHasQuizSetAssessmentRepository.getTopTenListByCategory(company.getId(), category.getId());
+                virtualAccountHasQuizSetAssessments.forEach(va->{
+                    LeaderBoardTO leaderBoardTO = new LeaderBoardTO();
+                    leaderBoardTO.setPercentage(va.getPercentage());
+                    leaderBoardTO.setVirtualAccountTO(mapper.convert(va.getVirtualAccountId(),VirtualAccountTO.class));
+                    list.add(leaderBoardTO);
+                });
+                return list;
+            }throw new InvalidSidException("Invalid Category sid");
+        }
+        throw new InvalidSidException("Invalid Company Sid.");
+    }
+
+    @Override
+    public AssessmentsCountTo getCountOfAssessmentsByTagsAndDifficulty(String companySid,String categorySid)
+    {
+        if(companySid==null)
+           throw  new InvalidSidException("Company Sid is null");
+        if(categorySid==null)
+            throw  new InvalidSidException("Category Sid is null");
+
+           Company company = getCompany(companySid);
+           AssessmentsCountTo assessmentsCountTo = new AssessmentsCountTo();
+           Category category=categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid));
+
+           // Assessment Count based on Tags
+           List<Tag> tagList = tagRepository.findTagsByStatus();
+           List<AssessmentCountTagTo> assessmentCountTagToList = new ArrayList<>();
+           if(CollectionUtils.isNotEmpty(tagList))
+           {
+               tagList.forEach(tag->{
+                   AssessmentCountTagTo assessmentCountTagTo = new AssessmentCountTagTo();
+                   assessmentCountTagTo.setTagName(tag.getName());
+                   assessmentCountTagTo.setCount(assessmentRepository.getAssessmentsCountByTag(company,tag,category));
+                   assessmentCountTagToList.add(assessmentCountTagTo);
+               });
+           }
+           assessmentsCountTo.setAssessmentCountTagToList(assessmentCountTagToList);
+
+           // Assessment Count based on Difficulty
+          List<AssessmentCountDifficultyTo> assessmentCountDifficultyToList = new ArrayList<>();
+          for (AssessmentEnum.QuizSetDifficulty qd:AssessmentEnum.QuizSetDifficulty.values())
+          {
+              AssessmentCountDifficultyTo assessmentCountDifficultyTo = new AssessmentCountDifficultyTo();
+              assessmentCountDifficultyTo.setDifficultyName(qd.toString());
+              assessmentCountDifficultyTo.setCount(assessmentRepository.getAssessmentCountByDifficulty(company,qd,category));
+              assessmentCountDifficultyToList.add(assessmentCountDifficultyTo);
+          }
+          assessmentsCountTo.setAssessmentCountDifficultyToList(assessmentCountDifficultyToList);
+          return  assessmentsCountTo;
+
+    }
+
+    @Override
+    public List<AssessmentTo> getAssessmentsByCategory(String companySid,String categorySid,Pageable pageable)
+    {
+        if(categorySid==null)
+            throw  new InvalidSidException("Category Sid is null !");
+        if(companySid==null)
+            throw new InvalidSidException("Company Sid is null !");
+
+         List<Assessment> assessmentList = assessmentRepository.getAssessmentByCategory(getCompany(companySid),
+                 categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)),pageable);
+        return getAssessmentToList(assessmentList);
+    }
+
+    public Integer getAssessmentCountByCategory(String companySid, String categorySid)
+    {
+        if(companySid==null)
+            throw new InvalidSidException("Company Sid is null !");
+        if(categorySid==null)
+            throw new InvalidSidException("Category Sid is null !");
+        return assessmentRepository.getAssessmentCountByCategory(getCompany(companySid)
+                ,categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)));
+    }
+
+    @Override
+    public List<AssessmentTo> searchAssessmentByCategory(String searchString, String companySid, String categorySid,Pageable pageable)
+    {
+        if(companySid==null)
+          throw new InvalidSidException("check CompanySid is null !");
+        if(categorySid==null)
+            throw new InvalidSidException("check Category Sid is null !");
+
+         List<Assessment> assessmentList = assessmentRepository.searchAssessmentByCategory(getCompany(companySid),
+                categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)),
+                "%"+searchString.trim()+"%",pageable);
+         return getAssessmentToList(assessmentList);
+    }
+
+
+    private List<AssessmentTo> getAssessmentToList(List<Assessment> assessmentList)
+    {
+        if(CollectionUtils.isEmpty(assessmentList))
+            return Collections.EMPTY_LIST;
+
+        List<AssessmentTo> assessmentToList = mapper.convertList(assessmentList,AssessmentTo.class);
+        Iterator<AssessmentTo> assessmentToIterator=assessmentToList.stream().iterator();
+        Iterator<Assessment> assessmentIterator= assessmentList.stream().iterator();
+        while (assessmentIterator.hasNext() && assessmentToIterator.hasNext())
+        {
+            AssessmentTo assessmentTo = assessmentToIterator.next();
+            Assessment assessment = assessmentIterator.next();
+
+            assessmentTo.setTopicSid(assessment.getTopicId().getStringSid());
+            assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(assessment.getStringSid()));
+            assessmentTo.setTagSid(assessment.getTagId().getStringSid());
+            assessmentTo.setCategorySid(assessment.getCategoryId().getStringSid());
+            assessmentTo.setCompanySid(assessment.getCompany().getStringSid());
+        }
+        return assessmentToList;
     }
 }

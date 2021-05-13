@@ -9,7 +9,6 @@ import com.trainsoft.assessment.value.InstructorEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -272,4 +271,73 @@ public class AssessmentController {
         UserTO createUserTO= bulkUploadService.getVirtualAccountByVASid(VASid);
         return ResponseEntity.ok(createUserTO);
     }
+
+    @GetMapping("quit/assessment/{qSid}/{vSid}")
+    @ApiOperation(value = "quit assessment",notes = "API to quit Assessment.")
+    public ResponseEntity<?> quitAssessment(
+            @ApiParam(value = "Assessment Sid",required = true)@PathVariable("qSid")String quizSetSid,
+            @ApiParam(value = "Virtual Account Sid",required = true)@PathVariable("vSid") String virtualAccountSid){
+      return ResponseEntity.ok(assessmentService.quitAssessment(quizSetSid,virtualAccountSid));
+    }
+
+    @GetMapping("get/user/dashboard/{sid}")
+    @ApiOperation(value = "get user dashboard",notes = "API to get Assessment states and User Avg percentage while" +
+            " considering all categories based upon virtual account Sid")
+    public ResponseEntity<?> getUserDashBoard(
+            @ApiParam(value = "Virtual Account Sid",required = true) @PathVariable("sid") String virtualAccountSid){
+     return   ResponseEntity.ok(assessmentService.getUserDashboard(virtualAccountSid));
+    }
+
+    @GetMapping("get/category/average/score/{sid}")
+    @ApiOperation(value = "get category average score for user.",notes = "API to get Category Average Score for User.")
+    public ResponseEntity<?> getUserAverageScoreByCategory(
+            @ApiParam(value = "Virtual Account Sid",required = true)@PathVariable("sid") String virtualAccountSid){
+        return   ResponseEntity.ok(assessmentService.getUserCategoryAverage(virtualAccountSid));
+    }
+
+    @GetMapping("get/topTen/leaderboard/{cSid}/{caSid}")
+    @ApiOperation(value = "get leaderboard top ten",notes = "API to get Top 10 Users by Individual Category and All Category")
+    public ResponseEntity<?> getTopTenForLeaderBoard(
+            @ApiParam(value = "Company Sid",required = true) @PathVariable("cSid") String companySid,
+            @ApiParam(value = "Category Sid",required = true,example = "ALL") @PathVariable("caSid") String categorySid){
+        return ResponseEntity.ok( assessmentService.getTopTenForLeaderBoard(companySid,categorySid));
+    }
+
+    @GetMapping("count/assessment/{companySid}/{categorySid}")
+    @ApiOperation(value = "getCountOfAssessmentsByTagsAndDifficulty ", notes = "API to get Assessments count based on Tags and Difficulty")
+    public ResponseEntity<?> getCountOfAssessmentsByTagsAndDifficulty(
+            @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid,
+            @ApiParam(value = "Category Sid", required = true) @PathVariable("categorySid") String categorySid)
+    {
+        return ResponseEntity.ok(assessmentService.getCountOfAssessmentsByTagsAndDifficulty(companySid,categorySid));
+    }
+
+    @GetMapping("/assessments/category/{companySid}/{categorySid}")
+    @ApiOperation(value = "getAssessmentsByCategory ", notes = "API to get Assessments based on Category and Company")
+    public ResponseEntity<?> getAssessmentsByCategory(
+            @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid,
+            @ApiParam(value = "Category Sid", required = true) @PathVariable("categorySid") String categorySid,Pageable pageable)
+    {
+        return ResponseEntity.ok(assessmentService.getAssessmentsByCategory(companySid,categorySid,pageable));
+    }
+
+    @GetMapping("/assessments/count/category/{companySid}/{categorySid}")
+    @ApiOperation(value = "getAssessmentCountByCategory ", notes = "API to get Assessments count based on Category and Company")
+    public ResponseEntity<?> getAssessmentCountByCategory(
+            @ApiParam(value = "Company Sid", required = true) @PathVariable("companySid") String companySid,
+            @ApiParam(value = "Category Sid", required = true) @PathVariable("categorySid") String categorySid)
+    {
+        return ResponseEntity.ok(assessmentService.getAssessmentCountByCategory(companySid,categorySid));
+    }
+
+    @GetMapping("search/assessments/category/{searchString}/{companySid}/{categorySid}")
+    @ApiOperation(value = "searchAssessmentByCategory",notes = "API to search Assessment by Category and Company.")
+    public ResponseEntity<?>searchAssessmentByCategory(
+            @ApiParam("Search String") @PathVariable("searchString") String searchString,
+            @ApiParam("Company Sid") @PathVariable("companySid") String companySid,
+            @ApiParam("Category Sid")@PathVariable("categorySid") String categorySid,Pageable pageable)
+    {
+        return ResponseEntity.ok(assessmentService.searchAssessmentByCategory(searchString,companySid,categorySid,pageable));
+    }
+
 }
