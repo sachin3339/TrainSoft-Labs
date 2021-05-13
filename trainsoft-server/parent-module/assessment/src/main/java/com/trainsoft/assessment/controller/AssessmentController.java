@@ -340,4 +340,11 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.searchAssessmentByCategory(searchString,companySid,categorySid,pageable));
     }
 
+    @PostMapping("/assessment/bookmark")
+    @ApiOperation(value = "bookMarkAssessment",notes = "API to book mark Assessment")
+    public ResponseEntity<?> bookMarkAssessment(
+            @ApiParam("book mark payload")@RequestBody VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
+    {
+        return ResponseEntity.ok(assessmentService.bookMarkAssessment(virtualAccountHasAssessmentBookMarkTo));
+    }
 }

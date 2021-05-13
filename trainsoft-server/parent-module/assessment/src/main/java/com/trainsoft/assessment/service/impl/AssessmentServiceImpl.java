@@ -50,6 +50,7 @@ public class AssessmentServiceImpl implements IAssessmentService
     private final ITrainsoftCustomRepository customRepository;
     private final IAppUserRepository appUserRepository;
     private final IVirtualAccountAssessmentRepository virtualAccountAssessmentRepository;
+    private final IVirtualAccountHasAssessmentBookMarkRepository virtualAccountHasAssessmentBookMarkRepository;
     private final String defaultCompanySid="87EABA4D52D54638BE304F5E0C05577FB1F809AA22B94F0F8D11FFCA0D517CAC";
 
     @Override
@@ -1060,6 +1061,13 @@ public class AssessmentServiceImpl implements IAssessmentService
                 categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)),
                 "%"+searchString.trim()+"%",pageable);
          return getAssessmentToList(assessmentList);
+    }
+
+    @Override
+    public String bookMarkAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
+    {
+        virtualAccountHasAssessmentBookMarkRepository.save(mapper.convert(virtualAccountHasAssessmentBookMarkTo,VirtualAccountHasAssessmentBookMark.class));
+        return "book marked successfully !";
     }
 
 
