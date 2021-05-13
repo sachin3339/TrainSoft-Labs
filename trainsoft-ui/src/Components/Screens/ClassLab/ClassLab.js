@@ -1,7 +1,7 @@
 import { useState ,useContext} from 'react';
 import './classlab.css'
 import vid from '../../../Assets/Images/vid.jpg';
-import { ICN_ASSESSMENT, ICN_CLOSE, ICN_EXIT, ICN_MIC, ICN_PEOPLE, ICN_RECORD, ICN_SCREEN_SHARE, ICN_SEND, ICN_VIDEO } from '../../Common/Icon';
+import { ICN_ASSESSMENT, ICN_CLOSE, ICN_EXIT, ICN_MIC, ICN_PEOPLE, ICN_RECORD, ICN_SCREEN_SHARE,ICN_EXPANDED, ICN_SEND, ICN_VIDEO } from '../../Common/Icon';
 import { CustomToggle } from '../../../Services/MethodFactory';
 import { Dropdown } from 'react-bootstrap';
 import { BtnRound, BtnSquare, Button } from '../../Common/Buttons/Buttons'
@@ -28,12 +28,13 @@ const ClassLab = ({location}) => {
     const menuTab = isTrainer ? classTab : learnerTab
     const [tab, setTab] = useState(isTrainer ? [] : ['Notes'])
     const [selectedTab, setSelectedTab] = useState(isTrainer ? "" : "Notes")
+    const [isFull,setIsFull] = useState(false)
 
     return (<>
 
         <div className="p-4 full-w full-h">
             <div className="row full-w full-h ">
-                <div className={`full-w  column ${isTrainer ? "col-md-7" : "col-sm-7"}`}>
+                <div className={`full-w  column ${isFull ? "d-none" : "col-sm-7"}`}>
                     <div className="title-lg pointer" onClick={ ()=> navigate('/dashboard') }>TrainSoft - {!isTrainer ? 'Learner' : 'Instructor'}</div>
                     <div className="flx">
                         {tab.length !== 0 ?
@@ -69,10 +70,10 @@ const ClassLab = ({location}) => {
                 </div>
 
                 {/* right panel */}
-                <div className={`${isTrainer ? "col-md-5" : "col-sm-5"}  column`}>
-                   {isTrainer && <div className="flx">
-                        <BtnSquare className="mr-3">{ICN_SCREEN_SHARE}</BtnSquare>
-                        <BtnSquare className="mr-3">{ICN_RECORD}</BtnSquare>
+                <div className={`${isFull ? "col-md-12" : "col-sm-5"}  column`}>
+                    <div className="flx jce">
+                        <BtnSquare className="mr-3 expZoom" onClick={()=>setIsFull(!isFull)}>{ICN_EXPANDED}</BtnSquare>
+                        {/* <BtnSquare className="mr-3">{ICN_RECORD}</BtnSquare>
                         <BtnSquare className="mr-3"> {ICN_PEOPLE}</BtnSquare>
                         <BsDropDown
                             header={<BtnSquare className="mr-3">{ICN_ASSESSMENT}</BtnSquare>}>
@@ -80,8 +81,8 @@ const ClassLab = ({location}) => {
                             <Dropdown.Item>Result</Dropdown.Item>
                         </BsDropDown>
                         <BtnSquare className="mr-3">{ICN_ASSESSMENT}</BtnSquare>
-                        <BtnSquare className="mr-3">{ICN_EXIT}</BtnSquare>
-                    </div>}
+                        <BtnSquare className="mr-3">{ICN_EXIT}</BtnSquare> */}
+                    </div>
 
                     <div>
                         <div className="video-container">
