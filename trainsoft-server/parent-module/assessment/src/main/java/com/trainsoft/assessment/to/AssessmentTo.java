@@ -22,7 +22,7 @@ public class AssessmentTo extends BaseTO{
     private AssessmentEnum.Status status;
     private String CompanySid;
     private boolean isPremium;
-    private String category;
+    private String categorySid;
     private AssessmentEnum.QuizSetDifficulty difficulty;
     private Long validUpto;
     private Integer duration;
@@ -45,5 +45,4 @@ public class AssessmentTo extends BaseTO{
     private boolean isPaymentReceived;
     private boolean isReduceMarks;
     private boolean isQuestionRandomize;
-    private String categorySid;
 }
