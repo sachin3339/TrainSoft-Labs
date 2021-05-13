@@ -16,8 +16,9 @@ import AnswerSelector from "./AnswerSelector";
 import AppUtils from "../../../../Services/Utils";
 import { navigate } from "../../../Common/Router";
 import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
-import "./question.css";
 import AssessmentContext from "../../../../Store/AssessmentContext";
+import Select from 'react-dropdown-select';
+import "./question.css";
 
 const CreateQuestion = ({ location }) => {
   const { isEdit = false, questionData } = location.state;
@@ -33,7 +34,8 @@ const CreateQuestion = ({ location }) => {
     try {
       let payload = {
         ...values,
-        technologyName: values.technologyName.name,
+        category: values.category.name,
+        technologyName: AppUtils.isNotEmptyArray(values.technologyName) ? values.technologyName.map(r => r.name).join() : "",
         alphabet : values.answerOrderType === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? true : false
       }
       delete payload.answerOrderType;
@@ -92,10 +94,9 @@ const CreateQuestion = ({ location }) => {
         }}
       />
       <div className="table-shadow " style={{ padding: "40px" }}>
-        {true ? (
-          <Formik
+        <Formik
             onSubmit={(value) => createNewQuestion(value)}
-            initialValues={isEdit ? {...questionData, "answerOrderType": questionData.alphabet ? GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS : GLOBELCONSTANT.ANSWER_PATTERN.NUMBER} : GLOBELCONSTANT.DATA.CREATE_QUESTION}
+            initialValues={isEdit ? {...questionData, "category": AppUtils.isNotEmptyArray(category) && questionData.category && category.find(r => r.name === questionData.category), "technologyName": questionData.technologyName && questionData.technologyName.split(",").map(r => ({"name": r})), "answerOrderType": questionData.alphabet ? GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS : GLOBELCONSTANT.ANSWER_PATTERN.NUMBER} : GLOBELCONSTANT.DATA.CREATE_QUESTION}
           >
             {({ handleSubmit, values, setFieldValue, resetForm, isSubmitting, dirty, touched }) => (
               <form onSubmit={handleSubmit} className="create-batch">
@@ -119,7 +120,24 @@ const CreateQuestion = ({ location }) => {
                   </Form.Group>
             
                   <SelectInput label="Category" option={category} bindKey="name" name="category" value={values.category} />
-                  <SelectInput label="Tag"  value={values.technologyName} option={values.category?.tags} bindKey="name" name="technologyName"/>
+                  <Form.Group>
+                    <Form.Label className="label">
+                      Tag
+                    </Form.Label>
+                    <Select 
+                      options={values.category?.tags} 
+                      values={values.technologyName ? values.technologyName : []}
+                      multi
+                      // name="technologyName"
+                      onChange={(data) => {console.log(data); setFieldValue("technologyName", data)}}
+                      labelField="name"
+                      valueField="name"
+                      color="#B1FFFF"
+                      className="input-field"
+                    />
+                  </Form.Group>
+              
+                  {/* <SelectInput label="Tag"  value={values.technologyName} option={values.category?.tags} bindKey="name" name="technologyName"/> */}
                   
                   <Form.Group>
                     <Form.Label className="label">
@@ -180,12 +198,6 @@ const CreateQuestion = ({ location }) => {
               </form>
             )}
           </Formik>
-        ) : (
-          <div>
-            <div className="text-center title-ss text-success">
-            </div>
-          </div>
-        )}
       </div>
     </>
   );

@@ -242,7 +242,7 @@ const GLOBELCONSTANT = {
                 "role": "USER"
             },
             ANS_OBJ: {
-                "answerOption": "",
+                // "answerOption": "",
                 "answerOptionValue": "",
                 "correct": false,
                 "status": "ENABLED"
@@ -251,25 +251,21 @@ const GLOBELCONSTANT = {
                 "alphabet": false,
                 "answer": [
                     {
-                        "answerOption": "",
                         "answerOptionValue": "",
                         "correct": false,
                         "status": "ENABLED"
                     },
                     {
-                        "answerOption": "",
                         "answerOptionValue": "",
                         "correct": false,
                         "status": "ENABLED"
                     },
                     {
-                        "answerOption": "",
                         "answerOptionValue": "",
                         "correct": false,
                         "status": "ENABLED"
                     },
                     {
-                        "answerOption": "",
                         "answerOptionValue": "",
                         "correct": false,
                         "status": "ENABLED"
@@ -283,6 +279,7 @@ const GLOBELCONSTANT = {
                 "questionPoint": 1,
                 "questionType": "MCQ",
                 "status": "ENABLED",
+                "category": "",
                 "technologyName": "",
                 "answerOrderType": "ALPHABETS"
             },

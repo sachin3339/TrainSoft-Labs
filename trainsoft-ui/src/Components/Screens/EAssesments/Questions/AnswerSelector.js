@@ -22,7 +22,7 @@ const AnswerSelector = ({
       let tmpVal = {...values};
       tmpVal.answer.push(GLOBELCONSTANT.DATA.ANS_OBJ);
       setFieldValue("answer", tmpVal.answer);
-      handleChangeOptionValue();
+      // handleChangeOptionValue();
     } catch (err) {
       console.error("Error occur in addAnswer --", err);
     }
@@ -33,17 +33,17 @@ const AnswerSelector = ({
       let tmpVal = {...values};
       tmpVal.answer.splice(index, 1);
       setFieldValue("answer", tmpVal.answer);
-      handleChangeOptionValue();
+      // handleChangeOptionValue();
     } catch (err) {
       console.error("Error occur in deleteAnswer --", err);
     }
   }
 
-  // this method to set option value
-  const handleChangeOptionValue = () => {
-    let newVal = values.answer && values.answer.map((r, i) => ({...r, answerOption: ordering === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? GLOBELCONSTANT.ALPHABETS[i] : i + 1}))
-    setFieldValue("answer", newVal);
-  }
+  // // this method to set option value
+  // const handleChangeOptionValue = () => {
+  //   let newVal = values.answer && values.answer.map((r, i) => ({...r, answerOption: ordering === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? GLOBELCONSTANT.ALPHABETS[i] : i + 1}))
+  //   setFieldValue("answer", newVal);
+  // }
 
   // this method to set correct answer for question
   const handleSetCorrectAnswer = (index) => {
@@ -56,9 +56,9 @@ const AnswerSelector = ({
     }
   }
 
-  useEffect(() => {
-    handleChangeOptionValue();
-  }, [ordering])
+  // useEffect(() => {
+  //   handleChangeOptionValue();
+  // }, [ordering])
    
 
   return (
@@ -72,6 +72,7 @@ const AnswerSelector = ({
               values.answer
               && AppUtils.isNotEmptyArray(values.answer)
               && values.answer.map((_answer, index) => <div
+                key={index}
                 style={{
                   padding: "15px 0",
                   display: "flex",
