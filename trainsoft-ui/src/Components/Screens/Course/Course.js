@@ -17,6 +17,8 @@ import useToast from "../../../Store/ToastHook";
 import moment from 'moment'
 import AppContext from "../../../Store/AppContext";
 import { getAllCourse } from "../../../Services/service";
+import * as Yup from 'yup';
+
 
 const Courses = ({ location }) => {
     const { user, spinner, setCourse,ROLE } = useContext(AppContext)
@@ -30,6 +32,11 @@ const Courses = ({ location }) => {
         description: ''
     })
     const [isEdit, setIsEdit] = useState(false)
+
+     //validation
+     const schema = Yup.object().shape({
+        name: Yup.object().required('Required!') ,
+     });
 
     const [configuration, setConfiguration] = useState({
         columns: {
@@ -147,6 +154,7 @@ const Courses = ({ location }) => {
         try {
             RestService.deleteCourse(courseId).then(res => {
                 Toast.success({ message: `Course is Deleted Successfully ` });
+                getCourse()
             }, err => console.log(err)
             )
         }
@@ -231,6 +239,7 @@ const Courses = ({ location }) => {
                         <Formik
                             onSubmit={(value) => { !isEdit ? createCourse(value) : editCourse(value) }}
                             initialValues={initialValues}
+                            validationSchema={schema}
                         >
                             {({ handleSubmit, dirty }) => <form onSubmit={handleSubmit} className="create-batch" >
                                 <div>

@@ -139,10 +139,10 @@ const CourseDetails = ({ location }) => {
     }
 
         // search session
-        const deleteSession = (sid)=> {
+        const deleteSession = (e)=> {
             try{
                 spinner.show();
-                RestService.deleteSession(sid).then(res => {
+                RestService.deleteSession(e.sid).then(res => {
                     getSessionByPage()
                         spinner.hide();
                     }, err => {
