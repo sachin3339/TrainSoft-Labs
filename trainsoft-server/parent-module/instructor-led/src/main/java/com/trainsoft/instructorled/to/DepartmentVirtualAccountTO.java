@@ -10,6 +10,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DepartmentVirtualAccountTO extends BaseTO{
 
+    private static final long serialVersionUID = 8823309537303991629L;
     private InstructorEnum.DepartmentRole departmentRole;
     private DepartmentTO department;
     private String virtualAccountSid;

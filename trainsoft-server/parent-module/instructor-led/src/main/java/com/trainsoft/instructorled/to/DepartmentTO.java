@@ -10,6 +10,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DepartmentTO extends BaseTO{
 
+    private static final long serialVersionUID = 3848904458854897154L;
     private String name;
     private String description;
     private String emailId;

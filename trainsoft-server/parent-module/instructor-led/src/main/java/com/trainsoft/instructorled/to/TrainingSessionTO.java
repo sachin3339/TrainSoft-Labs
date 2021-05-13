@@ -12,6 +12,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TrainingSessionTO extends BaseTO {
 
+    private static final long serialVersionUID = 8393628044745840215L;
     private String topic;
     private String agenda;
     private InstructorEnum.Status status;
@@ -29,5 +30,4 @@ public class TrainingSessionTO extends BaseTO {
     private String courseSessionSid;
     private String meetingInfo;
     private Integer duration;
-    private String  schedule_for;
 }
