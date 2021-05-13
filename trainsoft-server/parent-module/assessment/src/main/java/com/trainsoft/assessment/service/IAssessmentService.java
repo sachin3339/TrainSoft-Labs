@@ -4,7 +4,6 @@ import com.trainsoft.assessment.entity.Assessment;
 import com.trainsoft.assessment.entity.VirtualAccountHasQuizSetAssessment;
 import com.trainsoft.assessment.to.*;
 import org.springframework.data.domain.Pageable;
-
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.util.List;
@@ -32,12 +31,23 @@ public interface IAssessmentService
     List<AssessmentTo> searchAssessment(String searchString,String companySid,String topicSid,Pageable pageable);
     AssessmentDashboardTo getAssessDetails(String assessmentSid);
     List<AssessTo> getConfiguredUserDetailsForAssessment(String assessmentSid);
-    List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForToday(String quizSetSid);
-    List<LeaderBoardRequestTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
+    List<LeaderBoardTO> getLeaderBoardForAssessmentForToday(String quizSetSid);
+    List<LeaderBoardTO> getLeaderBoardForAssessmentForAllTime(String quizSetSid);
 
     BigInteger pageableAssessmentCount(String searchString,String companySid,String topicSid);
+
+    VirtualAccountAssessmentTo quitAssessment(String quizSetSid,String virtualAccountSid);
+
+    DashBoardTO getUserDashboard(String virtualAccountSid);
+
+    List<CategoryAverageTO> getUserCategoryAverage(String virtualAccountSid);
+
+    List<LeaderBoardTO> getTopTenForLeaderBoard(String companySid,String categorySid);
     AssessmentsCountTo getCountOfAssessmentsByTagsAndDifficulty(String companySid,String categorySid);
     List<AssessmentTo> getAssessmentsByCategory(String companySid,String categorySid,Pageable pageable);
     Integer getAssessmentCountByCategory(String companySid,String categorySid);
     List<AssessmentTo> searchAssessmentByCategory(String searchString,String companySid,String categorySid,Pageable pageable);
+
+
+
 }
