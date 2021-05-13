@@ -934,5 +934,53 @@ public class AssessmentServiceImpl implements IAssessmentService
             return dashBoardTO;
         }throw new InvalidSidException("Invalid virtual Account Sid");
     }
+    @Override
+    public List<CategoryAverageTO> getUserCategoryAverage(String virtualAccountSid) {
+        VirtualAccount virtualAccount = virtualAccountRepository
+                .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
+        if (virtualAccount!=null) {
+            List<Object[]> averageScoreByCategory = virtualAccountHasQuizSetAssessmentRepository
+                    .getCategoryAverageScore(virtualAccount);
+            ArrayList<CategoryAverageTO> list = new ArrayList<>();
+            averageScoreByCategory.forEach(av->{
+                CategoryAverageTO categoryAverageTO = new CategoryAverageTO();
+                Category category = (Category) av[0];
+                categoryAverageTO.setCategoryTO(mapper.convert(category,CategoryTO.class));
+                categoryAverageTO.setAverageScore((Double)av[1]);
+                list.add(categoryAverageTO);
+            });
+            return list;
+        }throw new InvalidSidException("Invalid Virtual Account Sid.");
+    }
 
+    @Override
+    public List<LeaderBoardTO> getTopTenForLeaderBoard(String companySid,String categorySid){
+        Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(companySid));
+        ArrayList<LeaderBoardTO> list = new ArrayList<>();
+        if (company!=null && categorySid.equals("ALL")){
+            List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessments =
+                    virtualAccountHasQuizSetAssessmentRepository.getTopTenListForAllCategory(company.getId());
+            virtualAccountHasQuizSetAssessments.forEach(va->{
+                LeaderBoardTO leaderBoardTO = new LeaderBoardTO();
+                leaderBoardTO.setPercentage(va.getPercentage());
+                leaderBoardTO.setVirtualAccountTO(mapper.convert(va.getVirtualAccountId(),VirtualAccountTO.class));
+                list.add(leaderBoardTO);
+            });
+            return list;
+        }else if (company!=null && categorySid!=null){
+            Category category = categoryRepository.findBySid(BaseEntity.hexStringToByteArray(categorySid));
+            if (category!=null){
+                List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessments =
+                        virtualAccountHasQuizSetAssessmentRepository.getTopTenListByCategory(company.getId(), category.getId());
+                virtualAccountHasQuizSetAssessments.forEach(va->{
+                    LeaderBoardTO leaderBoardTO = new LeaderBoardTO();
+                    leaderBoardTO.setPercentage(va.getPercentage());
+                    leaderBoardTO.setVirtualAccountTO(mapper.convert(va.getVirtualAccountId(),VirtualAccountTO.class));
+                    list.add(leaderBoardTO);
+                });
+                return list;
+            }throw new InvalidSidException("Invalid Category sid");
+        }
+        throw new InvalidSidException("Invalid Company Sid.");
+    }
 }

@@ -38,5 +38,9 @@ public interface IAssessmentService
 
     DashBoardTO getUserDashboard(String virtualAccountSid);
 
+    List<CategoryAverageTO> getUserCategoryAverage(String virtualAccountSid);
+
+    List<LeaderBoardTO> getTopTenForLeaderBoard(String companySid,String categorySid);
+
 
 }

@@ -288,4 +288,19 @@ public class AssessmentController {
             @ApiParam(value = "Virtual Account Sid",required = true) @PathVariable("sid") String virtualAccountSid){
      return   ResponseEntity.ok(assessmentService.getUserDashboard(virtualAccountSid));
     }
+
+    @GetMapping("get/category/average/score/{sid}")
+    @ApiOperation(value = "get category average score for user.",notes = "API to get Category Average Score for User.")
+    public ResponseEntity<?> getUserAverageScoreByCategory(
+            @ApiParam(value = "Virtual Account Sid",required = true)@PathVariable("sid") String virtualAccountSid){
+        return   ResponseEntity.ok(assessmentService.getUserCategoryAverage(virtualAccountSid));
+    }
+
+    @GetMapping("get/topTen/leaderboard/{cSid}/{caSid}")
+    @ApiOperation(value = "get leaderboard top ten",notes = "API to get Top 10 Users by Individual Category and All Category")
+    public ResponseEntity<?> getTopTenForLeaderBoard(
+            @ApiParam(value = "Company Sid",required = true) @PathVariable("cSid") String companySid,
+            @ApiParam(value = "Category Sid",required = true,example = "ALL") @PathVariable("caSid") String categorySid){
+        return ResponseEntity.ok( assessmentService.getTopTenForLeaderBoard(companySid,categorySid));
+    }
 }
