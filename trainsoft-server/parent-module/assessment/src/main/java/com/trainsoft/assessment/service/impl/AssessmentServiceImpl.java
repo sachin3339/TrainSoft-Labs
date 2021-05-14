@@ -999,7 +999,7 @@ public class AssessmentServiceImpl implements IAssessmentService
            Category category=categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid));
 
            // Assessment Count based on Tags
-           List<Tag> tagList = tagRepository.findTagsByStatus();
+           List<Tag> tagList = tagRepository.findTagsByStatus(category);
            List<AssessmentCountTagTo> assessmentCountTagToList = new ArrayList<>();
            if(CollectionUtils.isNotEmpty(tagList))
            {
