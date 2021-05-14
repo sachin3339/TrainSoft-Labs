@@ -1,7 +1,6 @@
 package com.trainsoft.assessment.service;
 
-import com.trainsoft.assessment.entity.Assessment;
-import com.trainsoft.assessment.entity.VirtualAccountHasQuizSetAssessment;
+import com.trainsoft.assessment.enums.QuizStatus;
 import com.trainsoft.assessment.to.*;
 import org.springframework.data.domain.Pageable;
 import javax.servlet.http.HttpServletRequest;
@@ -48,6 +47,6 @@ public interface IAssessmentService
     Integer getAssessmentCountByCategory(String companySid,String categorySid);
     List<AssessmentTo> searchAssessmentByCategory(String searchString,String companySid,String categorySid,Pageable pageable);
 
-
+    List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid);
 
 }
