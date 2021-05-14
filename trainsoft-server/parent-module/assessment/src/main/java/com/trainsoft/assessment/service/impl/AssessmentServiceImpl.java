@@ -1066,8 +1066,36 @@ public class AssessmentServiceImpl implements IAssessmentService
     @Override
     public String bookMarkAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
     {
-        virtualAccountHasAssessmentBookMarkRepository.save(mapper.convert(virtualAccountHasAssessmentBookMarkTo,VirtualAccountHasAssessmentBookMark.class));
-        return "book marked successfully !";
+         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountHasAssessmentBookMarkTo.getVirtualAccountSid()));
+         Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(virtualAccountHasAssessmentBookMarkTo.getAssessmentSid()));
+         if(virtualAccount==null) throw new InvalidSidException("Invalid Virtual Account Sid !");
+         if(assessment==null)  throw new InvalidSidException("Invalid Assessment Sid !");
+         VirtualAccountHasAssessmentBookMark virtualAccountHasAssessmentBookMark = new VirtualAccountHasAssessmentBookMark();
+         if(virtualAccountHasAssessmentBookMarkRepository.findByVirtualAccountAndAssessment(assessment,virtualAccount)==null)
+         {
+             virtualAccountHasAssessmentBookMark.generateUuid();
+             virtualAccountHasAssessmentBookMark.setAssessment(assessment);
+             virtualAccountHasAssessmentBookMark.setVirtualAccount(virtualAccount);
+             virtualAccountHasAssessmentBookMarkRepository.save(virtualAccountHasAssessmentBookMark);
+             return "Assessment book marked successfully !";
+         }
+         return "Assessment already book marked !";
+    }
+
+    @Override
+    public List<AssessmentTo> getBookMarkedAssessmentsByVirtualAccount(String virtualAccountSid)
+    {
+        if(virtualAccountSid==null)
+            throw new InvalidSidException("Invalid Virtual Account Sid !");
+
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
+        List<Assessment> assessmentList = virtualAccountHasAssessmentBookMarkRepository.findAssessmentsByVirtualAccount(virtualAccount);
+        if(CollectionUtils.isNotEmpty(assessmentList))
+        {
+            return getAssessmentToList(assessmentList);
+        }
+        log.warn("No Assessments book marked on this Virtual Account Sid:"+virtualAccountSid);
+        return Collections.EMPTY_LIST;
     }
 
 

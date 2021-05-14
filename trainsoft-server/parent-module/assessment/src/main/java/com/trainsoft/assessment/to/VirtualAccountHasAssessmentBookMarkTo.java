@@ -16,7 +16,7 @@ public class VirtualAccountHasAssessmentBookMarkTo extends BaseTO
     private static final long serialVersionUID = 6020156508993691947L;
 
     @NonNull
-    private Assessment assessment;
+    private String  assessmentSid;
     @NonNull
-    private VirtualAccount virtualAccount;
+    private String virtualAccountSid;
 }
