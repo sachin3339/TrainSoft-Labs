@@ -214,7 +214,7 @@ public class QuestionServiceImpl implements IQuestionService {
             Answer answer = null ;
             switch(ans.getOperation())
             {
-                case "create" :
+                case CREATE:
                         answer = new Answer();
                         answer.generateUuid();
                         answer.setQuestionId(updateQuestion);
@@ -225,13 +225,13 @@ public class QuestionServiceImpl implements IQuestionService {
                         answer.setCorrect(ans.isCorrect());
                         ans.setSid(answer.getStringSid());
                         break;
-                case "update" :
+                case UPDATE:
                         answer = answerRepository.findBySidAndStatus(BaseEntity.hexStringToByteArray(ans.getSid()));
                         if(answer==null) throw new InvalidSidException("Invalid Answer Sid update !");
                             answer.setAnswerOptionValue(ans.getAnswerOptionValue());
                             answer.setCorrect(ans.isCorrect());
                         break;
-                case "delete" :
+                case DELETE:
                         answer = answerRepository.findBySidAndStatus(BaseEntity.hexStringToByteArray(ans.getSid()));
                         if(answer==null) throw new InvalidSidException("Invalid Answer Sid while delete !");
                         answer.setStatus(AssessmentEnum.Status.DELETED);

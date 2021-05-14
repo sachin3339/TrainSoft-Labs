@@ -26,5 +26,6 @@ public class AnswerTo extends BaseTO{
     @ApiModelProperty(value = "It is required to create Answer, this value represents Correct answer out of all answers",required = true)
     private boolean isCorrect;
 
-    private String operation;
+    @NonNull
+    private AssessmentEnum.AnswerOperationType operation;
 }
