@@ -49,5 +49,4 @@ public interface IAssessmentService
     List<AssessmentTo>getBookMarkedAssessmentsByVirtualAccount(String virtualAccountSid);
     String removeBookMarkedAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo);
 
-
 }

@@ -356,8 +356,8 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.getBookMarkedAssessmentsByVirtualAccount(virtualAccountSid));
     }
 
-    @DeleteMapping("/assessment/remove/bookmarked/{}/{asid}")
-    @ApiOperation(value = "Delete associated question",notes = "API to delete associated question based on given question sid.")
+    @DeleteMapping("/assessment/remove/bookmarked")
+    @ApiOperation(value = "Remove book marked Assessment",notes = "API to delete book marked Assessment based on Virtual Account.")
     public ResponseEntity<?> removeAssociatedQuestionFromAssessment(
             @ApiParam("remove book marked Assessment payload")@RequestBody VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
     {
