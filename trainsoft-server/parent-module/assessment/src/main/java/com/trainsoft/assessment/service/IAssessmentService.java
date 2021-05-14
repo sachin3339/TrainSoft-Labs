@@ -47,6 +47,7 @@ public interface IAssessmentService
     List<AssessmentTo> searchAssessmentByCategory(String searchString,String companySid,String categorySid,Pageable pageable);
     String bookMarkAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo);
     List<AssessmentTo>getBookMarkedAssessmentsByVirtualAccount(String virtualAccountSid);
+    String removeBookMarkedAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo);
 
 
 }

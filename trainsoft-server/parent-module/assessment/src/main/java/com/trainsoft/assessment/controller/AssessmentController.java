@@ -343,7 +343,7 @@ public class AssessmentController {
     @PostMapping("/assessment/bookmark")
     @ApiOperation(value = "bookMarkAssessment",notes = "API to book mark Assessment")
     public ResponseEntity<?> bookMarkAssessment(
-            @ApiParam("book mark payload")@RequestBody VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
+            @ApiParam("book mark Assessment payload")@RequestBody VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
     {
         return ResponseEntity.ok(assessmentService.bookMarkAssessment(virtualAccountHasAssessmentBookMarkTo));
     }
@@ -354,5 +354,13 @@ public class AssessmentController {
             @ApiParam("virtual account sid") @PathVariable("vSid") String virtualAccountSid)
     {
         return ResponseEntity.ok(assessmentService.getBookMarkedAssessmentsByVirtualAccount(virtualAccountSid));
+    }
+
+    @DeleteMapping("/assessment/remove/bookmarked/{}/{asid}")
+    @ApiOperation(value = "Delete associated question",notes = "API to delete associated question based on given question sid.")
+    public ResponseEntity<?> removeAssociatedQuestionFromAssessment(
+            @ApiParam("remove book marked Assessment payload")@RequestBody VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
+    {
+        return ResponseEntity.ok(assessmentService.removeBookMarkedAssessment(virtualAccountHasAssessmentBookMarkTo));
     }
 }

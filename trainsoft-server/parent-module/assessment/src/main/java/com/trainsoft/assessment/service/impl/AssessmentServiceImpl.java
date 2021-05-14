@@ -1066,16 +1066,15 @@ public class AssessmentServiceImpl implements IAssessmentService
     @Override
     public String bookMarkAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
     {
-         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountHasAssessmentBookMarkTo.getVirtualAccountSid()));
-         Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(virtualAccountHasAssessmentBookMarkTo.getAssessmentSid()));
-         if(virtualAccount==null) throw new InvalidSidException("Invalid Virtual Account Sid !");
-         if(assessment==null)  throw new InvalidSidException("Invalid Assessment Sid !");
-         VirtualAccountHasAssessmentBookMark virtualAccountHasAssessmentBookMark = new VirtualAccountHasAssessmentBookMark();
-         if(virtualAccountHasAssessmentBookMarkRepository.findByVirtualAccountAndAssessment(assessment,virtualAccount)==null)
+
+         if(bookMarkAvailable(virtualAccountHasAssessmentBookMarkTo)==null)
          {
+             VirtualAccountHasAssessmentBookMark virtualAccountHasAssessmentBookMark = new VirtualAccountHasAssessmentBookMark();
              virtualAccountHasAssessmentBookMark.generateUuid();
-             virtualAccountHasAssessmentBookMark.setAssessment(assessment);
-             virtualAccountHasAssessmentBookMark.setVirtualAccount(virtualAccount);
+             virtualAccountHasAssessmentBookMark.setAssessment(assessmentRepository.
+                     findAssessmentBySid(BaseEntity.hexStringToByteArray(virtualAccountHasAssessmentBookMarkTo.getAssessmentSid())));
+             virtualAccountHasAssessmentBookMark.setVirtualAccount(virtualAccountRepository
+                     .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountHasAssessmentBookMarkTo.getVirtualAccountSid())));
              virtualAccountHasAssessmentBookMarkRepository.save(virtualAccountHasAssessmentBookMark);
              return "Assessment book marked successfully !";
          }
@@ -1098,6 +1097,26 @@ public class AssessmentServiceImpl implements IAssessmentService
         return Collections.EMPTY_LIST;
     }
 
+
+    @Override
+    public String removeBookMarkedAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
+    {
+        VirtualAccountHasAssessmentBookMark virtualAccountHasAssessmentBookMark = bookMarkAvailable(virtualAccountHasAssessmentBookMarkTo);
+        if(virtualAccountHasAssessmentBookMark == null)
+            throw new ApplicationException("Book mark not found for given Assessment!");
+
+        virtualAccountHasAssessmentBookMarkRepository.delete(virtualAccountHasAssessmentBookMark);
+        return "Book mark removed successfully !";
+    }
+
+    private VirtualAccountHasAssessmentBookMark bookMarkAvailable(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
+    {
+        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountHasAssessmentBookMarkTo.getVirtualAccountSid()));
+        Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(virtualAccountHasAssessmentBookMarkTo.getAssessmentSid()));
+        if(virtualAccount==null) throw new InvalidSidException("Invalid Virtual Account Sid !");
+        if(assessment==null)  throw new InvalidSidException("Invalid Assessment Sid !");
+        return virtualAccountHasAssessmentBookMarkRepository.findByVirtualAccountAndAssessment(assessment,virtualAccount);
+    }
 
     private List<AssessmentTo> getAssessmentToList(List<Assessment> assessmentList)
     {
