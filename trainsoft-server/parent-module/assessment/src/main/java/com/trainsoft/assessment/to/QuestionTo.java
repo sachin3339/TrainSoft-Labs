@@ -30,4 +30,5 @@ public class QuestionTo  extends BaseTO
    private boolean isAlphabet;
    private Date updatedOn;
    private String updatedByVASid;
+   private String category;
 }

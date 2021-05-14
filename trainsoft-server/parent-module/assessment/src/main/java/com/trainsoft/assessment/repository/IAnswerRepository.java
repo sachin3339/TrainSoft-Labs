@@ -17,4 +17,7 @@ public interface IAnswerRepository extends JpaRepository<Answer,Integer> {
     @Query(value = "SELECT ans FROM Answer AS ans WHERE ans.sid=:sid AND ans.status='ENABLED'")
     Answer findBySidAndQuestionIdAndCorrect(@Param("sid") byte [] sid);
 
+    @Query("FROM Answer as ans WHERE ans.sid=:sId AND ans.status='ENABLED'")
+    Answer findBySidAndStatus(byte[] sId);
+
 }

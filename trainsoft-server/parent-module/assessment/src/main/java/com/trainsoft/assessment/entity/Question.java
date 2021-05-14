@@ -70,4 +70,7 @@ public class Question extends BaseEntity{
     @Column(name = "updated_on")
     private Date updatedOn;
 
+    @Column(name = "category")
+    private String category;
+
 }

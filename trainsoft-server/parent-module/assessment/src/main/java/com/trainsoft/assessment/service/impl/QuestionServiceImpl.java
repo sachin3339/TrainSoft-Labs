@@ -197,51 +197,70 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public QuestionTo updateQuestion(QuestionTo updateQuestionTo) {
-        Question question = questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(updateQuestionTo.getSid()));
-        if (question==null) throw new InvalidSidException("invalid question sid.");
+    public QuestionTo updateQuestion(QuestionTo updateQuestionTo)
+    {
+        Question updateQuestion = questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(updateQuestionTo.getSid()));
+        if (updateQuestion==null) throw new InvalidSidException("Invalid Question Sid:"+updateQuestionTo.getSid());
 
         // get Virtual Account
         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
                 (BaseEntity.hexStringToByteArray(updateQuestionTo.getCreatedByVirtualAccountSid()));
 
-        Question updateQuestion=mapper.convert(updateQuestionTo,Question.class);
-        updateQuestion.setId(question.getId());
-        List<Answer> updateAnswerList = mapper.convertList(updateQuestionTo.getAnswer(),Answer.class);
-        updateQuestion.setCompany(getCompany(updateQuestionTo.getCompanySid()));
-        updateAnswerList.forEach(ans-> ans.setQuestionId(updateQuestion));
-        updateQuestion.setAnswers(updateAnswerList);
-        updateQuestion.setUpdatedBy(virtualAccount);
-        updateQuestion.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
-        QuestionTo savedUpdatedQuestionTo=mapper.convert(questionRepository.save(updateQuestion),QuestionTo.class);
-        savedUpdatedQuestionTo.setAnswer(mapper.convertList(updateAnswerList,AnswerTo.class));
-        savedUpdatedQuestionTo.setUpdatedByVASid(virtualAccount.getStringSid());
+        setQuestionUpdateData(updateQuestion,updateQuestionTo,virtualAccount);
+        List<AnswerTo> answerToList=updateQuestionTo.getAnswer();
+
+        List<Answer> answerList = new ArrayList<>();
+        answerToList.forEach(ans->{
+            Answer answer = null ;
+            switch(ans.getOperation())
+            {
+                case CREATE:
+                        answer = new Answer();
+                        answer.generateUuid();
+                        answer.setQuestionId(updateQuestion);
+                        answer.setCreatedOn(new Date(Instant.now().toEpochMilli()));
+                        answer.setStatus(AssessmentEnum.Status.ENABLED);
+                        answer.setAnswerOptionValue(ans.getAnswerOptionValue());
+                        answer.setCreatedBy(virtualAccount);
+                        answer.setCorrect(ans.isCorrect());
+                        ans.setSid(answer.getStringSid());
+                        break;
+                case UPDATE:
+                        answer = answerRepository.findBySidAndStatus(BaseEntity.hexStringToByteArray(ans.getSid()));
+                        if(answer==null) throw new InvalidSidException("Invalid Answer Sid update !");
+                            answer.setAnswerOptionValue(ans.getAnswerOptionValue());
+                            answer.setCorrect(ans.isCorrect());
+                        break;
+                case DELETE:
+                        answer = answerRepository.findBySidAndStatus(BaseEntity.hexStringToByteArray(ans.getSid()));
+                        if(answer==null) throw new InvalidSidException("Invalid Answer Sid while delete !");
+                        answer.setStatus(AssessmentEnum.Status.DELETED);
+            }
+            answerList.add(answer);
+        });
+        updateQuestion.setAnswers(answerList);
+        QuestionTo savedUpdatedQuestionTo = mapper.convert(questionRepository.save(updateQuestion),QuestionTo.class);
+        savedUpdatedQuestionTo.setAnswer(answerToList);
         savedUpdatedQuestionTo.setCompanySid(virtualAccount.getCompany().getStringSid());
         return savedUpdatedQuestionTo;
-        /*question.setName(request.getName());
-        question.setDifficulty(request.getDifficulty());
-        question.setQuestionType(request.getQuestionType());
-        question.setTechnologyName(request.getTechnologyName());
-        question.setQuestionPoint(request.getQuestionPoint());
-        List<AnswerTo> answerTO = new ArrayList<>();
-        for (Answer ar : answer) {
-            for (AnswerTo re : request.getAnswer()) {
-                if (ar.getStringSid().equals(re.getSid())) {
-                    ar.setAnswerOptionValue(re.getAnswerOptionValue());
-                    ar.setAnswerOption(re.getAnswerOption());
-                    ar.setCorrect(re.isCorrect());
-                    answerTO.add(re);
-                }
-            }
-        }
-         question.setAnswers(answerRepository.saveAll(answer));
-         question.setAnswerExplanation(request.getAnswerExplanation());
-         question.setDescription(request.getDescription());
-         QuestionTo questionTo= mapper.convert(questionRepository.save(question),QuestionTo.class);
-         questionTo.setAnswer(answerTO);
-         questionTo.setCreatedByVirtualAccountSid(question.getCreatedBy().getStringSid());
-         questionTo.setCompanySid(question.getCompany().getStringSid());
-         return questionTo;*/
+
+    }
+
+
+    private void setQuestionUpdateData(Question updateQuestion,QuestionTo updateQuestionTo,VirtualAccount virtualAccount)
+    {
+        updateQuestion.setCategory(updateQuestionTo.getCategory());
+        updateQuestion.setAlphabet(updateQuestionTo.isAlphabet());
+        updateQuestion.setAnswerExplanation(updateQuestionTo.getAnswerExplanation());
+        updateQuestion.setDifficulty(updateQuestionTo.getDifficulty());
+        updateQuestion.setQuestionType(updateQuestionTo.getQuestionType());
+        updateQuestion.setTechnologyName(updateQuestionTo.getTechnologyName());
+        updateQuestion.setQuestionPoint(updateQuestionTo.getQuestionPoint());
+        updateQuestion.setDescription(updateQuestionTo.getDescription());
+        updateQuestion.setName(updateQuestionTo.getName());
+        updateQuestion.setNegativeQuestionPoint(updateQuestionTo.getNegativeQuestionPoint());
+        updateQuestion.setUpdatedOn(new Date(Instant.now().toEpochMilli()));
+        updateQuestion.setUpdatedBy(virtualAccount);
     }
 
     @Override
@@ -300,6 +319,7 @@ public class QuestionServiceImpl implements IQuestionService {
                     questionTo.setNegativeQuestionPoint(Integer.parseInt(record.get("negative_question_point").trim()));
                     questionTo.setAnswerExplanation(record.get("answer_explanation").trim());
                     questionTo.setQuestionType(AssessmentEnum.QuestionType.MCQ);
+                    questionTo.setCategory(record.get("category").trim());
                     List<AnswerTo> answerToList=getAnswers(record);
                     if(CollectionUtils.isNotEmpty(answerToList))
                     questionTo.setAnswer(answerToList);
@@ -370,7 +390,8 @@ public class QuestionServiceImpl implements IQuestionService {
                 || record.get("answer_is_correct_A").isEmpty() || record.get("answer_is_correct_B").isEmpty()
                 || record.get("answer_is_correct_C").isEmpty() || record.get("answer_is_correct_D").isEmpty()
                 || record.get("answer_option_value_A").isEmpty() || record.get("answer_option_value_B").isEmpty()
-                || record.get("answer_option_value_C").isEmpty() || record.get("answer_option_value_D").isEmpty();
+                || record.get("answer_option_value_C").isEmpty() || record.get("answer_option_value_D").isEmpty()
+                || record.get("category").isEmpty();
     }
 
     private boolean validateCsvFieldValues(CSVRecord record)
