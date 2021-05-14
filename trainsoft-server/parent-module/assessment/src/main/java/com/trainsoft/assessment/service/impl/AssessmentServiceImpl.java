@@ -1005,6 +1005,7 @@ public class AssessmentServiceImpl implements IAssessmentService
            {
                tagList.forEach(tag->{
                    AssessmentCountTagTo assessmentCountTagTo = new AssessmentCountTagTo();
+                   assessmentCountTagTo.setSid(tag.getStringSid());
                    assessmentCountTagTo.setTagName(tag.getName());
                    assessmentCountTagTo.setCount(assessmentRepository.getAssessmentsCountByTag(company,tag,category));
                    assessmentCountTagToList.add(assessmentCountTagTo);
