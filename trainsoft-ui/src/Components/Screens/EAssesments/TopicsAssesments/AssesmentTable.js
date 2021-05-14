@@ -198,6 +198,7 @@ const AssesmentsTable = ({ location }) => {
         spinner.hide();
       });
     } catch (err) {
+      spinner.hide();
       console.error("error occur on getAllTopic()", err)
     }
   }
