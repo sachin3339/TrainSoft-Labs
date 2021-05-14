@@ -1,5 +1,6 @@
 package com.trainsoft.assessment.service.impl;
 
+import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.trainsoft.assessment.commons.CommonUtils;
 import com.trainsoft.assessment.commons.Utility;
 import com.trainsoft.assessment.customexception.ApplicationException;
@@ -52,6 +53,7 @@ public class AssessmentServiceImpl implements IAssessmentService
     private final IVirtualAccountAssessmentRepository virtualAccountAssessmentRepository;
     private final IVirtualAccountHasAssessmentBookMarkRepository virtualAccountHasAssessmentBookMarkRepository;
     private final String defaultCompanySid="87EABA4D52D54638BE304F5E0C05577FB1F809AA22B94F0F8D11FFCA0D517CAC";
+    private final Integer assessmentCount=0;
 
     @Override
     public AssessmentTo createAssessment(AssessmentTo assessmentTo)
@@ -1139,5 +1141,60 @@ public class AssessmentServiceImpl implements IAssessmentService
             assessmentTo.setCompanySid(assessment.getCompany().getStringSid());
         }
         return assessmentToList;
+    }
+
+    @Override
+    public List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid) {
+        VirtualAccount virtualAccount = virtualAccountRepository
+                .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
+        ArrayList<MyAssessmentsTO> list = new ArrayList<>();
+        if (virtualAccount!=null && status.name().equals("ALL")){
+            List<Object[]> allMyAssessmentsAndCounts = virtualAccountAssessmentRepository
+                    .getAllMyAssessmentsAndCounts(virtualAccount);
+            allMyAssessmentsAndCounts.forEach(av->{
+                MyAssessmentsTO myAssessmentsTO = new MyAssessmentsTO();
+                Optional<Assessment> assessment= assessmentRepository.findById((Integer) av[0]);
+                myAssessmentsTO.setQuizSetSid((assessment.get().getStringSid()));
+                myAssessmentsTO.setTitle((String) av[1]);
+                myAssessmentsTO.setDescription((String) av[2]);
+                myAssessmentsTO.setDifficulty(av[3].toString());
+                myAssessmentsTO.setDuration((Integer) av[4]);
+                Optional<Tag> tag = tagRepository.findById((Integer) av[5]);
+                myAssessmentsTO.setTagSid(tag.get().getStringSid());
+                myAssessmentsTO.setUrl((String) av[6]);
+                myAssessmentsTO.setScore((Double) av[7]);
+                myAssessmentsTO.setStatus(av[8].toString());
+                myAssessmentsTO.setVirtualAccountSid(virtualAccount.getStringSid());
+                Integer noOfQuestions = getNoOfQuestionByAssessmentSid(assessment.get().getStringSid());
+                myAssessmentsTO.setNoOfQuestions(noOfQuestions);
+                myAssessmentsTO.setAssessmentCount(allMyAssessmentsAndCounts.size());
+                list.add(myAssessmentsTO);
+            });
+            return list;
+        }else if(virtualAccount!=null){
+            List<Object[]> allMyAssessmentsAndStatusAndCounts = virtualAccountAssessmentRepository
+                    .getAllMyAssessmentsAndStatusAndCounts(status, virtualAccount);
+            System.out.println(allMyAssessmentsAndStatusAndCounts);
+                 allMyAssessmentsAndStatusAndCounts.forEach(av->{
+                     MyAssessmentsTO myAssessmentsTO = new MyAssessmentsTO();
+                     Optional<Assessment> assessment= assessmentRepository.findById((Integer) av[0]);
+                     myAssessmentsTO.setQuizSetSid((assessment.get().getStringSid()));
+                     myAssessmentsTO.setTitle((String) av[1]);
+                     myAssessmentsTO.setDescription((String) av[2]);
+                     myAssessmentsTO.setDifficulty(av[3].toString());
+                     myAssessmentsTO.setDuration((Integer) av[4]);
+                     Optional<Tag> tag = tagRepository.findById((Integer) av[5]);
+                     myAssessmentsTO.setTagSid(tag.get().getStringSid());
+                     myAssessmentsTO.setUrl((String) av[6]);
+                     myAssessmentsTO.setScore((Double) av[7]);
+                     myAssessmentsTO.setStatus(av[8].toString());
+                     myAssessmentsTO.setVirtualAccountSid(virtualAccount.getStringSid());
+                     Integer noOfQuestions = getNoOfQuestionByAssessmentSid(assessment.get().getStringSid());
+                     myAssessmentsTO.setNoOfQuestions(noOfQuestions);
+                     myAssessmentsTO.setAssessmentCount(allMyAssessmentsAndStatusAndCounts.size());
+                     list.add(myAssessmentsTO);
+                 });
+                 return list;
+        }throw new InvalidSidException("Invalid Virtual Account Sid");
     }
 }

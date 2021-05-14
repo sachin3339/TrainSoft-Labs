@@ -2,6 +2,8 @@ package com.trainsoft.assessment.controller;
 
 import com.trainsoft.assessment.commons.JWTDecode;
 import com.trainsoft.assessment.commons.JWTTokenTO;
+import com.trainsoft.assessment.entity.VirtualAccount;
+import com.trainsoft.assessment.enums.QuizStatus;
 import com.trainsoft.assessment.service.IAssessmentService;
 import com.trainsoft.assessment.service.IUserBulkUploadService;
 import com.trainsoft.assessment.to.*;
@@ -362,5 +364,12 @@ public class AssessmentController {
             @ApiParam("remove book marked Assessment payload")@RequestBody VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
     {
         return ResponseEntity.ok(assessmentService.deleteBookMarkedAssessment(virtualAccountHasAssessmentBookMarkTo));
+    }
+    @GetMapping("get/my/assessments/{status}/{sid}")
+    @ApiOperation(value = "get my assessment",notes = "API to get all Assessments and count based upon a status and User ")
+    public ResponseEntity<?>getAllMyAssessmentsAndCounts(
+           @ApiParam(value = "Status") @PathVariable("status") QuizStatus status,
+           @ApiParam(value = "Virtual Account Sid")@PathVariable("sid") String virtualAccountSid){
+        return ResponseEntity.ok(assessmentService.getAllMyAssessmentsAndCounts(status,virtualAccountSid));
     }
 }
