@@ -18,6 +18,12 @@ const GLOBELCONSTANT = {
         USER_ROLE: {
             USER: "USER",
         },
+        OPERATION: {
+            CREATE: "CREATE",
+            UPDATE: "UPDATE",
+            DELETE: "DELETE",
+            NONE: "NONE"
+        },
         STATUS: {
             ENABLED: "ENABLED",
             DISABLED: "DISABLED",
@@ -242,30 +248,35 @@ const GLOBELCONSTANT = {
                 "role": "USER"
             },
             ANS_OBJ: {
-                // "answerOption": "",
+                "answerOption": "",
                 "answerOptionValue": "",
                 "correct": false,
-                "status": "ENABLED"
+                "status": "ENABLED",
+                "operation": "CREATE"
             },
             CREATE_QUESTION: {
                 "alphabet": false,
                 "answer": [
                     {
+                        "answerOption": "",
                         "answerOptionValue": "",
                         "correct": false,
                         "status": "ENABLED"
                     },
                     {
+                        "answerOption": "",
                         "answerOptionValue": "",
                         "correct": false,
                         "status": "ENABLED"
                     },
                     {
+                        "answerOption": "",
                         "answerOptionValue": "",
                         "correct": false,
                         "status": "ENABLED"
                     },
                     {
+                        "answerOption": "",
                         "answerOptionValue": "",
                         "correct": false,
                         "status": "ENABLED"

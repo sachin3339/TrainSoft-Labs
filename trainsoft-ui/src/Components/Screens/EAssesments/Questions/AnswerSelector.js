@@ -13,7 +13,9 @@ import GLOBELCONSTANT from '../../../../Constant/GlobleConstant';
 const AnswerSelector = ({ 
   values, 
   ordering = GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS, 
-  setFieldValue 
+  setFieldValue,
+  deletedAnswers,
+  setDeletedAnswers
 }) => {
   const [correctAnswer, setCorrectAnswer] = useState();
 
@@ -22,7 +24,7 @@ const AnswerSelector = ({
       let tmpVal = {...values};
       tmpVal.answer.push(GLOBELCONSTANT.DATA.ANS_OBJ);
       setFieldValue("answer", tmpVal.answer);
-      // handleChangeOptionValue();
+      handleChangeOptionValue();
     } catch (err) {
       console.error("Error occur in addAnswer --", err);
     }
@@ -31,19 +33,24 @@ const AnswerSelector = ({
   const deleteAnswer = (index) => {
     try {
       let tmpVal = {...values};
+      let tempDelObj = tmpVal.answer.find((r, i) => i === index);
+      if(AppUtils.isNotEmptyObject(tempDelObj)) {
+        if (tempDelObj.sid) setDeletedAnswers([...deletedAnswers, {...tempDelObj, "operation": GLOBELCONSTANT.OPERATION.DELETE}])
+      }
+      if (tempDelObj.sid) console.log([...deletedAnswers, {...tempDelObj, "operation": GLOBELCONSTANT.OPERATION.DELETE}]);
       tmpVal.answer.splice(index, 1);
       setFieldValue("answer", tmpVal.answer);
-      // handleChangeOptionValue();
+      handleChangeOptionValue();
     } catch (err) {
       console.error("Error occur in deleteAnswer --", err);
     }
   }
 
-  // // this method to set option value
-  // const handleChangeOptionValue = () => {
-  //   let newVal = values.answer && values.answer.map((r, i) => ({...r, answerOption: ordering === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? GLOBELCONSTANT.ALPHABETS[i] : i + 1}))
-  //   setFieldValue("answer", newVal);
-  // }
+  // this method to set option value
+  const handleChangeOptionValue = () => {
+    let newVal = values.answer && values.answer.map((r, i) => ({...r, answerOption: ordering === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? GLOBELCONSTANT.ALPHABETS[i] : i + 1}))
+    setFieldValue("answer", newVal);
+  }
 
   // this method to set correct answer for question
   const handleSetCorrectAnswer = (index) => {
@@ -56,9 +63,9 @@ const AnswerSelector = ({
     }
   }
 
-  // useEffect(() => {
-  //   handleChangeOptionValue();
-  // }, [ordering])
+  useEffect(() => {
+    handleChangeOptionValue();
+  }, [ordering])
    
 
   return (

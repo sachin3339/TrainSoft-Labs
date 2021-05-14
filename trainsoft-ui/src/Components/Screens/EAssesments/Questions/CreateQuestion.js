@@ -27,6 +27,7 @@ const CreateQuestion = ({ location }) => {
   const Toast = useToast()
   const { spinner } = useContext(AppContext);
   const [questionType, setQuestionType] = useState([]);
+  const [deletedAnswers, setDeletedAnswers] = useState([]);
 
   // Create question
   const createNewQuestion = async (values) => {
@@ -34,6 +35,7 @@ const CreateQuestion = ({ location }) => {
     try {
       let payload = {
         ...values,
+        answer: [...values.answer, ...deletedAnswers],
         category: values.category.name,
         technologyName: AppUtils.isNotEmptyArray(values.technologyName) ? values.technologyName.map(r => r.name).join() : "",
         alphabet : values.answerOrderType === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? true : false
@@ -159,7 +161,9 @@ const CreateQuestion = ({ location }) => {
                   <AnswerSelector {...{
                       values, 
                       ordering: values.answerOrderType, 
-                      setFieldValue
+                      setFieldValue,
+                      deletedAnswers,
+                      setDeletedAnswers
                   }}/>
 
                   <Form.Group>
