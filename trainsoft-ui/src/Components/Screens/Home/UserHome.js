@@ -1,13 +1,31 @@
-import React, { useContext } from 'react'
+import React, { useContext ,useEffect} from 'react'
 import Charts from '../../Charts/Charts'
 import {  Card} from '../../Common/BsUtils';
 import "react-circular-progressbar/dist/styles.css";
 import CalenderGraph from '../../Common/CalenderGraph/CalenderGraph';
 import AppContext from '../../../Store/AppContext';
 import './home.css'
+import RestService from '../../../Services/api.service';
+import AssessmentContext from '../../../Store/AssessmentContext';
 
 const UserHome = () => {
-    const {user} = useContext(AppContext)
+    const {user,spinner} = useContext(AppContext)
+    const {setCategory} = useContext(AssessmentContext)
+    // get All topic
+const getAllCategory = async () => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getAllCategory()
+      setCategory(data)
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
+    }
+  }
+  useEffect(() => {
+     getAllCategory()
+  }, [])
     
     return (<div>
         <div className="row">
