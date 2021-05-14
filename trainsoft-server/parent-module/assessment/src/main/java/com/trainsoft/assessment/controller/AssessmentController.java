@@ -340,4 +340,27 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.searchAssessmentByCategory(searchString,companySid,categorySid,pageable));
     }
 
+    @PostMapping("/assessment/bookmark")
+    @ApiOperation(value = "bookMarkAssessment",notes = "API to book mark Assessment")
+    public ResponseEntity<?> bookMarkAssessment(
+            @ApiParam("book mark Assessment payload")@RequestBody VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
+    {
+        return ResponseEntity.ok(assessmentService.bookMarkAssessment(virtualAccountHasAssessmentBookMarkTo));
+    }
+
+    @GetMapping("/assessments/bookmarked/{vSid}")
+    @ApiOperation(value = "getBookMarkedAssessmentsByVirtualAccount",notes = "API to get book marked Assessment by Virtual Account Sid.")
+    public ResponseEntity<?>getBookMarkedAssessmentsByVirtualAccount(
+            @ApiParam("virtual account sid") @PathVariable("vSid") String virtualAccountSid)
+    {
+        return ResponseEntity.ok(assessmentService.getBookMarkedAssessmentsByVirtualAccount(virtualAccountSid));
+    }
+
+    @DeleteMapping("/assessment/remove/bookmarked")
+    @ApiOperation(value = "Remove book marked Assessment",notes = "API to delete book marked Assessment based on Virtual Account.")
+    public ResponseEntity<?> deleteBookMarkedAssessment(
+            @ApiParam("remove book marked Assessment payload")@RequestBody VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
+    {
+        return ResponseEntity.ok(assessmentService.deleteBookMarkedAssessment(virtualAccountHasAssessmentBookMarkTo));
+    }
 }
