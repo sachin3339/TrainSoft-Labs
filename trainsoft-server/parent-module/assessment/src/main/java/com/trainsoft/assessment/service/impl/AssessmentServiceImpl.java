@@ -1100,7 +1100,7 @@ public class AssessmentServiceImpl implements IAssessmentService
 
 
     @Override
-    public String removeBookMarkedAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
+    public String deleteBookMarkedAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
     {
         VirtualAccountHasAssessmentBookMark virtualAccountHasAssessmentBookMark = bookMarkAvailable(virtualAccountHasAssessmentBookMarkTo);
         if(virtualAccountHasAssessmentBookMark == null)
