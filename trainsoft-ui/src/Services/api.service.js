@@ -125,6 +125,18 @@ const RestService = {
   getAssestUser: (assId) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_ASSESSMENT_USER.replace("{assID}",assId)),
   getQuestionById: (qId) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT.GET_QUESTION_BY_SID.replace("{qId}",qId)),
   changeQuestionStatus: (qId,status) => AxiosService.put(GLOBELCONSTANT.ASSESSMENT.CHANGE_QUESTION_STATUS.replace("{qId}",qId).replace("{status}",status)),
+
+  // assessment dashboard
+  getTopUser: (cSid,caSid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.GET_TOP_USER.replace("{cSid}",cSid).replace("{caSid}",caSid)),
+  getDashboardData: (vSid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.DASHBOARD_DATA.replace("{sid}",vSid)),
+  getAvgCategory: (vSid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.GET_ALL_CATEGORY_SCORE.replace("{sid}",vSid)),
+  getAssessmentByCategory: (cSid,caSid,pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.GET_ASSESSMENT_BY_CATEGORY.replace("{cSid}",cSid).replace("{caSid}",caSid).replace("{pageNo}",pageNo).replace("{pageSize}",pageSize)),
+  getTagCount: (cSid,caSid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.GET_TAGS_COUNT.replace("{cSid}",cSid).replace("{caSid}",caSid)),
+  searchCategoryAssessment: (cSid,caSid,pageSize,pageNo) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.SEARCH_CATEGORY_ASSESSMENT.replace("{cSid}",cSid).replace("{caSid}",caSid).replace("{pageNo}",pageNo).replace("{pageSize}",pageSize)),
+  getCategoryAssessmentCount: (cSid,caSid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.GET_ASSESSMENT_COUNT.replace("{cSid}",cSid).replace("{caSid}",caSid)),
+  getAllTimeLeaderboard: (cSid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.ALL_TIME_LEADERBOARD.replace('{cSid}',cSid)),
+  getTodayLeaderbord: (cSid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.GET_TODAY_LEADERBOADE.replace('{cSid}',cSid)),
+
   
 
 

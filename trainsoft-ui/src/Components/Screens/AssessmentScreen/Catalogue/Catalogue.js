@@ -1,3 +1,5 @@
+import  { useContext } from 'react'
+
 import { ICN_ARROW, ICN_PARTICIPANT } from '../../../Common/Icon';
 import { navigate, Router } from '../../../Common/Router';
 import ICN_TECH from '../images/tech.png'
@@ -11,27 +13,30 @@ import ICN_SKILL from '../images/skill.png'
 
 import '../assessment.css'
 import CatalogueDetails from './CatalogDetails';
+import AssessmentContext from '../../../../Store/AssessmentContext';
 
 const data = [
-    {name: "Technological",mark:"70",images:ICN_TECH},
+    {name: "Technology",mark:"70",images:ICN_TECH},
     {name: "Psychometric",mark:"60", images:ICN_PER},
     {name: "Skills",mark:"78",images:ICN_SKILL},
     {name: "Personality Index",mark:"55",images:ICN_PSY},
     {name: "Aptitude Tests",mark:"99",images:ICN_APTI},
-    {name: "Domain Tests",mark:"89",images:ICN_DMAIN},
+    {name: "Domain Test",mark:"89",images:ICN_DMAIN},
 ]
 
-const CatalogueList = () =>{
 
+
+const CatalogueList = () =>{
+     const {category} = useContext(AssessmentContext)
     return(<>
        <div className="catalog-box">
-            {data.map(res=>
+            {category.map(res=>
                     <div className="box-shadow catalog-list">
                     <div className="catalog-img">
-                        <img src={res.images}/>
+                        <img src={data.find(resp=>resp.name=== res.name)?.images}/>
                     </div>
                     <div className="catalog-link">
-                        <div className="link" onClick={()=>navigate('catalogue/catalogDetails',{ state: { path:'catalogue', title: 'Catalogue', } })}>{res.name}</div>
+                        <div className="link" onClick={()=>navigate('catalogue/catalogDetails',{ state: { path:'catalogue', title: 'Catalogue',data:res } })}>{res.name}</div>
                         <div className="">
                         {ICN_ARROW}
                         </div>
