@@ -1,5 +1,5 @@
 import GLOBELCONSTANT from '../../../Constant/GlobleConstant'
-import {ICN_HOME,ICN_CALENDER,ICN_ORG_MGT,ICN_ASSESSMENT,  ICN_REPORT, ICN_PARTICIPANT, ICN_BATCHES,  ICN_SUPPORT_HOME, ICN_COURSE, ICN_DASHBOARD, ICN_COMPILER, ICN_LAB_STORE, ICN_VSCODE} from '../../Common/Icon'
+import {ICN_HOME,ICN_CALENDER,ICN_ORG_MGT,ICN_ASSESSMENT,  ICN_REPORT, ICN_PARTICIPANT, ICN_BATCHES,  ICN_SUPPORT_HOME, ICN_COURSE, ICN_DASHBOARD, ICN_COMPILER, ICN_LAB_STORE, ICN_VSCODE, ICN_SETTINGS, ICN_MYASSESSMENT, ICN_CATALOG} from '../../Common/Icon'
 export const AdminConfig = [
     {
         icon: ICN_HOME,
@@ -121,28 +121,29 @@ export const AdminConfig = [
         role: [GLOBELCONSTANT.ROLE.LEARNER, GLOBELCONSTANT.ROLE.INSTRUCTOR, GLOBELCONSTANT.ROLE.SUPERVISOR]
     },
     // {
-    //     icon: ICN_SUPPORT_HOME,
+    //     icon: ICN_DASHBOARD,
     //     title: "Dashboard",
     //     pathname: "assessment",
     //     disabled: true,
     //     role: [GLOBELCONSTANT.ROLE.LEARNER]
     // },
+    
     // {
-    //     icon: ICN_SUPPORT_HOME,
+    //     icon: ICN_CATALOG,
     //     title: "Catalogue",
     //     pathname: "catalogue",
     //     disabled: true,
     //     role: [GLOBELCONSTANT.ROLE.LEARNER,]
     // },
     // {
-    //     icon: ICN_SUPPORT_HOME,
+    //     icon: ICN_MYASSESSMENT,
     //     title: "My Assessment",
     //     pathname: "myAssessment",
     //     disabled: true,
     //     role: [GLOBELCONSTANT.ROLE.LEARNER]
     // },
     // {
-    //     icon: ICN_SUPPORT_HOME,
+    //     icon: ICN_SETTINGS,
     //     title: "Setting",
     //     pathname: "setting",
     //     disabled: true,

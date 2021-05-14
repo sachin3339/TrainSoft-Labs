@@ -394,3 +394,18 @@ CREATE TABLE `virtual_account_has_quiz_set_session_timing` (
                                                                CONSTRAINT `fk_ virtual_account_has_quiz_set_session_timing_3` FOREIGN KEY (`quiz_id`) REFERENCES `quiz` (`id`),
                                                                CONSTRAINT `fk_ virtual_account_has_quiz_set_session_timing_4` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE `virtual_account_has_assessment_bookmark` (
+                                                           `id` int NOT NULL AUTO_INCREMENT,
+                                                           `sid` binary(32) NOT NULL,
+                                                           `assessment_id` int DEFAULT NULL,
+                                                           `virtual_account_id` int DEFAULT NULL,
+                                                           PRIMARY KEY (`id`),
+                                                           UNIQUE KEY `sid_UNIQUE` (`sid`),
+                                                           KEY `vahabookmark_assessment_idx` (`assessment_id`),
+                                                           KEY `vahabookmark_virtual_account_id` (`virtual_account_id`),
+                                                           CONSTRAINT `vahabookmark_assessment` FOREIGN KEY (`assessment_id`) REFERENCES `e_assessment` (`id`),
+                                                           CONSTRAINT `vahabookmark_virtual_account_id` FOREIGN KEY (`virtual_account_id`) REFERENCES `virtual_account` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+

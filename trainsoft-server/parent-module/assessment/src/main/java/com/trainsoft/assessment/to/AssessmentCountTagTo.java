@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AssessmentCountTagTo
+public class AssessmentCountTagTo extends BaseTO
 {
 
     private static final long serialVersionUID = 6084485139490470650L;

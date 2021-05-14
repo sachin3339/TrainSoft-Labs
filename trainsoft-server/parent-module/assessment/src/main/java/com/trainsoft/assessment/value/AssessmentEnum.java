@@ -18,4 +18,8 @@ public class AssessmentEnum
         BEGINNER,INTERMEDIATE,EXPERT;
     }
 
+    public enum AnswerOperationType {
+        CREATE,UPDATE,DELETE,NONE;
+    }
+
 }
