@@ -1197,4 +1197,30 @@ public class AssessmentServiceImpl implements IAssessmentService
                  return list;
         }throw new InvalidSidException("Invalid Virtual Account Sid");
     }
+
+    @Override
+    public List<AssessmentTo> getAssessmentsByTagsAndDifficulty(String companySid,String categorySid,
+                                                                List<String> tagsSidList, List<AssessmentEnum.QuizSetDifficulty> difficultyList,Pageable pageable)
+    {
+        if(companySid == null)
+           throw new InvalidSidException("Company Sid is null !");
+        if(categorySid == null)
+            throw new InvalidSidException("Category Sid is null !");
+        if(CollectionUtils.isEmpty(tagsSidList) && CollectionUtils.isEmpty(difficultyList))
+            throw new InvalidSidException("tagSidList and difficulty both are null");
+
+        // Prepare TagList from list of tagSid's
+        List<Tag> tagList = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(tagsSidList))
+        {
+            tagsSidList.forEach(tag->{
+               tagList.add(tagRepository.findBySid(BaseEntity.hexStringToByteArray(tag.trim())));
+            });
+        }
+
+        List<Assessment>assessmentList=assessmentRepository.getAssessmentsByTagAndDifficulty(tagList,difficultyList,getCompany(companySid),
+                categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)),pageable);
+
+        return getAssessmentToList(assessmentList);
+    }
 }

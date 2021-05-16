@@ -43,4 +43,7 @@ public interface IAssessmentRepository extends JpaRepository<Assessment,Integer>
 
     @Query("SELECT assess FROM Assessment as assess WHERE ( assess.title like :searchString OR assess.description like :searchString) AND assess.company =:company AND assess.categoryId =:category AND assess.status ='ENABLED'")
     List<Assessment> searchAssessmentByCategory(Company company,Category category, String searchString,Pageable pageable);
+
+    @Query("SELECT assess FROM Assessment  as assess WHERE assess.tagId IN (:tagList) AND assess.difficulty IN (:difficultyList) AND assess.company =:company AND assess.categoryId=:category AND assess.status ='ENABLED'")
+    List<Assessment> getAssessmentsByTagAndDifficulty(List<Tag> tagList,List<AssessmentEnum.QuizSetDifficulty> difficultyList,Company company,Category category,Pageable pageable);
 }

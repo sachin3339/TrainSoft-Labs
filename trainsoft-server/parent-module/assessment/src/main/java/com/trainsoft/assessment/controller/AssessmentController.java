@@ -7,6 +7,7 @@ import com.trainsoft.assessment.enums.QuizStatus;
 import com.trainsoft.assessment.service.IAssessmentService;
 import com.trainsoft.assessment.service.IUserBulkUploadService;
 import com.trainsoft.assessment.to.*;
+import com.trainsoft.assessment.value.AssessmentEnum;
 import com.trainsoft.assessment.value.InstructorEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-
+import java.util.List;
 
 
 @Slf4j
@@ -365,6 +366,7 @@ public class AssessmentController {
     {
         return ResponseEntity.ok(assessmentService.deleteBookMarkedAssessment(virtualAccountHasAssessmentBookMarkTo));
     }
+
     @GetMapping("get/my/assessments/{status}/{sid}")
     @ApiOperation(value = "get my assessment",notes = "API to get all Assessments and count based upon a status and User ")
     public ResponseEntity<?>getAllMyAssessmentsAndCounts(
@@ -372,4 +374,17 @@ public class AssessmentController {
            @ApiParam(value = "Virtual Account Sid")@PathVariable("sid") String virtualAccountSid){
         return ResponseEntity.ok(assessmentService.getAllMyAssessmentsAndCounts(status,virtualAccountSid));
     }
+
+    @GetMapping("/assessments/tags-difficulty/{companySid}/{categorySid}/{difficultyList}/{tagslist}")
+    @ApiOperation(value = "get Assessments by Tags and Difficulty",notes = "API to get Assessments based on tags and difficulty ")
+    public ResponseEntity<?>getAssessmentsByTagsAndDifficulty(
+            @ApiParam(value = "difficulty") @PathVariable(value = "difficultyList",required = false) List<AssessmentEnum.QuizSetDifficulty> difficultyList,
+            @ApiParam(value = "tag's Sid List ")@PathVariable(value = "tagslist",required = false) List<String> tagsSidList,
+            @ApiParam(value = "Company Sid") @PathVariable("companySid") String companySid,
+            @ApiParam(value = "Category Sid")@PathVariable("categorySid") String categorySid,Pageable pageable)
+    {
+        return ResponseEntity.ok(assessmentService.getAssessmentsByTagsAndDifficulty(companySid,categorySid,tagsSidList,difficultyList,pageable));
+    }
+
+
 }
