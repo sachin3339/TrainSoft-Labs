@@ -355,9 +355,9 @@ public class AssessmentController {
     @GetMapping("/assessments/bookmarked/{vSid}")
     @ApiOperation(value = "getBookMarkedAssessmentsByVirtualAccount",notes = "API to get book marked Assessment by Virtual Account Sid.")
     public ResponseEntity<?>getBookMarkedAssessmentsByVirtualAccount(
-            @ApiParam("virtual account sid") @PathVariable("vSid") String virtualAccountSid)
+            @ApiParam("virtual account sid") @PathVariable("vSid") String virtualAccountSid,Pageable pageable)
     {
-        return ResponseEntity.ok(assessmentService.getBookMarkedAssessmentsByVirtualAccount(virtualAccountSid));
+        return ResponseEntity.ok(assessmentService.getBookMarkedAssessmentsByVirtualAccount(virtualAccountSid,pageable));
     }
 
     @DeleteMapping("/assessment/remove/bookmarked")

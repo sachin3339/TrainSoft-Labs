@@ -49,7 +49,7 @@ public interface IAssessmentService
     Integer getAssessmentCountByCategory(String companySid,String categorySid);
     List<AssessmentTo> searchAssessmentByCategory(String searchString,String companySid,String categorySid,Pageable pageable);
     String bookMarkAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo);
-    List<AssessmentTo>getBookMarkedAssessmentsByVirtualAccount(String virtualAccountSid);
+    List<AssessmentTo>getBookMarkedAssessmentsByVirtualAccount(String virtualAccountSid,Pageable pageable);
     String deleteBookMarkedAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo);
 
     List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid);

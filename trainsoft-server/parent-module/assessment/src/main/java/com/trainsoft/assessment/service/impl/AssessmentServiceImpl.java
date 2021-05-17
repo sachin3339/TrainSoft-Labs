@@ -1085,13 +1085,13 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<AssessmentTo> getBookMarkedAssessmentsByVirtualAccount(String virtualAccountSid)
+    public List<AssessmentTo> getBookMarkedAssessmentsByVirtualAccount(String virtualAccountSid,Pageable pageable)
     {
         if(virtualAccountSid==null)
             throw new InvalidSidException("Invalid Virtual Account Sid !");
 
         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
-        List<Assessment> assessmentList = virtualAccountHasAssessmentBookMarkRepository.findAssessmentsByVirtualAccount(virtualAccount);
+        List<Assessment> assessmentList = virtualAccountHasAssessmentBookMarkRepository.findAssessmentsByVirtualAccount(virtualAccount,pageable);
         if(CollectionUtils.isNotEmpty(assessmentList))
         {
             return getAssessmentToList(assessmentList);
