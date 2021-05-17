@@ -23,7 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Slf4j
@@ -368,8 +369,20 @@ public class AssessmentController {
     @GetMapping("get/my/assessments/{status}/{sid}")
     @ApiOperation(value = "get my assessment",notes = "API to get all Assessments and count based upon a status and User ")
     public ResponseEntity<?>getAllMyAssessmentsAndCounts(
-           @ApiParam(value = "Status") @PathVariable("status") QuizStatus status,
-           @ApiParam(value = "Virtual Account Sid")@PathVariable("sid") String virtualAccountSid){
+           @ApiParam(value = "Status",required = true) @PathVariable("status") QuizStatus status,
+           @ApiParam(value = "Virtual Account Sid",required = true)@PathVariable("sid") String virtualAccountSid){
         return ResponseEntity.ok(assessmentService.getAllMyAssessmentsAndCounts(status,virtualAccountSid));
+    }
+
+    @GetMapping("get/myAssessment/count/{status}/{sid}")
+    @ApiOperation(value = "get counts for my assessment",notes = "API to get counts for All My Assessments and " +
+            "count for status based Assessments.")
+    public ResponseEntity<?> getCountsForMyAssessments(
+           @ApiParam(value = "Status",required = true) @PathVariable("status") QuizStatus status,
+           @ApiParam(value = "Virtual Account Sid",required = true) @PathVariable("sid") String virtualAccountSid){
+        Integer count = assessmentService.getCountsForMyAssessments(status, virtualAccountSid);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("assessmentCount",count);
+        return ResponseEntity.ok(map);
     }
 }
