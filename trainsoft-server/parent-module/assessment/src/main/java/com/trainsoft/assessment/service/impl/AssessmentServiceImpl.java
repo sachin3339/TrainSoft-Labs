@@ -1197,4 +1197,15 @@ public class AssessmentServiceImpl implements IAssessmentService
                  return list;
         }throw new InvalidSidException("Invalid Virtual Account Sid");
     }
+
+    @Override
+    public Integer getCountsForMyAssessments(QuizStatus status, String virtualAccountSid) {
+        VirtualAccount virtualAccount = virtualAccountRepository
+                .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
+        if (virtualAccount!=null && (status.name().equals("ALL"))){
+           return virtualAccountAssessmentRepository.getCountsForAllMyAssessments(virtualAccount);
+        }else if (virtualAccount!=null){
+            return virtualAccountAssessmentRepository.getStatusBasedCountForMyAssessment(status,virtualAccount);
+        }throw new InvalidSidException("Invalid Virtual Account Sid");
+    }
 }
