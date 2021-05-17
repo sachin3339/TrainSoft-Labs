@@ -8,7 +8,7 @@ import styles from "./AssessmentBody.module.css";
 import QuitModal from "./QuitModal";
 
 
-const Header = ({ instruction, title, startTime = 0, timeLimit = 2500, introDialog }) => {
+const Header = ({ instruction, startTime = 0, timeLimit = 2500, introDialog }) => {
   const [show, setShow] = useState(false);
   const { fromLogin } = useContext(AppContext);
   const { finished, setHasExamEnd } = useContext(AssessmentContext);
@@ -20,7 +20,7 @@ const Header = ({ instruction, title, startTime = 0, timeLimit = 2500, introDial
           && !finished 
           && <div>
               <div>
-                <AssessmentTimer {...{startTime, timeLimit: 4.5 * 60, callback: (time) => setHasExamEnd(true)}} />
+                <AssessmentTimer {...{startTime, timeLimit: instruction.duration * 60, callback: (time) => setHasExamEnd(true)}} />
               </div>
             </div>
         }
@@ -29,7 +29,7 @@ const Header = ({ instruction, title, startTime = 0, timeLimit = 2500, introDial
           {
             finished 
             ? <><div
-                className={styles.exitButton}
+                className={`${styles.exitButton} disabled`}
                 style={{
                   background: "#FECD48",
                   marginRight: "10px",

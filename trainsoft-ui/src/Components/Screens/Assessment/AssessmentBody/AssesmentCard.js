@@ -69,7 +69,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
               {
                 review 
                 && <div className={styles.editButton} onClick={() => {setQuestionIndex(index); setInReview(true); setReview(true)}}>
-                    <CreateOutlinedIcon style={{fontSize:"20px", marginRight:"10px"}}/>Edit
+                    <CreateOutlinedIcon style={{fontSize:"15px", marginRight:"10px"}}/>Edit
                 </div>
               }
             </div>

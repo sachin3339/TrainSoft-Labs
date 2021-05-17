@@ -252,7 +252,7 @@ const GLOBELCONSTANT = {
                   "phoneNumber": ""
                 },
                 "categoryTopicValue": {
-                  "category": "",
+                  "category": null,
                   "topic": "",
                   "difficulty": "BEGINNER"
                 },
