@@ -26,14 +26,13 @@ const Login = () => {
                         let data = response.data
                         data.name = response.data.appuser.name
                         data.vaRole = response.data.role
-                        data.role = response.data.departmentVA.departmentRole
+                        data.role = response.data.departmentVA?.departmentRole
                         data.accessType = response.data.appuser.accessType
                         data.employeeId = response.data.appuser.accessType
                         setUserValue("LOGIN",data)
                         AxiosService.init('',response.data.jwtToken);
                         TokenService.saveToken(response.data.jwtToken)
-                        data.role === "LEARNER" ?  navigate('/home', { state: { title: 'Home'} }): navigate('/dashboard', { state: { title: 'Dashboard'} })
-                        
+                        data.role === "LEARNER" ?  navigate('/home', { state: { title: 'Home'} }): navigate('/dashboard', { state: { title: 'Dashboard'} }) 
                     },
                 err => {
                     Toast.error({message: 'Invalid User Name / Password!'})

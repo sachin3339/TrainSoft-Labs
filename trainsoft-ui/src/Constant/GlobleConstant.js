@@ -18,6 +18,12 @@ const GLOBELCONSTANT = {
         USER_ROLE: {
             USER: "USER",
         },
+        OPERATION: {
+            CREATE: "CREATE",
+            UPDATE: "UPDATE",
+            DELETE: "DELETE",
+            NONE: "NONE"
+        },
         STATUS: {
             ENABLED: "ENABLED",
             DISABLED: "DISABLED",
@@ -195,9 +201,11 @@ const GLOBELCONSTANT = {
             GET_TAGS_COUNT: API_ASSES + "count/assessment/{cSid}/{caSid}",
             GET_ASSESSMENT_BY_CATEGORY: API_ASSES + 'assessments/category/{cSid}/{caSid}?pageNumber={pageNo}&pageSize={pageSize}',
             GET_ASSESSMENT_COUNT: API_ASSES + 'assessments/count/category/{cSid}/{caSid}',
-            SEARCH_CATEGORY_ASSESSMENT :  API_ASSES + 'search/assessments/category/java/{cSid}/{caSid}?pageNumber={pageNo}&pageSize={pageSize}',
-            ALL_TIME_LEADERBOARD : API_ASSES + "get/allTime/assessment/leaderboard/{cSid}",
-            GET_TODAY_LEADERBOADE : API_ASSES +  "get/today/assessment/leaderboard/{cSid}"
+            SEARCH_CATEGORY_ASSESSMENT :  API_ASSES + 'search/assessments/category/{value}/{cSid}/{caSid}?pageNumber={pageNo}&pageSize={pageSize}',
+            CREATE_BOOKMARK: API_ASSES + "assessment/bookmark",
+            REMOVE_BOOKMARK: API_ASSES + "assessment/remove/bookmarked",
+            GET_BOOKMARK: API_ASSES + "assessments/bookmarked/{vSid}",
+            GET_MY_ASSESSMENT: API_ASSES + "get/my/assessments/{status}/{sid}"
         },
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},
@@ -258,7 +266,8 @@ const GLOBELCONSTANT = {
                 "answerOption": "",
                 "answerOptionValue": "",
                 "correct": false,
-                "status": "ENABLED"
+                "status": "ENABLED",
+                "operation": "CREATE"
             },
             CREATE_QUESTION: {
                 "alphabet": false,
@@ -296,6 +305,7 @@ const GLOBELCONSTANT = {
                 "questionPoint": 1,
                 "questionType": "MCQ",
                 "status": "ENABLED",
+                "category": "",
                 "technologyName": "",
                 "answerOrderType": "ALPHABETS"
             },

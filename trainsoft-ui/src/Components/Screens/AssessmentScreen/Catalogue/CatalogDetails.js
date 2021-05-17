@@ -19,7 +19,7 @@ const CatalogueDetails = ({location})=>{
    const getAssessmentByCategory = async (pageNo=1) => {
     spinner.show("Loading... wait");
     try {
-      let { data } = await RestService.getAssessmentByCategory(user.companySid,location?.state?.data.sid,GLOBELCONSTANT.PAGE_SIZE,pageNo-1)
+      let { data } = await RestService.getAssessmentByCategory(user.companySid,location?.state?.data.sid,10,pageNo-1)
       setCategoryAssessment(data);
       spinner.hide();
     } catch (err) {
@@ -47,7 +47,6 @@ const CatalogueDetails = ({location})=>{
     try {
       let { data } = await RestService.getTagCount(user.companySid,location?.state?.data?.sid,)
       setTags(data);
-      console.log(data)
       spinner.hide();
     } catch (err) {
       spinner.hide();
@@ -59,7 +58,7 @@ const CatalogueDetails = ({location})=>{
    const searchAssessment = async (value) => {
     spinner.show("Loading... wait");
     try {
-      let { data } = await RestService.searchCategoryAssessment(user.companySid,location?.state?.data?.sid,300,GLOBELCONSTANT.PAGE_SIZE)
+      let { data } = await RestService.searchCategoryAssessment(value,user.companySid,location?.state?.data?.sid,300,GLOBELCONSTANT.PAGE_SIZE)
       setCategoryAssessment(data);
       spinner.hide();
     } catch (err) {
@@ -67,6 +66,8 @@ const CatalogueDetails = ({location})=>{
       console.error("error occur on getAvgCategory()", err)
     }
   }
+
+
 
   useEffect(() => {
     getAssessmentTag()
@@ -99,7 +100,7 @@ const CatalogueDetails = ({location})=>{
                     <div>{ICN_ARROW_DOWN}</div>
                 </div>
               {tags?.assessmentCountTagToList?.map(res=>
-                <div className="jcb">
+                <div className="jcb" key={res.sid}>
                   <Form.Check custom inline className="text-capitalize" label={res.tagName?.toLowerCase()} type="checkbox" id={`custom-${res.tagName}`}/>
                   <div>{res.count}</div>
                 </div>
@@ -109,7 +110,7 @@ const CatalogueDetails = ({location})=>{
                     <div>{ICN_ARROW_DOWN}</div>
              </div>
              {tags?.assessmentCountDifficultyToList?.map(res=>
-              <div className="jcb">
+              <div className="jcb" key={res.sid}>
                 <Form.Check custom inline className="text-capitalize" label={res.difficultyName?.toLowerCase()} type="checkbox" id={`custom-${res.difficultyName}`}/>
                 <div>{res.count}</div>
               </div>

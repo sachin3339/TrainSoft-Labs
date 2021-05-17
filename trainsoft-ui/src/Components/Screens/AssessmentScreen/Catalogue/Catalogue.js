@@ -1,4 +1,4 @@
-import  { useContext } from 'react'
+import  { useContext,useEffect } from 'react'
 
 import { ICN_ARROW, ICN_PARTICIPANT } from '../../../Common/Icon';
 import { navigate, Router } from '../../../Common/Router';
@@ -14,6 +14,8 @@ import ICN_SKILL from '../images/skill.png'
 import '../assessment.css'
 import CatalogueDetails from './CatalogDetails';
 import AssessmentContext from '../../../../Store/AssessmentContext';
+import RestService from '../../../../Services/api.service';
+import AppContext from '../../../../Store/AppContext';
 
 const data = [
     {name: "Technology",mark:"70",images:ICN_TECH},
@@ -27,7 +29,25 @@ const data = [
 
 
 const CatalogueList = () =>{
-     const {category} = useContext(AssessmentContext)
+    const {user,spinner} = useContext(AppContext)
+    const {category,setBookmark} = useContext(AssessmentContext)
+
+      //  getBookmark 
+      const getBookmark = async (categorySid) => {
+        spinner.show("Loading... wait");
+        try {
+            let { data } = await RestService.getBookmark(user.sid)
+            setBookmark(data);
+            spinner.hide();
+        } catch (err) {
+            spinner.hide();
+            console.error("error occur on getBookmark()", err)
+        }
+    }
+
+    useEffect(() => {
+       getBookmark()
+    }, [])
     return(<>
        <div className="catalog-box">
             {category.map(res=>

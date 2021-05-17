@@ -43,6 +43,7 @@ export const AppProvider = (props) => {
     const [batches,setBatches] = useState([])
     const [department,setDepartment] = useState([])
     const [zoomInfo,setZoomInfo] = useState(null)
+    const [fromLogin,setFromLogin] = useState(false)
 
 
     const setUserValue = (type, value) => {
@@ -61,7 +62,9 @@ export const AppProvider = (props) => {
         batches,
         setBatches,
         department,
-        setDepartment
+        setDepartment,
+        fromLogin,
+        setFromLogin
     };
 
     return <AppContext.Provider value={{

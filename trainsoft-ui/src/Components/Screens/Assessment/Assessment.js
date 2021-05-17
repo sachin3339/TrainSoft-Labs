@@ -12,16 +12,16 @@ const Assessment = () => {
   );
 };
 
-const Content = () => {
+const Content = ({location}) => {
   const { dialogOpen } = useContext(AssessmentContext);
 
   return <>
     {
       dialogOpen
-        ? <AssessmentDialog />
+        ? <AssessmentDialog {...{location}}/>
         : <div style={{ display: "flex" }}>
           <Sidebar />
-          <AssessmentBody />
+          <AssessmentBody {...{location}}/>
         </div>
     }
   </>;
