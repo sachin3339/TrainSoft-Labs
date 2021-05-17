@@ -1,5 +1,6 @@
 package com.trainsoft.assessment.service;
 
+import com.trainsoft.assessment.enums.QuizStatus;
 import com.trainsoft.assessment.to.*;
 import org.springframework.data.domain.Pageable;
 import javax.servlet.http.HttpServletRequest;
@@ -49,4 +50,7 @@ public interface IAssessmentService
     List<AssessmentTo>getBookMarkedAssessmentsByVirtualAccount(String virtualAccountSid);
     String deleteBookMarkedAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo);
 
+    List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid);
+
+    Integer getCountsForMyAssessments(QuizStatus status,String virtualAccountSid);
 }
