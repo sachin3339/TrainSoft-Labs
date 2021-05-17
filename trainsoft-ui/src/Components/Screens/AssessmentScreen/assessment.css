@@ -78,9 +78,9 @@
     flex-wrap: wrap;
 }
 .catalog-list{
-
-    width: 330px;
+    width: 31%;
     height: 219px;
+    min-width: 200px;
     margin-bottom: 20px;
 }
 .catalog-img{
@@ -131,4 +131,16 @@
     display: block;
     padding: 10px 2rem;
     font-size: 14px;
+}
+
+.bookMarkColor path{
+    fill: chartreuse;
+    stroke: cornflowerblue;
+}
+.list-circle{
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgb(192, 192, 192);
+    margin: 0px 5px 0px 10px;
 }

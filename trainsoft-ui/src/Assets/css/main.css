@@ -1329,3 +1329,6 @@ p {
 .wrong-answer-box .description{
  color: #b35756;
 }
+.hidden{
+  overflow: hidden;
+}
