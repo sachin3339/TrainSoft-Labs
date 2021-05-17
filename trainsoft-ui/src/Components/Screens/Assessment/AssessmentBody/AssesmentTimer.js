@@ -29,7 +29,12 @@ export const AssessmentTimer = ({ startTime = 0, timeLimit = 0, callback = () =>
       return `${minutes} : ${seconds}`;
     };
   
-    return <div className={time >= 240 ? styles.timer : (time >= 120 ? styles.fourMinLeft : styles.twoMinLeft)}>
-      <div className="aic"><div className="mr10"><IcnTimer {...{color: time >= 240 ? "#917618" : (time >= 120 ? "#A86F3E" : "#ffffff")}}/></div><div className="">{formatTime()}</div></div>
-    </div>;
+  return <div className={time >= 240 ? styles.timer : (time >= 120 ? styles.fourMinLeft : styles.twoMinLeft)}>
+    <div className="aic">
+      <div className="mr10">
+        <IcnTimer {...{ color: time >= 240 ? "#917618" : (time >= 120 ? "#A86F3E" : "#ffffff") }} />
+      </div>
+      <div className="pt2">{formatTime()}</div>
+    </div>
+  </div>;
   };

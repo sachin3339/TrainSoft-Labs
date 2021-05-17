@@ -41,8 +41,11 @@ export const IntroDialog = ({ open, setOpen ,location}) => {
           font: " normal normal bold 16px/19px Montserrat",
         }}
       >
-        <span className="mr5"><IcnInfoCircle /></span>
-        <span className="pt2">INSTRUCTIONS</span>
+        <div className="aic">
+          <div className="mr5"><IcnInfoCircle /></div>
+          <div className="pt2">INSTRUCTIONS</div>
+        </div>
+      
         </Typography>
       {
         instruction
