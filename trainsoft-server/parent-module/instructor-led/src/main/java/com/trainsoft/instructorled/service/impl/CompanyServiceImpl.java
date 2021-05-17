@@ -64,7 +64,6 @@ public class CompanyServiceImpl implements ICompanyService {
     public CompanyTO createCompanyWithAppUser(CompanyTO companyTO) {
         DepartmentVirtualAccount savedDepartmentVA = null;
         Department savedDepartment = null;
-        try {
             if (companyTO!=null) {
                 long epochMilli = Instant.now().toEpochMilli();
                 Company company = mapper.convert(companyTO, Company.class);
@@ -120,11 +119,7 @@ public class CompanyServiceImpl implements ICompanyService {
                 //send mail
                 return companyTO;
             }else
-                throw new RecordNotFoundException("No record found");
-
-        } catch (Exception e) {
-            throw new ApplicationException("throwing error while creating company");
-        }
+                throw new RecordNotFoundException("No record found with given Sid");
     }
 
     @Override
@@ -132,13 +127,14 @@ public class CompanyServiceImpl implements ICompanyService {
         JWTTokenTO jwt = new JWTTokenTO();
         AppUser appUsersByEmailAndPassword = appUserRepository.findAppUsersByEmailIdAndPasswordAndStatus
                                              (email, password,InstructorEnum.Status.ENABLED);
-        try {
             if (appUsersByEmailAndPassword!=null){
              VirtualAccount virtualAccount= virtualAccountRepository.findVirtualAccountByAppuser(appUsersByEmailAndPassword);
              UserTO userTO = mapper.convert(virtualAccount,UserTO.class);
              userTO.getAppuser().setPassword(null);
               DepartmentVirtualAccount dVA=  departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
-             userTO.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+              if(userTO.getDepartmentVA()!=null)
+              userTO.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
+              if(userTO.getDepartmentVA()!=null && userTO.getDepartmentVA().getDepartment()!=null)
              userTO.getDepartmentVA().setDepartment(mapper.convert(dVA.getDepartment(), DepartmentTO.class));
              userTO.setCompanySid(virtualAccount.getCompany().getStringSid());
              jwt.setCompanySid(virtualAccount.getCompany().getStringSid());
@@ -149,13 +145,8 @@ public class CompanyServiceImpl implements ICompanyService {
              userTO.setJwtToken(JWTTokenGen.generateGWTToken(jwt));
              log.info("login Successfully with given user details");
              return userTO;
-            }
-            else
-                throw new IncorrectEmailIdOrPasswordException("Incorrect email or password");
-        } catch (Exception e) {
-            log.error("throwing error while fetching  user details", e.toString());
-            throw new IncorrectEmailIdOrPasswordException(e.getMessage());
-        }
+            }else
+                throw new IncorrectEmailIdOrPasswordException("Please provide the correct email or password");
     }
     @Override
     public boolean validateCompany(String name) {
