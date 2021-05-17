@@ -13,7 +13,9 @@ import GLOBELCONSTANT from '../../../../Constant/GlobleConstant';
 const AnswerSelector = ({ 
   values, 
   ordering = GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS, 
-  setFieldValue 
+  setFieldValue,
+  deletedAnswers,
+  setDeletedAnswers
 }) => {
   const [correctAnswer, setCorrectAnswer] = useState();
 
@@ -31,6 +33,11 @@ const AnswerSelector = ({
   const deleteAnswer = (index) => {
     try {
       let tmpVal = {...values};
+      let tempDelObj = tmpVal.answer.find((r, i) => i === index);
+      if(AppUtils.isNotEmptyObject(tempDelObj)) {
+        if (tempDelObj.sid) setDeletedAnswers([...deletedAnswers, {...tempDelObj, "operation": GLOBELCONSTANT.OPERATION.DELETE}])
+      }
+      if (tempDelObj.sid) console.log([...deletedAnswers, {...tempDelObj, "operation": GLOBELCONSTANT.OPERATION.DELETE}]);
       tmpVal.answer.splice(index, 1);
       setFieldValue("answer", tmpVal.answer);
       handleChangeOptionValue();
@@ -72,6 +79,7 @@ const AnswerSelector = ({
               values.answer
               && AppUtils.isNotEmptyArray(values.answer)
               && values.answer.map((_answer, index) => <div
+                key={index}
                 style={{
                   padding: "15px 0",
                   display: "flex",
