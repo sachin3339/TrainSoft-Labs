@@ -22,16 +22,26 @@ import { useParams } from "@reach/router";
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
 
-const SCHEMA = Yup.object().shape({
+const USER_SCHEMA = Yup.object().shape({
   appuser: Yup.object().shape({
     name: Yup.string().required("Name is required"),
     emailId: Yup.string().email("Please enter valid email").required("Email id is required"),
     phoneNumber: Yup.string().required("Mobile number is required").matches(phoneRegExp,"Mobile number is not valid"),
   }),
-  // categoryTopicValue: Yup.object().shape({
-  //   // category: Yup.string().required("Choose a Category"),
-  //   topic: Yup.string().required("Please select topic"),
-  // }),
+  categoryTopicValue: Yup.object().shape({
+    category: Yup.object().nullable().shape({
+      name: Yup.string().nullable().required("Please select category"),
+    }),
+    topic: Yup.string().required("Please select topic"),
+  }),
+})
+
+const ASSESSMENT_SCHEMA = Yup.object().shape({
+  appuser: Yup.object().shape({
+    name: Yup.string().required("Name is required"),
+    emailId: Yup.string().email("Please enter valid email").required("Email id is required"),
+    phoneNumber: Yup.string().required("Mobile number is required").matches(phoneRegExp,"Mobile number is not valid"),
+  })
 })
 
 export const AssessmentDialog = () => {
@@ -78,7 +88,7 @@ export const AssessmentDialog = () => {
   // get assessment instruction
   const getAssessmentInstruction = async (values) => {
     try {
-      spinner.show();
+      spinner.show("Loading... Please wait...");
       let payload = {
         "companySid": params.companySid == 0 ? null : params.companySid,
         "difficulty": values.categoryTopicValue.difficulty,
@@ -203,7 +213,6 @@ export const AssessmentDialog = () => {
       open={open}
       onClose={() => {
         setOpen(false);
-        // setSubmited(false);
       }}
     >
       <div className="jcb">
@@ -212,11 +221,7 @@ export const AssessmentDialog = () => {
           <IconButton
             edge="start"
             color="inherit"
-            onClick={() => {
-              // setOpen(false);
-              navigate("/");
-              // setSubmited(false);
-            }}
+            onClick={() => navigate("/")}
             aria-label="close"
           >
             <CloseIcon />
@@ -236,10 +241,10 @@ export const AssessmentDialog = () => {
             {true ? (
               <Formik
                 initialValues={userInfo}
-                validationSchema={SCHEMA}
+                validationSchema={params?.assessmentSid != 0 ? ASSESSMENT_SCHEMA : USER_SCHEMA}
                 onSubmit={handleSubmit1}
               >
-                {({ handleSubmit, values, errors, touched, isSubmitting, isValid, dirty, setFieldValue }) => (
+                {({ handleSubmit, values, touched, isSubmitting, dirty }) => (
                   <form onSubmit={handleSubmit} className="create-batch">
                     <div>
                       <Form.Group>
@@ -295,12 +300,7 @@ export const AssessmentDialog = () => {
                     <footer className="mt-4">
                       <div> </div>
                       <div>
-                        <BtnInfo
-                          type="submit"
-                          className="btn-block btn-block"
-                          // onClick={() => setOpen(false)}
-                        
-                        >
+                        <BtnInfo type="submit" className={`btn-block btn-block`} disabled={isSubmitting || !dirty || !touched}>
                           LET’S BEGIN! IT’S FREE
                         </BtnInfo>
                       </div>

@@ -153,7 +153,7 @@ const GLOBELCONSTANT = {
                 TODAY_LEADER: ASSESSMENT_V1 + "get/today/assessment/leaderboard/",
                 ALL_TIME_LEADER: ASSESSMENT_V1 + "get/allTime/assessment/leaderboard/",
                 UPDATE_QUESTION: ASSESSMENT_V1 + "update/question",
-                QUIT_ASSESSMENT: ASSESSMENT_V1 + "quit/assessment/{qSid}/{vSid}"
+                QUIT_ASSESSMENT: ASSESSMENT_V1 + "quit/assessment/"
             },
             GET_TOPIC: ASSESSMENT_V1 + "display/topics",
             CREATE_ASS_USER: ASSESSMENT_V1 + "create/assess/user",
@@ -253,7 +253,7 @@ const GLOBELCONSTANT = {
                   "phoneNumber": ""
                 },
                 "categoryTopicValue": {
-                  "category": "",
+                  "category": null,
                   "topic": "",
                   "difficulty": "BEGINNER"
                 },
