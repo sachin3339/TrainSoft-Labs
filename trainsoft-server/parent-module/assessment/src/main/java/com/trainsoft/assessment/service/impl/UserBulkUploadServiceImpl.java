@@ -82,6 +82,7 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
                 appUser.generateUuid();
                 appUser.setSuperAdmin(false);
                 appUser.setStatus(InstructorEnum.Status.ENABLED);
+                appUser.setPassword(CommonUtils.generatePassword());
                 appUser = appUserRepository.save(appUser);
                 virtualAccount.setAppuser(appUser);
                 virtualAccount.setDesignation("Student");
@@ -125,12 +126,10 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
                         }
                     }
                 }
-                if(userTO.getDepartmentVA().getDepartmentRole()!= InstructorEnum.DepartmentRole.ASSESS_USER) {
-                    String token1 = companyService.generateTokenAndUpdateResetPassToken(virtualAccount.getAppuser().getEmailId());
-                    String resetPasswordLink = Utility.getSiteURL(request) + "/reset/" + token1;
-                    companyService.sendEmail(virtualAccount.getAppuser().getEmailId(), virtualAccount.getAppuser().getName(), resetPasswordLink);
-                    log.info("We have sent a reset password link to your email. Please check.");
-                }
+               if(userTO.getDepartmentVA().getDepartmentRole().equals(InstructorEnum.DepartmentRole.ASSESS_USER)) {
+                    companyService.sendEmailAndPassword(virtualAccount.getAppuser().getEmailId(),virtualAccount.getAppuser().getPassword(), virtualAccount.getAppuser().getName());
+                    log.info("We have sent a trainsoft credential details send to your email. Please check.");
+               }
             }
             else {
                 virtualAccount = virtualAccounts.get(0);
@@ -168,6 +167,7 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
             virtualAccountAssessment.setAssessment(assessment);
             VAAssessmentRepository.save(virtualAccountAssessment);
             userTO.getAppuser().setSid(virtualAccount.getAppuser().getStringSid());
+            userTO.getAppuser().setPassword(null);
             userTO.setSid(virtualAccount.getStringSid());
             if (savedDepartmentVA != null) {
                 userTO.getDepartmentVA().setSid(savedDepartmentVA.getStringSid());
@@ -204,6 +204,8 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
                 departmentVirtualAccount.setDepartmentRole(InstructorEnum.DepartmentRole.ASSESS_USER);
                 savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
 
+                companyService.sendEmailAndPassword(virtualAccount.getAppuser().getEmailId(),virtualAccount.getAppuser().getPassword(), virtualAccount.getAppuser().getName());
+                log.info("We have sent a trainsoft credential details send to your email. Please check.");
             }
             else {
                 virtualAccount = virtualAccounts.get(0);
@@ -236,6 +238,7 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
                 virtualAccountAssessment.setAssessment(assessment);
                 VAAssessmentRepository.save(virtualAccountAssessment);
             }
+
             userTO.getAppuser().setSid(virtualAccount.getAppuser().getStringSid());
             userTO.setSid(virtualAccount.getStringSid());
             if (savedDepartmentVA != null) {
