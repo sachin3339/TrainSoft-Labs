@@ -17,7 +17,7 @@ const AnswerOption = ({ answerOptionValue, active, index, correct, result = fals
             }}
           />
         </div>
-        <div className={styles.answerTitle}>
+        <div className={`${styles.answerTitle} pointer`}>
           {labels[index]}. {answerOptionValue}{" "}
           <span className="ml15">
             {

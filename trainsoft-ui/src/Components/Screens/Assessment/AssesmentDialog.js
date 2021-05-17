@@ -77,7 +77,7 @@ export const AssessmentDialog = () => {
           spinner.hide();
         }
       ).finally(() => {
-        spinner.hide();
+        // spinner.hide();
       });
     } catch (err) {
       spinner.hide();
@@ -104,7 +104,7 @@ export const AssessmentDialog = () => {
           spinner.hide();
         }
       ).finally(() => {
-        spinner.hide();
+        // spinner.hide();
       });
     } catch (err) {
       spinner.hide();
