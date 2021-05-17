@@ -233,7 +233,7 @@ const QuestionsTable = ({ location }) => {
       let { data } = await RestService.getCount("question")
       setCount(data);
     } catch (err) {
-      console.error("error occur on getAllBatch()", err)
+      console.error("error occur on getQuestionCount()", err)
     }
   }
 
