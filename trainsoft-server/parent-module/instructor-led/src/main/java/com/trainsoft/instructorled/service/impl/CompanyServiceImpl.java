@@ -132,7 +132,6 @@ public class CompanyServiceImpl implements ICompanyService {
              UserTO userTO = mapper.convert(virtualAccount,UserTO.class);
              userTO.getAppuser().setPassword(null);
               DepartmentVirtualAccount dVA=  departmentVARepo.findDepartmentVirtualAccountByVirtualAccount(virtualAccount);
-              if(userTO.getDepartmentVA()!=null)
               userTO.setDepartmentVA(mapper.convert(dVA, DepartmentVirtualAccountTO.class));
               if(userTO.getDepartmentVA()!=null && userTO.getDepartmentVA().getDepartment()!=null)
              userTO.getDepartmentVA().setDepartment(mapper.convert(dVA.getDepartment(), DepartmentTO.class));
