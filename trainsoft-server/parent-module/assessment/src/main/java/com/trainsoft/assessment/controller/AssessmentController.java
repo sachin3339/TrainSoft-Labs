@@ -272,6 +272,7 @@ public class AssessmentController {
             @ApiParam(value = "virtualAccount Sid", required = true) @PathVariable("VASid") String VASid) {
         log.info(String.format("Request received : User for GET /v1/users"));
         UserTO createUserTO= bulkUploadService.getVirtualAccountByVASid(VASid);
+        createUserTO.getAppuser().setPassword(null);
         return ResponseEntity.ok(createUserTO);
     }
 
@@ -374,15 +375,11 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.getAllMyAssessmentsAndCounts(status,virtualAccountSid));
     }
 
-    @GetMapping("get/myAssessment/count/{status}/{sid}")
+    @GetMapping("get/myAssessment/count/{sid}")
     @ApiOperation(value = "get counts for my assessment",notes = "API to get counts for All My Assessments and " +
             "count for status based Assessments.")
     public ResponseEntity<?> getCountsForMyAssessments(
-           @ApiParam(value = "Status",required = true) @PathVariable("status") QuizStatus status,
            @ApiParam(value = "Virtual Account Sid",required = true) @PathVariable("sid") String virtualAccountSid){
-        Integer count = assessmentService.getCountsForMyAssessments(status, virtualAccountSid);
-        Map<String, Integer> map = new HashMap<>();
-        map.put("assessmentCount",count);
-        return ResponseEntity.ok(map);
+        return ResponseEntity.ok(assessmentService.getCountsForMyAssessments( virtualAccountSid));
     }
 }

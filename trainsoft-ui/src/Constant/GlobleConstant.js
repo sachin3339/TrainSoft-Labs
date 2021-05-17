@@ -18,6 +18,12 @@ const GLOBELCONSTANT = {
         USER_ROLE: {
             USER: "USER",
         },
+        OPERATION: {
+            CREATE: "CREATE",
+            UPDATE: "UPDATE",
+            DELETE: "DELETE",
+            NONE: "NONE"
+        },
         STATUS: {
             ENABLED: "ENABLED",
             DISABLED: "DISABLED",
@@ -260,7 +266,8 @@ const GLOBELCONSTANT = {
                 "answerOption": "",
                 "answerOptionValue": "",
                 "correct": false,
-                "status": "ENABLED"
+                "status": "ENABLED",
+                "operation": "CREATE"
             },
             CREATE_QUESTION: {
                 "alphabet": false,
@@ -298,6 +305,7 @@ const GLOBELCONSTANT = {
                 "questionPoint": 1,
                 "questionType": "MCQ",
                 "status": "ENABLED",
+                "category": "",
                 "technologyName": "",
                 "answerOrderType": "ALPHABETS"
             },
