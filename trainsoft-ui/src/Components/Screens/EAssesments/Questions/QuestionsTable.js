@@ -32,7 +32,7 @@ const QuestionsTable = ({ location }) => {
         isSearchEnabled: false,
         render: (data) => (
           <div style={{ display: "flex", alginItems: "center" }}>
-            <Toggle id={data.sid} onChange={() => { changeStatus(data.sid,data.status) }} checked={data.status === 'ENABLED' ? true : false} />
+            <div className="w45"><Toggle id={data.sid} onChange={() => { changeStatus(data.sid,data.status) }} checked={data.status === 'ENABLED' ? true : false} /></div>
             <Link
               to={"question-details"}
               state={{
@@ -42,7 +42,7 @@ const QuestionsTable = ({ location }) => {
                 rowData: data,
                 sid: data.sid,
               }}
-              className="dt-name"
+              className="dt-name hidden elps"
               style={{ marginLeft: "10px" }}
             >
               {data.name}
@@ -142,9 +142,8 @@ const QuestionsTable = ({ location }) => {
     try {
       let { data } = await RestService.getQuestionById(sid);
       navigate("/questions/create", {
-        state: { title: "Questions", subTitle: data.name, "isEdit": true, "questionData": data },
+        state: { title: "Questions", subTitle: data.name, "isEdit": true, "questionData": {...data, "answer": data.answer.filter(d => d.status != GLOBELCONSTANT.STATUS.DELETED).map(a => ({...a, "operation" : GLOBELCONSTANT.OPERATION.UPDATE})) }},
       });
-      console.log(data);
       spinner.hide();
     } catch (err) {
       spinner.hide();

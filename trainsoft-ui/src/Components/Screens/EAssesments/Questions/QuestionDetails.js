@@ -18,7 +18,7 @@ const QuestionDetails = ({ location }) => {
       setQuestion(data);
       spinner.hide();
     } catch (err) {
-      // spinner.hide();
+      spinner.hide();
       console.error("error occur on getQuestionById()", err)
     }
   }
