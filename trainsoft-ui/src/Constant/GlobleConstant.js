@@ -146,7 +146,8 @@ const GLOBELCONSTANT = {
                 SUBMIT_RESPONSE: ASSESSMENT_V1 + "get/user/assessment/responses/{virtualAccountSid}",
                 TODAY_LEADER: ASSESSMENT_V1 + "get/today/assessment/leaderboard/",
                 ALL_TIME_LEADER: ASSESSMENT_V1 + "get/allTime/assessment/leaderboard/",
-                UPDATE_QUESTION: ASSESSMENT_V1 + "update/question"
+                UPDATE_QUESTION: ASSESSMENT_V1 + "update/question",
+                QUIT_ASSESSMENT: ASSESSMENT_V1 + "quit/assessment/{qSid}/{vSid}"
             },
             GET_TOPIC: ASSESSMENT_V1 + "display/topics",
             CREATE_ASS_USER: ASSESSMENT_V1 + "create/assess/user",
@@ -185,7 +186,19 @@ const GLOBELCONSTANT = {
             GET_QUESTION_BY_SID : API_ASSES + "question/{qId}",
             CHANGE_QUESTION_STATUS : API_ASSES + "question/status/update/{qId}/{status}"
 
+
         },  
+        ASSESSMENT_DASHBOARD : {
+            GET_TOP_USER : API_ASSES + 'get/topTen/leaderboard/{cSid}/{caSid}',
+            GET_ALL_CATEGORY_SCORE: API_ASSES + "get/category/average/score/{sid}",
+            DASHBOARD_DATA: API_ASSES + 'get/user/dashboard/{sid}',
+            GET_TAGS_COUNT: API_ASSES + "count/assessment/{cSid}/{caSid}",
+            GET_ASSESSMENT_BY_CATEGORY: API_ASSES + 'assessments/category/{cSid}/{caSid}?pageNumber={pageNo}&pageSize={pageSize}',
+            GET_ASSESSMENT_COUNT: API_ASSES + 'assessments/count/category/{cSid}/{caSid}',
+            SEARCH_CATEGORY_ASSESSMENT :  API_ASSES + 'search/assessments/category/java/{cSid}/{caSid}?pageNumber={pageNo}&pageSize={pageSize}',
+            ALL_TIME_LEADERBOARD : API_ASSES + "get/allTime/assessment/leaderboard/{cSid}",
+            GET_TODAY_LEADERBOADE : API_ASSES +  "get/today/assessment/leaderboard/{cSid}"
+        },
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},
             {key: "BATCH_MGMT",name: "Batch Management"},

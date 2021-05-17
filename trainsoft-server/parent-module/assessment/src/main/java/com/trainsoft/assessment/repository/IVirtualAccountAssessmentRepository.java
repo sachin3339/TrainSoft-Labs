@@ -39,4 +39,36 @@ public interface IVirtualAccountAssessmentRepository extends JpaRepository<Virtu
 	@Query(value = "SELECT COUNT(va) FROM VirtualAccountAssessment AS va WHERE va.virtualAccount=:virtualAccount AND va.status='QUIT'")
 	Integer findCountOfQuitAssessments(VirtualAccount virtualAccount);
 
+	@Query(value = "SELECT qs.id,qs.title,qs.description,qs.difficulty,qs.duration,qs.tagId.id,qs.url,\n" +
+			"vs.percentage,vt.status,vt.virtualAccount.id\n" +
+			"FROM Assessment  qs\n" +
+			"INNER JOIN VirtualAccountAssessment vt ON qs.id=vt.assessment.id AND qs.status='ENABLED'\n" +
+			"LEFT OUTER JOIN VirtualAccountHasQuizSetAssessment vs ON\n" +
+			"vt.virtualAccount=vs.virtualAccountId AND vt.assessment=vs.quizSetId\n" +
+			"WHERE vt.virtualAccount=:virtualAccount")
+	List<Object[]> getAllMyAssessmentsAndCounts(VirtualAccount virtualAccount);
+
+	@Query(value = "SELECT qs.id,qs.title,qs.description,qs.difficulty,qs.duration,qs.tagId.id,qs.url,\n" +
+			"vs.percentage,vt.status,vt.virtualAccount.id\n" +
+			"FROM Assessment  qs\n" +
+			"INNER JOIN VirtualAccountAssessment vt ON qs.id=vt.assessment.id AND qs.status='ENABLED'\n" +
+			"LEFT OUTER JOIN VirtualAccountHasQuizSetAssessment vs ON\n" +
+			"vt.virtualAccount=vs.virtualAccountId AND vt.assessment=vs.quizSetId\n" +
+			"WHERE vt.virtualAccount=:virtualAccount AND vt.status=:status")
+	List<Object[]> getAllMyAssessmentsAndStatusAndCounts(QuizStatus status,VirtualAccount virtualAccount);
+
+	@Query(value = "SELECT COUNT(qs) FROM Assessment  qs\n" +
+			"INNER JOIN VirtualAccountAssessment vt ON qs.id=vt.assessment.id AND qs.status='ENABLED'\n" +
+			"LEFT OUTER JOIN VirtualAccountHasQuizSetAssessment vs ON\n" +
+			"vt.virtualAccount=vs.virtualAccountId AND vt.assessment=vs.quizSetId\n" +
+			"WHERE vt.virtualAccount=:virtualAccount")
+	Integer getCountsForAllMyAssessments(VirtualAccount virtualAccount);
+
+	@Query(value = "SELECT COUNT(qs) FROM Assessment  qs\n" +
+			"INNER JOIN VirtualAccountAssessment vt ON qs.id=vt.assessment.id AND qs.status='ENABLED'\n" +
+			"LEFT OUTER JOIN VirtualAccountHasQuizSetAssessment vs ON\n" +
+			"vt.virtualAccount=vs.virtualAccountId AND vt.assessment=vs.quizSetId\n" +
+			"WHERE vt.virtualAccount=:virtualAccount AND vt.status=:status")
+	Integer getStatusBasedCountForMyAssessment(QuizStatus status,VirtualAccount virtualAccount);
+
 }

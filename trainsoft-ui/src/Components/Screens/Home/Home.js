@@ -17,7 +17,7 @@ import AssessmentContext from '../../../Store/AssessmentContext';
 
 
 const AdminHome = () => {
-    const { user, batches, course , ROLE, spinner} = useContext(AppContext)
+    const { user, batches, course , ROLE, spinner,setCategory} = useContext(AppContext)
     const [batchCount,setBatchCount]  = useState(0)
 
       // get batches by sid
@@ -38,8 +38,22 @@ const AdminHome = () => {
             console.error("error occur on getAllBatch()", err)
         }
     }
+
+// get All topic
+const getAllCategory = async () => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getAllCategory()
+      setCategory(data)
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
+    }
+  }
     useEffect(() => {
         getBatchCount();
+        getAllCategory()
 
     }, [])
 
@@ -224,22 +238,10 @@ const Home = () => {
     errorMsg: 'error occur on get Batches'
  });
 
-// get All topic
-const getAllCategory = async (pageNo = "1") => {
-    spinner.show("Loading... wait");
-    try {
-      let { data } = await RestService.getAllCategory()
-      setCategory(data)
-      spinner.hide();
-    } catch (err) {
-      spinner.hide();
-      console.error("error occur on getAllTopic()", err)
-    }
-  }
+
   
 
     useEffect(() => {
-        getAllCategory()
         allCourse.response && setCourse(allCourse.response)
         allBatches.response && setBatches(allBatches.response)
         allDepartment.response && setDepartment(allDepartment.response)

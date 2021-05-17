@@ -2,6 +2,8 @@ package com.trainsoft.assessment.controller;
 
 import com.trainsoft.assessment.commons.JWTDecode;
 import com.trainsoft.assessment.commons.JWTTokenTO;
+import com.trainsoft.assessment.entity.VirtualAccount;
+import com.trainsoft.assessment.enums.QuizStatus;
 import com.trainsoft.assessment.service.IAssessmentService;
 import com.trainsoft.assessment.service.IUserBulkUploadService;
 import com.trainsoft.assessment.to.*;
@@ -21,7 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Slf4j
@@ -340,4 +343,46 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.searchAssessmentByCategory(searchString,companySid,categorySid,pageable));
     }
 
+    @PostMapping("/assessment/bookmark")
+    @ApiOperation(value = "bookMarkAssessment",notes = "API to book mark Assessment")
+    public ResponseEntity<?> bookMarkAssessment(
+            @ApiParam("book mark Assessment payload")@RequestBody VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
+    {
+        return ResponseEntity.ok(assessmentService.bookMarkAssessment(virtualAccountHasAssessmentBookMarkTo));
+    }
+
+    @GetMapping("/assessments/bookmarked/{vSid}")
+    @ApiOperation(value = "getBookMarkedAssessmentsByVirtualAccount",notes = "API to get book marked Assessment by Virtual Account Sid.")
+    public ResponseEntity<?>getBookMarkedAssessmentsByVirtualAccount(
+            @ApiParam("virtual account sid") @PathVariable("vSid") String virtualAccountSid)
+    {
+        return ResponseEntity.ok(assessmentService.getBookMarkedAssessmentsByVirtualAccount(virtualAccountSid));
+    }
+
+    @DeleteMapping("/assessment/remove/bookmarked")
+    @ApiOperation(value = "Remove book marked Assessment",notes = "API to delete book marked Assessment based on Virtual Account.")
+    public ResponseEntity<?> deleteBookMarkedAssessment(
+            @ApiParam("remove book marked Assessment payload")@RequestBody VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo)
+    {
+        return ResponseEntity.ok(assessmentService.deleteBookMarkedAssessment(virtualAccountHasAssessmentBookMarkTo));
+    }
+    @GetMapping("get/my/assessments/{status}/{sid}")
+    @ApiOperation(value = "get my assessment",notes = "API to get all Assessments and count based upon a status and User ")
+    public ResponseEntity<?>getAllMyAssessmentsAndCounts(
+           @ApiParam(value = "Status",required = true) @PathVariable("status") QuizStatus status,
+           @ApiParam(value = "Virtual Account Sid",required = true)@PathVariable("sid") String virtualAccountSid){
+        return ResponseEntity.ok(assessmentService.getAllMyAssessmentsAndCounts(status,virtualAccountSid));
+    }
+
+    @GetMapping("get/myAssessment/count/{status}/{sid}")
+    @ApiOperation(value = "get counts for my assessment",notes = "API to get counts for All My Assessments and " +
+            "count for status based Assessments.")
+    public ResponseEntity<?> getCountsForMyAssessments(
+           @ApiParam(value = "Status",required = true) @PathVariable("status") QuizStatus status,
+           @ApiParam(value = "Virtual Account Sid",required = true) @PathVariable("sid") String virtualAccountSid){
+        Integer count = assessmentService.getCountsForMyAssessments(status, virtualAccountSid);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("assessmentCount",count);
+        return ResponseEntity.ok(map);
+    }
 }
