@@ -3,6 +3,7 @@ package com.trainsoft.assessment.repository;
 import com.trainsoft.assessment.entity.Assessment;
 import com.trainsoft.assessment.entity.VirtualAccount;
 import com.trainsoft.assessment.entity.VirtualAccountHasAssessmentBookMark;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,5 +15,5 @@ public interface IVirtualAccountHasAssessmentBookMarkRepository extends JpaRepos
      VirtualAccountHasAssessmentBookMark findByVirtualAccountAndAssessment(Assessment assessment, VirtualAccount virtualAccount);
 
      @Query("SELECT vabm.assessment FROM VirtualAccountHasAssessmentBookMark  as vabm WHERE vabm.virtualAccount=:virtualAccount")
-     List<Assessment> findAssessmentsByVirtualAccount(VirtualAccount virtualAccount);
+     List<Assessment> findAssessmentsByVirtualAccount(VirtualAccount virtualAccount, Pageable pageable);
 }
