@@ -5,7 +5,7 @@ import styles from "./AssessmentBody.module.css";
 import Header from "./Header";
 import Main from "./Main";
 
-const AssessmentBody = () => {
+const AssessmentBody = ({location}) => {
   const {
     instruction,
     questions
@@ -14,8 +14,8 @@ const AssessmentBody = () => {
 
   return (
     <div className={styles.container}>
-      <IntroDialog {...{open: introDialog, setOpen: setIntroDialog}} />
-      <Header {...{introDialog, instruction}} />
+      <IntroDialog {...{open: introDialog, setOpen: setIntroDialog,location}} />
+      <Header {...{introDialog, instruction,location}} />
       <Main {...{questions: questions}}/>
     </div>
   );

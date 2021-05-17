@@ -34,7 +34,7 @@ const AssesmentsTable = ({ location }) => {
     premium: false,
     previousEnabled: true,
     status: "ENABLED",
-    tagSid: category[0].tags[0],
+    tagSid: category[0]?.tags[0],
     title: "",
     topicSid: "",
     validUpto: true,

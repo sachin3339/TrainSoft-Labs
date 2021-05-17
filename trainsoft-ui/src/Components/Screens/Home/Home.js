@@ -217,7 +217,18 @@ const Home = () => {
     const { setCourse,setBatches,setDepartment,spinner } = useContext(AppContext)
     const {setCategory} = useContext(AssessmentContext)
 
-
+        // get All topic
+const getAllCategory = async () => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getAllCategory()
+      setCategory(data)
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAllTopic()", err)
+    }
+  }
     // get all courses
     const allCourse = useFetch({
         method: "get",
@@ -242,6 +253,7 @@ const Home = () => {
   
 
     useEffect(() => {
+        getAllCategory()
         allCourse.response && setCourse(allCourse.response)
         allBatches.response && setBatches(allBatches.response)
         allDepartment.response && setDepartment(allDepartment.response)

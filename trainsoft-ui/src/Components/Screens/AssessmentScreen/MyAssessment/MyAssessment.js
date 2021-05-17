@@ -1,72 +1,82 @@
-import React, { useState } from 'react'
+import React, { useState,useContext,useEffect } from 'react'
 import { Form ,Tab , Nav} from 'react-bootstrap';
-import { Button } from '../../../Common/Buttons/Buttons';
-import { ICN_ARROW_DOWN, ICN_MARK, ICN_PARTICIPANT } from '../../../Common/Icon';
-import { Router } from '../../../Common/Router';
-import SearchBox from '../../../Common/SearchBox/SearchBox';
+import RestService from '../../../../Services/api.service';
+import AppContext from '../../../../Store/AppContext';
+import AssessmentContext from '../../../../Store/AssessmentContext';
 import '../assessment.css'
 import AssessmentRender from '../Catalogue/AssessmentRender';
 
-
-const data = [
-    {title: "Advanced Java",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins",status:"progress"},
-    {title: "Java Essesntials",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins",status:"ongoing"},
-    {title: "Object Oriented Programming with Java",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins",status:"quit"},
-    {title: "Personality Index",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins",status:"completed"},
-    {title: "Angular JS Fundamentals",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins",status:"ongoing"},
-    {title: "Domain Tests",desc:"This assessment lets you test your basic understanding of the Java programming language.",deficulty: "Beginner",question:10,duration:"30 Mins",status:"completed"},
-]
-
-
-
-
 const MyAssessment = ({location})=>{
-    const [key,setKey] = useState("allAssessment")
+    const {user,spinner} =  useContext(AppContext)
+    const {bookmark} = useContext(AssessmentContext)
+    const [key,setKey] = useState("ALL")
+    const [myAssessment,setMyAssessment] = useState([])
+    const [asseValue,setAsseValue] = useState([])
 
+     // get avg. category 
+   const getMyAssessment = async () => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getMyAssessment(key,user.sid)
+      setMyAssessment(data);
+      key === "ALL" && setAsseValue(data)
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAvgCategory()", err)
+    }
+  }
+
+  useEffect(() => {
+    key === "bookmarked" ? setMyAssessment(bookmark): getMyAssessment()
+  }, [key])
     return(<>
              <Tab.Container defaultActiveKey={key} onSelect={k => setKey(k)}>
                     <Nav variant="pills" className="flex-row">
                         <Nav.Item>
-                            <Nav.Link eventKey="allAssessment">All Assessments (15)</Nav.Link>
+                            <Nav.Link eventKey="ALL">All Assessments ({asseValue.length})</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="ongoing">Ongoing (2)</Nav.Link>
+                            <Nav.Link eventKey="STARTED">Ongoing ({asseValue.filter(res=>res.status ==="STARTED").length})</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="completed">Completed (12)</Nav.Link>
+                            <Nav.Link eventKey="COMPLETED">Completed ({asseValue.filter(res=>res.status ==="COMPLETED").length})</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="quit">Quit(1)</Nav.Link>
+                            <Nav.Link eventKey="QUIT">Quit ({asseValue.filter(res=>res.status ==="QUIT").length})</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link eventKey="bookmarked">Bookmarked</Nav.Link>
                         </Nav.Item>
                     </Nav>
                     <Tab.Content>
-                        <Tab.Pane eventKey="allAssessment">
-                            {key === 'allAssessment' && <div className="p15">
-                             <AssessmentRender {...{data,fromMyAt:true}}/>
+                        <Tab.Pane eventKey="ALL">
+                            {key === 'ALL' && <div className="p15">
+                             <AssessmentRender {...{data:myAssessment,fromMyAt:true}}/>
                             </div>}
                         </Tab.Pane>
-                        <Tab.Pane eventKey="ongoing">
-                            {key === 'ongoing' && <div className="card-container d-flex">
+                        <Tab.Pane eventKey="STARTED">
+                            {key === 'STARTED' && <div className="card-container mt-3">
+                             <AssessmentRender {...{data:myAssessment,fromMyAt:true}}/>
                                
                             </div>}
                         </Tab.Pane>
-                        <Tab.Pane eventKey="completed">
-                            {key === 'completed' && <div className="card-container d-flex">
+                        <Tab.Pane eventKey="COMPLETED">
+                            {key === 'COMPLETED' && <div className="card-container mt-3">
+                             <AssessmentRender {...{data:myAssessment,fromMyAt:true}}/>
                                 
                             </div>}
                         </Tab.Pane>
-                        <Tab.Pane eventKey="quit">
-                            {key === 'quit' && <div className="card-container d-flex">
+                        <Tab.Pane eventKey="QUIT">
+                            {key === 'QUIT' && <div className="card-container mt-3">
+                             <AssessmentRender {...{data:myAssessment,fromMyAt:true}}/>
                                 
                             </div>}
                         </Tab.Pane>
 
                         <Tab.Pane eventKey="bookmarked">
-                            {key === 'bookmarked' && <div className="card-container d-flex">
-                                
+                            {key === 'bookmarked' && <div className="card-container mt-3">
+                             <AssessmentRender {...{data:myAssessment,fromMyAt:false}}/>
                             </div>}
                         </Tab.Pane>
                       
