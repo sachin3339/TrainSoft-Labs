@@ -1199,15 +1199,27 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public Integer getCountsForMyAssessments(QuizStatus status, String virtualAccountSid) {
+    public MyAssessmentsCountTO getCountsForMyAssessments(String virtualAccountSid) {
         VirtualAccount virtualAccount = virtualAccountRepository
                 .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
-        if (virtualAccount!=null && (status.name().equals("ALL"))){
-           return virtualAccountAssessmentRepository.getCountsForAllMyAssessments(virtualAccount);
-        }else if (virtualAccount!=null){
-            return virtualAccountAssessmentRepository.getStatusBasedCountForMyAssessment(status,virtualAccount);
-        }throw new InvalidSidException("Invalid Virtual Account Sid");
+        if (virtualAccount != null) {
+            MyAssessmentsCountTO myAssessmentsCountTO = new MyAssessmentsCountTO();
+            Integer allCount = virtualAccountAssessmentRepository.getCountsForAllMyAssessments(virtualAccount);
+            Integer onGoingCount = virtualAccountAssessmentRepository
+                    .getStatusBasedCountForMyAssessment(QuizStatus.STARTED, virtualAccount);
+            Integer completedCount = virtualAccountAssessmentRepository
+                    .getStatusBasedCountForMyAssessment(QuizStatus.COMPLETED, virtualAccount);
+            Integer quitCount = virtualAccountAssessmentRepository
+                    .getStatusBasedCountForMyAssessment(QuizStatus.QUIT, virtualAccount);
+            myAssessmentsCountTO.setAll(allCount);
+            myAssessmentsCountTO.setOnGoing(onGoingCount);
+            myAssessmentsCountTO.setCompleted(completedCount);
+            myAssessmentsCountTO.setQuit(quitCount);
+            return myAssessmentsCountTO;
+        }
+        throw new InvalidSidException("Invalid Virtual Account Sid");
     }
+
 
     @Override
     public List<AssessmentTo> getAssessmentsByTagsAndDifficulty(AssessmentsFilterTo assessmentsFilterTo,Pageable pageable)

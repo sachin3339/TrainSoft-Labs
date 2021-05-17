@@ -1,8 +1,8 @@
 .input-field {
 	width: 100%;
-	border-radius: 30px;
+	border-radius: 30px !important;
 	/*box-shadow: 0px 3px 6px #00000029;*/
-	padding: 5px 15px;
+	padding: 5px 15px !important;
 	background:#f8fafb !important;
 	margin-bottom: 2px;
 	display: flex;
@@ -30,6 +30,27 @@
 }
 .input-field textarea {
 	height: 100px !important;
+}
+.input-field .react-dropdown-select-option{
+	align-items: center !important;
+	border-radius: 12px !important;
+	color: #111 !important;
+	font-size: 12px !important;
+	padding: 0px 15px !important;
+}
+.input-field .react-dropdown-select-option-label{
+	font-size: 12px;
+}
+.input-field .react-dropdown-select-option-remove{
+	padding-top: 2px !important;
+}
+.input-field .react-dropdown-select-item{
+	color: #111;
+	padding: 5px 25px;
+}
+.input-field .react-dropdown-select-item-selected{
+	color: #111 !important;
+	padding: 5px 25px;
 }
 .input-wrapper {
 	min-height: 70px;

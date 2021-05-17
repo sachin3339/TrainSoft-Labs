@@ -142,9 +142,8 @@ const QuestionsTable = ({ location }) => {
     try {
       let { data } = await RestService.getQuestionById(sid);
       navigate("/questions/create", {
-        state: { title: "Questions", subTitle: data.name, "isEdit": true, "questionData": data },
+        state: { title: "Questions", subTitle: data.name, "isEdit": true, "questionData": {...data, "answer": data.answer.filter(d => d.status != GLOBELCONSTANT.STATUS.DELETED).map(a => ({...a, "operation" : GLOBELCONSTANT.OPERATION.UPDATE})) }},
       });
-      console.log(data);
       spinner.hide();
     } catch (err) {
       spinner.hide();

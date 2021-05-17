@@ -32,8 +32,7 @@ const Login = () => {
                         setUserValue("LOGIN",data)
                         AxiosService.init('',response.data.jwtToken);
                         TokenService.saveToken(response.data.jwtToken)
-                        data.role === "LEARNER" ?  navigate('/home', { state: { title: 'Home'} }): navigate('/dashboard', { state: { title: 'Dashboard'} })
-                        
+                        data.role === "LEARNER" ?  navigate('/home', { state: { title: 'Home'} }): navigate('/dashboard', { state: { title: 'Dashboard'} }) 
                     },
                 err => {
                     Toast.error({message: 'Invalid User Name / Password!'})
