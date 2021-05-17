@@ -272,6 +272,7 @@ public class AssessmentController {
             @ApiParam(value = "virtualAccount Sid", required = true) @PathVariable("VASid") String VASid) {
         log.info(String.format("Request received : User for GET /v1/users"));
         UserTO createUserTO= bulkUploadService.getVirtualAccountByVASid(VASid);
+        createUserTO.getAppuser().setPassword(null);
         return ResponseEntity.ok(createUserTO);
     }
 
