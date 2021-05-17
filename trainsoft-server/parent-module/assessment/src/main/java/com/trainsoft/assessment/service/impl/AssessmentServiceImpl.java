@@ -1085,13 +1085,13 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<AssessmentTo> getBookMarkedAssessmentsByVirtualAccount(String virtualAccountSid)
+    public List<AssessmentTo> getBookMarkedAssessmentsByVirtualAccount(String virtualAccountSid,Pageable pageable)
     {
         if(virtualAccountSid==null)
             throw new InvalidSidException("Invalid Virtual Account Sid !");
 
         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
-        List<Assessment> assessmentList = virtualAccountHasAssessmentBookMarkRepository.findAssessmentsByVirtualAccount(virtualAccount);
+        List<Assessment> assessmentList = virtualAccountHasAssessmentBookMarkRepository.findAssessmentsByVirtualAccount(virtualAccount,pageable);
         if(CollectionUtils.isNotEmpty(assessmentList))
         {
             return getAssessmentToList(assessmentList);
@@ -1144,13 +1144,13 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid) {
+    public List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid,Pageable pageable) {
         VirtualAccount virtualAccount = virtualAccountRepository
                 .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
         ArrayList<MyAssessmentsTO> list = new ArrayList<>();
         if (virtualAccount!=null && status.name().equals("ALL")){
             List<Object[]> allMyAssessmentsAndCounts = virtualAccountAssessmentRepository
-                    .getAllMyAssessmentsAndCounts(virtualAccount);
+                    .getAllMyAssessmentsAndCounts(virtualAccount,pageable);
             allMyAssessmentsAndCounts.forEach(av->{
                 MyAssessmentsTO myAssessmentsTO = new MyAssessmentsTO();
                 Optional<Assessment> assessment= assessmentRepository.findById((Integer) av[0]);
@@ -1173,7 +1173,7 @@ public class AssessmentServiceImpl implements IAssessmentService
             return list;
         }else if(virtualAccount!=null){
             List<Object[]> allMyAssessmentsAndStatusAndCounts = virtualAccountAssessmentRepository
-                    .getAllMyAssessmentsAndStatusAndCounts(status, virtualAccount);
+                    .getAllMyAssessmentsAndStatusAndCounts(status, virtualAccount,pageable);
             System.out.println(allMyAssessmentsAndStatusAndCounts);
                  allMyAssessmentsAndStatusAndCounts.forEach(av->{
                      MyAssessmentsTO myAssessmentsTO = new MyAssessmentsTO();
@@ -1199,13 +1199,85 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public Integer getCountsForMyAssessments(QuizStatus status, String virtualAccountSid) {
+    public MyAssessmentsCountTO getCountsForMyAssessments(String virtualAccountSid) {
         VirtualAccount virtualAccount = virtualAccountRepository
                 .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
-        if (virtualAccount!=null && (status.name().equals("ALL"))){
-           return virtualAccountAssessmentRepository.getCountsForAllMyAssessments(virtualAccount);
-        }else if (virtualAccount!=null){
-            return virtualAccountAssessmentRepository.getStatusBasedCountForMyAssessment(status,virtualAccount);
-        }throw new InvalidSidException("Invalid Virtual Account Sid");
+        if (virtualAccount != null) {
+            MyAssessmentsCountTO myAssessmentsCountTO = new MyAssessmentsCountTO();
+            Integer allCount = virtualAccountAssessmentRepository.getCountsForAllMyAssessments(virtualAccount);
+            Integer onGoingCount = virtualAccountAssessmentRepository
+                    .getStatusBasedCountForMyAssessment(QuizStatus.STARTED, virtualAccount);
+            Integer completedCount = virtualAccountAssessmentRepository
+                    .getStatusBasedCountForMyAssessment(QuizStatus.COMPLETED, virtualAccount);
+            Integer quitCount = virtualAccountAssessmentRepository
+                    .getStatusBasedCountForMyAssessment(QuizStatus.QUIT, virtualAccount);
+            myAssessmentsCountTO.setAll(allCount);
+            myAssessmentsCountTO.setOnGoing(onGoingCount);
+            myAssessmentsCountTO.setCompleted(completedCount);
+            myAssessmentsCountTO.setQuit(quitCount);
+            return myAssessmentsCountTO;
+        }
+        throw new InvalidSidException("Invalid Virtual Account Sid");
+    }
+
+
+    @Override
+    public List<AssessmentTo> getAssessmentsByTagsAndDifficulty(AssessmentsFilterTo assessmentsFilterTo,Pageable pageable)
+    {
+        List<Tag> tagList = getTagsList(assessmentsFilterTo);
+        Company company = getCompany(assessmentsFilterTo.getCompanySid());
+        Category category = categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(assessmentsFilterTo.getCategorySid()));
+        List<AssessmentEnum.QuizSetDifficulty> difficultyList = assessmentsFilterTo.getDifficultyList();
+        List<Assessment> assessmentList = null;
+
+        // filter either based on 1. tagList and difficultyList  OR 2. tagList or difficultyList OR 3. if both are not there then get assessments based on only company and category
+        if(CollectionUtils.isNotEmpty(assessmentsFilterTo.getTagsList()) && CollectionUtils.isNotEmpty(assessmentsFilterTo.getDifficultyList()))
+        {
+            assessmentList = assessmentRepository.getAssessmentsByTagAndDifficulty(tagList, difficultyList,company,category,pageable);
+        }
+        else if(CollectionUtils.isNotEmpty(assessmentsFilterTo.getTagsList()) || CollectionUtils.isNotEmpty(assessmentsFilterTo.getDifficultyList())) {
+            assessmentList = assessmentRepository.getAssessmentsByTagORDifficulty(tagList, difficultyList,company,category,pageable);
+        }
+        else {
+            assessmentList = assessmentRepository.getAssessmentByCategory(company, category, pageable);
+        }
+
+        return getAssessmentToList(assessmentList);
+    }
+
+    @Override
+    public Integer getAssessmentsCountByTagsAndDifficulty(AssessmentsFilterTo assessmentsFilterTo)
+    {
+        List<Tag> tagList = getTagsList(assessmentsFilterTo);
+
+        Company company = getCompany(assessmentsFilterTo.getCompanySid());
+        Category category = categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(assessmentsFilterTo.getCategorySid()));
+        List<AssessmentEnum.QuizSetDifficulty> difficultyList = assessmentsFilterTo.getDifficultyList();
+
+        if(CollectionUtils.isNotEmpty(assessmentsFilterTo.getTagsList()) && CollectionUtils.isNotEmpty(assessmentsFilterTo.getDifficultyList()))
+        {
+            return assessmentRepository.getAssessmentsCountByTagAndDifficulty(tagList, difficultyList,company,category);
+        }
+        else if(CollectionUtils.isNotEmpty(assessmentsFilterTo.getTagsList()) || CollectionUtils.isNotEmpty(assessmentsFilterTo.getDifficultyList())) {
+            return assessmentRepository.getAssessmentsCountByTagORDifficulty(tagList, difficultyList,company,category);
+        }
+        else {
+            return assessmentRepository.getAssessmentCountByCategory(company,category);
+        }
+    }
+
+    private List<Tag> getTagsList(AssessmentsFilterTo assessmentsFilterTo)
+    {
+
+        List<Tag> tagList = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(assessmentsFilterTo.getTagsList()))
+        {
+            List<String> tagSidList = assessmentsFilterTo.getTagsList();
+            tagSidList.forEach(tag -> {
+                tagList.add(tagRepository.findBySid(BaseEntity.hexStringToByteArray(tag)));
+            });
+        }
+        return tagList;
+
     }
 }

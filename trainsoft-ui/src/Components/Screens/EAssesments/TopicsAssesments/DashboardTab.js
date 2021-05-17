@@ -5,6 +5,7 @@ import AssessmentContext from "../../../../Store/AssessmentContext";
 import RestService from "../../../../Services/api.service";
 import moment from "moment";
 import AppContext from "../../../../Store/AppContext";
+import { ICN_ASSESS_ATTEND, ICN_TOTAL_AVG_SCORE, ICN_TOTAL_QUESTION,ICN_TOTAL_SUBMITTED } from "../../../Common/Icon";
 
 const DashboardTab = () => {
   const { initialAssessment } = useContext(AssessmentContext)
@@ -147,28 +148,28 @@ const Headers = ({ initialAssessment, dashboardDate }) => {
       <HeaderElement
         stat={dashboardDate?.totalSubmitted}
         substat={`${dashboardDate?.totalUsers}`}
-        icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
+        icon={ICN_TOTAL_SUBMITTED}
       >
         Total <br />
         Submitted
       </HeaderElement>
       <HeaderElement
         stat={dashboardDate?.assessAttendance ? dashboardDate?.assessAttendance : 0 }
-        icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
+        icon={ICN_ASSESS_ATTEND}
       >
         Assensee <br />
         Attendance
       </HeaderElement>
       <HeaderElement
         stat={dashboardDate.totalQuestions ? dashboardDate.totalQuestions : 0}
-        icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
+        icon={ICN_TOTAL_QUESTION}
       >
         Total <br />
         Questions
       </HeaderElement>
       <HeaderElement
         stat={dashboardDate.batchAvgScore ? dashboardDate.batchAvgScore : 0}
-        icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
+        icon={ICN_TOTAL_AVG_SCORE}
       >
         Batch <br />
         Avg. Score

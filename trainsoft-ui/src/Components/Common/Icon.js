@@ -1,4 +1,7 @@
 
+import ASSESS from '../../Assets/Images/assess.svg';
+import TOTAL_QUESTION from '../../Assets/Images/total-question.svg';
+import TOTAL_AVG_SCORE from '../../Assets/Images/avg-score.svg';
 import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 import PieChartIcon from '@material-ui/icons/PieChart';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
@@ -47,6 +50,10 @@ import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite'
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 
 export const ICN_EXPANDED = <AspectRatioIcon/>
+export const ICN_ASSESS_ATTEND = <img src={ASSESS}/>
+export const ICN_TOTAL_QUESTION = <img src={TOTAL_QUESTION}/>
+export const ICN_TOTAL_AVG_SCORE = <img src={TOTAL_AVG_SCORE}/>
+export const ICN_TOTAL_SUBMITTED = <svg xmlns="http://www.w3.org/2000/svg" width="30.581" height="25.433" viewBox="0 0 30.581 25.433"><g transform="translate(1 1.048)"><path fill="none" strokeLinejoin="round" stokeWidth="2px" strokeLinecap="round" stroke="#c321ff" class="a" d="M22.286,30.295V27.7a5.2,5.2,0,0,0-5.2-5.2H6.7a5.2,5.2,0,0,0-5.2,5.2v2.6" transform="translate(-1.5 -6.91)"/><path class="a" fill="none" strokeLinejoin="round" stokeWidth="2px" strokeLinecap="round" stroke="#c321ff" d="M17.893,9.7a5.2,5.2,0,1,1-5.2-5.2,5.2,5.2,0,0,1,5.2,5.2Z" transform="translate(-2.303 -4.5)"/><path fill="none" strokeLinejoin="round" stokeWidth="2px" strokeLinecap="round" stroke="#c321ff" class="a" d="M33.9,30.321v-2.6A5.2,5.2,0,0,0,30,22.7" transform="translate(-5.316 -6.936)"/><path fill="none" strokeLinejoin="round" stokeWidth="2px" strokeLinecap="round" stroke="#c321ff" class="a" d="M24,4.7a5.2,5.2,0,0,1,0,10.068" transform="translate(-4.513 -4.526)"/></g></svg>
 export const ICN_DOWNLOADS =<svg xmlns="http://www.w3.org/2000/svg" width="11.667" height="14" viewBox="0 0 11.667 14"><path fill="#1759ef" class="a" d="M18.417,9.44H15.084V4.5h-5V9.44H6.75L12.583,15.2ZM6.75,16.852V18.5H18.417V16.852Z" transform="translate(-6.75 -4.5)"/></svg>
 export const ICN_SETTINGS = <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="#fff" class="a" d="M17.451,12.175a5,5,0,0,0,.041-.8c0-.28-.041-.52-.041-.8l1.718-1.32a.367.367,0,0,0,.082-.52l-1.636-2.76a.4.4,0,0,0-.491-.16l-2.046.8a5.955,5.955,0,0,0-1.391-.8L13.4,3.695a.438.438,0,0,0-.409-.32H9.718a.438.438,0,0,0-.409.32l-.327,2.12a6.928,6.928,0,0,0-1.391.8l-2.046-.8a.383.383,0,0,0-.491.16L3.417,8.735a.483.483,0,0,0,.082.52l1.759,1.32c0,.28-.041.52-.041.8s.041.52.041.8L3.54,13.495a.367.367,0,0,0-.082.52l1.637,2.76a.4.4,0,0,0,.491.16l2.046-.8a5.954,5.954,0,0,0,1.391.8l.327,2.12a.4.4,0,0,0,.409.32h3.273a.438.438,0,0,0,.409-.32l.328-2.12a6.924,6.924,0,0,0,1.391-.8l2.046.8a.383.383,0,0,0,.491-.16l1.636-2.76a.482.482,0,0,0-.082-.52Zm-6.1,2a2.8,2.8,0,1,1,2.864-2.8A2.815,2.815,0,0,1,11.354,14.175Z" transform="translate(-3.375 -3.375)"/></svg>
 export const ICN_MYASSESSMENT = <svg xmlns="http://www.w3.org/2000/svg" width="18" height="15.75" viewBox="0 0 18 15.75"><path fill="#fff"  d="M-4411.43-5383.25h-14.625a1.69,1.69,0,0,1-1.688-1.687v-12.375a1.69,1.69,0,0,1,1.688-1.688h14.625a1.69,1.69,0,0,1,1.687,1.688v12.375A1.689,1.689,0,0,1-4411.43-5383.25Zm-5.933-11.5h0l-3.587,7.176h1.2l3.588-7.176Zm-4.783,1.2h0l-1.2,2.392,1.2,2.392h1.2l-1.2-2.392,1.2-2.392Zm5.979,0h0l1.2,2.392-1.2,2.392h1.2l1.2-2.392-1.2-2.392Z" transform="translate(4427.744 5399)"/></svg>

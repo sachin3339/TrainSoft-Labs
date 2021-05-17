@@ -7,6 +7,7 @@ import com.trainsoft.assessment.enums.QuizStatus;
 import com.trainsoft.assessment.service.IAssessmentService;
 import com.trainsoft.assessment.service.IUserBulkUploadService;
 import com.trainsoft.assessment.to.*;
+import com.trainsoft.assessment.value.AssessmentEnum;
 import com.trainsoft.assessment.value.InstructorEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -272,6 +273,7 @@ public class AssessmentController {
             @ApiParam(value = "virtualAccount Sid", required = true) @PathVariable("VASid") String VASid) {
         log.info(String.format("Request received : User for GET /v1/users"));
         UserTO createUserTO= bulkUploadService.getVirtualAccountByVASid(VASid);
+        createUserTO.getAppuser().setPassword(null);
         return ResponseEntity.ok(createUserTO);
     }
 
@@ -354,9 +356,9 @@ public class AssessmentController {
     @GetMapping("/assessments/bookmarked/{vSid}")
     @ApiOperation(value = "getBookMarkedAssessmentsByVirtualAccount",notes = "API to get book marked Assessment by Virtual Account Sid.")
     public ResponseEntity<?>getBookMarkedAssessmentsByVirtualAccount(
-            @ApiParam("virtual account sid") @PathVariable("vSid") String virtualAccountSid)
+            @ApiParam("virtual account sid") @PathVariable("vSid") String virtualAccountSid,Pageable pageable)
     {
-        return ResponseEntity.ok(assessmentService.getBookMarkedAssessmentsByVirtualAccount(virtualAccountSid));
+        return ResponseEntity.ok(assessmentService.getBookMarkedAssessmentsByVirtualAccount(virtualAccountSid,pageable));
     }
 
     @DeleteMapping("/assessment/remove/bookmarked")
@@ -366,23 +368,39 @@ public class AssessmentController {
     {
         return ResponseEntity.ok(assessmentService.deleteBookMarkedAssessment(virtualAccountHasAssessmentBookMarkTo));
     }
+
     @GetMapping("get/my/assessments/{status}/{sid}")
     @ApiOperation(value = "get my assessment",notes = "API to get all Assessments and count based upon a status and User ")
     public ResponseEntity<?>getAllMyAssessmentsAndCounts(
            @ApiParam(value = "Status",required = true) @PathVariable("status") QuizStatus status,
-           @ApiParam(value = "Virtual Account Sid",required = true)@PathVariable("sid") String virtualAccountSid){
-        return ResponseEntity.ok(assessmentService.getAllMyAssessmentsAndCounts(status,virtualAccountSid));
+           @ApiParam(value = "Virtual Account Sid",required = true)@PathVariable("sid") String virtualAccountSid,Pageable pageable){
+        return ResponseEntity.ok(assessmentService.getAllMyAssessmentsAndCounts(status,virtualAccountSid,pageable));
     }
 
-    @GetMapping("get/myAssessment/count/{status}/{sid}")
+    @GetMapping("get/myAssessment/count/{sid}")
     @ApiOperation(value = "get counts for my assessment",notes = "API to get counts for All My Assessments and " +
             "count for status based Assessments.")
     public ResponseEntity<?> getCountsForMyAssessments(
-           @ApiParam(value = "Status",required = true) @PathVariable("status") QuizStatus status,
            @ApiParam(value = "Virtual Account Sid",required = true) @PathVariable("sid") String virtualAccountSid){
-        Integer count = assessmentService.getCountsForMyAssessments(status, virtualAccountSid);
-        Map<String, Integer> map = new HashMap<>();
-        map.put("assessmentCount",count);
-        return ResponseEntity.ok(map);
+        return ResponseEntity.ok(assessmentService.getCountsForMyAssessments( virtualAccountSid));
     }
+
+    @PostMapping("/assessments/tags-difficulty")
+    @ApiOperation(value = "get Assessments by Tags and Difficulty",notes = "API to Filter Assessments based on tags and difficulty")
+    public ResponseEntity<?>getAssessmentsByTagsAndDifficulty(
+            @ApiParam(value = "AssessmentsFilterTo") @RequestBody AssessmentsFilterTo assessmentsFilterTo,
+            Pageable pageable)
+    {
+        return ResponseEntity.ok(assessmentService.getAssessmentsByTagsAndDifficulty(assessmentsFilterTo,pageable));
+    }
+
+    @PostMapping("/assessments/tags-difficulty/count")
+    @ApiOperation(value = "get Assessments Count by Tags and Difficulty",notes = "API to get Assessments Count based on tags and difficulty")
+    public ResponseEntity<?>getAssessmentsCountByTagsAndDifficulty(
+            @ApiParam(value = "AssessmentsFilterTo") @RequestBody AssessmentsFilterTo assessmentsFilterTo,
+            Pageable pageable)
+    {
+        return ResponseEntity.ok(assessmentService.getAssessmentsCountByTagsAndDifficulty(assessmentsFilterTo));
+    }
+
 }
