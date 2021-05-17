@@ -13,4 +13,5 @@ public interface ICompanyService {
       String generateTokenAndUpdateResetPassToken(String email) throws IncorrectEmailException;
       String getAppUserNameByEmail(String email);
       void sendAssessmentEmail(String email,String name,String link);
+      void sendEmailAndPassword(String email,String password,String name);
 }
