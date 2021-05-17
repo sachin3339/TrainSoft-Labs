@@ -90,17 +90,22 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
                 virtualAccount.setStatus(InstructorEnum.Status.ENABLED);
                 virtualAccount = virtualAccountRepository.save(virtualAccount);
                 if (userTO.getDepartmentVA() != null) {
-                    if (userTO.getDepartmentVA().getDepartment() != null && StringUtils.isNotEmpty(userTO.getDepartmentVA().getDepartment().getSid())) {
+                    if (userTO.getDepartmentVA().getDepartment() != null
+                            && StringUtils.isNotEmpty(userTO.getDepartmentVA().getDepartment().getSid())) {
                         DepartmentVirtualAccount departmentVirtualAccount = new DepartmentVirtualAccount();
                         departmentVirtualAccount.generateUuid();
                         departmentVirtualAccount.setVirtualAccount(virtualAccount);
-                        departmentVirtualAccount.setDepartment(departmentRepository.findDepartmentBySidAndStatusNot(BaseEntity.hexStringToByteArray(userTO.getDepartmentVA().getDepartment().getSid()), InstructorEnum.Status.DELETED));
+                        departmentVirtualAccount.setDepartment(departmentRepository
+                                           .findDepartmentBySidAndStatusNot(BaseEntity.hexStringToByteArray(userTO.getDepartmentVA()
+                                           .getDepartment().getSid()), InstructorEnum.Status.DELETED));
                         departmentVirtualAccount.setDepartmentRole(userTO.getDepartmentVA().getDepartmentRole());
                         savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
                     } else if (userTO.getDepartmentVA().getDepartment() != null &&
                             StringUtils.isEmpty(userTO.getDepartmentVA().getDepartment().getSid()) &&
                             StringUtils.isNotEmpty(userTO.getDepartmentVA().getDepartment().getName())) {
-                        Department department = departmentRepository.findDepartmentByNameAndStatusNotAndCompany(userTO.getDepartmentVA().getDepartment().getName(), InstructorEnum.Status.DELETED, company);
+                        Department department = departmentRepository
+                                        .findDepartmentByNameAndStatusNotAndCompany(userTO.getDepartmentVA().getDepartment()
+                                        .getName(), InstructorEnum.Status.DELETED, company);
                         if (department != null) {
                             DepartmentVirtualAccount departmentVirtualAccount = new DepartmentVirtualAccount();
                             departmentVirtualAccount.generateUuid();
@@ -127,8 +132,20 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
                         }
                     }
                 }
+
+                if(userTO.getDepartmentVA()!=null && userTO.getDepartmentVA()
+                        .getDepartmentRole().equals(InstructorEnum.DepartmentRole.ASSESS_USER)){
+                    DepartmentVirtualAccount departmentVirtualAccount = new DepartmentVirtualAccount();
+                    departmentVirtualAccount.generateUuid();
+                    departmentVirtualAccount.setVirtualAccount(virtualAccount);
+                    departmentVirtualAccount.setDepartment(departmentRepository.findDepartmentBySidAndStatusNot
+                                (BaseEntity.hexStringToByteArray(departmentSid), InstructorEnum.Status.DELETED));
+                    departmentVirtualAccount.setDepartmentRole(InstructorEnum.DepartmentRole.ASSESS_USER);
+                    savedDepartmentVA = departmentVARepo.save(departmentVirtualAccount);
+                }
                if(userTO.getDepartmentVA().getDepartmentRole().equals(InstructorEnum.DepartmentRole.ASSESS_USER)) {
-                    companyService.sendEmailAndPassword(virtualAccount.getAppuser().getEmailId(),virtualAccount.getAppuser().getPassword(), virtualAccount.getAppuser().getName());
+                    companyService.sendEmailAndPassword(virtualAccount.getAppuser().getEmailId(),
+                            virtualAccount.getAppuser().getPassword(), virtualAccount.getAppuser().getName());
                     log.info("We have sent a trainsoft credential details send to your email. Please check.");
                }
             }
@@ -162,6 +179,7 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
                     }
                 }
             }
+
             VirtualAccountAssessment virtualAccountAssessment= new VirtualAccountAssessment();
             virtualAccountAssessment.generateUuid();
             virtualAccountAssessment.setVirtualAccount(virtualAccount);
@@ -170,11 +188,8 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
             userTO.getAppuser().setSid(virtualAccount.getAppuser().getStringSid());
             userTO.getAppuser().setPassword(null);
             userTO.setSid(virtualAccount.getStringSid());
-            if (savedDepartmentVA != null) {
+            if (savedDepartmentVA != null ) {
                 userTO.getDepartmentVA().setSid(savedDepartmentVA.getStringSid());
-            }
-            if (savedDepartmentVA != null && savedDepartmentVA.getDepartment() != null) {
-                userTO.getDepartmentVA().getDepartment().setSid(savedDepartmentVA.getDepartment().getStringSid());
             }
             return userTO;
         }
