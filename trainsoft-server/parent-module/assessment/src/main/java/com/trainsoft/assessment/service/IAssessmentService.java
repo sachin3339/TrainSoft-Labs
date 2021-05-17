@@ -54,7 +54,6 @@ public interface IAssessmentService
 
     List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid);
 
-    List<AssessmentTo> getAssessmentsByTagsAndDifficulty(String companySid,String categorySid,
-                                                         List<String> tagsSidList, List<AssessmentEnum.QuizSetDifficulty> difficultyList,Pageable pageable);
+    List<AssessmentTo> getAssessmentsByTagsAndDifficulty(AssessmentsFilterTo assessmentsFilterTo,Pageable pageable);
 
 }

@@ -375,16 +375,12 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.getAllMyAssessmentsAndCounts(status,virtualAccountSid));
     }
 
-    @GetMapping("/assessments/tags-difficulty/{companySid}/{categorySid}/{difficultyList}/{tagslist}")
-    @ApiOperation(value = "get Assessments by Tags and Difficulty",notes = "API to get Assessments based on tags and difficulty ")
+    @PostMapping("/assessments/tags-difficulty")
+    @ApiOperation(value = "get Assessments by Tags and Difficulty",notes = "API to Filter Assessments based on tags and difficulty ")
     public ResponseEntity<?>getAssessmentsByTagsAndDifficulty(
-            @ApiParam(value = "difficulty") @PathVariable(value = "difficultyList",required = false) List<AssessmentEnum.QuizSetDifficulty> difficultyList,
-            @ApiParam(value = "tag's Sid List ")@PathVariable(value = "tagslist",required = false) List<String> tagsSidList,
-            @ApiParam(value = "Company Sid") @PathVariable("companySid") String companySid,
-            @ApiParam(value = "Category Sid")@PathVariable("categorySid") String categorySid,Pageable pageable)
+            @ApiParam(value = "AssessmentsFilterTo") @RequestBody AssessmentsFilterTo assessmentsFilterTo,
+            Pageable pageable)
     {
-        return ResponseEntity.ok(assessmentService.getAssessmentsByTagsAndDifficulty(companySid,categorySid,tagsSidList,difficultyList,pageable));
+        return ResponseEntity.ok(assessmentService.getAssessmentsByTagsAndDifficulty(assessmentsFilterTo,pageable));
     }
-
-
 }

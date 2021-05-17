@@ -1199,27 +1199,33 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<AssessmentTo> getAssessmentsByTagsAndDifficulty(String companySid,String categorySid,
-                                                                List<String> tagsSidList, List<AssessmentEnum.QuizSetDifficulty> difficultyList,Pageable pageable)
+    public List<AssessmentTo> getAssessmentsByTagsAndDifficulty(AssessmentsFilterTo assessmentsFilterTo,Pageable pageable)
     {
-        if(companySid == null)
-           throw new InvalidSidException("Company Sid is null !");
-        if(categorySid == null)
-            throw new InvalidSidException("Category Sid is null !");
-        if(CollectionUtils.isEmpty(tagsSidList) && CollectionUtils.isEmpty(difficultyList))
-            throw new InvalidSidException("tagSidList and difficulty both are null");
 
-        // Prepare TagList from list of tagSid's
         List<Tag> tagList = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(tagsSidList))
-        {
-            tagsSidList.forEach(tag->{
-               tagList.add(tagRepository.findBySid(BaseEntity.hexStringToByteArray(tag.trim())));
+        if(CollectionUtils.isNotEmpty(assessmentsFilterTo.getTagsList())) {
+            List<String> tagSidList = assessmentsFilterTo.getTagsList();
+            tagSidList.forEach(tag -> {
+                tagList.add(tagRepository.findBySid(BaseEntity.hexStringToByteArray(tag)));
             });
         }
 
-        List<Assessment>assessmentList=assessmentRepository.getAssessmentsByTagAndDifficulty(tagList,difficultyList,getCompany(companySid),
-                categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)),pageable);
+        Company company = getCompany(assessmentsFilterTo.getCompanySid());
+        Category category = categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(assessmentsFilterTo.getCategorySid()));
+        List<AssessmentEnum.QuizSetDifficulty> difficultyList = assessmentsFilterTo.getDifficultyList();
+        List<Assessment> assessmentList = null;
+
+        // filter either based on 1. tagList and difficultyList  OR 2. tagList or difficultyList OR 3. if both are not there then get assessments based on only company and category
+        if(CollectionUtils.isNotEmpty(assessmentsFilterTo.getTagsList()) && CollectionUtils.isNotEmpty(assessmentsFilterTo.getDifficultyList()))
+        {
+            assessmentList = assessmentRepository.getAssessmentsByTagAndDifficulty(tagList, difficultyList,company,category,pageable);
+        }
+        else if(CollectionUtils.isNotEmpty(assessmentsFilterTo.getTagsList()) || CollectionUtils.isNotEmpty(assessmentsFilterTo.getDifficultyList())) {
+            assessmentList = assessmentRepository.getAssessmentsByTagORDifficulty(tagList, difficultyList,company,category,pageable);
+        }
+        else {
+            assessmentList = assessmentRepository.getAssessmentByCategory(company, category, pageable);
+        }
 
         return getAssessmentToList(assessmentList);
     }
