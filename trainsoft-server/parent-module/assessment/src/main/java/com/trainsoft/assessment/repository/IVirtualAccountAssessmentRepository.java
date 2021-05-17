@@ -4,6 +4,7 @@ import com.trainsoft.assessment.entity.Assessment;
 import com.trainsoft.assessment.entity.VirtualAccount;
 import com.trainsoft.assessment.entity.VirtualAccountAssessment;
 import com.trainsoft.assessment.enums.QuizStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -46,7 +47,7 @@ public interface IVirtualAccountAssessmentRepository extends JpaRepository<Virtu
 			"LEFT OUTER JOIN VirtualAccountHasQuizSetAssessment vs ON\n" +
 			"vt.virtualAccount=vs.virtualAccountId AND vt.assessment=vs.quizSetId\n" +
 			"WHERE vt.virtualAccount=:virtualAccount")
-	List<Object[]> getAllMyAssessmentsAndCounts(VirtualAccount virtualAccount);
+	List<Object[]> getAllMyAssessmentsAndCounts(VirtualAccount virtualAccount, Pageable pageable);
 
 	@Query(value = "SELECT qs.id,qs.title,qs.description,qs.difficulty,qs.duration,qs.tagId.id,qs.url,\n" +
 			"vs.percentage,vt.status,vt.virtualAccount.id\n" +
@@ -55,7 +56,7 @@ public interface IVirtualAccountAssessmentRepository extends JpaRepository<Virtu
 			"LEFT OUTER JOIN VirtualAccountHasQuizSetAssessment vs ON\n" +
 			"vt.virtualAccount=vs.virtualAccountId AND vt.assessment=vs.quizSetId\n" +
 			"WHERE vt.virtualAccount=:virtualAccount AND vt.status=:status")
-	List<Object[]> getAllMyAssessmentsAndStatusAndCounts(QuizStatus status,VirtualAccount virtualAccount);
+	List<Object[]> getAllMyAssessmentsAndStatusAndCounts(QuizStatus status,VirtualAccount virtualAccount,Pageable pageable);
 
 	@Query(value = "SELECT COUNT(qs) FROM Assessment  qs\n" +
 			"INNER JOIN VirtualAccountAssessment vt ON qs.id=vt.assessment.id AND qs.status='ENABLED'\n" +

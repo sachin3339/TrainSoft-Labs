@@ -50,7 +50,7 @@ public interface IAssessmentService
     List<AssessmentTo>getBookMarkedAssessmentsByVirtualAccount(String virtualAccountSid);
     String deleteBookMarkedAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo);
 
-    List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid);
+    List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid,Pageable pageable);
 
     MyAssessmentsCountTO getCountsForMyAssessments(String virtualAccountSid);
 }

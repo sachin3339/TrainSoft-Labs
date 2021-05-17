@@ -1144,13 +1144,13 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid) {
+    public List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid,Pageable pageable) {
         VirtualAccount virtualAccount = virtualAccountRepository
                 .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
         ArrayList<MyAssessmentsTO> list = new ArrayList<>();
         if (virtualAccount!=null && status.name().equals("ALL")){
             List<Object[]> allMyAssessmentsAndCounts = virtualAccountAssessmentRepository
-                    .getAllMyAssessmentsAndCounts(virtualAccount);
+                    .getAllMyAssessmentsAndCounts(virtualAccount,pageable);
             allMyAssessmentsAndCounts.forEach(av->{
                 MyAssessmentsTO myAssessmentsTO = new MyAssessmentsTO();
                 Optional<Assessment> assessment= assessmentRepository.findById((Integer) av[0]);
@@ -1173,7 +1173,7 @@ public class AssessmentServiceImpl implements IAssessmentService
             return list;
         }else if(virtualAccount!=null){
             List<Object[]> allMyAssessmentsAndStatusAndCounts = virtualAccountAssessmentRepository
-                    .getAllMyAssessmentsAndStatusAndCounts(status, virtualAccount);
+                    .getAllMyAssessmentsAndStatusAndCounts(status, virtualAccount,pageable);
             System.out.println(allMyAssessmentsAndStatusAndCounts);
                  allMyAssessmentsAndStatusAndCounts.forEach(av->{
                      MyAssessmentsTO myAssessmentsTO = new MyAssessmentsTO();
