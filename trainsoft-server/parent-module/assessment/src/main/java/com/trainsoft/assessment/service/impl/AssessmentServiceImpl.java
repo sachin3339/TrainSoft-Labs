@@ -660,7 +660,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         assessment.setPauseEnable(assessmentTo.isPauseEnable());
         assessment.setMultipleSitting(assessmentTo.isMultipleSitting());
         Category category = categoryRepository.findBySid(BaseEntity.hexStringToByteArray(assessmentTo.getCategorySid()));
-        assessment.setCategoryId(category);
+        if(category != null)assessment.setCategoryId(category);
         assessment.setPaymentReceived(assessmentTo.isPaymentReceived());
         assessment.setReduceMarks(assessmentTo.isReduceMarks());
         assessment.setPreviousEnabled(assessmentTo.isPreviousEnabled());
