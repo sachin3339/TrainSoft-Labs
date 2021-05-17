@@ -62,7 +62,7 @@ const AssessmentDashboard = () => {
         let val =""
         try{
             let values =  avgCategory.find(res=> res?.categoryTO.sid === sid)
-           val = values ? `${values.averageScore}%` : "N/A"
+           val = values ? `${values.averageScore}%` : "-"
 
         }catch(err){
             console.error("error occur on getCategoryValue()",err)

@@ -224,6 +224,7 @@ const GLOBELCONSTANT = {
             SUPERVISOR:"SUPERVISOR",
             INSTRUCTOR:"INSTRUCTOR",
             LEARNER:"LEARNER",
+            ASSESS_USER: "ASSESS_USER"
         },
         SAMPLE_TEMPLATE: "https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx",
         UPLOAD_ASSES_TEMPLATE : "https://sessionassests.s3.ap-south-1.amazonaws.com/Assement_User_Upload_template.xlsx",
