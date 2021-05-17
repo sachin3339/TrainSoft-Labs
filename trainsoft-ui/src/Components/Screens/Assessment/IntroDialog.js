@@ -10,6 +10,7 @@ import Submit from "./common/SubmitButton";
 import RestService from "../../../Services/api.service";
 import AppContext from "../../../Store/AppContext";
 import { AssessmentContext } from "./AssesementContext";
+import { IcnInfoCircle } from "../../Common/Icon";
 
 export const IntroDialog = ({ open, setOpen ,location}) => {
   const { fromLogin } = useContext(AppContext);
@@ -40,7 +41,8 @@ export const IntroDialog = ({ open, setOpen ,location}) => {
           font: " normal normal bold 16px/19px Montserrat",
         }}
       >
-        INSTRUCTIONS
+        <span className="mr5"><IcnInfoCircle /></span>
+        <span className="pt2">INSTRUCTIONS</span>
         </Typography>
       {
         instruction

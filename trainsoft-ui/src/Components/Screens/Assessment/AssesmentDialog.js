@@ -78,7 +78,7 @@ export const AssessmentDialog = () => {
   // get assessment instruction
   const getAssessmentInstruction = async (values) => {
     try {
-      spinner.show();
+      spinner.show("Loading... Please wait...");
       let payload = {
         "companySid": params.companySid == 0 ? null : params.companySid,
         "difficulty": values.categoryTopicValue.difficulty,
