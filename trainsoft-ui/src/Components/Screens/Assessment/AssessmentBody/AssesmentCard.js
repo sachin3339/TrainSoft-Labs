@@ -95,6 +95,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
                   index={i}
                   active={activeOption === option?.sid}
                   result={result}
+                  isAlphabet={question.questionId.alphabet}
                 />
             </div>
             </>)
