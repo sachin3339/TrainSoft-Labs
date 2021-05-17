@@ -121,7 +121,7 @@ const CreateQuestion = ({ location }) => {
                     />
                   </Form.Group>
             
-                  <SelectInput label="Category" option={category} bindKey="name" name="category" value={values.category} />
+                  <SelectInput label="Category" option={category} bindKey="name" name="category" value={values.category ? values.category : ""} />
                   <Form.Group>
                     <Form.Label className="label">
                       Tag

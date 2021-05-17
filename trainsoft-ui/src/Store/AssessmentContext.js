@@ -9,10 +9,13 @@ export const AssessmentProvider = (props) => {
     const [initialAssessment,setInitialAssessment] = useState(null)
     const [assessmentVal,setAssessmentVal] = useState()
     const [category,setCategory] = useState([])
+    const [bookmark,setBookmark] = useState([])
 
    
     const appData = {
         category,
+        bookmark,
+        setBookmark,
         setCategory,
         assessmentCon,
         setAssessmentCon,

@@ -103,7 +103,7 @@ const BatchesDetails = ({location}) => {
         clearSelection: false
     });
 
-       // get all batches
+       // get all participant
        const getParticipant = async (pagination="1") => {
         try {
             let pageSize = 10;

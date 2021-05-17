@@ -11,7 +11,8 @@ import RestService from "../../../Services/api.service";
 import AppContext from "../../../Store/AppContext";
 import { AssessmentContext } from "./AssesementContext";
 
-export const IntroDialog = ({ open, setOpen }) => {
+export const IntroDialog = ({ open, setOpen ,location}) => {
+  const { fromLogin } = useContext(AppContext);
   const { instruction, assUserInfo, questions } = useContext(AssessmentContext);
   
   return <Dialog
@@ -61,7 +62,7 @@ export const IntroDialog = ({ open, setOpen }) => {
     <DialogActions>
       <div style={{ padding: "10px" }}>
         <Submit
-          onClick={() => navigate("/")}
+          onClick={() =>{ fromLogin ? navigate("/assessment",{state:{title:"Dashboard"}}) :  navigate("/")  }}
           style={{
             backgroundColor: "#CECECE",
             color: "#333333",
