@@ -159,24 +159,6 @@ const Batch = ({ location }) => {
         }
     }
 
-    // upload participant
-    // const uploadParticipant = (file,header) => {
-    //     try {
-    //         let data = new FormData();
-    //         for (let i = 0, l = file.length; i < l; i++)
-    //             data.append("file", file[i])
-
-    //         RestService.UploadParticipant(data,header).then(resp => {
-    //             setShow(false)
-    //             Toast.success({ message: `Participant is Successfully uploaded`});
-    //         }, err => console.log(err)
-    //         );
-    //     }
-    //     catch (err) {
-    //         console.error('error occur on createCourse', err)
-    //     }
-    // }
-
     // delete batch by batch id
     const deleteBatches = async (batchId) => {
         try {

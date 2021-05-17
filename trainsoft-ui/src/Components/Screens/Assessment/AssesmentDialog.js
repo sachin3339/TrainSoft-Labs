@@ -194,6 +194,7 @@ export const AssessmentDialog = () => {
   // initialize component
   useEffect(() => {
     getAllCategory();
+    params?.virtualAccountSid !=0 && setOpen(false)
   }, [])
 
   return (

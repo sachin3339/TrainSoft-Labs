@@ -71,6 +71,7 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
 
         Assessment assessment= assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(assessmentSid));
         List<VirtualAccount> virtualAccounts = virtualAccountRepository.findVirtualAccountByEmailId(userTO.getAppuser().getEmailId());
+
         if(assessment.getCompany().getStringSid()!=null && assessment.getCompany().getStringSid()!=companySid) {
             Company company = companyRepository.findCompanyBySid(BaseEntity.hexStringToByteArray(assessment.getCompany().getStringSid()));
             if (virtualAccounts == null || virtualAccounts.size() == 0) {

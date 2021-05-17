@@ -26,7 +26,7 @@ const Login = () => {
                         let data = response.data
                         data.name = response.data.appuser.name
                         data.vaRole = response.data.role
-                        data.role = response.data.departmentVA.departmentRole
+                        data.role = response.data.departmentVA?.departmentRole
                         data.accessType = response.data.appuser.accessType
                         data.employeeId = response.data.appuser.accessType
                         setUserValue("LOGIN",data)

@@ -62,7 +62,7 @@ const AssessmentDashboard = () => {
         let val =""
         try{
             let values =  avgCategory.find(res=> res?.categoryTO.sid === sid)
-           val = values ? `${values.score}%` : "N/A"
+           val = values ? `${values.averageScore}%` : "N/A"
 
         }catch(err){
             console.error("error occur on getCategoryValue()",err)
@@ -81,7 +81,7 @@ const AssessmentDashboard = () => {
         <div className="row">
             <div className="col-sm-8">
                 <div className="box-shadow">
-                    <div className="title-lg">Welcome Back John!</div>
+                    <div className="title-lg">Welcome Back {user?.appuser?.name}</div>
                     <div className="jcb mt-4 px-2">
                         <div className="column text-center">
                             <div className="title-lg ass">{dashboardInfo?.assessmentTaken}</div>
