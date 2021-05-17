@@ -1212,15 +1212,7 @@ public class AssessmentServiceImpl implements IAssessmentService
     @Override
     public List<AssessmentTo> getAssessmentsByTagsAndDifficulty(AssessmentsFilterTo assessmentsFilterTo,Pageable pageable)
     {
-
-        List<Tag> tagList = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(assessmentsFilterTo.getTagsList())) {
-            List<String> tagSidList = assessmentsFilterTo.getTagsList();
-            tagSidList.forEach(tag -> {
-                tagList.add(tagRepository.findBySid(BaseEntity.hexStringToByteArray(tag)));
-            });
-        }
-
+        List<Tag> tagList = getTagsList(assessmentsFilterTo);
         Company company = getCompany(assessmentsFilterTo.getCompanySid());
         Category category = categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(assessmentsFilterTo.getCategorySid()));
         List<AssessmentEnum.QuizSetDifficulty> difficultyList = assessmentsFilterTo.getDifficultyList();
@@ -1239,5 +1231,41 @@ public class AssessmentServiceImpl implements IAssessmentService
         }
 
         return getAssessmentToList(assessmentList);
+    }
+
+    @Override
+    public Integer getAssessmentsCountByTagsAndDifficulty(AssessmentsFilterTo assessmentsFilterTo)
+    {
+        List<Tag> tagList = getTagsList(assessmentsFilterTo);
+
+        Company company = getCompany(assessmentsFilterTo.getCompanySid());
+        Category category = categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(assessmentsFilterTo.getCategorySid()));
+        List<AssessmentEnum.QuizSetDifficulty> difficultyList = assessmentsFilterTo.getDifficultyList();
+
+        if(CollectionUtils.isNotEmpty(assessmentsFilterTo.getTagsList()) && CollectionUtils.isNotEmpty(assessmentsFilterTo.getDifficultyList()))
+        {
+            return assessmentRepository.getAssessmentsCountByTagAndDifficulty(tagList, difficultyList,company,category);
+        }
+        else if(CollectionUtils.isNotEmpty(assessmentsFilterTo.getTagsList()) || CollectionUtils.isNotEmpty(assessmentsFilterTo.getDifficultyList())) {
+            return assessmentRepository.getAssessmentsCountByTagORDifficulty(tagList, difficultyList,company,category);
+        }
+        else {
+            return assessmentRepository.getAssessmentCountByCategory(company,category);
+        }
+    }
+
+    private List<Tag> getTagsList(AssessmentsFilterTo assessmentsFilterTo)
+    {
+
+        List<Tag> tagList = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(assessmentsFilterTo.getTagsList()))
+        {
+            List<String> tagSidList = assessmentsFilterTo.getTagsList();
+            tagSidList.forEach(tag -> {
+                tagList.add(tagRepository.findBySid(BaseEntity.hexStringToByteArray(tag)));
+            });
+        }
+        return tagList;
+
     }
 }

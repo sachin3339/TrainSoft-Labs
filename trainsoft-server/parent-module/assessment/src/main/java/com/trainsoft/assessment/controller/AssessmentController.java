@@ -389,11 +389,21 @@ public class AssessmentController {
     }
 
     @PostMapping("/assessments/tags-difficulty")
-    @ApiOperation(value = "get Assessments by Tags and Difficulty",notes = "API to Filter Assessments based on tags and difficulty ")
+    @ApiOperation(value = "get Assessments by Tags and Difficulty",notes = "API to Filter Assessments based on tags and difficulty")
     public ResponseEntity<?>getAssessmentsByTagsAndDifficulty(
             @ApiParam(value = "AssessmentsFilterTo") @RequestBody AssessmentsFilterTo assessmentsFilterTo,
             Pageable pageable)
     {
         return ResponseEntity.ok(assessmentService.getAssessmentsByTagsAndDifficulty(assessmentsFilterTo,pageable));
     }
+
+    @PostMapping("/assessments/tags-difficulty/count")
+    @ApiOperation(value = "get Assessments Count by Tags and Difficulty",notes = "API to get Assessments Count based on tags and difficulty")
+    public ResponseEntity<?>getAssessmentsCountByTagsAndDifficulty(
+            @ApiParam(value = "AssessmentsFilterTo") @RequestBody AssessmentsFilterTo assessmentsFilterTo,
+            Pageable pageable)
+    {
+        return ResponseEntity.ok(assessmentService.getAssessmentsCountByTagsAndDifficulty(assessmentsFilterTo));
+    }
+
 }
