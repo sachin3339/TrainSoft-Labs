@@ -150,4 +150,29 @@ public class CompanyServiceImpl implements ICompanyService {
         mailSender.send(message);
 
     }
+
+    @Override
+    public void sendEmailAndPassword(String email,String password,String name) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("trainsoft.ind@gmail.com");
+        message.setTo(email);
+        String subject = "Trainsoft credential details";
+        StringBuilder emailContent = new StringBuilder();
+        emailContent.append(System.lineSeparator())
+                .append("Your trainsoft  credential details is below:")
+                .append(System.lineSeparator())
+                .append("User Name : ")
+                .append(email)
+                .append(System.lineSeparator())
+                .append("Password : ")
+                .append(password)
+                .append(System.lineSeparator());
+        emailContent.append(System.lineSeparator())
+                .append("Thanks,")
+                .append(System.lineSeparator())
+                .append(name);
+        message.setSubject(subject);
+        message.setText(emailContent.toString());
+        mailSender.send(message);
+    }
 }
