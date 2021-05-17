@@ -52,5 +52,5 @@ public interface IAssessmentService
 
     List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid);
 
-    Integer getCountsForMyAssessments(QuizStatus status,String virtualAccountSid);
+    MyAssessmentsCountTO getCountsForMyAssessments(String virtualAccountSid);
 }
