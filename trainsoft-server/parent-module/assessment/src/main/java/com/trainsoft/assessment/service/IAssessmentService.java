@@ -52,7 +52,7 @@ public interface IAssessmentService
     List<AssessmentTo>getBookMarkedAssessmentsByVirtualAccount(String virtualAccountSid,Pageable pageable);
     String deleteBookMarkedAssessment(VirtualAccountHasAssessmentBookMarkTo virtualAccountHasAssessmentBookMarkTo);
 
-    List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid);
+    List<MyAssessmentsTO> getAllMyAssessmentsAndCounts(QuizStatus status, String virtualAccountSid,Pageable pageable);
 
     MyAssessmentsCountTO getCountsForMyAssessments(String virtualAccountSid);
     List<AssessmentTo>  getAssessmentsByTagsAndDifficulty(AssessmentsFilterTo assessmentsFilterTo,Pageable pageable);

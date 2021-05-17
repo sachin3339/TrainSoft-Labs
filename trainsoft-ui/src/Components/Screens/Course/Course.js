@@ -35,7 +35,7 @@ const Courses = ({ location }) => {
 
      //validation
      const schema = Yup.object().shape({
-        name: Yup.object().required('Required!') ,
+        name: Yup.string().required('Required!') ,
      });
 
     const [configuration, setConfiguration] = useState({

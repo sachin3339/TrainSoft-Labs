@@ -28,7 +28,7 @@ const TopicsTable = ({ location }) => {
   
      //validation
      const schema = Yup.object().shape({
-      name: Yup.object().required('Required!') ,
+      name: Yup.string().required('Required!') ,
    });
 
   const [configuration, setConfiguration] = useState({
@@ -167,7 +167,7 @@ const TopicsTable = ({ location }) => {
            let {data} =await RestService.getCount("quiz")
             setCount(data);
         } catch (err) {
-            console.error("error occur on getAllBatch()", err)
+            console.error("error occur on getTopicCount()", err)
         }
     }
 

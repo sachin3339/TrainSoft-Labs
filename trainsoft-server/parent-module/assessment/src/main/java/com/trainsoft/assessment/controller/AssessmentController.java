@@ -373,8 +373,8 @@ public class AssessmentController {
     @ApiOperation(value = "get my assessment",notes = "API to get all Assessments and count based upon a status and User ")
     public ResponseEntity<?>getAllMyAssessmentsAndCounts(
            @ApiParam(value = "Status",required = true) @PathVariable("status") QuizStatus status,
-           @ApiParam(value = "Virtual Account Sid",required = true)@PathVariable("sid") String virtualAccountSid){
-        return ResponseEntity.ok(assessmentService.getAllMyAssessmentsAndCounts(status,virtualAccountSid));
+           @ApiParam(value = "Virtual Account Sid",required = true)@PathVariable("sid") String virtualAccountSid,Pageable pageable){
+        return ResponseEntity.ok(assessmentService.getAllMyAssessmentsAndCounts(status,virtualAccountSid,pageable));
     }
 
     @GetMapping("get/myAssessment/count/{sid}")

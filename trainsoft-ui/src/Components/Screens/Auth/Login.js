@@ -30,9 +30,11 @@ const Login = () => {
                         data.accessType = response.data.appuser.accessType
                         data.employeeId = response.data.appuser.accessType
                         setUserValue("LOGIN",data)
-                        AxiosService.init('',response.data.jwtToken);
-                        TokenService.saveToken(response.data.jwtToken)
-                        data.role === "LEARNER" ?  navigate('/home', { state: { title: 'Home'} }): navigate('/dashboard', { state: { title: 'Dashboard'} }) 
+                        AxiosService.init('',response.data?.jwtToken);
+                        TokenService.saveToken(response.data?.jwtToken)
+                         data.role === "LEARNER" || data.role === "ASSESS_USER" ?  navigate('/home', { state: { title: 'Home'} })
+                        : navigate('/dashboard', { state: { title: 'Dashboard'} })
+ 
                     },
                 err => {
                     Toast.error({message: 'Invalid User Name / Password!'})
