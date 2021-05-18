@@ -1,5 +1,6 @@
 import React from 'react';
 import PersonOutlineOutlinedIcon from "@material-ui/icons/PersonOutlineOutlined";
+import { IcnUser } from '../../../Common/Icon';
 
 const LeaderBoardItem = ({ virtualAccountTO, index, percentage }) => {
     return <div
@@ -39,7 +40,7 @@ const LeaderBoardItem = ({ virtualAccountTO, index, percentage }) => {
                     alignItems: "center",
                 }}
             >
-                <PersonOutlineOutlinedIcon style={{ fontSize: "14px" }} />
+                <IcnUser style={{ fontSize: "14px" }} />
             </div>
             <div style={{ font: "normal normal normal 12px/26px Montserrat" }}>
                 {virtualAccountTO.appuser?.name}
