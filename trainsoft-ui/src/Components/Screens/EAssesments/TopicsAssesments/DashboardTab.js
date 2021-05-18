@@ -48,13 +48,14 @@ const DashboardTab = () => {
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
-        render: (res) => moment(res.submittedOn).format("DD/MM/YYYY")
+        render: (res) => res.submittedOn ? moment(res.submittedOn).format("DD/MM/YYYY") : 'N/A'
       },
       score: {
-        title: "SUBMITTED ON",
+        title: "SCORE",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
+        render: (res) => <>{res.score}%</>
       }
     },
     headerTextColor: "#454E50", // user can change table header text color
