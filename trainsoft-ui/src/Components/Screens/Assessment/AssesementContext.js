@@ -17,6 +17,7 @@ export const AssessmentProvider = ({ children }) => {
   const [questions, setQuestions] = useState([]);
   const [assUserInfo, setAssUserInfo] = useState({});
   const [hasExamEnd, setHasExamEnd] = useState(false);
+  const [errorMessage,setErrorMessage] = useState(null)
 
   const setAnswer = (questionID, answerID) => {
     setSelectedAnswers((_selectedAnswers) => ({
@@ -38,15 +39,18 @@ export const AssessmentProvider = ({ children }) => {
                     setQuestions(response.data);
                     setQuestionIndex(0);
                     setQuestion(response.data[0]);
+                    setErrorMessage(null)
                 }
             },
             err => {
                 spinner.hide();
+                setErrorMessage(err.response.data.message)
             }
         ).finally(() => {
             spinner.hide();
         });
     } catch (err) {
+        console.log(err.response)
         spinner.hide();
         console.error("Error occur on getAssessmentQuestions()--", err);
     }
@@ -98,7 +102,8 @@ export const AssessmentProvider = ({ children }) => {
     questions,
     setQuestions,
     hasExamEnd, 
-    setHasExamEnd
+    setHasExamEnd,
+    errorMessage
   };
 
   return (
