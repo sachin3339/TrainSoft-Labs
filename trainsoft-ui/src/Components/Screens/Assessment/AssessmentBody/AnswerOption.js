@@ -3,7 +3,7 @@ import { AssessmentContext } from "../AssesementContext";
 import styles from "./AssessmentBody.module.css";
 import { IcnCheckMarkMd, IcnCloseMd } from "../../../Common/Icon";
 
-const AnswerOption = ({ answerOptionValue, active, index, correct, result = false }) => {
+const AnswerOption = ({ answerOptionValue, active, index, correct, result = false, isAlphabet }) => {
     const labels = "ABCDEFG".split("");
     const { finished } = useContext(AssessmentContext);
     return (
@@ -17,8 +17,8 @@ const AnswerOption = ({ answerOptionValue, active, index, correct, result = fals
             }}
           />
         </div>
-        <div className={styles.answerTitle}>
-          {labels[index]}. {answerOptionValue}{" "}
+        <div className={`${styles.answerTitle} pointer`}>
+          {isAlphabet ? labels[index] : index + 1}. {answerOptionValue}{" "}
           <span className="ml15">
             {
               finished 

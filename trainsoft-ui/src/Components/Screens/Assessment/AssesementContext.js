@@ -17,6 +17,7 @@ export const AssessmentProvider = ({ children }) => {
   const [questions, setQuestions] = useState([]);
   const [assUserInfo, setAssUserInfo] = useState({});
   const [hasExamEnd, setHasExamEnd] = useState(false);
+  const [inReview, setInReview] = useState(false);
   const [errorMessage,setErrorMessage] = useState(null)
 
   const setAnswer = (questionID, answerID) => {
@@ -103,6 +104,8 @@ export const AssessmentProvider = ({ children }) => {
     setQuestions,
     hasExamEnd, 
     setHasExamEnd,
+    inReview, 
+    setInReview,
     errorMessage
   };
 

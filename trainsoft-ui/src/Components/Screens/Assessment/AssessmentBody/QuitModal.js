@@ -1,4 +1,4 @@
-import React ,{useContext} from 'react';
+import React, { useContext } from 'react';
 import RestService from '../../../../Services/api.service';
 import AppContext from '../../../../Store/AppContext';
 import useToast from '../../../../Store/ToastHook';
@@ -8,36 +8,36 @@ import { AssessmentContext } from '../AssesementContext';
 import Submit from "../common/SubmitButton";
 import styles from "./AssessmentBody.module.css";
 
-const QuitModal = ({show, setShow}) => {
+const QuitModal = ({ show, setShow }) => {
   const {
     instruction,
     assUserInfo
-} = useContext(AssessmentContext);
+  } = useContext(AssessmentContext);
   const { fromLogin } = useContext(AppContext);
   const { spinner } = useContext(AppContext);
   const Toast = useToast();
 
-  const handleQuitAssessment = ()=> {
+  const handleQuitAssessment = () => {
     try {
       spinner.show("Quitting assessment.. Please wait...");
+      fromLogin ? navigate("/assessment", { state: { title: "Dashboard" } }) : navigate("/")
       RestService.quitAssessment(instruction.sid, assUserInfo.sid).then(
-          response => {
-              spinner.hide();
-              Toast.success({ message: `Quit assessment successfully`, time: 3000 });
-              fromLogin ? navigate("/assessment",{state:{title:"Dashboard"}}) : navigate("/")
-          },
-          err => {
-              spinner.hide();
-          }
-      ).finally(() => {
+        response => {
           spinner.hide();
+          Toast.success({ message: `Quit assessment successfully`, time: 3000 });
+        },
+        err => {
+          spinner.hide();
+        }
+      ).finally(() => {
+        spinner.hide();
       });
     } catch (err) {
       console.error("Error occurred while handleQuitAssessment---", err);
     }
   }
-    
-    return <BsModal {...{ show, setShow, headerTitle: "Are you sure?", size: "md" }}>
+
+  return <BsModal {...{ show, setShow, headerTitle: "Are you sure?", size: "md" }}>
     <div>
       <div className="column f14 mb20">
         <span>You are about to quit the assessment.</span>
@@ -53,5 +53,5 @@ const QuitModal = ({show, setShow}) => {
     </div>
   </BsModal>;
 }
- 
+
 export default QuitModal;
