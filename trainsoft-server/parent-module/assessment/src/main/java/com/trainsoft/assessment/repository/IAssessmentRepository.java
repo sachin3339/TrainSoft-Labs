@@ -18,8 +18,8 @@ public interface IAssessmentRepository extends JpaRepository<Assessment,Integer>
     Assessment findAssessmentBySid(byte[] assessmentSid);
     @Query("FROM Assessment as assess WHERE assess.status ='ENABLED' AND assess.sid=:sid")
     Assessment findBySid(byte [] sid);
-    @Query("FROM Assessment as assess WHERE assess.status ='ENABLED' AND assess.title=:title")
-    Assessment findAssessmentByTitle(String title);
+    @Query("FROM Assessment as assess WHERE assess.status ='ENABLED' AND assess.title=:title AND assess.company=:company ")
+    Assessment findAssessmentByTitle(String title,Company company);
     @Query(value = "select * from quiz_set where tag=:id and company_id=:cid and difficulty=:df and status='ENABLED' order by created_on desc",nativeQuery = true)
     List<Assessment> findByTagAndDifficulty(@Param("id") Integer tagId,@Param("df") String difficulty,@Param("cid")Integer companyId);
     @Query("FROM Assessment  as assess WHERE assess.status ='ENABLED' AND assess.topicId=:topic order by assess.createdOn desc")
