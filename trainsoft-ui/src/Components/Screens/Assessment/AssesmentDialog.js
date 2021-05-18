@@ -146,6 +146,7 @@ export const AssessmentDialog = () => {
           : getUserByVirtualAccountSid(params?.virtualAccountSid);
         },
         err => {
+          console.error(err)
           spinner.hide();
         }
       ).finally(() => {

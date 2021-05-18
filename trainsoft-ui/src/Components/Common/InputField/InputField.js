@@ -177,6 +177,7 @@ export const RadioBoxKey = (props) => {
             label={option.label}
             id={option.label}
             inline
+            disabled={option?.disabled}
             checked={value === option.value ? true : false}
             type="radio"
             onChange={(e) => setValue(option.value)}

@@ -3,6 +3,7 @@ package com.trainsoft.assessment.service.impl;
 import com.trainsoft.assessment.commons.CustomRepositoryImpl;
 import com.trainsoft.assessment.commons.JWTTokenTO;
 import com.trainsoft.assessment.customexception.ApplicationException;
+import com.trainsoft.assessment.customexception.DuplicateRecordException;
 import com.trainsoft.assessment.customexception.InvalidSidException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
@@ -46,6 +47,12 @@ public class TopicServiceImpl implements ITopicService {
         try {
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
                         (BaseEntity.hexStringToByteArray(topicTo.getCreatedByVirtualAccountSid()));
+                Topic duplicateTopic = topicRepository.findTopicByName(topicTo.getName().trim(),virtualAccount.getCompany());
+                if(duplicateTopic !=null && duplicateTopic.getName().equalsIgnoreCase(topicTo.getName()))
+                {
+                    throw new DuplicateRecordException("Duplicate record will not be created for Topic");
+
+                }
                 Topic topic = mapper.convert(topicTo, Topic.class);
                 topic.generateUuid();
                 topic.setCreatedBy(virtualAccount);
@@ -53,9 +60,15 @@ public class TopicServiceImpl implements ITopicService {
                 topic.setStatus(AssessmentEnum.Status.ENABLED);
                 topic.setCompany(virtualAccount.getCompany());
                 return mapper.convert(topicRepository.save(topic), TopicTo.class);
-        }catch (Exception e) {
+        }catch (Exception e)
+        {
+            if(e instanceof DuplicateRecordException)
+            {
+                log.error("Topic Already exist cannot create duplicate Topic");
+                throw new ApplicationException(((DuplicateRecordException) e).devMessage);
+            }
             log.error("throwing exception while creating the Topic", e.toString());
-            throw new ApplicationException("Something went wrong while creating the Topic, please check Topic name may be duplicate: "+e.getMessage());
+            throw new ApplicationException("Something went wrong while creating the Topic "+e.getMessage());
         }
     }
 

@@ -1,26 +1,38 @@
 import { useEffect, useState, useContext } from "react";
-import AppContext from "../../../../../Store/AppContext";
-import useToast from "../../../../../Store/ToastHook";
 import { Formik } from "formik";
 import { TextInput, SelectInput, TextArea, RadioBoxKey, DateInput } from "../../../../Common/InputField/InputField";
 import { Form } from "react-bootstrap";
 import AssessmentContext from "../../../../../Store/AssessmentContext";
 import Submit from "../../../Assessment/common/SubmitButton";
-import "../topic.css";
 import { navigate } from "../../../../Common/Router";
-
+import * as Yup from 'yup';
+import "../topic.css";
+import { Button } from "../../../../Common/Buttons/Buttons";
 
 const CreateStep1 = ({  handleNext }) => {
   const { initialAssessment, setAssessmentVal, category,setInitialAssessment } = useContext(AssessmentContext)
+
+      //validation
+   const schema = Yup.object().shape({
+        title: Yup.string().required('Required!'),
+        description: Yup.string().required('Required!'),
+        premium: Yup.string().required('Required!'),
+        categorySid: Yup.object().required('Required!'),
+        tagSid: Yup.object().required('Required!'),
+      });
+
   return (
     <>
       <Formik
-        onSubmit={(value) => setAssessmentVal(value)}
+        onSubmit={(value) => {
+          setAssessmentVal(value);
+          handleNext();
+        }}
         initialValues={{
           ...initialAssessment,
           data : initialAssessment.validUpto === 0 ? '': initialAssessment.validUpto
         }}
-      // validationSchema={schema}
+       validationSchema={schema}
       >
         {({ handleSubmit, isSubmitting, dirty, setFieldValue, values }) => (
           <form onSubmit={handleSubmit} className="create-batch">
@@ -39,12 +51,12 @@ const CreateStep1 = ({  handleNext }) => {
                   Type
                     </Form.Label>
                 <div style={{ marginBottom: "10px" }}>
-                  <RadioBoxKey name="premium" options={[{ label: "Free", value: false }, { label: "Premium", value: true }]} />
+                  <RadioBoxKey name="premium" options={[{ label: "Free", value: false }, { label: "Premium", value: true, disabled: true }]} />
                 </div>
               </Form.Group>
               <Form.Group style={{ width: "60%" }}>
-                <SelectInput label="Category" option={category} bindKey="name" name="category" value={values.category} payloadKey="name" />
-                <SelectInput label="Tag"  value={values.tagSid} option={values.category?.tags} bindKey="name" name="tagSid"/>
+                <SelectInput label="Category" option={category} bindKey="name" name="categorySid" value={values.categorySid} payloadKey="name" />
+                <SelectInput label="Tag"  value={values.tagSid} option={values.categorySid?.tags} bindKey="name" name="tagSid"/>
                 <Form.Group>
                   <Form.Label className="label">
                     Difficulty
@@ -80,7 +92,7 @@ const CreateStep1 = ({  handleNext }) => {
                                  path: "topicAssesment",}})}} style={{ background: "#0000003E", color: "black", marginRight: "10px", }}>
                          Cancel
                   </Submit>
-                <Submit onClick={() => { handleNext(); setAssessmentVal(values);setInitialAssessment(values) }}>Next</Submit>
+                <Button type="submit" className="px-5" onClick={() => {  setAssessmentVal(values);setInitialAssessment(values) }}>Next</Button>
               </div>
             </div>
           </form>
