@@ -76,7 +76,7 @@ public class QuestionServiceImpl implements IQuestionService {
                         (BaseEntity.hexStringToByteArray(questionTo.getCreatedByVirtualAccountSid()));
                 // question details to save
                 Question question = mapper.convert(questionTo, Question.class);
-                if(isDuplicateRecord(question))
+                if(isDuplicateRecord(question,virtualAccount.getCompany()))
                 {
                     log.error("Duplicate question, Saving failed :" + question.getName());
                     throw new DuplicateRecordException("This question is already exist : "+question.getName());
@@ -345,7 +345,7 @@ public class QuestionServiceImpl implements IQuestionService {
             List<Question> questionList = new ArrayList<>();
             for (QuestionTo questionTo : questionToList) {
                 Question question = mapper.convert(questionTo, Question.class);
-                if(isDuplicateRecord(question))
+                if(isDuplicateRecord(question,virtualAccount.getCompany()))
                 {
                     log.error("Duplicate question, Not saving this question :"+question.getName());
                     continue;
@@ -435,10 +435,10 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     // To avoid duplicates
-    private boolean isDuplicateRecord(Question question)
+    private boolean isDuplicateRecord(Question question,Company company)
     {
         String name = question.getName();
-        List<Question> existingQuestionList = questionRepository.findQuestionsByName(name);
+        List<Question> existingQuestionList = questionRepository.findQuestionsByName(name,company);
         for (Question eq:existingQuestionList)
         {
             if (eq != null && name.equalsIgnoreCase(eq.getName()))

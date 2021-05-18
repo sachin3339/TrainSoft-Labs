@@ -24,4 +24,7 @@ public interface ITopicRepository extends JpaRepository<Topic,Integer> {
 
     @Query("SELECT count (tp) from Topic as tp where ( tp.name like :searchString OR tp.description like :searchString ) And tp.company=:company And tp.status ='ENABLED' ")
     BigInteger pageableTopicCount(String searchString, Company company);
+
+    @Query("SELECT tp FROM Topic as tp WHERE tp.name=:name AND tp.status='ENABLED' AND tp.company=:company")
+    Topic findTopicByName(String name ,Company company);
 }
