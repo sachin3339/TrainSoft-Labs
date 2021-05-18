@@ -10,6 +10,8 @@ export const AssessmentProvider = (props) => {
     const [assessmentVal,setAssessmentVal] = useState()
     const [category,setCategory] = useState([])
     const [bookmark,setBookmark] = useState([])
+    const [myAssessment,setMyAssessment] = useState([])
+
 
    
     const appData = {
@@ -24,7 +26,9 @@ export const AssessmentProvider = (props) => {
         initialAssessment,
         setInitialAssessment,
         assessmentVal,
-        setAssessmentVal
+        setAssessmentVal,
+        myAssessment,
+        setMyAssessment
     };
 
     return <AssessmentContext.Provider value={{

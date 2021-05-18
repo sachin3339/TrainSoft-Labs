@@ -140,6 +140,9 @@ const RestService = {
   createBookmark: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.CREATE_BOOKMARK, payload),
   getBookmark: (vSid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.GET_BOOKMARK.replace("{vSid}", vSid)),
   removeBookmark: (payload) => AxiosService.delete(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.REMOVE_BOOKMARK, payload),
+  filterAssessment: (pageNo,pageSize,payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.GET_ASSESSMENT_FILTER.replace("{pageNo}",pageNo).replace("{pageSize}",pageSize),payload),
+  filterCount: (payload) => AxiosService.post(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.FILTER_COUNT,payload),
+  getMyAssessmentCount: (sid) => AxiosService.get(GLOBELCONSTANT.ASSESSMENT_DASHBOARD.GET_MYASSESSMENT_COUNT.replace('{sid}',sid)),
 
 
   // assessment 

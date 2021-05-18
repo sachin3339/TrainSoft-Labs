@@ -205,7 +205,10 @@ const GLOBELCONSTANT = {
             CREATE_BOOKMARK: API_ASSES + "assessment/bookmark",
             REMOVE_BOOKMARK: API_ASSES + "assessment/remove/bookmarked",
             GET_BOOKMARK: API_ASSES + "assessments/bookmarked/{vSid}",
-            GET_MY_ASSESSMENT: API_ASSES + "get/my/assessments/{status}/{sid}"
+            GET_MY_ASSESSMENT: API_ASSES + "get/my/assessments/{status}/{sid}",
+            GET_ASSESSMENT_FILTER: API_ASSES + 'assessments/tags-difficulty?pageNo={pageNo}&pageSize={pageSize}',
+            FILTER_COUNT: API_ASSES + 'assessments/tags-difficulty/count',
+            GET_MYASSESSMENT_COUNT:API_ASSES + 'get/myAssessment/count/{sid}'
         },
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},

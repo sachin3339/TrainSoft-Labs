@@ -6,14 +6,14 @@ export const AdminConfig = [
         title: "Home",
         pathname: "home",
         disabled: false,
-        role:[GLOBELCONSTANT.ROLE.LEARNER,GLOBELCONSTANT.ROLE.ASSESS_USER]
+        role:[GLOBELCONSTANT.ROLE.LEARNER]
     },
     {
         icon: ICN_DASHBOARD,
         title: "Dashboard",
         pathname: "assessment",
         disabled: true,
-        role: [GLOBELCONSTANT.ROLE.ASSESS_USER]
+        role: [GLOBELCONSTANT.ROLE.ASSESS_USER,GLOBELCONSTANT.ROLE.LEARNER]
     },
     
     {
@@ -21,14 +21,14 @@ export const AdminConfig = [
         title: "Catalogue",
         pathname: "catalogue",
         disabled: true,
-        role: [GLOBELCONSTANT.ROLE.ASSESS_USER]
+        role: [GLOBELCONSTANT.ROLE.ASSESS_USER,GLOBELCONSTANT.ROLE.LEARNER]
     },
     {
         icon: ICN_MYASSESSMENT,
         title: "My Assessment",
         pathname: "myAssessment",
         disabled: true,
-        role: [GLOBELCONSTANT.ROLE.ASSESS_USER]
+        role: [GLOBELCONSTANT.ROLE.ASSESS_USER,GLOBELCONSTANT.ROLE.LEARNER]
     },
     {
         icon: ICN_DASHBOARD,
