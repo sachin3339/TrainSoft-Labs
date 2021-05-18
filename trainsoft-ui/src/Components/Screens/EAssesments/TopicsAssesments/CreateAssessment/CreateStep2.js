@@ -29,7 +29,7 @@ const CreateStep2 = ({ location, handleNext, handleBack }) => {
     try {
       let payload = {
         autoSubmitted: true,
-        category: initialAssessment.category.name ? initialAssessment.category.name : initialAssessment.category,
+        categorySid: initialAssessment.categorySid.sid ? initialAssessment.categorySid.sid : initialAssessment.categorySid,
         description: val.description,
         difficulty: val.difficulty,
         duration: val.duration === true ? 0 : val.timeLimit,

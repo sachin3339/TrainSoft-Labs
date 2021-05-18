@@ -19,7 +19,19 @@ const MyAssessment = ({location})=>{
     try {
       let { data } = await RestService.getMyAssessment(key,user.sid)
       setMyAssessment(data);
-      key === "ALL" && setAsseValue(data)
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getAvgCategory()", err)
+    }
+  }
+
+  // get my assessment 
+  const getMyAssessmentCount = async (value) => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getMyAssessmentCount(user.sid)
+      setAsseValue(data);
       spinner.hide();
     } catch (err) {
       spinner.hide();
@@ -30,20 +42,24 @@ const MyAssessment = ({location})=>{
   useEffect(() => {
     key === "bookmarked" ? setMyAssessment(bookmark): getMyAssessment()
   }, [key])
+
+  useEffect(() => {
+    getMyAssessmentCount()
+  }, [])
     return(<>
              <Tab.Container defaultActiveKey={key} onSelect={k => setKey(k)}>
                     <Nav variant="pills" className="flex-row">
                         <Nav.Item>
-                            <Nav.Link eventKey="ALL">All Assessments ({asseValue.length})</Nav.Link>
+                            <Nav.Link eventKey="ALL">All Assessments ({asseValue?.all})</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="STARTED">Ongoing ({asseValue.filter(res=>res.status ==="STARTED").length})</Nav.Link>
+                            <Nav.Link eventKey="STARTED">Ongoing ({asseValue?.onGoing})</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="COMPLETED">Completed ({asseValue.filter(res=>res.status ==="COMPLETED").length})</Nav.Link>
+                            <Nav.Link eventKey="COMPLETED">Completed ({asseValue?.completed})</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="QUIT">Quit ({asseValue.filter(res=>res.status ==="QUIT").length})</Nav.Link>
+                            <Nav.Link eventKey="QUIT">Quit ({asseValue?.quit})</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link eventKey="bookmarked">Bookmarked</Nav.Link>

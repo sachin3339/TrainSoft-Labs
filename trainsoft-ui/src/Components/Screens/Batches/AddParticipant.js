@@ -1,12 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import DynamicTable from "../../Common/DynamicTable/DynamicTable";
-import { Dropdown, Form } from 'react-bootstrap'
-import { Formik } from 'formik';
-import { ICN_EDIT, ICN_DELETE, ICN_TRASH } from "../../Common/Icon";
 import { Button } from "../../Common/Buttons/Buttons";
-import { TextInput, SelectInput } from "../../Common/InputField/InputField";
-import { Link, Router } from "../../Common/Router";
-import BatchesDetails from "./BatchDetails";
 import { BsModal, Toggle } from "../../Common/BsUtils";
 import CardHeader from "../../Common/CardHeader";
 import RestService from "../../../Services/api.service";
