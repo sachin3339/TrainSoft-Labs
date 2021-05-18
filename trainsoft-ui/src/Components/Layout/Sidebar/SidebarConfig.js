@@ -6,7 +6,7 @@ export const AdminConfig = [
         title: "Home",
         pathname: "home",
         disabled: false,
-        role:[GLOBELCONSTANT.ROLE.LEARNER,GLOBELCONSTANT.ROLE.ASSESS_USER]
+        role:[GLOBELCONSTANT.ROLE.LEARNER]
     },
     {
         icon: ICN_DASHBOARD,

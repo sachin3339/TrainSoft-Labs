@@ -24,8 +24,8 @@ public interface IQuestionRepository extends JpaRepository<Question, Integer>
     @Query(value = "select question_point from question where id=:id and status='ENABLED' ",nativeQuery = true)
     Integer findQuestionPoint(@Param("id") Integer questionId);
 
-    @Query("FROM Question  as ques WHERE ques.status='ENABLED' AND ques.name=:name")
-    List<Question> findQuestionsByName(@Param("name") String name);
+    @Query("FROM Question  as ques WHERE ques.status='ENABLED' AND ques.name=:name AND ques.company=:company")
+    List<Question> findQuestionsByName(@Param("name") String name,Company company);
 
     @Query("FROM Question as ques WHERE ques.status='ENABLED' AND ques.company=:company order by ques.createdOn desc")
     List<Question> findQuestionsByCompany(Company company, Pageable pageable);

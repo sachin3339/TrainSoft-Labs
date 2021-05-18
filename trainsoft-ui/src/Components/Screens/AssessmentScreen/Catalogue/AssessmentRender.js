@@ -11,9 +11,9 @@ import useToast from '../../../../Store/ToastHook';
 import AssessmentContext from '../../../../Store/AssessmentContext';
 
 
-const AssessmentRender = ({ data, fromMyAt = false, count, setPageNo,key="" }) => {
-    const { user, spinner,setFromLogin } = useContext(AppContext)
-    const { bookmark,setBookmark } = useContext(AssessmentContext)
+const AssessmentRender = ({ data, fromMyAt = false, count, setPageNo, key = "" }) => {
+    const { user, spinner, setFromLogin } = useContext(AppContext)
+    const { bookmark, setBookmark, myAssessment } = useContext(AssessmentContext)
     const Toast = useToast()
 
 
@@ -35,8 +35,8 @@ const AssessmentRender = ({ data, fromMyAt = false, count, setPageNo,key="" }) =
         }
     }
 
-      //  getBookmark 
-      const getBookmark = async (categorySid) => {
+    //  getBookmark 
+    const getBookmark = async (categorySid) => {
         spinner.show("Loading... wait");
         try {
             let { data } = await RestService.getBookmark(user.sid)
@@ -57,7 +57,7 @@ const AssessmentRender = ({ data, fromMyAt = false, count, setPageNo,key="" }) =
                 "virtualAccountSid": user.sid
             }
             let { data } = await RestService.removeBookmark(payload)
-            setBookmark(bookmark.filter(res=>res.sid !==sid))
+            setBookmark(bookmark.filter(res => res.sid !== sid))
             Toast.success({ message: "Bookmark removed successfully" })
             spinner.hide();
         } catch (err) {
@@ -78,19 +78,23 @@ const AssessmentRender = ({ data, fromMyAt = false, count, setPageNo,key="" }) =
                 </div>
                 <div className="assestRight text-bold">
                     {!fromMyAt ? <>
-                        <div className={`pointer ${bookmark.some(resp => resp.sid === res.sid) ? 'bookMarkColor' : ''}`} onClick={() => { bookmark.some(resp => resp.sid === res.sid) ? removeBookmark(res.sid) : createBookmark(res.sid) }}> {ICN_MARK} </div>
-                        <div><Button onClick={() =>{ setFromLogin(true); navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`,{state:{from: "assessmentDashboard"}})}}>Take Now </Button></div>
+                        {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <div></div>: <div className={`pointer ${bookmark.some(resp => resp.sid === res.sid) ? 'bookMarkColor' : ''}`} onClick={() => { bookmark.some(resp => resp.sid === res.sid) ? removeBookmark(res.sid) : createBookmark(res.sid) }}> {ICN_MARK} </div>}
+                        <div>
+                            {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <> <Button className="disabled">Already Taken </Button> </> : <> <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Take Now </Button></>}
+                        </div>
                     </> : <>
-                       {/* {key === "bookmarked" && <Button onClick={() => navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`)}>Take Now</Button>} */}
-                        
+                        {/* {key === "bookmarked" && <Button onClick={() => navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`)}>Take Now</Button>} */}
+
                         {res.status === "STARTED" && <div className="Ongoing font-weight-bold">{ICN_CIRCLE_C} Ongoing </div>}
                         {res.status === "progress" && <div className="Ongoing font-weight-bold">{ICN_CIRCLE_C} Ongoing </div>}
                         {res.status === "COMPLETED" && <div className="text-success font-weight-bold">Completed </div>}
                         {res.status === "QUIT" && <div className="text-danger font-weight-bold">Quit</div>}
-                        {res.status === "COMPLETED" && <div className="aic"><div className="nav-link text-primary pointer font-weight-bold">{ICN_DOWNLOADS} Download Certificate</div> <div>Score: <span className="title-md">{res.score}%</span></div></div>}
+                        {res.status === "COMPLETED" && <div className="aic">
+                            {/* <div className="nav-link text-primary pointer font-weight-bold">{ICN_DOWNLOADS} Download Certificate</div>  */}
+                            <div>Score: <span className="title-md">{res.score}%</span></div></div>}
                         {res.status === "STARTED" && <Button className="disabled">Resume</Button>}
-                        {res.status === "QUIT" && <Button onClick={() => {setFromLogin(true); navigate(`../assessment/${res.quizSetSid}/${user.companySid}/${user.sid}`,{state:{from: "assessmentDashboard"}})}}>Try Again</Button>}
-                        
+                        {res.status === "QUIT" && <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.quizSetSid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Try Again</Button>}
+
                     </>}
                 </div>
             </div>

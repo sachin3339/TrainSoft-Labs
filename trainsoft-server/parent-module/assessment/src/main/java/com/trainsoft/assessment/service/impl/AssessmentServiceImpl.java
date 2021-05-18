@@ -66,7 +66,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                 VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid
                         (BaseEntity.hexStringToByteArray(assessmentTo.getCreatedByVirtualAccountSid()));
                 Assessment assessment=mapper.convert(assessmentTo, Assessment.class);
-                if(isDuplicateAssessment(assessment))
+                if(isDuplicateAssessment(assessment,virtualAccount.getCompany()))
                 {
                     log.error("Record already exist with the same name:"+assessment.getTitle());
                     throw new DuplicateRecordException("Duplicate record will not be created");
@@ -99,9 +99,9 @@ public class AssessmentServiceImpl implements IAssessmentService
         }
     }
 
-    private boolean isDuplicateAssessment(Assessment assessment)
+    private boolean isDuplicateAssessment(Assessment assessment,Company company)
     {
-        Assessment existingAssessment=assessmentRepository.findAssessmentByTitle(assessment.getTitle().trim());
+        Assessment existingAssessment=assessmentRepository.findAssessmentByTitle(assessment.getTitle().trim(),company);
         return existingAssessment != null && existingAssessment.getTitle().equalsIgnoreCase(assessment.getTitle());
     }
 
