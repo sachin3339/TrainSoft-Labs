@@ -163,6 +163,7 @@ const GLOBELCONSTANT = {
             GET_INSTRUCTOR: API_HOST +  'depatments'
         },
         ASSESSMENT: {
+            GET_COUNT: API_ASSES + "get/{classz}",
             GET_TOPIC: API_ASSES + "display/topics?pageSize=",
             DELETE_TOPIC: API_ASSES + "delete/topic/{topicSid}",
             UPDATE_TOPIC:API_ASSES +  "update/topic",

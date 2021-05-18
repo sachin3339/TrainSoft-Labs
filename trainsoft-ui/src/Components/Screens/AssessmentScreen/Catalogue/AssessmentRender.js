@@ -78,7 +78,7 @@ const AssessmentRender = ({ data, fromMyAt = false, count, setPageNo, key = "" }
                 </div>
                 <div className="assestRight text-bold">
                     {!fromMyAt ? <>
-                        <div className={`pointer ${bookmark.some(resp => resp.sid === res.sid) ? 'bookMarkColor' : ''}`} onClick={() => { bookmark.some(resp => resp.sid === res.sid) ? removeBookmark(res.sid) : createBookmark(res.sid) }}> {ICN_MARK} </div>
+                        {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <div></div>: <div className={`pointer ${bookmark.some(resp => resp.sid === res.sid) ? 'bookMarkColor' : ''}`} onClick={() => { bookmark.some(resp => resp.sid === res.sid) ? removeBookmark(res.sid) : createBookmark(res.sid) }}> {ICN_MARK} </div>}
                         <div>
                             {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <> <Button className="disabled">Already Taken </Button> </> : <> <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Take Now </Button></>}
                         </div>

@@ -230,7 +230,7 @@ const QuestionsTable = ({ location }) => {
   // get batch count
   const getQuestionCount = async () => {
     try {
-      let { data } = await RestService.getCount("question")
+      let { data } = await RestService.getEAssessCount("question")
       setCount(data);
     } catch (err) {
       console.error("error occur on getQuestionCount()", err)

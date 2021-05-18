@@ -59,7 +59,7 @@ const CreateStep2 = ({ location, handleNext, handleBack }) => {
         let res = await RestService.updateAssessment(uploadPayload)
         Toast.success({ message: "Assessment updated successfully" })
         setAssessmentVal(res?.data)
-        setInitialAssessment(res?.data)
+        setInitialAssessment(initialAssessment)
       } else {
         let res = await RestService.createAssessment(payload)
         Toast.success({ message: "Assessment created successfully" })
