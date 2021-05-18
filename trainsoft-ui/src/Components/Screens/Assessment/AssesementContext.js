@@ -17,11 +17,8 @@ export const AssessmentProvider = ({ children }) => {
   const [questions, setQuestions] = useState([]);
   const [assUserInfo, setAssUserInfo] = useState({});
   const [hasExamEnd, setHasExamEnd] = useState(false);
-<<<<<<< HEAD
   const [inReview, setInReview] = useState(false);
-=======
   const [errorMessage,setErrorMessage] = useState(null)
->>>>>>> 832e12cd4837e3779a7994b0284f6e5d1b1ad4ca
 
   const setAnswer = (questionID, answerID) => {
     setSelectedAnswers((_selectedAnswers) => ({
@@ -107,12 +104,9 @@ export const AssessmentProvider = ({ children }) => {
     setQuestions,
     hasExamEnd, 
     setHasExamEnd,
-<<<<<<< HEAD
     inReview, 
-    setInReview
-=======
+    setInReview,
     errorMessage
->>>>>>> 832e12cd4837e3779a7994b0284f6e5d1b1ad4ca
   };
 
   return (
