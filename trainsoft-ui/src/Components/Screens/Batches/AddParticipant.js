@@ -71,8 +71,6 @@ const AddParticipant = ({ show, setShow, sid, getParticipant }) => {
     });
 
 
-
-
     // get all getLearner
     const getLearner = async (pagination = 1) => {
         try {
@@ -129,6 +127,7 @@ const AddParticipant = ({ show, setShow, sid, getParticipant }) => {
         }
     }
 
+    // on search
     const onSearch = (e) => {
         try {
             setSearchValue(participant.filter(res => res.emailId.toUpperCase().indexOf(e.toUpperCase()) > -1))
