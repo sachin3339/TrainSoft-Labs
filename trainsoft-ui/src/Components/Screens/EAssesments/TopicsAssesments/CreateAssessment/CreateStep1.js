@@ -51,7 +51,7 @@ const CreateStep1 = ({  handleNext }) => {
                   Type
                     </Form.Label>
                 <div style={{ marginBottom: "10px" }}>
-                  <RadioBoxKey name="premium" options={[{ label: "Free", value: false }, { label: "Premium", value: true }]} />
+                  <RadioBoxKey name="premium" options={[{ label: "Free", value: false }, { label: "Premium", value: true, disabled: true }]} />
                 </div>
               </Form.Group>
               <Form.Group style={{ width: "60%" }}>

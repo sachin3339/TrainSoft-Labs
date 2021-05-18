@@ -18,9 +18,6 @@ const CatalogueDetails = ({location})=>{
   const [difficulty,setDifficulty] = useState([])
   const [tagList,setTagList] = useState([])
 
-
- 
-
     // filter assessment
     const filterAssessment = async (pageNo=1) => {
       spinner.show("Loading... wait");
@@ -173,7 +170,7 @@ useEffect(() => {
                     <div>{ICN_ARROW_DOWN}</div>
              </div>
              {tags?.assessmentCountDifficultyToList?.map(res=>
-              <div className="jcb" key={res.sid}>
+              <div className="jcb" key={res.difficultyName}>
                 <Form.Check custom inline className="text-capitalize pointer" checked={difficulty.some(resp=>resp === res.difficultyName)} onChange={(e)=> onSelectDeficulty(e,res.difficultyName)} label={res.difficultyName?.toLowerCase()} type="checkbox" id={`custom-${res.difficultyName}`}/>
                 <div>{res.count}</div>
               </div>

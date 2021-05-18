@@ -65,12 +65,12 @@ const CatalogueList = () =>{
     return(<>
        <div className="catalog-box">
             {category.map(res=>
-                    <div className="box-shadow catalog-list">
+                    <div className="box-shadow catalog-list" key={res.sid}>
                     <div className="catalog-img">
                         <img src={icon.find(resp=>resp.name=== res.name)?.images}/>
                     </div>
-                    <div className="catalog-link">
-                        <div className="link" onClick={()=>navigate('catalogue/catalogDetails',{ state: { path:'catalogue', title: 'Catalogue',data:res } })}>{res.name}</div>
+                    <div className="catalog-link pointer"  onClick={()=>navigate('catalogue/catalogDetails',{ state: { path:'catalogue', title: 'Catalogue',data:res } })}>
+                        <div className="link">{res.name}</div>
                         <div className="">
                         {ICN_ARROW}
                         </div>
