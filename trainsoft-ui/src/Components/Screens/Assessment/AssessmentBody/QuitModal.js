@@ -20,11 +20,11 @@ const QuitModal = ({show, setShow}) => {
   const handleQuitAssessment = ()=> {
     try {
       spinner.show("Quitting assessment.. Please wait...");
+      fromLogin ? navigate("/assessment",{state:{title:"Dashboard"}}) : navigate("/")
       RestService.quitAssessment(instruction.sid, assUserInfo.sid).then(
           response => {
               spinner.hide();
               Toast.success({ message: `Quit assessment successfully`, time: 3000 });
-              fromLogin ? navigate("/assessment",{state:{title:"Dashboard"}}) : navigate("/")
           },
           err => {
               spinner.hide();

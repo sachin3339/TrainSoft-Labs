@@ -19,10 +19,11 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
         selectedAnswer, 
         setSelectedAnswer,
         instruction,
-        assUserInfo
+        assUserInfo,
+        inReview, 
+        setInReview
       } = useContext(AssessmentContext);
       const [activeOption, setActiveOption] = useState(selectedAnswers[question?.sid]);
-      const [inReview, setInReview] = useState(false);
       const [submitStatus, setSubmitStatus] = useState(false);
 
       // this method to submit your answer
@@ -42,6 +43,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
                 setQuestionIndex(inReview ? -1 : questionIndex + 1);
                 setAnswer(question.sid, activeOption);
                 setSelectedAnswer({});
+                setInReview(false);
               },
               err => {
                 setSubmitStatus(false);

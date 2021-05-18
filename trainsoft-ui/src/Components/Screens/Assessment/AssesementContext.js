@@ -17,6 +17,7 @@ export const AssessmentProvider = ({ children }) => {
   const [questions, setQuestions] = useState([]);
   const [assUserInfo, setAssUserInfo] = useState({});
   const [hasExamEnd, setHasExamEnd] = useState(false);
+  const [inReview, setInReview] = useState(false);
 
   const setAnswer = (questionID, answerID) => {
     setSelectedAnswers((_selectedAnswers) => ({
@@ -98,7 +99,9 @@ export const AssessmentProvider = ({ children }) => {
     questions,
     setQuestions,
     hasExamEnd, 
-    setHasExamEnd
+    setHasExamEnd,
+    inReview, 
+    setInReview
   };
 
   return (
