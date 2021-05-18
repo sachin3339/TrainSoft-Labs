@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import RestService from "../../../Services/api.service";
 import AppUtils from "../../../Services/Utils";
 import AppContext from "../../../Store/AppContext";
-// import { dummyQuestions } from "./mock";
 
 export const AssessmentContext = createContext(null);
 
@@ -32,7 +31,7 @@ export const AssessmentProvider = ({ children }) => {
     virtualAccountSid = ""
     ) => {
     try {
-        spinner.show();
+        spinner.show("Loading... Please wait...");
         RestService.getQuestionAnswer(assessmentSid, virtualAccountSid).then(
             response => {
                 if(AppUtils.isNotEmptyArray(response.data)) {

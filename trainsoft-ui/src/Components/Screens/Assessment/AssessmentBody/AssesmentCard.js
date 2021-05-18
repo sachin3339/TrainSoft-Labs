@@ -6,6 +6,7 @@ import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import AnswerOption from './AnswerOption';
 import RestService from '../../../../Services/api.service';
 import AppUtils from '../../../../Services/Utils';
+import { IcnEdit } from '../../../Common/Icon';
 
 const AssessmentCard = ({ question, review = false, setReview,  index, correct = false, result = false, questions }) => {
     const {
@@ -68,7 +69,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
               {
                 review 
                 && <div className={styles.editButton} onClick={() => {setQuestionIndex(index); setInReview(true); setReview(true)}}>
-                    <CreateOutlinedIcon style={{ fontSize: "12px", marginRight: "5px" }}/>Edit
+                    <CreateOutlinedIcon style={{fontSize:"15px", marginRight:"10px"}}/>Edit
                 </div>
               }
             </div>
