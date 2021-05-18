@@ -16,7 +16,6 @@ import './landingPage.css'
 import { navigate } from '../../Common/Router'
 import Dialog from '@material-ui/core/Dialog';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import * as Yup from 'yup';
 import GLOBELCONSTANT from '../../../Constant/GlobleConstant'
