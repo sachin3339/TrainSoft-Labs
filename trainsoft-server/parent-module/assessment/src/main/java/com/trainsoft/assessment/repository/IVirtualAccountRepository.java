@@ -14,7 +14,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface IVirtualAccountRepository extends JpaRepository<VirtualAccount, Integer>{
-	@Query("FROM VirtualAccount  as va WHERE va.status='ENABLED' AND va.sid=:sid")
+	@Query("select va FROM VirtualAccount va WHERE va.status='ENABLED' AND va.sid=:sid")
 	VirtualAccount findVirtualAccountBySid(byte[] sid);
 	Page<VirtualAccount> findVirtualAccountByCompanyAndStatusNotOrderByCreatedOnDesc(Company company, InstructorEnum.Status status, Pageable paging);
 	List<VirtualAccount> findVirtualAccountByCompanyAndStatusNot(Company company, InstructorEnum.Status status);
