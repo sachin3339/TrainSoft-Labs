@@ -135,6 +135,8 @@ public class AssessmentServiceImpl implements IAssessmentService
                          assessmentTo.setTopicSid(tSid);
                          assessmentTo.setNoOfQuestions(getNoOfQuestionByAssessmentSid(BaseEntity.bytesToHexStringBySid(assessment.getSid())));
                          assessmentTo.setTagSid(assessment.getTagId().getStringSid());
+                         assessmentTo.setCompanySid(assessment.getCompany().getStringSid());
+                         assessmentTo.setCategorySid(assessment.getCategoryId().getStringSid());
                     }
                     return assessmentToList;
                 }
