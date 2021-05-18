@@ -164,7 +164,7 @@ const TopicsTable = ({ location }) => {
       // get batch count
       const getTopicCount = async () => {
         try {
-           let {data} =await RestService.getCount("quiz")
+           let {data} =await RestService.getEAssessCount("quiz")
             setCount(data);
         } catch (err) {
             console.error("error occur on getTopicCount()", err)
