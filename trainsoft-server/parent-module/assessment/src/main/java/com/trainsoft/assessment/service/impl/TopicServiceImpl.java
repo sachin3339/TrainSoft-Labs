@@ -50,7 +50,6 @@ public class TopicServiceImpl implements ITopicService {
                 Topic duplicateTopic = topicRepository.findTopicByName(topicTo.getName().trim(),virtualAccount.getCompany());
                 if(duplicateTopic !=null && duplicateTopic.getName().equalsIgnoreCase(topicTo.getName()))
                 {
-                    log.error("Topic Already exist cannot create duplicate Topic");
                     throw new DuplicateRecordException("Duplicate record will not be created for Topic");
 
                 }
@@ -61,7 +60,13 @@ public class TopicServiceImpl implements ITopicService {
                 topic.setStatus(AssessmentEnum.Status.ENABLED);
                 topic.setCompany(virtualAccount.getCompany());
                 return mapper.convert(topicRepository.save(topic), TopicTo.class);
-        }catch (Exception e) {
+        }catch (Exception e)
+        {
+            if(e instanceof DuplicateRecordException)
+            {
+                log.error("Topic Already exist cannot create duplicate Topic");
+                throw new ApplicationException(((DuplicateRecordException) e).devMessage);
+            }
             log.error("throwing exception while creating the Topic", e.toString());
             throw new ApplicationException("Something went wrong while creating the Topic "+e.getMessage());
         }
