@@ -19,6 +19,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import * as Yup from 'yup';
+import GLOBELCONSTANT from '../../../Constant/GlobleConstant'
 
 
 const LandingHome = () => {
@@ -97,7 +98,7 @@ const LandingHome = () => {
                             <div className="card-img">
                                 <img src={ASSESSMENT} />
                             </div>
-                            <div className="page-card-title" onClick={() => navigate('/assesment')}>e-Assessment</div>
+                            <div className="page-card-title" onClick={() => navigate('/login',{state:{user:GLOBELCONSTANT.ROLE.ASSESS_USER}})}>e-Assessment</div>
                             <div className="page-card-subTitle">Online Assessment / Screening</div>
                             <div className="page-card-body">
                                 Trainsoft lets you create an online test to assess the progress of your class. With our online test generator tool, educators and corporate trainers can create, publish and conduct online tests<br />

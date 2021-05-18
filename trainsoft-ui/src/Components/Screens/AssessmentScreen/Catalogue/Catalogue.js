@@ -17,7 +17,7 @@ import AssessmentContext from '../../../../Store/AssessmentContext';
 import RestService from '../../../../Services/api.service';
 import AppContext from '../../../../Store/AppContext';
 
-const data = [
+const icon = [
     {name: "Technology",mark:"70",images:ICN_TECH},
     {name: "Psychometric",mark:"60", images:ICN_PER},
     {name: "Skills",mark:"78",images:ICN_SKILL},
@@ -30,7 +30,7 @@ const data = [
 
 const CatalogueList = () =>{
     const {user,spinner} = useContext(AppContext)
-    const {category,setBookmark} = useContext(AssessmentContext)
+    const {category,setBookmark,setMyAssessment} = useContext(AssessmentContext)
 
       //  getBookmark 
       const getBookmark = async (categorySid) => {
@@ -45,15 +45,29 @@ const CatalogueList = () =>{
         }
     }
 
+     // get my assessment 
+   const getMyAssessment = async () => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.getMyAssessment('ALL',user.sid)
+      setMyAssessment(data);
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on getMyAssessment()", err)
+    }
+  }
+
     useEffect(() => {
        getBookmark()
+       getMyAssessment()
     }, [])
     return(<>
        <div className="catalog-box">
             {category.map(res=>
                     <div className="box-shadow catalog-list">
                     <div className="catalog-img">
-                        <img src={data.find(resp=>resp.name=== res.name)?.images}/>
+                        <img src={icon.find(resp=>resp.name=== res.name)?.images}/>
                     </div>
                     <div className="catalog-link">
                         <div className="link" onClick={()=>navigate('catalogue/catalogDetails',{ state: { path:'catalogue', title: 'Catalogue',data:res } })}>{res.name}</div>
