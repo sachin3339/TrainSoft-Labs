@@ -80,11 +80,12 @@ const AssesmentsTable = ({ location }) => {
         isSearchEnabled: false,
         render: (data) => data.type === true ? "Premium" : "Free"
       },
-      category: {
+      categorySid: {
         title: "Category",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
+        render : (data) => getCategory(data.categorySid)?.name
       },
       difficulty: {
         title: "Difficulty",

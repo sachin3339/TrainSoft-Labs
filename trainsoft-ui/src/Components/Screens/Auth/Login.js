@@ -81,13 +81,10 @@ const Login = ({location}) => {
 
     // get All topic
     const getAllCategory = async () => {
-        spinner.show("Loading... wait");
         try {
         let { data } = await RestService.getAllCategory()
         setCategory(data)
-        spinner.hide();
         } catch (err) {
-        spinner.hide();
         console.error("error occur on getAllTopic()", err)
         }
     }
