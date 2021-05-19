@@ -74,7 +74,7 @@ const CreateStep2 = ({ location, handleNext, handleBack }) => {
       spinner.hide()
     } catch (err) {
       spinner.hide()
-      Toast.success({ message: "Duplicate record will not be created" })
+      Toast.error({ message: err.response?.data?.message})
       console.error("error occur on createAssessment()", err)
     }
   }

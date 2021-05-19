@@ -1,5 +1,6 @@
 package com.trainsoft.assessment.repository;
 
+import com.trainsoft.assessment.entity.Answer;
 import com.trainsoft.assessment.entity.Assessment;
 import com.trainsoft.assessment.entity.VirtualAccount;
 import com.trainsoft.assessment.entity.VirtualAccountHasQuestionAnswerDetails;
@@ -29,10 +30,17 @@ public interface IVirtualAccountHasQuestionAnswerDetailsRepository extends JpaRe
     @Query(value = "select * from virtual_account_has_question_answer_details where virtual_account_id=:id",nativeQuery = true)
     List<VirtualAccountHasQuestionAnswerDetails> findVirtualAccountHasQuestionAnswerDetailsByVirtualAccount(@Param("id") Integer virtualAccountId);
 
+    @Modifying(clearAutomatically = true)
+    @Transactional
     void deleteVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(VirtualAccount virtualAccount, Assessment assessment);
     List<VirtualAccountHasQuestionAnswerDetails> findVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(VirtualAccount virtualAccount, Assessment assessment);
 
+    @Query(value = "UPDATE VirtualAccountHasQuestionAnswerDetails SET answer=:answer , isCorrect=:res WHERE hex(sid)=:sid")
+    void updateAnswer(String sid, Answer answer,boolean res);
 
+
+    @Modifying(clearAutomatically = true)
+    @Transactional
     @Query("DELETE FROM VirtualAccountHasQuestionAnswerDetails vaqad WHERE vaqad.virtualAccountId=:virtualAccount  AND vaqad.quiz=:assessment")
     void deleteByVirtualAccountIdAndQuiz(VirtualAccount virtualAccount,Assessment assessment);
 

@@ -117,6 +117,7 @@ const CreateStep4 = ({ location, handleNext, handleBack }) => {
             getAssestUser()
             Toast.success({ message: 'Bulk Upload successfully', time: 2000 });
         } catch (err) {
+            Toast.error({ message: err.response?.data?.message });
             spinner.hide();
             console.error("error occur on uploadCreateListing()", err)
         }
