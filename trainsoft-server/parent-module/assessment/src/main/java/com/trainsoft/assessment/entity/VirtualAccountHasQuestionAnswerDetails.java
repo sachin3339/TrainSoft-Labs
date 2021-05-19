@@ -39,4 +39,8 @@ public class VirtualAccountHasQuestionAnswerDetails extends BaseEntity{
     @Column(name = "question_point")
     private Integer questionPoint;
 
+    @ManyToOne
+    @JoinColumn(name = "quiz_set_id")
+    private Assessment quiz;
+
 }

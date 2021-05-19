@@ -14,9 +14,7 @@ const AssesmentDetails = ({ location }) => {
   return (
     <>
       <CardHeader
-        location={{
-          ...location,
-        }}
+        {...{location,hideSearch:true}}
       ></CardHeader>
       <div style={{ paddingTop: "30px" }}>
         <Tabs

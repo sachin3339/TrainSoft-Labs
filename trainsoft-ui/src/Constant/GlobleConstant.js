@@ -153,7 +153,7 @@ const GLOBELCONSTANT = {
                 TODAY_LEADER: ASSESSMENT_V1 + "get/today/assessment/leaderboard/",
                 ALL_TIME_LEADER: ASSESSMENT_V1 + "get/allTime/assessment/leaderboard/",
                 UPDATE_QUESTION: ASSESSMENT_V1 + "update/question",
-                QUIT_ASSESSMENT: ASSESSMENT_V1 + "quit/assessment/{qSid}/{vSid}"
+                QUIT_ASSESSMENT: ASSESSMENT_V1 + "quit/assessment/"
             },
             GET_TOPIC: ASSESSMENT_V1 + "display/topics",
             CREATE_ASS_USER: ASSESSMENT_V1 + "create/assess/user",
@@ -163,6 +163,7 @@ const GLOBELCONSTANT = {
             GET_INSTRUCTOR: API_HOST +  'depatments'
         },
         ASSESSMENT: {
+            GET_COUNT: API_ASSES + "get/{classz}",
             GET_TOPIC: API_ASSES + "display/topics?pageSize=",
             DELETE_TOPIC: API_ASSES + "delete/topic/{topicSid}",
             UPDATE_TOPIC:API_ASSES +  "update/topic",
@@ -205,7 +206,10 @@ const GLOBELCONSTANT = {
             CREATE_BOOKMARK: API_ASSES + "assessment/bookmark",
             REMOVE_BOOKMARK: API_ASSES + "assessment/remove/bookmarked",
             GET_BOOKMARK: API_ASSES + "assessments/bookmarked/{vSid}",
-            GET_MY_ASSESSMENT: API_ASSES + "get/my/assessments/{status}/{sid}"
+            GET_MY_ASSESSMENT: API_ASSES + "get/my/assessments/{status}/{sid}",
+            GET_ASSESSMENT_FILTER: API_ASSES + 'assessments/tags-difficulty?pageNo={pageNo}&pageSize={pageSize}',
+            FILTER_COUNT: API_ASSES + 'assessments/tags-difficulty/count',
+            GET_MYASSESSMENT_COUNT:API_ASSES + 'get/myAssessment/count/{sid}'
         },
         ACCESS_LEVEL: [
             {key: "ALL",name: "All"},
@@ -224,6 +228,7 @@ const GLOBELCONSTANT = {
             SUPERVISOR:"SUPERVISOR",
             INSTRUCTOR:"INSTRUCTOR",
             LEARNER:"LEARNER",
+            ASSESS_USER: "ASSESS_USER"
         },
         SAMPLE_TEMPLATE: "https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx",
         UPLOAD_ASSES_TEMPLATE : "https://sessionassests.s3.ap-south-1.amazonaws.com/Assement_User_Upload_template.xlsx",
@@ -252,7 +257,7 @@ const GLOBELCONSTANT = {
                   "phoneNumber": ""
                 },
                 "categoryTopicValue": {
-                  "category": "",
+                  "category": null,
                   "topic": "",
                   "difficulty": "BEGINNER"
                 },

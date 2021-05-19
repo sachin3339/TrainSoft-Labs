@@ -1,15 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./AssessmentBody.module.css";
-import CheckIcon from "@material-ui/icons/Check";
-import CloseIcon from "@material-ui/icons/Close";
-import FlagOutlinedIcon from "@material-ui/icons/FlagOutlined";
-import GroupOutlinedIcon from "@material-ui/icons/GroupOutlined";
 import AssessmentCard from "./AssesmentCard";
 import AppContext from '../../../../Store/AppContext';
 import RestService from '../../../../Services/api.service';
 import AppUtils from '../../../../Services/Utils';
 import useToast from "../../../../Store/ToastHook";
 import { AssessmentContext } from "../AssesementContext";
+import { IcnCheckCircleSuccessOutline, IcnCheckMarkMd, IcnCloseMd, IcnFileText, IcnTeam, IcnTeamWithStar } from "../../../Common/Icon";
 
 const FinishScreen = ({ questions }) => {
     const {
@@ -48,8 +45,8 @@ const FinishScreen = ({ questions }) => {
     }, []);
     return (
         <div className={styles.finishScreen}>
-            <div className={styles.check}>
-                <CheckIcon style={{ fontSize: "36px" }} />
+            <div className="mb10">
+                <IcnCheckCircleSuccessOutline />
             </div>
             <div className={styles.title}>
                 <span className="pr5">Congratulations! You have completed the assessment</span>
@@ -60,7 +57,7 @@ const FinishScreen = ({ questions }) => {
                     && <div
                         style={{
                         display: "flex",
-                        width: "60%",
+                        width: "70%",
                         justifyContent: "space-between",
                         marginBottom: "30px",
                         marginTop: "20p",
@@ -87,7 +84,7 @@ const FinishScreen = ({ questions }) => {
                         >
                             <div>Your <br /> Score (Today)</div>
                             <div>
-                                <FlagOutlinedIcon style={{ fontSize: "36px" }} />
+                                <IcnFileText />
                             </div>
                         </div>
                         <div
@@ -119,7 +116,7 @@ const FinishScreen = ({ questions }) => {
                         >
                             <div>Your <br />Rank</div>
                             <div>
-                                <GroupOutlinedIcon style={{ fontSize: "36px", color: "#C321FF" }}/>
+                                <IcnTeam />
                             </div>
                         </div>
                         <div style={{
@@ -154,7 +151,7 @@ const FinishScreen = ({ questions }) => {
                         >
                             <div>Your <br /> Rank (All Time)</div>
                             <div>
-                                <GroupOutlinedIcon style={{ fontSize: "36px", color: "#C321FF" }}/>
+                                <IcnTeamWithStar />
                             </div>
                         </div>
                         <div style={{
@@ -182,7 +179,7 @@ const FinishScreen = ({ questions }) => {
                             marginBottom: "30px",
                         }}
                     >
-                        <div>
+                        <div className="aic">
                             <div
                                 style={{
                                     width: "14px",
@@ -194,8 +191,8 @@ const FinishScreen = ({ questions }) => {
                                 }}
                             />{" "}Your Answer
                         </div>
-                        <div><CheckIcon style={{ color: "green" }} />Right Answer</div>
-                        <div> <CloseIcon style={{ color: "red" }} /> Wrong Answer</div>
+                        <div className="aic"><span className="mr10"><IcnCheckMarkMd /></span><span className="pt2">Right Answer</span></div>
+                        <div className="aic"><span className="mr10"><IcnCloseMd /></span><span className="pt2">Wrong Answer</span></div>
                     </div>
                 </div>
                 {

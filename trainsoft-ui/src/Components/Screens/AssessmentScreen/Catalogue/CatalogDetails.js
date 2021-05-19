@@ -7,6 +7,7 @@ import SearchBox from '../../../Common/SearchBox/SearchBox';
 import AssessmentRender from './AssessmentRender';
 import '../assessment.css'
 import GLOBELCONSTANT from '../../../../Constant/GlobleConstant';
+import AssessmentContext from '../../../../Store/AssessmentContext';
 
 
 const CatalogueDetails = ({location})=>{
@@ -14,19 +15,47 @@ const CatalogueDetails = ({location})=>{
   const [count,setCount] =  useState()
   const [tags,setTags] =useState({})
   const [categoryAssessment,setCategoryAssessment] = useState([])
+  const [difficulty,setDifficulty] = useState([])
+  const [tagList,setTagList] = useState([])
 
-   // get avg. category 
-   const getAssessmentByCategory = async (pageNo=1) => {
-    spinner.show("Loading... wait");
-    try {
-      let { data } = await RestService.getAssessmentByCategory(user.companySid,location?.state?.data.sid,10,pageNo-1)
-      setCategoryAssessment(data);
-      spinner.hide();
-    } catch (err) {
-      spinner.hide();
-      console.error("error occur on getAvgCategory()", err)
+    // filter assessment
+    const filterAssessment = async (pageNo=1) => {
+      spinner.show("Loading... wait");
+      let  payload = {
+          "categorySid":location?.state?.data.sid ,
+          "companySid": user.companySid,
+          "difficultyList":  difficulty,
+          "tagsList": tagList
+        }
+      try {
+        let { data } = await RestService.filterAssessment(pageNo-1,GLOBELCONSTANT.PAGE_SIZE,payload)
+        setCategoryAssessment(data);
+        filterCount()
+        spinner.hide();
+      } catch (err) {
+        spinner.hide();
+        console.error("error occur on getAvgCategory()", err)
+      }
     }
-  }
+
+     // filter assessment
+     const filterCount = async () => {
+      spinner.show("Loading... wait");
+      let  payload = {
+          "categorySid":location?.state?.data.sid ,
+          "companySid": user.companySid,
+          "difficultyList":  difficulty,
+          "tagsList": tagList
+        }
+      try {
+        let { data } = await RestService.filterCount(payload)
+        setCount(data);
+        spinner.hide();
+      } catch (err) {
+        spinner.hide();
+        console.error("error occur on getAvgCategory()", err)
+      }
+    }
 
   // get avg. category 
   const getAssessmentCount = async (value) => {
@@ -67,12 +96,43 @@ const CatalogueDetails = ({location})=>{
     }
   }
 
+const onSelectTag = (e,sid)=>{
+  try{
+    let checked = e.target.checked
+    if(checked){
+        setTagList([...tagList,sid])
+    }else{
+      setTagList(tagList.filter(res=>res !== sid))
+    }
 
+  }catch(err){
+    console.error("error occur on onSelectTag",err)
+  }
+}
+
+const onSelectDeficulty = (e,def)=>{
+  try{
+    let checked = e.target.checked
+    if(checked){
+        setDifficulty([...difficulty,def])
+    }else{
+      setDifficulty(difficulty.filter(res=>res !== def))
+    }
+
+  }catch(err){
+    console.error("error occur on onSelectDifficulty",err)
+  }
+}
+
+
+useEffect(() => {
+    filterAssessment()
+}, [tagList,difficulty])
 
   useEffect(() => {
     getAssessmentTag()
     getAssessmentCount();
-    getAssessmentByCategory();
+    filterAssessment()
   }, [])
 
     return(<>
@@ -81,7 +141,7 @@ const CatalogueDetails = ({location})=>{
             <div className="title-md">
                 Filter
             </div>
-            <div className="">
+            <div className="pointer" onClick={()=>{setTagList([]);setDifficulty([])}}>
                 Clear
             </div>
          </div>
@@ -89,7 +149,7 @@ const CatalogueDetails = ({location})=>{
             <div> {count} Assessments </div>
             <div> <SearchBox 
             {...{
-             onChange: (e) => e.length === 0 && getAssessmentByCategory(),
+             onChange: (e) => e.length === 0 && filterAssessment(),
              onEnter: (e) => searchAssessment(e)}}/> </div>
           </div>
         </div>
@@ -101,7 +161,7 @@ const CatalogueDetails = ({location})=>{
                 </div>
               {tags?.assessmentCountTagToList?.map(res=>
                 <div className="jcb" key={res.sid}>
-                  <Form.Check custom inline className="text-capitalize" label={res.tagName?.toLowerCase()} type="checkbox" id={`custom-${res.tagName}`}/>
+                  <Form.Check custom inline checked={tagList.some(resp=>resp === res.sid)} className="text-capitalize pointer" onChange={(e)=> onSelectTag(e,res.sid)} label={res.tagName?.toLowerCase()} type="checkbox" id={`custom-${res.tagName}`}/>
                   <div>{res.count}</div>
                 </div>
                 )}
@@ -110,15 +170,15 @@ const CatalogueDetails = ({location})=>{
                     <div>{ICN_ARROW_DOWN}</div>
              </div>
              {tags?.assessmentCountDifficultyToList?.map(res=>
-              <div className="jcb" key={res.sid}>
-                <Form.Check custom inline className="text-capitalize" label={res.difficultyName?.toLowerCase()} type="checkbox" id={`custom-${res.difficultyName}`}/>
+              <div className="jcb" key={res.difficultyName}>
+                <Form.Check custom inline className="text-capitalize pointer" checked={difficulty.some(resp=>resp === res.difficultyName)} onChange={(e)=> onSelectDeficulty(e,res.difficultyName)} label={res.difficultyName?.toLowerCase()} type="checkbox" id={`custom-${res.difficultyName}`}/>
                 <div>{res.count}</div>
               </div>
               )}
          </div>
           <div className="col-sm-9">
             <div className="">
-                <AssessmentRender {...{data:categoryAssessment,count, setPageNo:(e)=> getAssessmentByCategory(e)}}/>
+                <AssessmentRender {...{data:categoryAssessment,count, setPageNo:(e)=> filterAssessment(e)}}/>
             </div>
           </div>
         </div>

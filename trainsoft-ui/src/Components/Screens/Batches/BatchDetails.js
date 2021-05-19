@@ -20,25 +20,6 @@ const BatchesDetails = ({location}) => {
     const Toast = useToast()
     const [participant, setParticipant]= useState([])
 
-       // initialize  component
-    // useEffect(() => { 
-    //     try{
-    //     if(response){
-    //        let val = response.map(res=> {
-    //             let data = res.appuser
-    //             data.role= res.role
-    //             data.department = res.departmentVA ? res.departmentVA.department.name : ''
-    //             return data
-    //         })
-    //         setParticipant(val)
-    //      }
-    //     }catch(err){
-    //         console.error(err)
-    //     }
-    // }
-    // , [response])
-
-
     const [configuration, setConfiguration] = useState({
         columns: {
             "name": {
@@ -175,7 +156,7 @@ const BatchesDetails = ({location}) => {
     }
 
     useEffect(()=>{
-        location.state.sid && getParticipant()
+        location.state?.sid && getParticipant()
     },[])
 
     return (<div className="table-shadow p-3">

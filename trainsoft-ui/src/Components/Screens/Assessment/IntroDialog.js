@@ -10,13 +10,15 @@ import Submit from "./common/SubmitButton";
 import RestService from "../../../Services/api.service";
 import AppContext from "../../../Store/AppContext";
 import { AssessmentContext } from "./AssesementContext";
+import { IcnInfoCircle } from "../../Common/Icon";
 
 export const IntroDialog = ({ open, setOpen ,location}) => {
   const { fromLogin } = useContext(AppContext);
-  const { instruction, assUserInfo, questions } = useContext(AssessmentContext);
+  const { instruction, assUserInfo, questions , errorMessage} = useContext(AssessmentContext);
   
   return <Dialog
     open={open}
+    disableBackdropClick={true}
     onClose={() => {
       setOpen(false);
       // setSubmited(false);
@@ -24,11 +26,12 @@ export const IntroDialog = ({ open, setOpen ,location}) => {
     style={{ padding: "10px" }}
   >
     <DialogContent dividers>
+      { errorMessage === null ? <>
       <Typography
         gutterBottom
         style={{ font: "normal normal normal 16px/26px Montserrat" }}
       >
-        <span style={{ fontWeight: 600 }}>Welcome {assUserInfo.appuser?.name},</span>
+        <span style={{ fontWeight: 600 }} className="text-camel text-capitalize">Welcome {assUserInfo.appuser?.name},</span>
         <br /> Please read the following instructions carefully before you
           start your assessment.
         </Typography>
@@ -40,7 +43,11 @@ export const IntroDialog = ({ open, setOpen ,location}) => {
           font: " normal normal bold 16px/19px Montserrat",
         }}
       >
-        INSTRUCTIONS
+        <div className="aic">
+          <div className="mr5"><IcnInfoCircle /></div>
+          <div className="pt2">INSTRUCTIONS</div>
+        </div>
+      
         </Typography>
       {
         instruction
@@ -57,7 +64,16 @@ export const IntroDialog = ({ open, setOpen ,location}) => {
           <br /> 5. You can <span style={{ fontWeight: 600 }}> {instruction.previousEnabled ? "edit" : "not edit"} </span> your
            <span style={{ fontWeight: 600 }} className="px5">previous answer</span> during the session any time
         </Typography>
-      }
+      }</> : <>
+      <Typography
+          gutterBottom
+          style={{ font: "normal normal normal 16px/26px Montserrat" }}
+        >
+          <span style={{ fontWeight: 600 }} className="mb-3 text-capitalize">Welcome {assUserInfo.appuser?.name}</span>
+          <br /><div className="mt-3 text-danger">{errorMessage}</div> 
+        </Typography>
+
+      </>}
     </DialogContent>
     <DialogActions>
       <div style={{ padding: "10px" }}>
@@ -71,7 +87,7 @@ export const IntroDialog = ({ open, setOpen ,location}) => {
         >
           Cancel
           </Submit>
-        <Submit onClick={() => setOpen(false)}>Start Assessment</Submit>
+       { errorMessage === null && <Submit onClick={() => setOpen(false)}>Start Assessment</Submit> }
       </div>
     </DialogActions>
   </Dialog>;

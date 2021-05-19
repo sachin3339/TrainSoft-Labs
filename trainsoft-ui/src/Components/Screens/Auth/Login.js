@@ -1,4 +1,4 @@
-import React, { useContext,useState } from 'react'
+import React, { useContext,useState,useEffect } from 'react'
 import { Formik } from 'formik';
 import { Checkbox, TextInput } from '../../Common/InputField/InputField';
 import { Button } from '../../Common/Buttons/Buttons';
@@ -10,11 +10,14 @@ import AxiosService from '../../../Services/axios.service';
 import { TokenService } from '../../../Services/storage.service';
 import './auth.css'
 import { ICN_TRAINSOFT } from '../../Common/Icon';
+import GLOBELCONSTANT from '../../../Constant/GlobleConstant';
+import AssessmentContext from '../../../Store/AssessmentContext';
 
 
 
-const Login = () => {
+const Login = ({location}) => {
     const {setUserValue,spinner} = useContext(AppContext)
+    const {setCategory} = useContext(AssessmentContext)
     const [tabPanel,setTabPanel] = useState("login")
     const Toast = useToast();
     
@@ -30,9 +33,15 @@ const Login = () => {
                         data.accessType = response.data.appuser.accessType
                         data.employeeId = response.data.appuser.accessType
                         setUserValue("LOGIN",data)
-                        AxiosService.init('',response.data.jwtToken);
-                        TokenService.saveToken(response.data.jwtToken)
-                        data.role === "LEARNER" ?  navigate('/home', { state: { title: 'Home'} }): navigate('/dashboard', { state: { title: 'Dashboard'} }) 
+                        AxiosService.init('',response.data?.jwtToken);
+                        TokenService.saveToken(response.data?.jwtToken)
+                        if(data.role === GLOBELCONSTANT.ROLE.ASSESS_USER){
+                            navigate('/assessment', { state: { title: 'Dashboard'} })
+                        }else{
+                            data.role === GLOBELCONSTANT.ROLE.LEARNER ?  navigate('/home', { state: { title: 'Home'} }) :(data.role === GLOBELCONSTANT.ROLE.INSTRUCTOR || data.role === GLOBELCONSTANT.ROLE.SUPERVISOR) && navigate('/dashboard', { state: { title: 'Dashboard'} })
+                        }
+                        
+ 
                     },
                 err => {
                     Toast.error({message: 'Invalid User Name / Password!'})
@@ -69,6 +78,20 @@ const Login = () => {
         }
     }
 
+
+    // get All topic
+    const getAllCategory = async () => {
+        try {
+        let { data } = await RestService.getAllCategory()
+        setCategory(data)
+        } catch (err) {
+        console.error("error occur on getAllTopic()", err)
+        }
+    }
+
+    useEffect(() => {
+        getAllCategory()
+    }, [])
 
 
     return (<div className="loginScreen">

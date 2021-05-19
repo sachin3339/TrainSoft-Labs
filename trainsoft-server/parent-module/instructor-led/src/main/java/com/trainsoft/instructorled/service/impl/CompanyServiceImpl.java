@@ -69,7 +69,7 @@ public class CompanyServiceImpl implements ICompanyService {
                 Company company = mapper.convert(companyTO, Company.class);
                 company.generateUuid();
                 company.setCreatedOn(new Date(epochMilli));
-                company.setStatus(InstructorEnum.Status.DISABLED);
+                company.setStatus(InstructorEnum.Status.ENABLED);
                 Company savedCompany = companyRepository.save(company);
                 CompanyTO savedCompanyTO = mapper.convert(savedCompany, CompanyTO.class);
 

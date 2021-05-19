@@ -11,7 +11,7 @@ import '../assessment.css'
 
 
 const AssessmentDashboard = () => {
-    const { category } = useContext(AssessmentContext)
+    const { category,setBookmark } = useContext(AssessmentContext)
     const { spinner, user } = useContext(AppContext)
     const [avgCategory, setAvgCategory] = useState()
     const [selectedCategory, setSelectedCategory] = useState('All Category')
@@ -62,26 +62,38 @@ const AssessmentDashboard = () => {
         let val =""
         try{
             let values =  avgCategory.find(res=> res?.categoryTO.sid === sid)
-           val = values ? `${values.averageScore}%` : "N/A"
+           val = values ? `${values.averageScore}%` : "-"
 
         }catch(err){
             console.error("error occur on getCategoryValue()",err)
         }
         return val 
     }
-
+    //  getBookmark 
+    const getBookmark = async () => {
+        spinner.show("Loading... wait");
+        try {
+            let { data } = await RestService.getBookmark(user.sid)
+            setBookmark(data);
+            spinner.hide();
+        } catch (err) {
+            spinner.hide();
+            console.error("error occur on getBookmark()", err)
+        }
+    }
 
     useEffect(() => {
         getAvgCategory()
         getDashboardInfo()
         getTopUsers("ALL")
+        getBookmark()
     }, [])
 
     return (<>
         <div className="row">
             <div className="col-sm-8">
                 <div className="box-shadow">
-                    <div className="title-lg">Welcome Back {user?.appuser?.name}</div>
+                    <div className="title-lg text-capitalize">Welcome Back {user?.appuser?.name}</div>
                     <div className="jcb mt-4 px-2">
                         <div className="column text-center">
                             <div className="title-lg ass">{dashboardInfo?.assessmentTaken}</div>

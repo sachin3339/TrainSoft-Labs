@@ -22,7 +22,7 @@ const AssesmentsTable = ({ location }) => {
 
   let val = {
     autoSubmitted: true,
-    category: category[0],
+    categorySid: category[0],
     description: "",
     difficulty: "BEGINNER",
     duration: false,
@@ -80,11 +80,12 @@ const AssesmentsTable = ({ location }) => {
         isSearchEnabled: false,
         render: (data) => data.type === true ? "Premium" : "Free"
       },
-      category: {
+      categorySid: {
         title: "Category",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
+        render : (data) => getCategory(data.categorySid)?.name
       },
       difficulty: {
         title: "Difficulty",
@@ -161,8 +162,8 @@ const AssesmentsTable = ({ location }) => {
   const initialStateConfig = (values) => {
     let data = {
       ...values,
-      category: getCategory(values.category),
-      tagSid:  getCategory(values.category,values.tagSid),
+      categorySid: getCategory(values.categorySid),
+      tagSid:  getCategory(values.categorySid,values.tagSid),
       validUpto: values.validUpto === 0 ? true : false,
       date: values.validUpto === 0 ? '' : values.validUpto,
       duration: values.duration === 0 ? true : false,
@@ -175,7 +176,7 @@ const AssesmentsTable = ({ location }) => {
     let value = '';
     let tags = '';
     try {
-      value = category.find(res => res.name === vals)
+      value = category.find(res => res.sid === vals)
       tags = tagSid && value.tags.find(res => res.sid === tagSid)
     } catch (err) {
       console.error("error occur on getCategory()", err)

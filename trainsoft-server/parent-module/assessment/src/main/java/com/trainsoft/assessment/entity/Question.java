@@ -4,6 +4,8 @@ import com.trainsoft.assessment.value.AssessmentEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -44,6 +46,7 @@ public class Question extends BaseEntity{
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "questionId")
+    @Where(clause = "status = 'ENABLED'")
     private List<Answer> answers = new ArrayList<>();
 
     @ManyToOne

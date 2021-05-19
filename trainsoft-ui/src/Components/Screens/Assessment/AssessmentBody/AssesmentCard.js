@@ -6,6 +6,7 @@ import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import AnswerOption from './AnswerOption';
 import RestService from '../../../../Services/api.service';
 import AppUtils from '../../../../Services/Utils';
+import { IcnEdit } from '../../../Common/Icon';
 
 const AssessmentCard = ({ question, review = false, setReview,  index, correct = false, result = false, questions }) => {
     const {
@@ -18,10 +19,11 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
         selectedAnswer, 
         setSelectedAnswer,
         instruction,
-        assUserInfo
+        assUserInfo,
+        inReview, 
+        setInReview
       } = useContext(AssessmentContext);
       const [activeOption, setActiveOption] = useState(selectedAnswers[question?.sid]);
-      const [inReview, setInReview] = useState(false);
       const [submitStatus, setSubmitStatus] = useState(false);
 
       // this method to submit your answer
@@ -41,6 +43,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
                 setQuestionIndex(inReview ? -1 : questionIndex + 1);
                 setAnswer(question.sid, activeOption);
                 setSelectedAnswer({});
+                setInReview(false);
               },
               err => {
                 setSubmitStatus(false);
@@ -68,7 +71,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
               {
                 review 
                 && <div className={styles.editButton} onClick={() => {setQuestionIndex(index); setInReview(true); setReview(true)}}>
-                    <CreateOutlinedIcon style={{ fontSize: "12px", marginRight: "5px" }}/>Edit
+                    <CreateOutlinedIcon style={{fontSize:"15px", marginRight:"10px"}}/>Edit
                 </div>
               }
             </div>
@@ -94,6 +97,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
                   index={i}
                   active={activeOption === option?.sid}
                   result={result}
+                  isAlphabet={question.questionId.alphabet}
                 />
             </div>
             </>)

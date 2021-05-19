@@ -15,6 +15,8 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AssessmentTo extends BaseTO{
 
+    private static final long serialVersionUID = -1672888962822818909L;
+
     @NonNull
     @ApiModelProperty(value = "It is required to create Assessment",required = true)
     private String title;
@@ -22,7 +24,6 @@ public class AssessmentTo extends BaseTO{
     private AssessmentEnum.Status status;
     private String CompanySid;
     private boolean isPremium;
-    private String categorySid;
     private AssessmentEnum.QuizSetDifficulty difficulty;
     private Long validUpto;
     private Integer duration;
@@ -45,4 +46,5 @@ public class AssessmentTo extends BaseTO{
     private boolean isPaymentReceived;
     private boolean isReduceMarks;
     private boolean isQuestionRandomize;
+    private String categorySid;
 }
