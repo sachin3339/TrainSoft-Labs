@@ -342,39 +342,47 @@ public class AssessmentServiceImpl implements IAssessmentService
     @Override
     public VirtualAccountHasQuestionAnswerDetailsTO submitAnswer(SubmitAnswerRequestTO request) {
         VirtualAccountHasQuestionAnswerDetails virtualAccountHasQuestionAnswerDetails = new VirtualAccountHasQuestionAnswerDetails();
-        virtualAccountHasQuestionAnswerDetails.generateUuid();
-        VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(request.getVirtualAccountSid()));
-        if (virtualAccount!=null) virtualAccountHasQuestionAnswerDetails.setVirtualAccountId(virtualAccount);
         Question question = questionRepository.findQuestionBySid(BaseEntity.hexStringToByteArray(request.getQuestionSid()));
-        if (question!=null)virtualAccountHasQuestionAnswerDetails.setQuestionId(question);
-        Answer answer = answerRepository
-                .findBySidAndQuestionIdAndCorrect(BaseEntity.hexStringToByteArray(request.getAnswerSid()));
-        AnswerTo answerTo = mapper.convert(answer, AnswerTo.class);
-        virtualAccountHasQuestionAnswerDetails.setAnswer(CommonUtils.toJsonFunction.apply(answerTo));
-        Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(request.getQuizSetSid()));
-        if (assessment==null)throw new InvalidSidException("invalid Quiz set Sid");
-            virtualAccountHasQuestionAnswerDetails.setCompanyId(assessment.getCompany());
-            virtualAccountHasQuestionAnswerDetails.setCreatedBy(assessment.getCreatedBy());
-            virtualAccountHasQuestionAnswerDetails.setCreatedOn(assessment.getCreatedOn());
-        if (answer!=null && answer.isCorrect()==true) virtualAccountHasQuestionAnswerDetails.setCorrect(true);
-        Integer questionPoint = questionRepository.findQuestionPoint(question.getId());
-        virtualAccountHasQuestionAnswerDetails.setQuestionPoint(questionPoint);
-        //last moment changes
-        virtualAccountHasQuestionAnswerDetails.setQuiz(assessment);
-        virtualAccountHasQuestionAnswerDetailsRepository.save(virtualAccountHasQuestionAnswerDetails);
 
-        VirtualAccountHasQuestionAnswerDetailsTO vTo = new VirtualAccountHasQuestionAnswerDetailsTO();
-        vTo.setSid(virtualAccountHasQuestionAnswerDetails.getStringSid());
-        vTo.setVirtualAccountSid(virtualAccountHasQuestionAnswerDetails.getVirtualAccountId().getStringSid());
-        vTo.setQuestionSid(virtualAccountHasQuestionAnswerDetails.getQuestionId().getStringSid());
-        vTo.setCompanySid(virtualAccountHasQuestionAnswerDetails.getCompanyId().getStringSid());
-        vTo.setAnswer(virtualAccountHasQuestionAnswerDetails.getAnswer());
-        vTo.setCorrect(virtualAccountHasQuestionAnswerDetails.isCorrect());
-        vTo.setCreatedBySid(virtualAccountHasQuestionAnswerDetails.getCreatedBy().getStringSid());
-        vTo.setCreatedOn(virtualAccountHasQuestionAnswerDetails.getCreatedOn());
-        vTo.setQuestionPoint(virtualAccountHasQuestionAnswerDetails.getQuestionPoint());
-        vTo.setQuizSid(virtualAccountHasQuestionAnswerDetails.getQuiz().getStringSid());
-        return vTo;
+        if (request.getSid()==null) {
+             virtualAccountHasQuestionAnswerDetails.generateUuid();
+             VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(request.getVirtualAccountSid()));
+             if (virtualAccount != null) virtualAccountHasQuestionAnswerDetails.setVirtualAccountId(virtualAccount);
+             if (question != null) virtualAccountHasQuestionAnswerDetails.setQuestionId(question);
+             Answer answer = answerRepository
+                     .findBySidAndQuestionIdAndCorrect(BaseEntity.hexStringToByteArray(request.getAnswerSid()));
+             AnswerTo answerTo = mapper.convert(answer, AnswerTo.class);
+             virtualAccountHasQuestionAnswerDetails.setAnswer(CommonUtils.toJsonFunction.apply(answerTo));
+             Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(request.getQuizSetSid()));
+             if (assessment == null) throw new InvalidSidException("invalid Quiz set Sid");
+             virtualAccountHasQuestionAnswerDetails.setCompanyId(assessment.getCompany());
+             virtualAccountHasQuestionAnswerDetails.setCreatedBy(assessment.getCreatedBy());
+             virtualAccountHasQuestionAnswerDetails.setCreatedOn(assessment.getCreatedOn());
+             if (answer != null && answer.isCorrect() == true) virtualAccountHasQuestionAnswerDetails.setCorrect(true);
+             Integer questionPoint = questionRepository.findQuestionPoint(question.getId());
+             virtualAccountHasQuestionAnswerDetails.setQuestionPoint(questionPoint);
+             //last moment changes
+             virtualAccountHasQuestionAnswerDetails.setQuiz(assessment);
+             virtualAccountHasQuestionAnswerDetailsRepository.save(virtualAccountHasQuestionAnswerDetails);
+
+             VirtualAccountHasQuestionAnswerDetailsTO vTo = new VirtualAccountHasQuestionAnswerDetailsTO();
+             vTo.setSid(virtualAccountHasQuestionAnswerDetails.getStringSid());
+             vTo.setVirtualAccountSid(virtualAccountHasQuestionAnswerDetails.getVirtualAccountId().getStringSid());
+             vTo.setQuestionSid(virtualAccountHasQuestionAnswerDetails.getQuestionId().getStringSid());
+             vTo.setCompanySid(virtualAccountHasQuestionAnswerDetails.getCompanyId().getStringSid());
+             vTo.setAnswer(virtualAccountHasQuestionAnswerDetails.getAnswer());
+             vTo.setCorrect(virtualAccountHasQuestionAnswerDetails.isCorrect());
+             vTo.setCreatedBySid(virtualAccountHasQuestionAnswerDetails.getCreatedBy().getStringSid());
+             vTo.setCreatedOn(virtualAccountHasQuestionAnswerDetails.getCreatedOn());
+             vTo.setQuestionPoint(virtualAccountHasQuestionAnswerDetails.getQuestionPoint());
+             vTo.setQuizSid(virtualAccountHasQuestionAnswerDetails.getQuiz().getStringSid());
+             return vTo;
+         }else{
+            Answer answer = answerRepository
+                    .findBySidAndQuestionIdAndCorrect(BaseEntity.hexStringToByteArray(request.getAnswerSid()));
+            if (answer!=null && answer.isCorrect()==true)
+                virtualAccountHasQuestionAnswerDetailsRepository.updateAnswer(request.getAnswerSid(),answer,true);
+         }return null;
         
     }
 

@@ -1,5 +1,6 @@
 package com.trainsoft.assessment.repository;
 
+import com.trainsoft.assessment.entity.Answer;
 import com.trainsoft.assessment.entity.Assessment;
 import com.trainsoft.assessment.entity.VirtualAccount;
 import com.trainsoft.assessment.entity.VirtualAccountHasQuestionAnswerDetails;
@@ -31,6 +32,9 @@ public interface IVirtualAccountHasQuestionAnswerDetailsRepository extends JpaRe
 
     void deleteVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(VirtualAccount virtualAccount, Assessment assessment);
     List<VirtualAccountHasQuestionAnswerDetails> findVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(VirtualAccount virtualAccount, Assessment assessment);
+
+    @Query(value = "UPDATE VirtualAccountHasQuestionAnswerDetails SET answer=:answer , isCorrect=:res WHERE hex(sid)=:sid")
+    void updateAnswer(String sid, Answer answer,boolean res);
 
 
 }
