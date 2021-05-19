@@ -297,12 +297,14 @@ public class AssessmentServiceImpl implements IAssessmentService
     public List<AssessmentQuestionTo> startAssessment(String quizSetSid,String virtualAccountSid) {
         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
         if (virtualAccount==null) throw new InvalidSidException("Invalid virtual Account Sid.");
-        VirtualAccountHasQuizSetSessionTiming virtualAccountHasQuizSetSessionTiming1 = virtualAccountHasQuizSetSessionTimingRepository
-                .findByVirtualAccountId(virtualAccount.getId());
-        if (virtualAccountHasQuizSetSessionTiming1!=null)
-            throw new FunctionNotAllowedException("you already have started your assessment or your assessment is submitted already.");
         Assessment assessment = assessmentRepository
                 .findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
+        VirtualAccountHasQuizSetSessionTiming virtualAccountHasQuizSetSessionTiming1 = virtualAccountHasQuizSetSessionTimingRepository
+                .findByVirtualAccountId(assessment.getId(),virtualAccount.getId());
+        if (virtualAccountHasQuizSetSessionTiming1!=null)
+            throw new FunctionNotAllowedException("you already have started your assessment or your assessment is submitted already.");
+
+
         if (assessment!=null){
             virtualAccountAssessmentRepository.updateStatus(QuizStatus.STARTED,virtualAccount,assessment);
             List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.findByTopicId(assessment.getId());
