@@ -302,10 +302,27 @@ public class AssessmentServiceImpl implements IAssessmentService
         if (virtualAccount==null) throw new InvalidSidException("Invalid virtual Account Sid.");
         VirtualAccountHasQuizSetSessionTiming virtualAccountHasQuizSetSessionTiming1 = virtualAccountHasQuizSetSessionTimingRepository
                 .findByVirtualAccountId(virtualAccount.getId());
-        if (virtualAccountHasQuizSetSessionTiming1!=null)
-            throw new FunctionNotAllowedException("you already have started your assessment or your assessment is submitted already.");
+        /*if (virtualAccountHasQuizSetSessionTiming1!=null)
+            throw new FunctionNotAllowedException("you already have started your assessment or your assessment is submitted already.");*/
         Assessment assessment = assessmentRepository
                 .findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
+
+        // Kalyan latest changes 19-05-2021
+           List<VirtualAccountAssessment> virtualAccountAssessmentList = virtualAccountAssessmentRepository.checkVirtualAccountAndAssessmentAndStatus(virtualAccount,assessment);
+           if(CollectionUtils.isNotEmpty(virtualAccountAssessmentList))
+           {
+               virtualAccountAssessmentList.forEach(vaa ->
+               {
+                   vaa.setStatus(QuizStatus.STARTED);
+               });
+               virtualAccountAssessmentRepository.updateStatus(QuizStatus.STARTED,virtualAccount,assessment);
+
+               //changing status to DELETED in VirtualAccountHasQuizSetSessionTiming table for this record
+               virtualAccountHasQuizSetSessionTimingRepository.updateStatusQuizSession(assessment.getCompany().getId(),virtualAccount.getId(),assessment.getId());
+               // removing respective entries from VirtualAccountHasQuestionAnswerDetails
+               virtualAccountHasQuestionAnswerDetailsRepository.deleteByVirtualAccountIdAndQuiz(virtualAccount,assessment);
+           }
+
         if (assessment!=null){
             virtualAccountAssessmentRepository.updateStatus(QuizStatus.STARTED,virtualAccount,assessment);
             List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.findByTopicId(assessment.getId());

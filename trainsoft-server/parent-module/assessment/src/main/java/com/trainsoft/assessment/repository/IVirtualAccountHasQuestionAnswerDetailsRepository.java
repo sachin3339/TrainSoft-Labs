@@ -33,4 +33,7 @@ public interface IVirtualAccountHasQuestionAnswerDetailsRepository extends JpaRe
     List<VirtualAccountHasQuestionAnswerDetails> findVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(VirtualAccount virtualAccount, Assessment assessment);
 
 
+    @Query("DELETE FROM VirtualAccountHasQuestionAnswerDetails vaqad WHERE vaqad.virtualAccountId=:virtualAccount  AND vaqad.quiz=:assessment")
+    void deleteByVirtualAccountIdAndQuiz(VirtualAccount virtualAccount,Assessment assessment);
+
 }
