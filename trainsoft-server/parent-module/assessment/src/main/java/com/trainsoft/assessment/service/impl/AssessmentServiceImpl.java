@@ -2,6 +2,7 @@ package com.trainsoft.assessment.service.impl;
 
 import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.trainsoft.assessment.commons.CommonUtils;
+import com.trainsoft.assessment.commons.JsonUtils;
 import com.trainsoft.assessment.commons.Utility;
 import com.trainsoft.assessment.customexception.ApplicationException;
 import com.trainsoft.assessment.customexception.DuplicateRecordException;
@@ -356,7 +357,10 @@ public class AssessmentServiceImpl implements IAssessmentService
         if (answer!=null && answer.isCorrect()==true) virtualAccountHasQuestionAnswerDetails.setCorrect(true);
         Integer questionPoint = questionRepository.findQuestionPoint(question.getId());
         virtualAccountHasQuestionAnswerDetails.setQuestionPoint(questionPoint);
+        //last moment changes
+        virtualAccountHasQuestionAnswerDetails.setQuiz(assessment);
         virtualAccountHasQuestionAnswerDetailsRepository.save(virtualAccountHasQuestionAnswerDetails);
+
         VirtualAccountHasQuestionAnswerDetailsTO vTo = new VirtualAccountHasQuestionAnswerDetailsTO();
         vTo.setSid(virtualAccountHasQuestionAnswerDetails.getStringSid());
         vTo.setVirtualAccountSid(virtualAccountHasQuestionAnswerDetails.getVirtualAccountId().getStringSid());
@@ -367,6 +371,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         vTo.setCreatedBySid(virtualAccountHasQuestionAnswerDetails.getCreatedBy().getStringSid());
         vTo.setCreatedOn(virtualAccountHasQuestionAnswerDetails.getCreatedOn());
         vTo.setQuestionPoint(virtualAccountHasQuestionAnswerDetails.getQuestionPoint());
+        vTo.setQuizSid(virtualAccountHasQuestionAnswerDetails.getQuiz().getStringSid());
         return vTo;
         
     }
@@ -449,8 +454,16 @@ public class AssessmentServiceImpl implements IAssessmentService
             gainMarks=gainMarks+va.getQuestionPoint();
         virtualAccountHasQuizSetAssessment.setGainMarks(gainMarks);
         virtualAccountHasQuizSetAssessment.setSubmittedOn(new Date());
-       virtualAccountHasQuizSetAssessmentRepository.save(virtualAccountHasQuizSetAssessment);
-       virtualAccountHasQuizSetSessionTimingRepository.setEndTimeForAssessment(virtualAccount.getId());
+
+        //last moment changes
+        List<VirtualAccountHasQuestionAnswerDetails> questionAnswerDetailsList = virtualAccountHasQuestionAnswerDetailsRepository
+                .findVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(virtualAccount,assessment);
+        virtualAccountHasQuizSetAssessment.setAssessmentQuestionAnswerDtls(CommonUtils.toJsonFunction.apply(questionAnswerDetailsList));
+        virtualAccountHasQuizSetAssessmentRepository.save(virtualAccountHasQuizSetAssessment);
+        virtualAccountHasQuestionAnswerDetailsRepository.deleteVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(virtualAccount,assessment);
+        virtualAccountHasQuizSetSessionTimingRepository.setEndTimeForAssessment(virtualAccount.getId());
+        virtualAccountHasQuizSetSessionTimingRepository.updateStatusQuizSession(assessment.getCompany().getId(),virtualAccount.getId(),assessment.getId());
+
         VirtualAccountHasQuizSetAssessment virtualAccountHasQuizSetAssessment1 = virtualAccountHasQuizSetAssessmentRepository
                 .findByVirtualAccountId(virtualAccount.getId());
         Integer gainMarks1 = virtualAccountHasQuizSetAssessment1.getGainMarks();

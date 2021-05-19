@@ -1,5 +1,7 @@
 package com.trainsoft.assessment.repository;
 
+import com.trainsoft.assessment.entity.Assessment;
+import com.trainsoft.assessment.entity.VirtualAccount;
 import com.trainsoft.assessment.entity.VirtualAccountHasQuestionAnswerDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -26,6 +28,9 @@ public interface IVirtualAccountHasQuestionAnswerDetailsRepository extends JpaRe
     List<VirtualAccountHasQuestionAnswerDetails> findListOfCorrectResponse(@Param("id") Integer virtualAccountId);
     @Query(value = "select * from virtual_account_has_question_answer_details where virtual_account_id=:id",nativeQuery = true)
     List<VirtualAccountHasQuestionAnswerDetails> findVirtualAccountHasQuestionAnswerDetailsByVirtualAccount(@Param("id") Integer virtualAccountId);
+
+    void deleteVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(VirtualAccount virtualAccount, Assessment assessment);
+    List<VirtualAccountHasQuestionAnswerDetails> findVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(VirtualAccount virtualAccount, Assessment assessment);
 
 
 }
