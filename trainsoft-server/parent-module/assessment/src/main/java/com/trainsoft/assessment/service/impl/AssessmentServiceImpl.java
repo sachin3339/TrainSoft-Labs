@@ -378,13 +378,50 @@ public class AssessmentServiceImpl implements IAssessmentService
              vTo.setQuestionPoint(virtualAccountHasQuestionAnswerDetails.getQuestionPoint());
              vTo.setQuizSid(virtualAccountHasQuestionAnswerDetails.getQuiz().getStringSid());
              return vTo;
+             /*if user has already answered a question and want to answer the same question again.
+             This impl will be executed*/
          }else{
             Answer answer = answerRepository
                     .findBySidAndQuestionIdAndCorrect(BaseEntity.hexStringToByteArray(request.getAnswerSid()));
-            if (answer!=null && answer.isCorrect()==true)
-                virtualAccountHasQuestionAnswerDetailsRepository.updateAnswer(request.getAnswerSid(),answer,true);
-         }return null;
-        
+            AnswerTo answerTo = mapper.convert(answer, AnswerTo.class);
+            String ans = CommonUtils.toJsonFunction.apply(answerTo);
+            if (answer!=null && answer.isCorrect()==true){
+                virtualAccountHasQuestionAnswerDetailsRepository.updateAnswer(BaseEntity.hexStringToByteArray(request.getSid()),ans,true);
+                VirtualAccountHasQuestionAnswerDetails virtualAccountHasQuestionAnswerDetails1 =
+                        virtualAccountHasQuestionAnswerDetailsRepository.findBySid(BaseEntity.hexStringToByteArray(request.getSid()));
+               VirtualAccountHasQuestionAnswerDetailsTO vTo2= new VirtualAccountHasQuestionAnswerDetailsTO();
+                vTo2.setSid(virtualAccountHasQuestionAnswerDetails1.getStringSid());
+                vTo2.setVirtualAccountSid(virtualAccountHasQuestionAnswerDetails1.getVirtualAccountId().getStringSid());
+                vTo2.setQuestionSid(virtualAccountHasQuestionAnswerDetails1.getQuestionId().getStringSid());
+                vTo2.setCompanySid(virtualAccountHasQuestionAnswerDetails1.getCompanyId().getStringSid());
+                vTo2.setAnswer(virtualAccountHasQuestionAnswerDetails1.getAnswer());
+                vTo2.setCorrect(virtualAccountHasQuestionAnswerDetails1.isCorrect());
+                vTo2.setCreatedBySid(virtualAccountHasQuestionAnswerDetails1.getCreatedBy().getStringSid());
+                vTo2.setCreatedOn(virtualAccountHasQuestionAnswerDetails1.getCreatedOn());
+                vTo2.setQuestionPoint(virtualAccountHasQuestionAnswerDetails1.getQuestionPoint());
+                if (virtualAccountHasQuestionAnswerDetails1.getQuiz()!=null)
+                vTo2.setQuizSid(virtualAccountHasQuestionAnswerDetails1.getQuiz().getStringSid());
+                return vTo2;
+            }
+            else if (answer!=null && answer.isCorrect()==false){
+                virtualAccountHasQuestionAnswerDetailsRepository.updateAnswer(BaseEntity.hexStringToByteArray(request.getSid()),ans,false);
+                VirtualAccountHasQuestionAnswerDetails virtualAccountHasQuestionAnswerDetails1 =
+                        virtualAccountHasQuestionAnswerDetailsRepository.findBySid(BaseEntity.hexStringToByteArray(request.getSid()));
+                VirtualAccountHasQuestionAnswerDetailsTO vTo2= new VirtualAccountHasQuestionAnswerDetailsTO();
+                vTo2.setSid(virtualAccountHasQuestionAnswerDetails.getStringSid());
+                vTo2.setVirtualAccountSid(virtualAccountHasQuestionAnswerDetails1.getVirtualAccountId().getStringSid());
+                vTo2.setQuestionSid(virtualAccountHasQuestionAnswerDetails1.getQuestionId().getStringSid());
+                vTo2.setCompanySid(virtualAccountHasQuestionAnswerDetails1.getCompanyId().getStringSid());
+                vTo2.setAnswer(virtualAccountHasQuestionAnswerDetails1.getAnswer());
+                vTo2.setCorrect(virtualAccountHasQuestionAnswerDetails1.isCorrect());
+                vTo2.setCreatedBySid(virtualAccountHasQuestionAnswerDetails1.getCreatedBy().getStringSid());
+                vTo2.setCreatedOn(virtualAccountHasQuestionAnswerDetails1.getCreatedOn());
+                vTo2.setQuestionPoint(virtualAccountHasQuestionAnswerDetails1.getQuestionPoint());
+                if (virtualAccountHasQuestionAnswerDetails1.getQuiz()!=null)
+                    vTo2.setQuizSid(virtualAccountHasQuestionAnswerDetails1.getQuiz().getStringSid());
+                return vTo2;
+            }
+        }return null;
     }
 
     @Override

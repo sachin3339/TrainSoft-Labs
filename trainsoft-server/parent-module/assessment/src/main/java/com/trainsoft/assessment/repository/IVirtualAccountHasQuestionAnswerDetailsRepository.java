@@ -35,8 +35,12 @@ public interface IVirtualAccountHasQuestionAnswerDetailsRepository extends JpaRe
     void deleteVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(VirtualAccount virtualAccount, Assessment assessment);
     List<VirtualAccountHasQuestionAnswerDetails> findVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(VirtualAccount virtualAccount, Assessment assessment);
 
-    @Query(value = "UPDATE VirtualAccountHasQuestionAnswerDetails SET answer=:answer , isCorrect=:res WHERE hex(sid)=:sid")
-    void updateAnswer(String sid, Answer answer,boolean res);
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value = "update virtual_account_has_question_answer_details set answer=:answer ,is_correct=:res where sid=:sid",nativeQuery = true)
+    void updateAnswer(@Param("sid") byte[] sid, @Param("answer") String answer,@Param("res") boolean res);
+
+    VirtualAccountHasQuestionAnswerDetails findBySid(byte[] sid);
 
 
 }
