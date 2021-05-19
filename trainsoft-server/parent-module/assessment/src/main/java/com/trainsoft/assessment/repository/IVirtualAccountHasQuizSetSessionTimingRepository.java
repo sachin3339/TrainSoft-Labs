@@ -31,6 +31,6 @@ public interface IVirtualAccountHasQuizSetSessionTimingRepository extends JpaRep
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query(value = "update virtual_account_has_quiz_set_session_timing set status='DELETED' where company_id=:companyId and virtual_account_id=:virtualAccountId and quiz_set_id=:quizSetId",nativeQuery = true)
-    String updateStatusQuizSession(Integer companyId,Integer virtualAccountId,Integer quizSetId);
+    void updateStatusQuizSession(Integer companyId,Integer virtualAccountId,Integer quizSetId);
 
 }

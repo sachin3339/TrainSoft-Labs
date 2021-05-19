@@ -44,7 +44,7 @@ const TopicsTable = ({ location }) => {
               to={"topic-details"}
               state={{
                 title: "Topics",
-                subTitle: "Assesments",
+                subTitle: "Assessments",
                 path: "topicAssesments",
                 count: data.noOfAssessments,
                 rowData: data,
