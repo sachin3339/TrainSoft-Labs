@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor
@@ -423,9 +424,9 @@ public class AssessmentServiceImpl implements IAssessmentService
         VirtualAccount virtualAccount = virtualAccountRepository
                 .findVirtualAccountBySid(BaseEntity.hexStringToByteArray(request.getVirtualAccountSid()));
         if (virtualAccount==null) throw new InvalidSidException("invalid virtual Account Sid");
-       VirtualAccountHasQuizSetAssessment checkEntry= virtualAccountHasQuizSetAssessmentRepository
+/*       VirtualAccountHasQuizSetAssessment checkEntry= virtualAccountHasQuizSetAssessmentRepository
                .findByVirtualAccountId(virtualAccount.getId());
-       if (checkEntry!=null)throw new FunctionNotAllowedException("you have already submitted your Assessment.");
+       if (checkEntry!=null)throw new FunctionNotAllowedException("you have already submitted your Assessment.");*/
         VirtualAccountHasQuizSetAssessment virtualAccountHasQuizSetAssessment = new VirtualAccountHasQuizSetAssessment();
         virtualAccountHasQuizSetAssessment.generateUuid();
         Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(request.getQuizSetSid()));
@@ -456,9 +457,10 @@ public class AssessmentServiceImpl implements IAssessmentService
         virtualAccountHasQuizSetAssessment.setSubmittedOn(new Date());
 
         //last moment changes
-        List<VirtualAccountHasQuestionAnswerDetails> questionAnswerDetailsList = virtualAccountHasQuestionAnswerDetailsRepository
-                .findVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(virtualAccount,assessment);
-        virtualAccountHasQuizSetAssessment.setAssessmentQuestionAnswerDtls(CommonUtils.toJsonFunction.apply(questionAnswerDetailsList));
+        List<VirtualAccountHasQuestionAnswerDetailsTO> questionAnswerDetailsListTO = mapper.convertList(virtualAccountHasQuestionAnswerDetailsRepository
+                .findVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(virtualAccount,assessment),VirtualAccountHasQuestionAnswerDetailsTO.class);
+        String json=JsonUtils.toJsonStringFromList(questionAnswerDetailsListTO);
+        virtualAccountHasQuizSetAssessment.setAssessmentQuestionAnswerDtls(json);
         virtualAccountHasQuizSetAssessmentRepository.save(virtualAccountHasQuizSetAssessment);
         virtualAccountHasQuestionAnswerDetailsRepository.deleteVirtualAccountHasQuestionAnswerDetailsByVirtualAccountIdAndQuiz(virtualAccount,assessment);
         virtualAccountHasQuizSetSessionTimingRepository.setEndTimeForAssessment(virtualAccount.getId());
