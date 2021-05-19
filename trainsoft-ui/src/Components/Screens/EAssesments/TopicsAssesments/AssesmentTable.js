@@ -1,17 +1,14 @@
-import { Category } from "@material-ui/icons";
-import moment from "moment";
 import { useEffect, useState, useContext } from "react";
+import moment from "moment";
 import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import RestService from "../../../../Services/api.service";
 import AppContext from "../../../../Store/AppContext";
 import AssessmentContext from "../../../../Store/AssessmentContext";
 import useToast from "../../../../Store/ToastHook";
 import { Button, Cancel } from "../../../Common/Buttons/Buttons";
-
 import CardHeader from "../../../Common/CardHeader";
 import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
 import { ICN_EDIT, ICN_TRASH } from "../../../Common/Icon";
-
 import { Link, navigate } from "../../../Common/Router";
 
 const AssesmentsTable = ({ location }) => {
@@ -44,7 +41,7 @@ const AssesmentsTable = ({ location }) => {
   const [configuration, setConfiguration] = useState({
     columns: {
       title: {
-        title: "Assesment Name",
+        title: "Assessment Name",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
@@ -54,7 +51,7 @@ const AssesmentsTable = ({ location }) => {
               to={"assesment-details"}
               state={{
                 title: "Topics",
-                subTitle: "Assesment",
+                subTitle: "Assessment",
                 path: "topicAssesment",
                 rowData: data,
                 sid: data.sid,
@@ -204,7 +201,7 @@ const AssesmentsTable = ({ location }) => {
     }
   }
 
-  // delete assessmsnt
+  // delete assessment
   const deleteAssessment = async (sid) => {
     spinner.show("Loading... wait");
     try {
@@ -218,7 +215,7 @@ const AssesmentsTable = ({ location }) => {
     }
   }
 
-  // search assesment 
+  // search assessment 
   const searchAssessment = async (value) => {
     spinner.show("Loading... wait");
     try {

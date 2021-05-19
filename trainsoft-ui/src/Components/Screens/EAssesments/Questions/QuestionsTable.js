@@ -191,6 +191,7 @@ const QuestionsTable = ({ location }) => {
       spinner.hide();
     } catch (err) {
       spinner.hide();
+      Toast.error({ message: err.response?.data?.message })
       console.error("error occur on deleteQuestion()", err)
     }
   }
@@ -221,6 +222,7 @@ const QuestionsTable = ({ location }) => {
       spinner.hide();
       Toast.success({ message: 'Question Upload successfully', time: 2000 });
     } catch (err) {
+      Toast.error({ message: err.response?.data?.message });
       setShow(false)
       spinner.hide();
       console.error("error occur on uploadQuestion()", err)
