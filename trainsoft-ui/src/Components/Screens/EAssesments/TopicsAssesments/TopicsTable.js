@@ -16,20 +16,20 @@ import * as Yup from 'yup';
 
 
 const TopicsTable = ({ location }) => {
-  const { spinner,user } = useContext(AppContext)
-  const {setTopicSid,setCategory} = useContext(AssessmentContext)
+  const { spinner, user } = useContext(AppContext)
+  const { setTopicSid, setCategory } = useContext(AssessmentContext)
   const [count, setCount] = useState(0);
   const [show, setShow] = useState(false);
   const [topic, setTopic] = useState([]);
-  const [initialValue,setInitialValue] = useState({name:""})
-  const [isEdit,setIsEdit] = useState(false)
+  const [initialValue, setInitialValue] = useState({ name: "" })
+  const [isEdit, setIsEdit] = useState(false)
   const Toast = useToast()
 
-  
-     //validation
-     const schema = Yup.object().shape({
-      name: Yup.string().required('Required!') ,
-   });
+
+  //validation
+  const schema = Yup.object().shape({
+    name: Yup.string().required('Required!'),
+  });
 
   const [configuration, setConfiguration] = useState({
     columns: {
@@ -39,12 +39,12 @@ const TopicsTable = ({ location }) => {
         sortEnabled: true,
         isSearchEnabled: false,
         render: (data) => (
-          <div onClick={()=> setTopicSid(data.sid)} style={{ display: "flex", alginItems: "center" }}>
+          <div onClick={() => setTopicSid(data.sid)} style={{ display: "flex", alginItems: "center" }}>
             <Link
               to={"topic-details"}
               state={{
                 title: "Topics",
-                subTitle: "Assesments",
+                subTitle: "Assessments",
                 path: "topicAssesments",
                 count: data.noOfAssessments,
                 rowData: data,
@@ -83,10 +83,10 @@ const TopicsTable = ({ location }) => {
       {
         title: "Edit",
         icon: ICN_EDIT,
-        onClick: (data, i) => { setIsEdit(true);setShow(true);setInitialValue(data)}
+        onClick: (data, i) => { setIsEdit(true); setShow(true); setInitialValue(data) }
       },
       {
-        title: "Delete",  
+        title: "Delete",
         icon: ICN_TRASH,
         onClick: (data) => deleteTopic(data.sid),
       },
@@ -133,43 +133,43 @@ const TopicsTable = ({ location }) => {
   // Create Topic
   const createTopic = async (payload) => {
     spinner.hide("Loading... wait");
-
     try {
       let data = !isEdit ? await RestService.createTopic(payload) : await RestService.updateTopic(payload)
-        Toast.success({ message: `Topic ${isEdit ? "updated": 'added'} successfully` })
-        getAllTopic()
-        getTopicCount()
-        setShow(false)
-        setIsEdit(false)
+      Toast.success({ message: `Topic ${isEdit ? "updated" : 'added'} successfully` })
+      getAllTopic()
+      getTopicCount()
+      setShow(false)
+      setIsEdit(false)
     } catch (err) {
+      Toast.error({ message: err.response.data?.message })
       setShow(false)
       console.error("error occur on createTopic()", err)
     }
   }
 
 
-    // search topic 
-    const searchTopic = async (value) => {
-      spinner.show("Loading... wait");
-      try {
-        let {data} = await RestService.searchTopic(value,user.companySid)
-        setTopic(data);
-        spinner.hide();
-      } catch (err) {
-        spinner.hide();
-        console.error("error occur on searchTopic()", err)
-      }
+  // search topic 
+  const searchTopic = async (value) => {
+    spinner.show("Loading... wait");
+    try {
+      let { data } = await RestService.searchTopic(value, user.companySid)
+      setTopic(data);
+      spinner.hide();
+    } catch (err) {
+      spinner.hide();
+      console.error("error occur on searchTopic()", err)
     }
-  
-      // get batch count
-      const getTopicCount = async () => {
-        try {
-           let {data} =await RestService.getEAssessCount("quiz")
-            setCount(data);
-        } catch (err) {
-            console.error("error occur on getTopicCount()", err)
-        }
+  }
+
+  // get batch count
+  const getTopicCount = async () => {
+    try {
+      let { data } = await RestService.getEAssessCount("quiz")
+      setCount(data);
+    } catch (err) {
+      console.error("error occur on getTopicCount()", err)
     }
+  }
 
   useEffect(() => {
     getTopicCount()
@@ -184,7 +184,6 @@ const TopicsTable = ({ location }) => {
           onChange: (e) => e.length === 0 && getAllTopic(),
           onEnter: (e) => searchTopic(e),
         }}
-        
       >
         <Button
           className=" ml-2"
@@ -195,12 +194,12 @@ const TopicsTable = ({ location }) => {
           + New Topic
         </Button>
       </CardHeader>
-      <BsModal {...{ show, setShow, headerTitle: `${isEdit ? "Update Topic": "Add Topic"}`, size: "lg" }}>
+      <BsModal {...{ show, setShow, headerTitle: `${isEdit ? "Update Topic" : "Add Topic"}`, size: "lg" }}>
         <div className="">
           <div>
             <Formik
               initialValues={initialValue}
-              onSubmit={(values) =>  createTopic(values)}
+              onSubmit={(values) => createTopic(values)}
               validationSchema={schema}
             >
               {({ handleSubmit }) => (
@@ -208,9 +207,8 @@ const TopicsTable = ({ location }) => {
                   <form onSubmit={handleSubmit}>
                     <TextInput name="name" label="Topic Name" />
                     <div className="text-right mt-2">
-
                       <Button type="submit" className=" px-4">
-                       {isEdit ? "Update": "Create"}
+                        {isEdit ? "Update" : "Create"}
                       </Button>
                     </div>
                   </form>

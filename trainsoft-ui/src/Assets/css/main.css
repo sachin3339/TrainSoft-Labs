@@ -1335,3 +1335,9 @@ p {
 .hidden{
   overflow: hidden;
 }
+.alert-danger {
+  color: #ffffff;
+  background-color: #d35f69;
+  border-color: #ffffff00;
+  box-shadow: 0px 0px 3px 0px #00000038;
+}
