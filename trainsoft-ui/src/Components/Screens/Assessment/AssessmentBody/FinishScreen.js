@@ -16,6 +16,7 @@ const FinishScreen = ({ questions }) => {
     const { spinner } = useContext(AppContext);
     const Toast = useToast();
     const [score, setScore] = useState({});
+    const [resQuestionList, setResQuestionList] = useState([]);
 
     // this method to get assessment score
     const getAssessmentScore = (
@@ -40,8 +41,34 @@ const FinishScreen = ({ questions }) => {
         }
     }
 
+      // this method to get assessment score
+      const getSubmittedResponse = (
+        virtualAccountSid = assUserInfo.sid
+        ) => {
+        try {
+            spinner.show("Loading.. Please wait...");
+            RestService.getSubmittedResponse(virtualAccountSid).then(
+                response => {
+                    spinner.hide();
+                    setResQuestionList(response.data);
+                },
+                err => {
+                    spinner.hide();
+                }
+            ).finally(() => {
+                spinner.hide();
+            });
+        } catch (err) {
+            console.error("Error occur in getSubmittedResponse--", err);
+        }
+    }
+
+    // component initialization
     useEffect(() => {
-        if(instruction && assUserInfo) getAssessmentScore();
+        if(instruction && assUserInfo) {
+            getAssessmentScore();
+            getSubmittedResponse();
+        }
     }, []);
     return (
         <div className={styles.finishScreen}>
