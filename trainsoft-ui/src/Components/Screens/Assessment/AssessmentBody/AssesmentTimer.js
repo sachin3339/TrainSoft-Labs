@@ -26,7 +26,7 @@ export const AssessmentTimer = ({ startTime = 0, timeLimit = 0, callback = () =>
     const minutes = pad(parseInt(time / 60), 2);
     const seconds = pad(parseInt(time % 60), 2);
 
-    return `${minutes} : ${seconds}`;
+    return `${minutes}:${seconds}`;
   };
 
   return <div className={time >= 240 ? styles.timer : (time >= 120 ? styles.fourMinLeft : styles.twoMinLeft)}>

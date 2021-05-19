@@ -54,6 +54,9 @@
   -webkit-box-shadow: 0 0 0 0.2rem #49167E41;
           box-shadow: 0 0 0 0.2rem #49167E41;
 }
+.theme-color {
+  color: #49167E !important;
+}
 
 .primary-color {
   background: #49167E !important;
@@ -1314,30 +1317,27 @@ p {
   width: 16px !important;
   margin-right: 5px !important;
 }
+/* finish screen */
 .correct-answer-box{
-    color: #126125;
-    background-color: #f1fced;
-    border-color: #6cbd86;
-    border-radius: 10px;
+    color: #126125 !important;
+    background-color: #f1fced !important;
+    border-color: #6cbd86 !important;
+    border-radius: 10px !important;
+    box-shadow: 0px 0px 3px 0px #00000038;
 }
 .correct-answer-box .description{
-   color: #0f5719;
+   color: #0f5719 !important;
 }
 .wrong-answer-box{
-  color: #ce2b2b;
-  background-color: #f7f0f0;
-  border-color: #eab0b0;
-  border-radius: 10px;
+  color: #ce2b2b !important;
+  background-color: #f7f0f0 !important;
+  border-color: #eab0b0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0px 0px 3px 0px #00000038;
 }
 .wrong-answer-box .description{
- color: #b35756;
+ color: #b35756 !important;
 }
 .hidden{
   overflow: hidden;
-}
-.alert-danger {
-  color: #ffffff;
-  background-color: #d35f69;
-  border-color: #ffffff00;
-  box-shadow: 0px 0px 3px 0px #00000038;
 }

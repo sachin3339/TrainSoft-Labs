@@ -84,7 +84,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
             && question.questionId.answer.length > 0
             && question.questionId.answer.map((option, i) => <><div
                 onClick={() => {
-                  if (!finished) {
+                  if (!finished && !review) {
                     setActiveOption(option?.sid);
                     setSelectedAnswer(option);
                   }
