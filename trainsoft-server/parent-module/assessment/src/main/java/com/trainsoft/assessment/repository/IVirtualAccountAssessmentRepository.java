@@ -4,6 +4,7 @@ import com.trainsoft.assessment.entity.Assessment;
 import com.trainsoft.assessment.entity.VirtualAccount;
 import com.trainsoft.assessment.entity.VirtualAccountAssessment;
 import com.trainsoft.assessment.enums.QuizStatus;
+import com.trainsoft.assessment.value.AssessmentEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -75,5 +76,7 @@ public interface IVirtualAccountAssessmentRepository extends JpaRepository<Virtu
 
 	@Query("SELECT vaa FROM VirtualAccountAssessment  vaa WHERE vaa.virtualAccount=:virtualAccount AND vaa.assessment=:assessment AND vaa.status <> 'COMPLETED' ")
     List<VirtualAccountAssessment> checkVirtualAccountAndAssessmentAndStatus(VirtualAccount virtualAccount,Assessment assessment);
+
+	VirtualAccountAssessment findVirtualAccountAssessmentByVirtualAccountAndStatus(VirtualAccount virtualAccount, QuizStatus status);
 
 }

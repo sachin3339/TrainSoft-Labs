@@ -326,7 +326,19 @@ public class AssessmentServiceImpl implements IAssessmentService
 
 
         if (assessment!=null){
-            virtualAccountAssessmentRepository.updateStatus(QuizStatus.STARTED,virtualAccount,assessment);
+
+           // virtualAccountAssessmentRepository.updateStatus(QuizStatus.STARTED,virtualAccount,assessment);
+          VirtualAccountAssessment vAAssess=  virtualAccountAssessmentRepository.findVirtualAccountAssessmentByVirtualAccountAndStatus(virtualAccount,QuizStatus.PENDING);
+          if(vAAssess==null){
+              VirtualAccountAssessment virtualAccountAssessment = new VirtualAccountAssessment();
+              virtualAccountAssessment.generateUuid();
+              virtualAccountAssessment.setVirtualAccount(virtualAccount);
+              virtualAccountAssessment.setAssessment(assessment);
+              virtualAccountAssessment.setStatus(QuizStatus.STARTED);
+              virtualAccountAssessmentRepository.save(virtualAccountAssessment);
+          }else{
+              virtualAccountAssessmentRepository.updateStatus(QuizStatus.STARTED,virtualAccount,assessment);
+          }
             List<AssessmentQuestion> assessmentQuestionList = assessmentQuestionRepository.findByTopicId(assessment.getId());
             List<AssessmentQuestionTo> assessmentQuestionTo=new ArrayList<>();
             assessmentQuestionList.forEach(as->{
