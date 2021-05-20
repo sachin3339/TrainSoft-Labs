@@ -29,9 +29,7 @@ const USER_SCHEMA = Yup.object().shape({
     phoneNumber: Yup.string().required("Mobile number is required").matches(phoneRegExp,"Mobile number is not valid"),
   }),
   categoryTopicValue: Yup.object().shape({
-    category: Yup.object().nullable().shape({
-      name: Yup.string().nullable().required("Please select category"),
-    }),
+    category: Yup.object().nullable().required("Category is required"),
     topic: Yup.string().required("Please select topic"),
   }),
 })
