@@ -62,7 +62,7 @@ const CreateStep1 = ({  handleNext }) => {
                     Difficulty
                      </Form.Label>
                   <div style={{ marginBottom: "10px" }}>
-                    <RadioBoxKey name="difficulty" options={[{ label: "Bigener", value: "BEGINNER" }, { label: "Intermediate", value: "INTERMEDIATE" }, { label: "Expert", value: "EXPERT" }]} />
+                    <RadioBoxKey name="difficulty" options={[{ label: "Beginner", value: "BEGINNER" }, { label: "Intermediate", value: "INTERMEDIATE" }, { label: "Expert", value: "EXPERT" }]} />
                   </div>
                 </Form.Group>
 

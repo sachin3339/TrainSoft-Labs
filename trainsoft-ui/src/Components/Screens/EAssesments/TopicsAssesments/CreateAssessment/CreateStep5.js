@@ -25,7 +25,7 @@ const CreateStep5 = ({ location, handleNext, handleBack }) => {
         try {
             RestService.createQuestion(payload).then(
                 response => {
-                    Toast.success({ message: "Topic added successfully" })
+                    Toast.success({ message: "Topic added successfully" ,time: 2000})
                 },
                 err => {
                     spinner.hide();

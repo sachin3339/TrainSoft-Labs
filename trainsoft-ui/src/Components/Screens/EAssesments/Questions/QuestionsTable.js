@@ -34,6 +34,7 @@ const QuestionsTable = ({ location }) => {
           <div style={{ display: "flex", alginItems: "center" }}>
             <div className="w45"><Toggle id={data.sid} onChange={() => { changeStatus(data.sid,data.status) }} checked={data.status === 'ENABLED' ? true : false} /></div>
             <Link
+          
               to={"question-details"}
               state={{
                 title: "Questions",
@@ -45,7 +46,7 @@ const QuestionsTable = ({ location }) => {
               className="dt-name hidden elps"
               style={{ marginLeft: "10px" }}
             >
-              {data.name}
+              <span title={data.name}>{data.name}</span>
             </Link>
           </div>
         ),

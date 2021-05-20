@@ -50,6 +50,7 @@ const CreateQuestion = ({ location }) => {
         },
         err => {
           spinner.hide();
+          Toast.error({ message: err.response.data.message })
         }
       ).finally(() => {
         spinner.hide();

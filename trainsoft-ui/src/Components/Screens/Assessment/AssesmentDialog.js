@@ -139,7 +139,6 @@ export const AssessmentDialog = () => {
       spinner.show("Loading... Please wait...");
       RestService.getAssessmentBySid(sid).then(
         response => {
-          spinner.hide();
           setInstruction(response.data);
           params?.virtualAccountSid == 0 
           ? createAssUser(values, params.assessmentSid) 
@@ -150,11 +149,11 @@ export const AssessmentDialog = () => {
           spinner.hide();
         }
       ).finally(() => {
-        spinner.hide();
+        // spinner.hide();
       });
     } catch (err) {
       spinner.hide();
-      console.error("error occur on getAssessmentBySid()--", err);
+      console.error("error occur on getAssessmentBySid()--", err)
     }
   }
 
