@@ -308,30 +308,29 @@ public class AssessmentServiceImpl implements IAssessmentService
             throw new FunctionNotAllowedException("you already have started your assessment or your assessment is submitted already.");
 
         // Kalyan latest changes 19-05-2021
-        List<VirtualAccountAssessment> virtualAccountAssessmentList = virtualAccountAssessmentRepository.checkVirtualAccountAndAssessmentAndStatus(virtualAccount,assessment);
-        if(CollectionUtils.isNotEmpty(virtualAccountAssessmentList))
-        {
-            virtualAccountAssessmentList.forEach(vaa ->
-            {
-                vaa.setStatus(QuizStatus.STARTED);
-            });
+//        List<VirtualAccountAssessment> virtualAccountAssessmentList = virtualAccountAssessmentRepository.checkVirtualAccountAndAssessmentAndStatus(virtualAccount,assessment);
+//        if(CollectionUtils.isNotEmpty(virtualAccountAssessmentList)) {
+//            virtualAccountAssessmentList.forEach(vaa ->
+//            {
+//                vaa.setStatus(QuizStatus.STARTED);
+//            });
+//        }
             virtualAccountAssessmentRepository.updateStatus(QuizStatus.STARTED,virtualAccount,assessment);
 
             //changing status to DELETED in VirtualAccountHasQuizSetSessionTiming table for this record
             virtualAccountHasQuizSetSessionTimingRepository.updateStatusQuizSession(assessment.getCompany().getId(),virtualAccount.getId(),assessment.getId());
             // removing respective entries from VirtualAccountHasQuestionAnswerDetails
             virtualAccountHasQuestionAnswerDetailsRepository.deleteByVirtualAccountIdAndQuiz(virtualAccount,assessment);
-        }
 
 
         if (assessment!=null){
 
            // virtualAccountAssessmentRepository.updateStatus(QuizStatus.STARTED,virtualAccount,assessment);
-          VirtualAccountAssessment vAAssess=  virtualAccountAssessmentRepository.findVirtualAccountAssessmentByVirtualAccountAndStatus(virtualAccount,QuizStatus.PENDING);
+          VirtualAccountAssessment vAAssess=  virtualAccountAssessmentRepository.findVirtualAccountAssessmentByVirtualAccountAndStatus(virtualAccount,QuizStatus.STARTED);
           if(vAAssess==null){
               VirtualAccountAssessment virtualAccountAssessment = new VirtualAccountAssessment();
               virtualAccountAssessment.generateUuid();
-              virtualAccountAssessment.setVirtualAccount(virtualAccount);   
+              virtualAccountAssessment.setVirtualAccount(virtualAccount);
               virtualAccountAssessment.setAssessment(assessment);
               virtualAccountAssessment.setStatus(QuizStatus.STARTED);
               virtualAccountAssessmentRepository.save(virtualAccountAssessment);
