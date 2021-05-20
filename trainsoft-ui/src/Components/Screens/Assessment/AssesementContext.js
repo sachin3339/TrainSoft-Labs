@@ -20,10 +20,10 @@ export const AssessmentProvider = ({ children }) => {
   const [inReview, setInReview] = useState(false);
   const [errorMessage,setErrorMessage] = useState(null)
 
-  const setAnswer = (questionID, answerID) => {
+  const setAnswer = (questionID, answerID, sid) => {
     setSelectedAnswers((_selectedAnswers) => ({
       ..._selectedAnswers,
-      [questionID]: answerID,
+      [questionID]: {"answerId": answerID, "sid": sid},
     }));
   };
 

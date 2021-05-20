@@ -55,13 +55,13 @@ export const IntroDialog = ({ open, setOpen ,location}) => {
           1. Number of questions is <span style={{ fontWeight: 600 }}>{instruction.noOfQuestions || questions.length}</span>
           <br />
             2. Time limit to complete is {" "}
-          <span style={{ fontWeight: 600 }}>{instruction.duration ? instruction.duration : "00 "}: 00 mins</span>
+          <span style={{ fontWeight: 600 }}>{instruction.duration ? instruction.duration : "00"}:00 mins</span>
           <br />
             3. Assessment should be completed in{" "}
           <span style={{ fontWeight: 600 }}> {instruction.multipleAttempts ? "multiple" : "one"} attempt</span>, you cannot save
             in between <br /> 4. All questions are{" "}
           <span style={{ fontWeight: 600 }}>{instruction.mandatory ? "mandatory" : "not mandatory"} </span>
-          <br /> 5. You can <span style={{ fontWeight: 600 }}> {instruction.previousEnabled ? "edit" : "not edit"} </span> your
+          <br /> 5. You can <span style={{ fontWeight: 600 }}> {instruction.previousEnabled || true ? "edit" : "not edit"} </span> your
            <span style={{ fontWeight: 600 }} className="px5">previous answer</span> during the session any time
         </Typography>
       }</> : <>

@@ -11,13 +11,28 @@ const Sidebar = () => {
   const {
     setQuestion,
     selectedAnswers,
-    activeQuestion,
     setQuestionIndex,
     questionIndex,
     finished,
     setSelectedAnswer,
-    questions
+    questions,
+    setInReview
   } = useContext(AssessmentContext);
+
+  /** this method trigger when select particular
+   * @param {Object} _question = selected question
+   * @param {Number} index = index of selected question 
+  */
+  const onSelectQuestion = (_question, index) => {
+    try {
+      setQuestion(_question); 
+      setSelectedAnswer({}); 
+      setQuestionIndex(index);
+      if(selectedAnswers[_question && _question?.sid]?.answerId) setInReview(true);
+    } catch (error) {
+      console.error("Error occurred in sendBeacon --", error);
+    }
+  }
   return <div style={{
         flex: 3,
         background: "#EAEAEA",
@@ -38,18 +53,18 @@ const Sidebar = () => {
             {
               AppUtils.isNotEmptyArray(questions)
               && questions.map((_question, index) => (
-                <div onClick={() => { setQuestion(_question); setSelectedAnswer({}); setQuestionIndex(index);}}>
+                <div onClick={() => onSelectQuestion(_question, index)}>
                   <QuestionItem
                     {..._question}
                     key={index}
                     number={index + 1}
-                    done={selectedAnswers[_question && _question?.sid]}
+                    done={selectedAnswers[_question && _question?.sid]?.answerId}
                     active={questionIndex === index}
                   />
                 </div>
               ))
             }
-            <div onClick={() => { setQuestion(null); setQuestionIndex(-1);}}>
+            <div onClick={() => { setQuestion(null); setQuestionIndex(-1); setInReview(false);}}>
               <QuestionItem number={-1} active={questionIndex === -1} />
             </div>
         </> : <LeaderBoard />
