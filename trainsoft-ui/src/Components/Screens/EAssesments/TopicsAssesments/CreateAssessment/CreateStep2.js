@@ -57,12 +57,12 @@ const CreateStep2 = ({ location, handleNext, handleBack }) => {
           paymentReceived: false,
         }
         let res = await RestService.updateAssessment(uploadPayload)
-        Toast.success({ message: "Assessment updated successfully" })
+        Toast.success({ message: "Assessment updated successfully",time: 2000 })
         setAssessmentVal(res?.data)
         setInitialAssessment(initialAssessment)
       } else {
         let res = await RestService.createAssessment(payload)
-        Toast.success({ message: "Assessment created successfully" })
+        Toast.success({ message: "Assessment created successfully",time: 2000 })
         setAssessmentVal(res?.data)
         setInitialAssessment({
           ...initialAssessment,
@@ -74,7 +74,7 @@ const CreateStep2 = ({ location, handleNext, handleBack }) => {
       spinner.hide()
     } catch (err) {
       spinner.hide()
-      Toast.error({ message: err.response?.data?.message})
+      Toast.error({ message: err.response?.data?.message,time: 2000})
       console.error("error occur on createAssessment()", err)
     }
   }

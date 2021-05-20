@@ -28,6 +28,7 @@ const QuestionModel = ({ show, setShow, sid, getParticipant,allQuestion }) => {
                 "sortDirection": null,
                 "sortEnabled": true,
                 isSearchEnabled: false,
+                render: (data)=> <div className="elps hidden" title={data.name}>{data.name}</div>
             },
             "questionType": {
                 "title": "Type",
