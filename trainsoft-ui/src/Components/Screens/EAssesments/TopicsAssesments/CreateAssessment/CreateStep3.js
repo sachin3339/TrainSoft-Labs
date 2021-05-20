@@ -3,20 +3,17 @@ import RestService from "../../../../../Services/api.service";
 import AppContext from "../../../../../Store/AppContext";
 import useToast from "../../../../../Store/ToastHook";
 import Submit from "../../../Assessment/common/SubmitButton";
-
 import DynamicTable from "../../../../Common/DynamicTable/DynamicTable";
 import { ICN_DELETE, ICN_EDIT } from "../../../../Common/Icon";
 import QuestionModel from "./QuestionModel";
 import AssessmentContext from "../../../../../Store/AssessmentContext";
 import { navigate } from "../../../../Common/Router";
-
 import "../topic.css";
 
 
 const CreateStep3 = ({ location, handleNext, handleBack }) => {
     const Toast = useToast()
-    const {  initialAssessment } = useContext(AssessmentContext)
-
+    const { initialAssessment } = useContext(AssessmentContext)
     const { spinner } = useContext(AppContext)
     const [questions, setQuestion] = useState([])
     const [showQuestion, setShowQuestion] = useState(false)
@@ -92,12 +89,11 @@ const CreateStep3 = ({ location, handleNext, handleBack }) => {
             getAllQuestion()
             spinner.hide();
         } catch (err) {
+            Toast.error({ message: err.response?.data?.message, time: 2000 });
             spinner.hide();
             console.error("error occur on getAllTopic()", err)
         }
     }
-
-
 
     useEffect(() => {
         getAllQuestion()
