@@ -48,14 +48,14 @@ const DashboardTab = () => {
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
-        render: (res) => res.submittedOn ? moment(res.submittedOn).format("DD/MM/YYYY") : 'N/A'
+        render: (res) => res.submittedOn ? moment(res.submittedOn).format("DD/MM/YYYY") : '-'
       },
       score: {
         title: "SCORE",
         sortDirection: null,
         sortEnabled: true,
         isSearchEnabled: false,
-        render: (res) => <>{res.score}%</>
+        render: (res) => <>{res.score ? `${res.score}%` : '-' }</>
       }
     },
     headerTextColor: "#454E50", // user can change table header text color
@@ -155,7 +155,7 @@ const Headers = ({ initialAssessment, dashboardDate }) => {
         Submitted
       </HeaderElement>
       <HeaderElement
-        stat={dashboardDate?.assessAttendance ? dashboardDate?.assessAttendance : 0 }
+        stat={dashboardDate?.assessAttendance ? `${dashboardDate?.assessAttendance}%` : `${0}%` }
         icon={ICN_ASSESS_ATTEND}
       >
         Assensee <br />
@@ -169,7 +169,7 @@ const Headers = ({ initialAssessment, dashboardDate }) => {
         Questions
       </HeaderElement>
       <HeaderElement
-        stat={dashboardDate.batchAvgScore ? dashboardDate.batchAvgScore : 0}
+        stat={dashboardDate.batchAvgScore ? `${dashboardDate.batchAvgScore}%` : `${0}`}
         icon={ICN_TOTAL_AVG_SCORE}
       >
         Batch <br />
