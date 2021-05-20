@@ -1,9 +1,6 @@
 package com.trainsoft.assessment.repository;
 
-import com.trainsoft.assessment.entity.Category;
-import com.trainsoft.assessment.entity.Company;
-import com.trainsoft.assessment.entity.VirtualAccount;
-import com.trainsoft.assessment.entity.VirtualAccountHasQuizSetAssessment;
+import com.trainsoft.assessment.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,8 +8,8 @@ import java.util.List;
 
 public interface IVirtualAccountHasQuizSetAssessmentRepository extends JpaRepository<VirtualAccountHasQuizSetAssessment,Integer> {
 
-    @Query(value = "select * from virtual_account_has_quiz_set_assesment where virtual_account_id=:id",nativeQuery = true)
-    VirtualAccountHasQuizSetAssessment findByVirtualAccountId(@Param("id") Integer id);
+    @Query(value = "select * from virtual_account_has_quiz_set_assesment where virtual_account_id=:vid and id=:id",nativeQuery = true)
+    VirtualAccountHasQuizSetAssessment findByVirtualAccountId(@Param("vid") Integer vid,@Param("id")Integer id);
 
     @Query(value = "select * from virtual_account_has_quiz_set_assesment where quiz_set_id=:id order by percentage desc ",nativeQuery = true)
     List<VirtualAccountHasQuizSetAssessment> findByAssessment(@Param("id") Integer assessmentId);
@@ -35,4 +32,6 @@ public interface IVirtualAccountHasQuizSetAssessmentRepository extends JpaReposi
             "order by percentage desc limit 10",nativeQuery = true)
     List<VirtualAccountHasQuizSetAssessment>getTopTenListByCategory(@Param("id") Integer companyId,@Param("cid") Integer categoryId);
 
+    @Query("FROM VirtualAccountHasQuizSetAssessment vaa WHERE vaa.quizSetId=:assessment  AND vaa.virtualAccountId=:virtualAccount ORDER BY vaa.submittedOn DESC")
+    List<VirtualAccountHasQuizSetAssessment> findByVirtualAccountAndAssessment(Assessment assessment,VirtualAccount virtualAccount);
 }

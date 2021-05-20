@@ -298,15 +298,31 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<AssessmentQuestionTo> startAssessment(String quizSetSid,String virtualAccountSid) {
+    public List<AssessmentQuestionTo> startAssessment(String quizSetSid,String virtualAccountSid)
+    {
         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
         if (virtualAccount==null) throw new InvalidSidException("Invalid virtual Account Sid.");
-        Assessment assessment = assessmentRepository
-                .findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
+        Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         VirtualAccountHasQuizSetSessionTiming virtualAccountHasQuizSetSessionTiming1 = virtualAccountHasQuizSetSessionTimingRepository
                 .findByVirtualAccountId(assessment.getId(),virtualAccount.getId());
         if (virtualAccountHasQuizSetSessionTiming1!=null)
             throw new FunctionNotAllowedException("you already have started your assessment or your assessment is submitted already.");
+
+        // Kalyan latest changes 19-05-2021
+        List<VirtualAccountAssessment> virtualAccountAssessmentList = virtualAccountAssessmentRepository.checkVirtualAccountAndAssessmentAndStatus(virtualAccount,assessment);
+        if(CollectionUtils.isNotEmpty(virtualAccountAssessmentList))
+        {
+            virtualAccountAssessmentList.forEach(vaa ->
+            {
+                vaa.setStatus(QuizStatus.STARTED);
+            });
+            virtualAccountAssessmentRepository.updateStatus(QuizStatus.STARTED,virtualAccount,assessment);
+
+            //changing status to DELETED in VirtualAccountHasQuizSetSessionTiming table for this record
+            virtualAccountHasQuizSetSessionTimingRepository.updateStatusQuizSession(assessment.getCompany().getId(),virtualAccount.getId(),assessment.getId());
+            // removing respective entries from VirtualAccountHasQuestionAnswerDetails
+            virtualAccountHasQuestionAnswerDetailsRepository.deleteByVirtualAccountIdAndQuiz(virtualAccount,assessment);
+        }
 
 
         if (assessment!=null){
@@ -514,7 +530,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         virtualAccountHasQuizSetSessionTimingRepository.updateStatusQuizSession(assessment.getCompany().getId(),virtualAccount.getId(),assessment.getId());
 
         VirtualAccountHasQuizSetAssessment virtualAccountHasQuizSetAssessment1 = virtualAccountHasQuizSetAssessmentRepository
-                .findByVirtualAccountId(virtualAccount.getId());
+                .findByVirtualAccountId(virtualAccount.getId(),virtualAccountHasQuizSetAssessment.getId());
         Integer gainMarks1 = virtualAccountHasQuizSetAssessment1.getGainMarks();
         Integer totalMarks = virtualAccountHasQuizSetAssessment1.getTotalMarks();
         double percentage=((double)gainMarks1*100/(double)totalMarks );
@@ -583,16 +599,26 @@ public class AssessmentServiceImpl implements IAssessmentService
         else throw new InvalidSidException("Assessment Sid is null");
     }
 
-    private Integer[] findRankForToday(Integer quizSetId,Integer virtualAccountId){
+    private Integer[] findRankForToday(Assessment assessment,VirtualAccount virtualAccount)
+    {
         List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessments = virtualAccountHasQuizSetAssessmentRepository
-                .findByAssessmentForCurrentDate(quizSetId);
-        Integer[] size = new Integer[virtualAccountHasQuizSetAssessments.size()];
+                .findByAssessmentForCurrentDate(assessment.getId());
+
+        List<VirtualAccountHasQuizSetAssessment> uniqueVirtualAccountHasQuizSetAssessments = virtualAccountHasQuizSetAssessments.stream()
+                .collect(Collectors.groupingBy(VirtualAccountHasQuizSetAssessment::getVirtualAccountId,
+                        Collectors.maxBy(Comparator.comparing(VirtualAccountHasQuizSetAssessment::getSubmittedOn))))
+                .values()
+                .stream()
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        Integer[] size = new Integer[uniqueVirtualAccountHasQuizSetAssessments.size()];
         Map<Double, Integer> idAndPercentageList = new HashMap<>();
-        virtualAccountHasQuizSetAssessments.forEach(as->{
+        uniqueVirtualAccountHasQuizSetAssessments.forEach(as->{
             idAndPercentageList.put(as.getPercentage(),as.getVirtualAccountId().getId());
         });
-        VirtualAccountHasQuizSetAssessment virtualAccount = virtualAccountHasQuizSetAssessmentRepository
-                .findByVirtualAccountId(virtualAccountId);
+        List<VirtualAccountHasQuizSetAssessment> virtualAccountList = virtualAccountHasQuizSetAssessmentRepository.findByVirtualAccountAndAssessment(assessment,virtualAccount);
+
         int rank=1;
         for (int i=0;i<size.length;i++) {
             size[i]=rank;
@@ -600,27 +626,36 @@ public class AssessmentServiceImpl implements IAssessmentService
         }
         Map<Integer, Integer> assignRank = new HashMap<>();
         int i=0;
-        for (VirtualAccountHasQuizSetAssessment va:virtualAccountHasQuizSetAssessments){
+        for (VirtualAccountHasQuizSetAssessment va:uniqueVirtualAccountHasQuizSetAssessments){
             assignRank.put((idAndPercentageList.get(va.getPercentage())), size[i]);
             i++;
         }
-        Integer userRank = assignRank.get(virtualAccount.getVirtualAccountId().getId());
+        Integer userRank = assignRank.get(virtualAccountList.get(0).getVirtualAccountId().getId());
         Integer[] data = new Integer[2];
         data[0]=userRank;
-        data[1]=virtualAccountHasQuizSetAssessments.size();
+        data[1]=uniqueVirtualAccountHasQuizSetAssessments.size();
         return data;
     }
 
-    private Integer[] findRankForAllTime(Integer quizSetId,Integer virtualAccountId){
+    private Integer[] findRankForAllTime(Assessment assessment ,VirtualAccount virtualAccount)
+    {
         List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessments = virtualAccountHasQuizSetAssessmentRepository
-                .findByAssessment(quizSetId);
-        Integer[] size = new Integer[virtualAccountHasQuizSetAssessments.size()];
+                .findByAssessment(assessment.getId());
+
+        List<VirtualAccountHasQuizSetAssessment> uniqueVirtualAccountHasQuizSetAssessments = virtualAccountHasQuizSetAssessments.stream()
+                .collect(Collectors.groupingBy(VirtualAccountHasQuizSetAssessment::getVirtualAccountId,
+                        Collectors.maxBy(Comparator.comparing(VirtualAccountHasQuizSetAssessment::getSubmittedOn))))
+                .values()
+                .stream()
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        Integer[] size = new Integer[uniqueVirtualAccountHasQuizSetAssessments.size()];
         Map<Double, Integer> idAndPercentageList = new HashMap<>();
-        virtualAccountHasQuizSetAssessments.forEach(as->{
+        uniqueVirtualAccountHasQuizSetAssessments.forEach(as->{
             idAndPercentageList.put(as.getPercentage(),as.getVirtualAccountId().getId());
         });
-        VirtualAccountHasQuizSetAssessment virtualAccount = virtualAccountHasQuizSetAssessmentRepository
-                .findByVirtualAccountId(virtualAccountId);
+        List<VirtualAccountHasQuizSetAssessment> virtualAccountList = virtualAccountHasQuizSetAssessmentRepository.findByVirtualAccountAndAssessment(assessment,virtualAccount);
         int rank=1;
         for (int i=0;i<size.length;i++) {
             size[i]=rank;
@@ -628,14 +663,14 @@ public class AssessmentServiceImpl implements IAssessmentService
         }
         Map<Integer, Integer> assignRank = new HashMap<>();
         int i=0;
-        for (VirtualAccountHasQuizSetAssessment va:virtualAccountHasQuizSetAssessments){
+        for (VirtualAccountHasQuizSetAssessment va:uniqueVirtualAccountHasQuizSetAssessments){
             assignRank.put((idAndPercentageList.get(va.getPercentage())), size[i]);
             i++;
         }
-        Integer userRank = assignRank.get(virtualAccount.getVirtualAccountId().getId());
+        Integer userRank = assignRank.get(virtualAccountList.get(0).getVirtualAccountId().getId());
         Integer[] data = new Integer[2];
         data[0]=userRank;
-        data[1]=virtualAccountHasQuizSetAssessments.size();
+        data[1]=uniqueVirtualAccountHasQuizSetAssessments.size();
         return data;
     }
     @Override
@@ -644,11 +679,12 @@ public class AssessmentServiceImpl implements IAssessmentService
         Assessment assessment = assessmentRepository.findAssessmentBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
         if (assessment!=null && virtualAccount!=null){
-            VirtualAccountHasQuizSetAssessment virtualAccountHasQuizSetAssessment = virtualAccountHasQuizSetAssessmentRepository.findByVirtualAccountId(virtualAccount.getId());
-            if (virtualAccountHasQuizSetAssessment==null) throw new InvalidSidException(virtualAccount.getStringSid()+ " has not attended any Assessment.");
-            scoreBoardTO.setYourScore(virtualAccountHasQuizSetAssessment.getPercentage());
-            Integer[] userTodayData = findRankForToday(assessment.getId(), virtualAccount.getId());
-            Integer[] userAllTimeData = findRankForAllTime(assessment.getId(),virtualAccount.getId());
+            List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessmentList = virtualAccountHasQuizSetAssessmentRepository.findByVirtualAccountAndAssessment(assessment,virtualAccount);
+            if (CollectionUtils.isEmpty(virtualAccountHasQuizSetAssessmentList))
+                throw new InvalidSidException(virtualAccount.getStringSid()+ " has not attended any Assessment.");
+            scoreBoardTO.setYourScore(virtualAccountHasQuizSetAssessmentList.get(0).getPercentage());
+            Integer[] userTodayData = findRankForToday(assessment,virtualAccount);
+            Integer[] userAllTimeData = findRankForAllTime(assessment,virtualAccount);
             scoreBoardTO.setYourRankToday(userTodayData[0]);
             scoreBoardTO.setTotalAttendeesToday(userTodayData[1]);
             scoreBoardTO.setYourRankAllTime(userAllTimeData[0]);
@@ -882,10 +918,19 @@ public class AssessmentServiceImpl implements IAssessmentService
             List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
                     .findByAssessmentForCurrentDate(assessment.getId());
-            if (assessmentList.size()==0)throw new RecordNotFoundException("no records found");
-           if (assessmentList.size()<10){
-               for (int i=0;i<assessmentList.size();i++){
-                   topTen.add(i,assessmentList.get(i));
+
+            List<VirtualAccountHasQuizSetAssessment> uniqueassessmentList = assessmentList.stream()
+                    .collect(Collectors.groupingBy(VirtualAccountHasQuizSetAssessment::getVirtualAccountId,
+                            Collectors.maxBy(Comparator.comparing(VirtualAccountHasQuizSetAssessment::getSubmittedOn))))
+                    .values()
+                    .stream()
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+
+            if (uniqueassessmentList.size()==0)throw new RecordNotFoundException("no records found");
+           if (uniqueassessmentList.size()<10){
+               for (int i=0;i<uniqueassessmentList.size();i++){
+                   topTen.add(i,uniqueassessmentList.get(i));
                }
                topTen.forEach(tp->{
                    LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
@@ -896,7 +941,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                return leaderBoardTO;
            }
             for (int i=0;i<10;i++){
-                topTen.add(i,assessmentList.get(i));
+                topTen.add(i,uniqueassessmentList.get(i));
             }
             topTen.forEach(tp->{
                 LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
@@ -917,10 +962,19 @@ public class AssessmentServiceImpl implements IAssessmentService
             List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
                     .findByAssessment(assessment.getId());
-            if (assessmentList.size()==0)throw new RecordNotFoundException("no records found");
-            if (assessmentList.size()<10){
-                for (int i=0;i<assessmentList.size();i++){
-                    topTen.add(i,assessmentList.get(i));
+
+            List<VirtualAccountHasQuizSetAssessment> uniqueassessmentList = assessmentList.stream()
+                    .collect(Collectors.groupingBy(VirtualAccountHasQuizSetAssessment::getVirtualAccountId,
+                            Collectors.maxBy(Comparator.comparing(VirtualAccountHasQuizSetAssessment::getSubmittedOn))))
+                    .values()
+                    .stream()
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+
+            if (uniqueassessmentList.size()==0)throw new RecordNotFoundException("no records found");
+            if (uniqueassessmentList.size()<10){
+                for (int i=0;i<uniqueassessmentList.size();i++){
+                    topTen.add(i,uniqueassessmentList.get(i));
                 }
                 topTen.forEach(tp->{
                     LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
@@ -931,7 +985,7 @@ public class AssessmentServiceImpl implements IAssessmentService
                 return leaderBoardTO;
             }
             for (int i = 0; i < 10; i++) {
-                    topTen.add(i, assessmentList.get(i));
+                    topTen.add(i, uniqueassessmentList.get(i));
             }
             topTen.forEach(tp -> {
                 LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();

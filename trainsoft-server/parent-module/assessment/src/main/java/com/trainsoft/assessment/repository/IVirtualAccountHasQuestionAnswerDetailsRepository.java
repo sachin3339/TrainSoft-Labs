@@ -43,4 +43,9 @@ public interface IVirtualAccountHasQuestionAnswerDetailsRepository extends JpaRe
     VirtualAccountHasQuestionAnswerDetails findBySid(byte[] sid);
 
 
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query("DELETE FROM VirtualAccountHasQuestionAnswerDetails vaqad WHERE vaqad.virtualAccountId=:virtualAccount  AND vaqad.quiz=:assessment")
+    void deleteByVirtualAccountIdAndQuiz(VirtualAccount virtualAccount,Assessment assessment);
+
 }
