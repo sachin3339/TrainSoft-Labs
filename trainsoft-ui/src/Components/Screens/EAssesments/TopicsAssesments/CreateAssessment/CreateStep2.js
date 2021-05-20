@@ -84,8 +84,7 @@ const CreateStep2 = ({ location, handleNext, handleBack }) => {
       <Formik
         onSubmit={(value) => createAssessment(value)}
         initialValues={{
-          ...initialAssessment,
-          timeLimit: 10
+          ...initialAssessment
         }}
       // validationSchema={schema}
       >
