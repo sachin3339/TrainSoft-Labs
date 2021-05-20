@@ -78,9 +78,9 @@ const AssessmentRender = ({ data, fromMyAt = false, count, setPageNo, key = "" }
                 </div>
                 <div className="assestRight text-bold">
                     {!fromMyAt ? <>
-                        {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <div></div>: <div className={`pointer ${bookmark.some(resp => resp.sid === res.sid) ? 'bookMarkColor' : ''}`} onClick={() => { bookmark.some(resp => resp.sid === res.sid) ? removeBookmark(res.sid) : createBookmark(res.sid) }}> {ICN_MARK} </div>}
+                        {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <div className="text-danger">Already Taken</div>: <div className={`pointer ${bookmark.some(resp => resp.sid === res.sid) ? 'bookMarkColor' : ''}`} onClick={() => { bookmark.some(resp => resp.sid === res.sid) ? removeBookmark(res.sid) : createBookmark(res.sid) }}> {ICN_MARK} </div>}
                         <div>
-                            {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <> <Button className="disabled">Already Taken </Button> </> : <> <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Take Now </Button></>}
+                            {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <> <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}> Take Again </Button> </> : <> <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Take Now </Button></>}
                         </div>
                     </> : <>
                         {/* {key === "bookmarked" && <Button onClick={() => navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`)}>Take Now</Button>} */}
