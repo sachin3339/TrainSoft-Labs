@@ -96,17 +96,11 @@ const DashboardTab = () => {
     }
   }
 
-//   const onSearch = (e) => {
-//     try {
-//         setSearchValue(dashboardDate?.assessToList.filter(res => res.name.toUpperCase().indexOf(e.toUpperCase()) > -1))
-//     } catch (err) {
-//         console.error("error occur on onSearch()", err)
-//     }
-// }
 
   useEffect(() => {
     getDashBoard()
   }, [])
+  
   return (
     <>
       <div style={{ paddingTop: "30px" }}>
@@ -143,7 +137,7 @@ const Headers = ({ initialAssessment, dashboardDate }) => {
         stat={moment(dashboardDate?.assessmentStartedOn).format("DD/MM/YYYY")}
         icon={<FlagOutlinedIcon style={{ fontSize: "36px" }} />}
       >
-        Assesment <br />
+        Assessment <br />
         Start On
       </HeaderElement>
       <HeaderElement
@@ -158,7 +152,7 @@ const Headers = ({ initialAssessment, dashboardDate }) => {
         stat={dashboardDate?.assessAttendance ? `${dashboardDate?.assessAttendance}%` : `${0}%` }
         icon={ICN_ASSESS_ATTEND}
       >
-        Assensee <br />
+        Assessee <br />
         Attendance
       </HeaderElement>
       <HeaderElement
