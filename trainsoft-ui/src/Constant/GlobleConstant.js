@@ -145,7 +145,7 @@ const GLOBELCONSTANT = {
                 GET_ASSESSMENT_BY_SID: ASSESSMENT_V1 + "assessment/",
                 GET_INSTRUCTION: ASSESSMENT_V1 + "get/instructions",
                 GET_QUESTIONS: ASSESSMENT_V1 + "start/assessment/{assessmentSid}/{virtualAccountSid}",
-                SUBMIT_ANSWER: ASSESSMENT_V1 + "/submit/answer",
+                SUBMIT_ANSWER: ASSESSMENT_V1 + "submit/answer",
                 REVIEW_RESPONSE: ASSESSMENT_V1 + "review/response/{virtualAccountSid}",
                 SUBMIT_ASSESSMENT: ASSESSMENT_V1 + "submit/assessment",
                 GET_SCORE: ASSESSMENT_V1 + "get/assessment/score/{assessmentSid}/{virtualAccountSid}",

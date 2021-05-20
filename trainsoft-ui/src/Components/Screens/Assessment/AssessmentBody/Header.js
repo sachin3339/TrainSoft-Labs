@@ -14,7 +14,7 @@ const Header = ({ instruction, startTime = 0, timeLimit = 2500, introDialog }) =
   const { finished, setHasExamEnd } = useContext(AssessmentContext);
     return (
       <div className={styles.header}>
-        <div className="aic"><span className="mr10"><IcnInfoOutline /></span><span className="">{instruction ? instruction.title : "Your Assessment Questions"}</span></div>
+        <div className="aic"><span className="mr10"><IcnInfoOutline /></span><span className="theme-color">{instruction ? instruction.title : "Your Assessment Questions"}</span></div>
         {
           !introDialog 
           && !finished 

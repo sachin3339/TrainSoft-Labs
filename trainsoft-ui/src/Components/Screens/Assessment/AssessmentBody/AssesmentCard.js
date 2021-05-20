@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState} from 'react';
 import { AssessmentContext } from '../AssesementContext';
 import Submit from "../common/SubmitButton";
 import styles from "./AssessmentBody.module.css";
-import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import AnswerOption from './AnswerOption';
 import RestService from '../../../../Services/api.service';
 import AppUtils from '../../../../Services/Utils';
@@ -23,7 +22,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
         inReview, 
         setInReview
       } = useContext(AssessmentContext);
-      const [activeOption, setActiveOption] = useState(selectedAnswers[question?.sid]);
+      const [activeOption, setActiveOption] = useState(selectedAnswers[question?.sid]?.answerId);
       const [submitStatus, setSubmitStatus] = useState(false);
 
       // this method to submit your answer
@@ -32,6 +31,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
           try {
             setSubmitStatus(true);
             let payload = {
+              "sid": inReview ? selectedAnswers[activeQuestion.sid]?.sid : null,
               "answerSid": selectedAnswer.sid,
               "questionSid": activeQuestion.questionId.sid,
               "quizSetSid": instruction.sid,
@@ -41,7 +41,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
               response => {
                 setSubmitStatus(false);
                 setQuestionIndex(inReview ? -1 : questionIndex + 1);
-                setAnswer(question.sid, activeOption);
+                setAnswer(question.sid, activeOption, response.data.sid);
                 setSelectedAnswer({});
                 setInReview(false);
               },
@@ -58,7 +58,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
       }
     
       useEffect(() => {
-        setActiveOption(selectedAnswers[question?.sid]);
+        setActiveOption(selectedAnswers[question?.sid]?.answerId);
       }, [question, selectedAnswers]);
     
       return (
@@ -70,8 +70,8 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
             <div>
               {
                 review 
-                && <div className={styles.editButton} onClick={() => {setQuestionIndex(index); setInReview(true); setReview(true)}}>
-                    <CreateOutlinedIcon style={{fontSize:"15px", marginRight:"10px"}}/>Edit
+                && <div className={`${styles.editButton} aic`} onClick={() => {setQuestionIndex(index); setInReview(true); setReview(true)}}>
+                    <div className="mr5"><IcnEdit {...{stroke:"#fff"}} /></div><div className="pt2">Edit</div>
                 </div>
               }
             </div>
@@ -84,7 +84,7 @@ const AssessmentCard = ({ question, review = false, setReview,  index, correct =
             && question.questionId.answer.length > 0
             && question.questionId.answer.map((option, i) => <><div
                 onClick={() => {
-                  if (!finished) {
+                  if (!finished && !review) {
                     setActiveOption(option?.sid);
                     setSelectedAnswer(option);
                   }

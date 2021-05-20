@@ -1,7 +1,5 @@
 import React, {  } from 'react';
 import styles from "./Sidebar.module.css";
-import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
-import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import CheckIcon from "@material-ui/icons/Check";
 import { IcnArrowRight, IcnEdit } from '../../../Common/Icon';
 
