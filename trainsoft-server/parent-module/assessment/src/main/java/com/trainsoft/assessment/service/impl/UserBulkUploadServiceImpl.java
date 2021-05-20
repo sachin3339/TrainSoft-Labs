@@ -6,6 +6,7 @@ import com.trainsoft.assessment.commons.Utility;
 import com.trainsoft.assessment.customexception.ApplicationException;
 import com.trainsoft.assessment.dozer.DozerUtils;
 import com.trainsoft.assessment.entity.*;
+import com.trainsoft.assessment.enums.QuizStatus;
 import com.trainsoft.assessment.repository.*;
 import com.trainsoft.assessment.service.ICompanyService;
 import com.trainsoft.assessment.service.IUserBulkUploadService;
@@ -184,6 +185,7 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
             virtualAccountAssessment.generateUuid();
             virtualAccountAssessment.setVirtualAccount(virtualAccount);
             virtualAccountAssessment.setAssessment(assessment);
+            virtualAccountAssessment.setStatus(QuizStatus.PENDING);
             VAAssessmentRepository.save(virtualAccountAssessment);
             userTO.getAppuser().setSid(virtualAccount.getAppuser().getStringSid());
             userTO.getAppuser().setPassword(null);
@@ -252,6 +254,7 @@ public class UserBulkUploadServiceImpl implements IUserBulkUploadService {
                 virtualAccountAssessment.generateUuid();
                 virtualAccountAssessment.setVirtualAccount(virtualAccount);
                 virtualAccountAssessment.setAssessment(assessment);
+                virtualAccountAssessment.setStatus(QuizStatus.PENDING);
                 VAAssessmentRepository.save(virtualAccountAssessment);
             }
 

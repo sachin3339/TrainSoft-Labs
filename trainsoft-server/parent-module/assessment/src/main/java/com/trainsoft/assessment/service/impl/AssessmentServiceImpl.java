@@ -298,8 +298,7 @@ public class AssessmentServiceImpl implements IAssessmentService
     }
 
     @Override
-    public List<AssessmentQuestionTo> startAssessment(String quizSetSid,String virtualAccountSid)
-    {
+    public List<AssessmentQuestionTo> startAssessment(String quizSetSid,String virtualAccountSid) {
         VirtualAccount virtualAccount = virtualAccountRepository.findVirtualAccountBySid(BaseEntity.hexStringToByteArray(virtualAccountSid));
         if (virtualAccount==null) throw new InvalidSidException("Invalid virtual Account Sid.");
         Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
@@ -332,7 +331,7 @@ public class AssessmentServiceImpl implements IAssessmentService
           if(vAAssess==null){
               VirtualAccountAssessment virtualAccountAssessment = new VirtualAccountAssessment();
               virtualAccountAssessment.generateUuid();
-              virtualAccountAssessment.setVirtualAccount(virtualAccount);
+              virtualAccountAssessment.setVirtualAccount(virtualAccount);   
               virtualAccountAssessment.setAssessment(assessment);
               virtualAccountAssessment.setStatus(QuizStatus.STARTED);
               virtualAccountAssessmentRepository.save(virtualAccountAssessment);
