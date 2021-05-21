@@ -87,11 +87,11 @@ const AssessmentRender = ({ data, fromMyAt = false, count, setPageNo, key = "" }
                         {res.status === "progress" && <div className="Ongoing font-weight-bold">{ICN_CIRCLE_C} Ongoing </div>}
                         {res.status === "COMPLETED" && <div className="text-success font-weight-bold">Completed </div>}
                         {res.status === "QUIT" && <div className="text-danger font-weight-bold">Quit</div>}
-                        {res.status === "COMPLETED" && <div className="aic">
+                        {res.status === "COMPLETED" && <div className="aic jce">
                             {/* <div className="nav-link text-primary pointer font-weight-bold">{ICN_DOWNLOADS} Download Certificate</div>  */}
                             <div>Score: <span className="title-md">{res.score}%</span></div></div>}
                         {res.status === "STARTED" && <Button className="disabled">Resume</Button>}
-                        {/* {res.status === "QUIT" && <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.quizSetSid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Try Again</Button>} */}
+                        {/* {res.status === "QUIT" &&<div> <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.quizSetSid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Try Again</Button></div>} */}
 
                     </>}
                 </div>
