@@ -94,7 +94,7 @@ export const AssessmentDialog = () => {
       }
       RestService.getAssessmentInstruction(payload).then(
         response => {
-          if(response.status === 204) Toast.error({ message: `Sorry! there are no set available for ${values.categoryTopicValue.difficulty.toLowerCase()}. Please try later.` });
+          if(response.status === 204) Toast.error({ message: `Sorry! there are no set available for ${values.categoryTopicValue.difficulty.toLowerCase()}. Please try later.`, time: 3000 });
           createAssUser(values, response.data?.sid);
           setInstruction(response.data);
         },
@@ -199,7 +199,11 @@ export const AssessmentDialog = () => {
     } 
   }, []);
 
-  // initialize component
+  /**
+   * initialize component when page reloaded through url
+   * url contains assessment sid / companySid / virtual account sid
+   * "/assessment/:assessmentSid/:companySid/:virtualAccountSid"
+   *  */ 
   useEffect(() => {
     getAllCategory();
     params?.virtualAccountSid !=0 && setOpen(false)

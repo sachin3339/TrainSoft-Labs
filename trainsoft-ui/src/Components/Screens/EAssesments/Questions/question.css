@@ -1,3 +1,11 @@
 .w45{
     width: 45px !important;
 }
+.q-tag{
+    background: #B1FFFF;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 25px;
+}

@@ -36,6 +36,7 @@ const AssesmentsTable = ({ location }) => {
     topicSid: "",
     validUpto: true,
     date: '',
+    timeLimit: 10
   }
 
   const [configuration, setConfiguration] = useState({
@@ -164,7 +165,7 @@ const AssesmentsTable = ({ location }) => {
       validUpto: values.validUpto === 0 ? true : false,
       date: values.validUpto === 0 ? '' : values.validUpto,
       duration: values.duration === 0 ? true : false,
-      timeLimit: values.duration === 0 ? new Date() : values.duration
+      timeLimit: values.duration === 0 ? 5 : values.duration
     }
     setInitialAssessment(data)
   }
