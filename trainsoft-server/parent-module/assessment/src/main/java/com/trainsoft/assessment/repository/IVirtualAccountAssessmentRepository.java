@@ -78,5 +78,8 @@ public interface IVirtualAccountAssessmentRepository extends JpaRepository<Virtu
     List<VirtualAccountAssessment> checkVirtualAccountAndAssessmentAndStatus(VirtualAccount virtualAccount,Assessment assessment);
 
 	VirtualAccountAssessment findVirtualAccountAssessmentByVirtualAccountAndStatus(VirtualAccount virtualAccount, QuizStatus status);
+	 VirtualAccountAssessment findVirtualAccountAssessmentByVirtualAccountAndAssessmentAndStatus
+			 (VirtualAccount virtualAccount,Assessment assessment,QuizStatus status);
+
 
 }
