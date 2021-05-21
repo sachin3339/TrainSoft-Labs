@@ -109,6 +109,8 @@
     justify-content: space-between;
     text-align: right;
     margin-left: 20px;
+    width: 25%;
+    min-width: 230px;
 }
 .nav-pills .nav-link {
     border-radius: 0;
