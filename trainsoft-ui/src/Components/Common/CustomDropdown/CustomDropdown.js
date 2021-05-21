@@ -17,7 +17,8 @@ const CustomDropdown = ({
 	field,
 	filter= false,
 	onClosed = () => { },
-	disabled = false
+	disabled = false,
+	onChange 
 }) => {
 	const [state, setState] = useState({
 		data,
@@ -26,7 +27,8 @@ const CustomDropdown = ({
 		searchKeywords,
 		onSelect,
 		title,
-		selectedVal
+		selectedVal,
+		onChange
 	});
 
 	/*
@@ -45,6 +47,7 @@ const CustomDropdown = ({
 			state.selectedVal = getSelectedVal(obj);
 			state.searchKeywords = "";
 			state.onSelect((state.valueKey) ? obj[state.valueKey] : obj);
+			state.onChange((state.valueKey) ? obj[state.valueKey] : obj)
 			setState({ ...state })
 			preventEventForSearch(e);
 		} catch (err) {
@@ -74,9 +77,10 @@ const CustomDropdown = ({
 			bindKey,
 			valueKey,
 			onSelect,
-			title
+			title,
+			onChange
 		});
-	}, [data, bindKey, valueKey, onSelect, title])
+	}, [data, bindKey, valueKey, onSelect, title,onChange])
 
 	// Listening props value changes and update the same in local state
 	useEffect(() => {
@@ -98,7 +102,7 @@ const CustomDropdown = ({
 		<Dropdown onToggle={(e) => (e && onClosed())} className={`dropdown-custom ${disabled ? 'disabled': ''})`}>
 			<Dropdown.Toggle variant="light" size="sm" as="div" id="eserve-dropdown" className="text-left flx aic" style={{ pointerEvents: disabled && "none" }}>
 				<div className="w100">
-					<input type="text" {...field} className="form-control form-control-sm" value={getSelectedVal(state.selectedVal) || state.title} onChange={() => {}}/>
+					<input type="text"  {...field} className="form-control form-control-sm" value={getSelectedVal(state.selectedVal) || state.title} />
 				</div>
 				<div>
 					{ICN_EXPAND_MORE}

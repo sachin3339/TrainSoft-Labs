@@ -131,7 +131,7 @@ const AssessmentDashboard = () => {
                     <div className="title-sm text-center my-3">Avg. Score by Category</div>
                     <div className="category-info-list">
                         {category.map(res =>
-                            <div className="category-info">
+                            <div className="category-info" key={res.sid}>
                                 <div className="catTitle"> {getCategoryValue(res.sid)} </div>
                                 <div className=""> {res.name} </div>
                             </div>
@@ -161,7 +161,7 @@ const AssessmentDashboard = () => {
                             {res.percentage}%
                         </div>
                     </div>)}
-                    {categoryUser.length === 0 && <NoDataFound title="Data not gound" />}
+                    {categoryUser.length === 0 && <NoDataFound title="Data not found" />}
 
                 </div>
             </div>

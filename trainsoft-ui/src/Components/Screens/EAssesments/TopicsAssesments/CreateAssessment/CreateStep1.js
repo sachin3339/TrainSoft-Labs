@@ -55,7 +55,7 @@ const CreateStep1 = ({  handleNext }) => {
                 </div>
               </Form.Group>
               <Form.Group style={{ width: "60%" }}>
-                <SelectInput label="Category" option={category} bindKey="name" name="categorySid" value={values.categorySid} payloadKey="name" />
+                <SelectInput label="Category" option={category}  bindKey="name" name="categorySid" value={values.categorySid} payloadKey="name" />
                 <SelectInput label="Tag"  value={values.tagSid} option={values.categorySid?.tags} bindKey="name" name="tagSid"/>
                 <Form.Group>
                   <Form.Label className="label">
