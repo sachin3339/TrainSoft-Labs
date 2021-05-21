@@ -91,7 +91,7 @@ const AssessmentRender = ({ data, fromMyAt = false, count, setPageNo, key = "" }
                             {/* <div className="nav-link text-primary pointer font-weight-bold">{ICN_DOWNLOADS} Download Certificate</div>  */}
                             <div>Score: <span className="title-md">{res.score}%</span></div></div>}
                         {res.status === "STARTED" && <Button className="disabled">Resume</Button>}
-                        {/* {res.status === "QUIT" &&<div> <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.quizSetSid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Try Again</Button></div>} */}
+                        {res.status === "QUIT" &&<div> <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.quizSetSid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Try Again</Button></div>}
 
                     </>}
                 </div>
