@@ -434,7 +434,8 @@ public class AssessmentServiceImpl implements IAssessmentService
                 VirtualAccountHasQuestionAnswerDetails virtualAccountHasQuestionAnswerDetails1 =
                         virtualAccountHasQuestionAnswerDetailsRepository.findBySid(BaseEntity.hexStringToByteArray(request.getSid()));
                 VirtualAccountHasQuestionAnswerDetailsTO vTo2= new VirtualAccountHasQuestionAnswerDetailsTO();
-                vTo2.setSid(virtualAccountHasQuestionAnswerDetails.getStringSid());
+
+                vTo2.setSid(virtualAccountHasQuestionAnswerDetails1.getStringSid());
                 vTo2.setVirtualAccountSid(virtualAccountHasQuestionAnswerDetails1.getVirtualAccountId().getStringSid());
                 vTo2.setQuestionSid(virtualAccountHasQuestionAnswerDetails1.getQuestionId().getStringSid());
                 vTo2.setCompanySid(virtualAccountHasQuestionAnswerDetails1.getCompanyId().getStringSid());
