@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import RestService from "../../../../Services/api.service";
 import AppContext from "../../../../Store/AppContext";
 import useToast from "../../../../Store/ToastHook";
-import { Formik } from "formik";
+import { ErrorMessage, Formik } from "formik";
 import {
   TextInput,
   SelectInput,
@@ -18,7 +18,9 @@ import { navigate } from "../../../Common/Router";
 import GLOBELCONSTANT from "../../../../Constant/GlobleConstant";
 import AssessmentContext from "../../../../Store/AssessmentContext";
 import Select from 'react-dropdown-select';
-import "./question.css";
+import { BtnInfo } from "../../../Common/Buttons/Buttons";
+import * as Yup from 'yup';
+import "./question.css"
 
 const CreateQuestion = ({ location }) => {
   const { isEdit = false, questionData } = location.state;
@@ -28,6 +30,13 @@ const CreateQuestion = ({ location }) => {
   const { spinner } = useContext(AppContext);
   const [questionType, setQuestionType] = useState([]);
   const [deletedAnswers, setDeletedAnswers] = useState([]);
+
+  const SCHEMA = Yup.object().shape({
+    questionType: Yup.string().required("Question type is required"),
+    name: Yup.string().required("Question title is required"),
+    category: Yup.object().nullable().required("Category is required"),
+    technologyName: Yup.array().required("Tag is required")
+  })
 
   // Create question
   const createNewQuestion = async (values) => {
@@ -98,7 +107,8 @@ const CreateQuestion = ({ location }) => {
       />
       <div className="table-shadow " style={{ padding: "40px" }}>
         <Formik
-            onSubmit={(value) => createNewQuestion(value)}
+            onSubmit={createNewQuestion}
+            validationSchema={SCHEMA}
             initialValues={isEdit ? {...questionData, "category": AppUtils.isNotEmptyArray(category) && questionData.category && category.find(r => r.name === questionData.category), "technologyName": questionData.technologyName && questionData.technologyName.split(",").map(r => ({"name": r})), "answerOrderType": questionData.alphabet ? GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS : GLOBELCONSTANT.ANSWER_PATTERN.NUMBER} : GLOBELCONSTANT.DATA.CREATE_QUESTION}
           >
             {({ handleSubmit, values, setFieldValue, resetForm, isSubmitting, dirty, touched }) => (
@@ -138,6 +148,7 @@ const CreateQuestion = ({ location }) => {
                       color="#B1FFFF"
                       className="input-field"
                     />
+                    <ErrorMessage component="span" name="technologyName" className="text-danger mb-2 small-text" />
                   </Form.Group>
               
                   {/* <SelectInput label="Tag"  value={values.technologyName} option={values.category?.tags} bindKey="name" name="technologyName"/> */}
@@ -198,7 +209,7 @@ const CreateQuestion = ({ location }) => {
                     }}
                     onClick={() => {resetForm(); goBack()}}
                   >Cancel</Submit>
-                  <Submit onClick={()=> createNewQuestion(values)} disabled={isSubmitting || !dirty || !touched}>{isEdit ? "Update" : "Create"}</Submit>
+                   <BtnInfo type="submit" className={` px20 f14 `} disabled={!dirty || !touched}>{isEdit ? "UPDATE" : "CREATE"}</BtnInfo>
                 </div>
               </form>
             )}
