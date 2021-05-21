@@ -106,7 +106,8 @@ export const SelectInput = (props) => {
                     onSelect: setValue,
                     title:  `Select ${props.label}`,
                     selectedVal: props.value,
-                    disabled: props.disabled
+                    disabled: props.disabled,
+                    onChange:(e)=>console.log(e)
                 }} />
             </div>
             <ErrorMessage component="div" name={props.name} className="text-danger mb-2 small-text" />
