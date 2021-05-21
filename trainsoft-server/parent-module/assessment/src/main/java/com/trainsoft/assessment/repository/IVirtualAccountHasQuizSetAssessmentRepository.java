@@ -11,10 +11,10 @@ public interface IVirtualAccountHasQuizSetAssessmentRepository extends JpaReposi
     @Query(value = "select * from virtual_account_has_quiz_set_assesment where virtual_account_id=:vid and id=:id",nativeQuery = true)
     VirtualAccountHasQuizSetAssessment findByVirtualAccountId(@Param("vid") Integer vid,@Param("id")Integer id);
 
-    @Query(value = "select * from virtual_account_has_quiz_set_assesment where quiz_set_id=:id order by percentage desc ",nativeQuery = true)
+    @Query(value = "select * from virtual_account_has_quiz_set_assesment where quiz_set_id=:id order by percentage desc limit 10",nativeQuery = true)
     List<VirtualAccountHasQuizSetAssessment> findByAssessment(@Param("id") Integer assessmentId);
 
-    @Query(value = "select * from virtual_account_has_quiz_set_assesment where quiz_set_id=:id and submitted_on>=current_date() order by percentage desc ",nativeQuery = true)
+    @Query(value = "select * from virtual_account_has_quiz_set_assesment where quiz_set_id=:id and submitted_on>=current_date() order by percentage desc limit 10",nativeQuery = true)
     List<VirtualAccountHasQuizSetAssessment> findByAssessmentForCurrentDate(@Param("id")Integer assessmentId);
 
     @Query(value = "SELECT AVG(vs.percentage) FROM VirtualAccountHasQuizSetAssessment AS vs WHERE vs.virtualAccountId=:virtualAccount")

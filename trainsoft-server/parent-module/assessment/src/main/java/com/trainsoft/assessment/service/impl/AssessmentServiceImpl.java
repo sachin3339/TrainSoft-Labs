@@ -920,36 +920,10 @@ public class AssessmentServiceImpl implements IAssessmentService
         Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         if (assessment!=null){
             ArrayList<LeaderBoardTO> leaderBoardTO = new ArrayList<>();
-
-            List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
                     .findByAssessmentForCurrentDate(assessment.getId());
-
-            List<VirtualAccountHasQuizSetAssessment> uniqueassessmentList = assessmentList.stream()
-                    .collect(Collectors.groupingBy(VirtualAccountHasQuizSetAssessment::getVirtualAccountId,
-                            Collectors.maxBy(Comparator.comparing(VirtualAccountHasQuizSetAssessment::getSubmittedOn))))
-                    .values()
-                    .stream()
-                    .map(Optional::get)
-                    .collect(Collectors.toList());
-
-            if (uniqueassessmentList.size()==0)throw new RecordNotFoundException("no records found");
-           if (uniqueassessmentList.size()<10){
-               for (int i=0;i<uniqueassessmentList.size();i++){
-                   topTen.add(i,uniqueassessmentList.get(i));
-               }
-               topTen.forEach(tp->{
-                   LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
-                   leaderBoardRequestTO.setPercentage(tp.getPercentage());
-                   leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
-                   leaderBoardTO.add(leaderBoardRequestTO);
-               });
-               return leaderBoardTO;
-           }
-            for (int i=0;i<10;i++){
-                topTen.add(i,uniqueassessmentList.get(i));
-            }
-            topTen.forEach(tp->{
+            if (assessmentList.size()==0)throw new RecordNotFoundException("no records found");
+            assessmentList.forEach(tp->{
                 LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
                 leaderBoardRequestTO.setPercentage(tp.getPercentage());
                 leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
@@ -965,35 +939,10 @@ public class AssessmentServiceImpl implements IAssessmentService
         Assessment assessment = assessmentRepository.findBySid(BaseEntity.hexStringToByteArray(quizSetSid));
         if (assessment != null) {
             ArrayList<LeaderBoardTO> leaderBoardTO = new ArrayList<>();
-            List<VirtualAccountHasQuizSetAssessment> topTen = new ArrayList<>();
             List<VirtualAccountHasQuizSetAssessment> assessmentList = virtualAccountHasQuizSetAssessmentRepository
                     .findByAssessment(assessment.getId());
-
-            List<VirtualAccountHasQuizSetAssessment> uniqueassessmentList = assessmentList.stream()
-                    .collect(Collectors.groupingBy(VirtualAccountHasQuizSetAssessment::getVirtualAccountId,
-                            Collectors.maxBy(Comparator.comparing(VirtualAccountHasQuizSetAssessment::getSubmittedOn))))
-                    .values()
-                    .stream()
-                    .map(Optional::get)
-                    .collect(Collectors.toList());
-
-            if (uniqueassessmentList.size()==0)throw new RecordNotFoundException("no records found");
-            if (uniqueassessmentList.size()<10){
-                for (int i=0;i<uniqueassessmentList.size();i++){
-                    topTen.add(i,uniqueassessmentList.get(i));
-                }
-                topTen.forEach(tp->{
-                    LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
-                    leaderBoardRequestTO.setPercentage(tp.getPercentage());
-                    leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(),VirtualAccountTO.class));
-                    leaderBoardTO.add(leaderBoardRequestTO);
-                });
-                return leaderBoardTO;
-            }
-            for (int i = 0; i < 10; i++) {
-                    topTen.add(i, uniqueassessmentList.get(i));
-            }
-            topTen.forEach(tp -> {
+            if (assessmentList.size()==0)throw new RecordNotFoundException("no records found");
+            assessmentList.forEach(tp -> {
                 LeaderBoardTO leaderBoardRequestTO = new LeaderBoardTO();
                 leaderBoardRequestTO.setPercentage(tp.getPercentage());
                 leaderBoardRequestTO.setVirtualAccountTO(mapper.convert(tp.getVirtualAccountId(), VirtualAccountTO.class));
@@ -1001,6 +950,13 @@ public class AssessmentServiceImpl implements IAssessmentService
             });
             return leaderBoardTO;
         } throw new InvalidSidException("invalid Assessment sid");
+        /* List<VirtualAccountHasQuizSetAssessment> uniqueassessmentList = assessmentList.stream()
+                    .collect(Collectors.groupingBy(VirtualAccountHasQuizSetAssessment::getVirtualAccountId,
+                            Collectors.maxBy(Comparator.comparing(VirtualAccountHasQuizSetAssessment::getSubmittedOn))))
+                    .values()
+                    .stream()
+                    .map(Optional::get)
+                    .collect(Collectors.toList());*/
     }
 
     @Override
