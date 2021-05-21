@@ -490,8 +490,6 @@ public class AssessmentServiceImpl implements IAssessmentService
         return counts;
     }
 
-
-
     @Override
     public VirtualAccountHasQuizSetAssessmentTO submitAssessment(SubmitAssessmentTO request) {
         VirtualAccount virtualAccount = virtualAccountRepository
@@ -569,8 +567,6 @@ public class AssessmentServiceImpl implements IAssessmentService
         vto.setCategorySid(virtualAccountHasQuizSetAssessment1.getCategoryId().getStringSid());
         return vto;
     }
-
-
 
     @Override
     public String removeAssociatedQuestionFromAssessment(String questionSid,String assessmentSid)
@@ -1030,6 +1026,8 @@ public class AssessmentServiceImpl implements IAssessmentService
                     .findByAssessmentAndVirtualAccount(assessment, virtualAccount);
             VirtualAccountAssessmentTo virtualAccountAssessmentTo = mapper
                     .convert(virtualAccountAssessment, VirtualAccountAssessmentTo.class);
+            virtualAccountHasQuizSetSessionTimingRepository.updateStatusQuizSession(assessment.getCompany().getId(),virtualAccount.getId(),assessment.getId());
+            virtualAccountHasQuestionAnswerDetailsRepository.deleteByVirtualAccountIdAndQuiz(virtualAccount,assessment);
             virtualAccountAssessmentTo.setAssessmentSid(assessment.getStringSid());
             virtualAccountAssessmentTo.setVirtualAccountSid(virtualAccount.getStringSid());
             return virtualAccountAssessmentTo;
