@@ -78,13 +78,11 @@ const AssessmentRender = ({ data, fromMyAt = false, count, setPageNo, key = "" }
                 </div>
                 <div className="assestRight text-bold">
                     {!fromMyAt ? <>
-                        {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <div className="text-danger">Already Taken</div>: <div className={`pointer ${bookmark.some(resp => resp.sid === res.sid) ? 'bookMarkColor' : ''}`} onClick={() => { bookmark.some(resp => resp.sid === res.sid) ? removeBookmark(res.sid) : createBookmark(res.sid) }}> {ICN_MARK} </div>}
+                        {/* {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <div className="text-danger">Already Taken</div>: <div className={`pointer ${bookmark.some(resp => resp.sid === res.sid) ? 'bookMarkColor' : ''}`} onClick={() => { bookmark.some(resp => resp.sid === res.sid) ? removeBookmark(res.sid) : createBookmark(res.sid) }}> {ICN_MARK} </div>} */}
                         <div>
-                            {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <> <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}> Take Again </Button> </> : <> <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Take Now </Button></>}
+                            {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <> <Button disabled={true} onClick={() => { setFromLogin(true); navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}> Already Taken </Button> </> : <> <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Take Now </Button></>}
                         </div>
                     </> : <>
-                        {/* {key === "bookmarked" && <Button onClick={() => navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`)}>Take Now</Button>} */}
-
                         {res.status === "STARTED" && <div className="Ongoing font-weight-bold">{ICN_CIRCLE_C} Ongoing </div>}
                         {res.status === "progress" && <div className="Ongoing font-weight-bold">{ICN_CIRCLE_C} Ongoing </div>}
                         {res.status === "COMPLETED" && <div className="text-success font-weight-bold">Completed </div>}
