@@ -610,17 +610,17 @@ public class AssessmentServiceImpl implements IAssessmentService
         List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessments = virtualAccountHasQuizSetAssessmentRepository
                 .findByAssessmentForCurrentDate(assessment.getId());
 
-        List<VirtualAccountHasQuizSetAssessment> uniqueVirtualAccountHasQuizSetAssessments = virtualAccountHasQuizSetAssessments.stream()
+       /* List<VirtualAccountHasQuizSetAssessment> uniqueVirtualAccountHasQuizSetAssessments = virtualAccountHasQuizSetAssessments.stream()
                 .collect(Collectors.groupingBy(VirtualAccountHasQuizSetAssessment::getVirtualAccountId,
                         Collectors.maxBy(Comparator.comparing(VirtualAccountHasQuizSetAssessment::getSubmittedOn))))
                 .values()
                 .stream()
                 .map(Optional::get)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
 
-        Integer[] size = new Integer[uniqueVirtualAccountHasQuizSetAssessments.size()];
+        Integer[] size = new Integer[virtualAccountHasQuizSetAssessments.size()];
         Map<Double, Integer> idAndPercentageList = new HashMap<>();
-        uniqueVirtualAccountHasQuizSetAssessments.forEach(as->{
+        virtualAccountHasQuizSetAssessments.forEach(as->{
             idAndPercentageList.put(as.getPercentage(),as.getVirtualAccountId().getId());
         });
         List<VirtualAccountHasQuizSetAssessment> virtualAccountList = virtualAccountHasQuizSetAssessmentRepository.findByVirtualAccountAndAssessment(assessment,virtualAccount);
@@ -632,14 +632,14 @@ public class AssessmentServiceImpl implements IAssessmentService
         }
         Map<Integer, Integer> assignRank = new HashMap<>();
         int i=0;
-        for (VirtualAccountHasQuizSetAssessment va:uniqueVirtualAccountHasQuizSetAssessments){
+        for (VirtualAccountHasQuizSetAssessment va:virtualAccountHasQuizSetAssessments){
             assignRank.put((idAndPercentageList.get(va.getPercentage())), size[i]);
             i++;
         }
         Integer userRank = assignRank.get(virtualAccountList.get(0).getVirtualAccountId().getId());
         Integer[] data = new Integer[2];
         data[0]=userRank;
-        data[1]=uniqueVirtualAccountHasQuizSetAssessments.size();
+        data[1]=virtualAccountHasQuizSetAssessments.size();
         return data;
     }
 
@@ -648,17 +648,17 @@ public class AssessmentServiceImpl implements IAssessmentService
         List<VirtualAccountHasQuizSetAssessment> virtualAccountHasQuizSetAssessments = virtualAccountHasQuizSetAssessmentRepository
                 .findByAssessment(assessment.getId());
 
-        List<VirtualAccountHasQuizSetAssessment> uniqueVirtualAccountHasQuizSetAssessments = virtualAccountHasQuizSetAssessments.stream()
+       /* List<VirtualAccountHasQuizSetAssessment> uniqueVirtualAccountHasQuizSetAssessments = virtualAccountHasQuizSetAssessments.stream()
                 .collect(Collectors.groupingBy(VirtualAccountHasQuizSetAssessment::getVirtualAccountId,
                         Collectors.maxBy(Comparator.comparing(VirtualAccountHasQuizSetAssessment::getSubmittedOn))))
                 .values()
                 .stream()
                 .map(Optional::get)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
 
-        Integer[] size = new Integer[uniqueVirtualAccountHasQuizSetAssessments.size()];
+        Integer[] size = new Integer[virtualAccountHasQuizSetAssessments.size()];
         Map<Double, Integer> idAndPercentageList = new HashMap<>();
-        uniqueVirtualAccountHasQuizSetAssessments.forEach(as->{
+        virtualAccountHasQuizSetAssessments.forEach(as->{
             idAndPercentageList.put(as.getPercentage(),as.getVirtualAccountId().getId());
         });
         List<VirtualAccountHasQuizSetAssessment> virtualAccountList = virtualAccountHasQuizSetAssessmentRepository.findByVirtualAccountAndAssessment(assessment,virtualAccount);
@@ -669,14 +669,14 @@ public class AssessmentServiceImpl implements IAssessmentService
         }
         Map<Integer, Integer> assignRank = new HashMap<>();
         int i=0;
-        for (VirtualAccountHasQuizSetAssessment va:uniqueVirtualAccountHasQuizSetAssessments){
+        for (VirtualAccountHasQuizSetAssessment va:virtualAccountHasQuizSetAssessments){
             assignRank.put((idAndPercentageList.get(va.getPercentage())), size[i]);
             i++;
         }
         Integer userRank = assignRank.get(virtualAccountList.get(0).getVirtualAccountId().getId());
         Integer[] data = new Integer[2];
         data[0]=userRank;
-        data[1]=uniqueVirtualAccountHasQuizSetAssessments.size();
+        data[1]=virtualAccountHasQuizSetAssessments.size();
         return data;
     }
     @Override
