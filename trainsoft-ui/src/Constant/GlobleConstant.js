@@ -191,7 +191,12 @@ const GLOBELCONSTANT = {
             GET_ASSESSMENT_DASHBOARD : API_ASSES + "get/assessdetails/{aasId}",
             GET_ASSESSMENT_USER : API_ASSES + "get/configuredusers/{assID}",
             GET_QUESTION_BY_SID : API_ASSES + "question/{qId}",
-            CHANGE_QUESTION_STATUS : API_ASSES + "question/status/update/{qId}/{status}"
+            CHANGE_QUESTION_STATUS : API_ASSES + "question/status/update/{qId}/{status}",
+            GET_QUESTIONS_SEARCH_COUNT: API_ASSES + "count/question/{searchString}/{sid}",
+            GET_ASSESSMENT_SEARCH_COUNT: API_ASSES + "search/assessment/{searchString}/{cSid}/{tSid}",
+            GET_TOPIC_SEARCH_COUNT: API_ASSES + "search/question/{searchString}/{sid}",
+
+
 
 
         },  
