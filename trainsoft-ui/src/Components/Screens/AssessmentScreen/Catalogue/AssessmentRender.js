@@ -78,7 +78,7 @@ const AssessmentRender = ({ data, fromMyAt = false, count, setPageNo, key = "" }
                 </div>
                 <div className="assestRight text-bold">
                     {!fromMyAt ? <>
-                        {/* {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <div className="text-danger">Already Taken</div>: <div className={`pointer ${bookmark.some(resp => resp.sid === res.sid) ? 'bookMarkColor' : ''}`} onClick={() => { bookmark.some(resp => resp.sid === res.sid) ? removeBookmark(res.sid) : createBookmark(res.sid) }}> {ICN_MARK} </div>} */}
+                        {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <div className="text-danger"></div>: <div className={`pointer ${bookmark.some(resp => resp.sid === res.sid) ? 'bookMarkColor' : ''}`} onClick={() => { bookmark.some(resp => resp.sid === res.sid) ? removeBookmark(res.sid) : createBookmark(res.sid) }}> {ICN_MARK} </div>}
                         <div>
                             {myAssessment.some(resp => resp?.quizSetSid === res.sid) ? <> <Button disabled={true} onClick={() => { setFromLogin(true); navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}> Already Taken </Button> </> : <> <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.sid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Take Now </Button></>}
                         </div>
@@ -91,7 +91,7 @@ const AssessmentRender = ({ data, fromMyAt = false, count, setPageNo, key = "" }
                             {/* <div className="nav-link text-primary pointer font-weight-bold">{ICN_DOWNLOADS} Download Certificate</div>  */}
                             <div>Score: <span className="title-md">{res.score}%</span></div></div>}
                         {res.status === "STARTED" && <Button className="disabled">Resume</Button>}
-                        {res.status === "QUIT" && <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.quizSetSid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Try Again</Button>}
+                        {/* {res.status === "QUIT" && <Button onClick={() => { setFromLogin(true); navigate(`../assessment/${res.quizSetSid}/${user.companySid}/${user.sid}`, { state: { from: "assessmentDashboard" } }) }}>Try Again</Button>} */}
 
                     </>}
                 </div>
