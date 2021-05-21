@@ -12,6 +12,7 @@ import CardHeader from "../../../Common/CardHeader";
 import DynamicTable from "../../../Common/DynamicTable/DynamicTable";
 import { ICN_EDIT, ICN_TRASH, ICN_UPLOAD } from "../../../Common/Icon";
 import { Link, navigate } from "../../../Common/Router";
+import './question.css';
 
 
 const QuestionsTable = ({ location }) => {
@@ -63,18 +64,11 @@ const QuestionsTable = ({ location }) => {
         sortEnabled: true,
         isSearchEnabled: false,
         render: (data) => (
-          <div
-            style={{
-              background: "#B1FFFF",
-              width: "79px",
-              height: "24px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: "25px",
-            }}
-          >
-            {data.technologyName}
+          <div className="flexWrap">
+            {
+              data.technologyName
+              && data.technologyName.split(",").map((t, i) => <div key={i} className="q-tag mb5 mr5"><span className="px10">{t}</span></div>)
+            }
           </div>
         ),
       },

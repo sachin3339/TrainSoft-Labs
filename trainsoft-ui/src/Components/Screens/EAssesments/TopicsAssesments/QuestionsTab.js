@@ -15,6 +15,7 @@ const QuestionsTab = () => {
     columns: {
         "name": {
             "title": "Question",
+            render: (data) => <div className="hidden elps" title={data.name}>{data.name}</div>,
             "sortDirection": null,
             "sortEnabled": true,
             isSearchEnabled: false,
