@@ -191,7 +191,12 @@ const GLOBELCONSTANT = {
             GET_ASSESSMENT_DASHBOARD : API_ASSES + "get/assessdetails/{aasId}",
             GET_ASSESSMENT_USER : API_ASSES + "get/configuredusers/{assID}",
             GET_QUESTION_BY_SID : API_ASSES + "question/{qId}",
-            CHANGE_QUESTION_STATUS : API_ASSES + "question/status/update/{qId}/{status}"
+            CHANGE_QUESTION_STATUS : API_ASSES + "question/status/update/{qId}/{status}",
+            GET_QUESTIONS_SEARCH_COUNT: API_ASSES + "count/question/{searchString}/{sid}",
+            GET_ASSESSMENT_SEARCH_COUNT: API_ASSES + "search/assessment/{searchString}/{cSid}/{tSid}",
+            GET_TOPIC_SEARCH_COUNT: API_ASSES + "search/question/{searchString}/{sid}",
+
+
 
 
         },  
@@ -232,7 +237,7 @@ const GLOBELCONSTANT = {
         },
         SAMPLE_TEMPLATE: "https://sessionassests.s3.ap-south-1.amazonaws.com/User_Upload_template.xlsx",
         UPLOAD_ASSES_TEMPLATE : "https://sessionassests.s3.ap-south-1.amazonaws.com/Assement_User_Upload_template.xlsx",
-        UPLOAD_QUESTION_TEMPLES: "https://sessionassests.s3.ap-south-1.amazonaws.com/1620805756133_SampleTemplet.csv",
+        UPLOAD_QUESTION_TEMPLES: "https://sessionassests.s3.ap-south-1.amazonaws.com/BulkQuestion_Templete.csv",
         QUILL: {
                 toolbar: [
                     [{ font: [] }, { 'header': [1, 2, 3, 4, 5, 6, false] }],
