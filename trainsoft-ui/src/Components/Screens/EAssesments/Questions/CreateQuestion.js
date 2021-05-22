@@ -111,7 +111,7 @@ const CreateQuestion = ({ location }) => {
             validationSchema={SCHEMA}
             initialValues={isEdit ? {...questionData, "category": AppUtils.isNotEmptyArray(category) && questionData.category && category.find(r => r.name === questionData.category), "technologyName": questionData.technologyName && questionData.technologyName.split(",").map(r => ({"name": r})), "answerOrderType": questionData.alphabet ? GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS : GLOBELCONSTANT.ANSWER_PATTERN.NUMBER} : GLOBELCONSTANT.DATA.CREATE_QUESTION}
           >
-            {({ handleSubmit, values, setFieldValue, resetForm, isSubmitting, dirty, touched }) => (
+            {({ handleSubmit, values, setFieldValue, resetForm, errors, isSubmitting, dirty, touched }) => (
               <form onSubmit={handleSubmit} className="create-batch">
                 <div>
                   <Form.Group style={{ width: "60%" }}>
@@ -148,7 +148,7 @@ const CreateQuestion = ({ location }) => {
                       color="#B1FFFF"
                       className="input-field"
                     />
-                    <ErrorMessage component="span" name="technologyName" className="text-danger mb-2 small-text" />
+                    <ErrorMessage component="span" name="technologyName" className="text-danger f13 small-text" />
                   </Form.Group>
               
                   {/* <SelectInput label="Tag"  value={values.technologyName} option={values.category?.tags} bindKey="name" name="technologyName"/> */}
@@ -175,7 +175,10 @@ const CreateQuestion = ({ location }) => {
                       ordering: values.answerOrderType, 
                       setFieldValue,
                       deletedAnswers,
-                      setDeletedAnswers
+                      setDeletedAnswers,
+                      errors,
+                      dirty, 
+                      touched
                   }}/>
 
                   <Form.Group>

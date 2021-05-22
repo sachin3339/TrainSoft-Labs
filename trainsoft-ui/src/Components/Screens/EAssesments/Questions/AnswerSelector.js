@@ -1,11 +1,8 @@
 import React from 'react';
 import AddCircleOutlinedIcon from "@material-ui/icons/AddCircleOutlined";
 import RemoveOutlinedIcon from "@material-ui/icons/RemoveOutlined";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import RestService from "../../../../Services/api.service";
-import AppContext from "../../../../Store/AppContext";
-import useToast from "../../../../Store/ToastHook";
 import { Field } from "formik";
 import AppUtils from '../../../../Services/Utils';
 import GLOBELCONSTANT from '../../../../Constant/GlobleConstant';
@@ -15,9 +12,21 @@ const AnswerSelector = ({
   ordering = GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS, 
   setFieldValue,
   deletedAnswers,
-  setDeletedAnswers
+  setDeletedAnswers,
+  errors,
+  dirty, 
+  touched
 }) => {
   const [correctAnswer, setCorrectAnswer] = useState();
+
+  // validate bid value
+  const validateAnswerOptionValue = (value) => {
+    let error = "";
+    if (!value) {
+      error = "Required";
+    }
+    return error;
+  }
 
   const addAnswer = () => {
     try {
@@ -73,61 +82,71 @@ const AnswerSelector = ({
       {
         AppUtils.isNotEmptyObject(values)
         && <div style={{ display: "flex", alignItems: "center" }}>
-          <div style={{ marginRight: "30px" }}>
+          <div style={{ marginRight: "30px" }} className="fdc">
             <Form.Label className="label">Answers</Form.Label>
             {
               values.answer
               && AppUtils.isNotEmptyArray(values.answer)
-              && values.answer.map((_answer, index) => <div
-                key={index}
-                style={{
-                  padding: "15px 0",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <div
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    borderRadius: "10px",
-                    background: "#D4D6DB",
-                    marginRight: "10px",
-                  }}
-                />
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <div style={{ width: "20px" }}>{ ordering === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? GLOBELCONSTANT.ALPHABETS[index] : index + 1}.</div>
-                  <Field 
-                     style={{
-                      width: "500px",
-                      border: "none",
-                      borderBottom: "1px solid rgba(0,0,0,0.2)",
-                      outline: "none",
-                    }}
-                    name={`answer[${index}].answerOptionValue`}
-                  />
+              && values.answer.map((_answer, index) => <div className="fdc">
                   <div
-                    onClick={() => deleteAnswer(index)}
+                  key={index}
+                  style={{
+                    padding: "15px 0",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <div
                     style={{
-                      width: "15px",
-                      height: "15px",
+                      width: "20px",
+                      height: "20px",
                       borderRadius: "10px",
-                      background: "#ED7A7A",
+                      background: "#D4D6DB",
                       marginRight: "10px",
-                      marginLeft: "20px",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
                     }}
-                  >
-                    <RemoveOutlinedIcon
-                      style={{ color: "white", fontSize: "14px" }}
+                  />
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <div style={{ width: "20px" }}>{ ordering === GLOBELCONSTANT.ANSWER_PATTERN.ALPHABETS ? GLOBELCONSTANT.ALPHABETS[index] : index + 1}.</div>
+                    <Field 
+                      style={{
+                        width: "500px",
+                        border: "none",
+                        borderBottom: errors 
+                          && AppUtils.isNotEmptyArray(errors.answer) 
+                          && dirty && AppUtils.isNotEmptyArray(touched.answer) 
+                          && touched.answer[index]?.answerOptionValue 
+                          && errors.answer[index]?.answerOptionValue 
+                          ? "1px solid #f89c9c" 
+                          : "1px solid rgba(0,0,0,0.2)",
+                        outline: "none",
+                      }}
+                      name={`answer[${index}].answerOptionValue`}
+                      validate={validateAnswerOptionValue} 
                     />
+                    <div
+                      onClick={() => deleteAnswer(index)}
+                      style={{
+                        width: "15px",
+                        height: "15px",
+                        borderRadius: "10px",
+                        background: "#ED7A7A",
+                        marginRight: "10px",
+                        marginLeft: "20px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <RemoveOutlinedIcon
+                        style={{ color: "white", fontSize: "14px" }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>)
             }
+            
           </div>
           <div>
             <Form.Label className="label">Mark Correct Answer </Form.Label>
