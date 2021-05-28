@@ -1,5 +1,6 @@
 package com.trainsoft.assessment.entity;
 
+import com.trainsoft.assessment.value.InstructorEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,4 +32,8 @@ public class VirtualAccountHasQuizSetSessionTiming extends BaseEntity{
     @OneToOne
     @JoinColumn(name = "company_id",referencedColumnName = "id",nullable = false)
     private Company companyId;
+
+    @Column(name="status")
+    @Enumerated(EnumType.STRING)
+    private InstructorEnum.Status status;
 }

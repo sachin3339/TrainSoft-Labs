@@ -27,4 +27,5 @@ public class VirtualAccountHasQuizSetAssessmentTO extends BaseTO{
     private Date updatedOn;
     private String virtualAccountSid;
     private String categorySid;
+    private String assessmentQuestionAnswerDtls;
 }

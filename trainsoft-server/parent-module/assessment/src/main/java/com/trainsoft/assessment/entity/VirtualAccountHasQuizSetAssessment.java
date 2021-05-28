@@ -67,4 +67,7 @@ public class VirtualAccountHasQuizSetAssessment extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "category_id",referencedColumnName = "id")
     private Category categoryId;
+
+    @Column(name = "assessment_question_answer_details")
+    private String assessmentQuestionAnswerDtls;
 }

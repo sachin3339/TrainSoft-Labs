@@ -15,6 +15,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class VirtualAccountAssessment extends BaseEntity{
 
+    private static final long serialVersionUID = -7750061562585164419L;
+
     @ManyToOne
     @JoinColumn(name = "quiz_set_id", referencedColumnName = "id",nullable = false)
     private Assessment assessment;

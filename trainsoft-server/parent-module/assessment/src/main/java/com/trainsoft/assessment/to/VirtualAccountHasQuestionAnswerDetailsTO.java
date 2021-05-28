@@ -1,6 +1,7 @@
 package com.trainsoft.assessment.to;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.trainsoft.assessment.entity.Assessment;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Date;
@@ -17,4 +18,5 @@ public class VirtualAccountHasQuestionAnswerDetailsTO extends BaseTO{
     private Date createdOn;
     private Integer questionPoint;
     private QuestionTo questionId;
+    private String quizSid;
 }

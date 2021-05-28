@@ -4,6 +4,7 @@ import com.trainsoft.assessment.entity.Assessment;
 import com.trainsoft.assessment.entity.VirtualAccount;
 import com.trainsoft.assessment.entity.VirtualAccountAssessment;
 import com.trainsoft.assessment.enums.QuizStatus;
+import com.trainsoft.assessment.value.AssessmentEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -26,6 +27,7 @@ public interface IVirtualAccountAssessmentRepository extends JpaRepository<Virtu
 	@Transactional
 	@Query(value = "UPDATE VirtualAccountAssessment VA SET VA.status=:status WHERE VA.virtualAccount=:id AND VA.assessment=:qid")
 	void updateStatus(@Param("status") QuizStatus status, @Param("id") VirtualAccount virtualAccount,@Param("qid") Assessment assessment);
+
 	VirtualAccountAssessment findByAssessmentAndVirtualAccount(Assessment assessment,VirtualAccount virtualAccount);
 
 	@Query(value = "SELECT COUNT(vs) FROM VirtualAccountAssessment AS vs WHERE vs.virtualAccount=:virtualAccount")
@@ -71,5 +73,13 @@ public interface IVirtualAccountAssessmentRepository extends JpaRepository<Virtu
 			"vt.virtualAccount=vs.virtualAccountId AND vt.assessment=vs.quizSetId\n" +
 			"WHERE vt.virtualAccount=:virtualAccount AND vt.status=:status")
 	Integer getStatusBasedCountForMyAssessment(QuizStatus status,VirtualAccount virtualAccount);
+
+	@Query("SELECT vaa FROM VirtualAccountAssessment  vaa WHERE vaa.virtualAccount=:virtualAccount AND vaa.assessment=:assessment AND vaa.status <> 'COMPLETED' ")
+    List<VirtualAccountAssessment> checkVirtualAccountAndAssessmentAndStatus(VirtualAccount virtualAccount,Assessment assessment);
+
+	VirtualAccountAssessment findVirtualAccountAssessmentByVirtualAccountAndStatus(VirtualAccount virtualAccount, QuizStatus status);
+	 VirtualAccountAssessment findVirtualAccountAssessmentByVirtualAccountAndAssessmentAndStatus
+			 (VirtualAccount virtualAccount,Assessment assessment,QuizStatus status);
+
 
 }
