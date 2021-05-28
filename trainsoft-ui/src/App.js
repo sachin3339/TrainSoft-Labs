@@ -22,9 +22,9 @@ import { AssessmentProvider } from "./Store/AssessmentContext";
 
 function App() {
    const {spinner} = useContext(AppContext)
-   useEffect(() => {
-      navigate('./login')
-   }, [])
+   // useEffect(() => {
+   //    navigate('./login')
+   // }, [])
   return (<>
       <Spinner value={spinner}/>
       <AssessmentProvider>
@@ -32,7 +32,7 @@ function App() {
          <Router>
             <LandingHome path="/landing"/>
             <ResetPwd path="/reset/:token"/>
-            <Login path="/login"/>
+            <Login path="/"/>
             <Assessment path="/assessment/:assessmentSid/:companySid/:virtualAccountSid"/>
             <Dashboard path="/*"/>
             <ClassLab path="class/*"/>
