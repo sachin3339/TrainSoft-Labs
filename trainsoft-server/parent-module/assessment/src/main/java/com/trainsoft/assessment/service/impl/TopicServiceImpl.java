@@ -8,10 +8,7 @@ import com.trainsoft.assessment.customexception.InvalidSidException;
 import com.trainsoft.assessment.customexception.RecordNotFoundException;
 import com.trainsoft.assessment.dozer.DozerUtils;
 import com.trainsoft.assessment.entity.*;
-import com.trainsoft.assessment.repository.ICompanyRepository;
-import com.trainsoft.assessment.repository.ITopicRepository;
-import com.trainsoft.assessment.repository.ITrainsoftCustomRepository;
-import com.trainsoft.assessment.repository.IVirtualAccountRepository;
+import com.trainsoft.assessment.repository.*;
 import com.trainsoft.assessment.service.ITopicService;
 import com.trainsoft.assessment.to.TopicTo;
 import com.trainsoft.assessment.value.AssessmentEnum;
@@ -38,6 +35,7 @@ public class TopicServiceImpl implements ITopicService {
      private  final ITopicRepository topicRepository;
      private  final ICompanyRepository companyRepository;
      private final ITrainsoftCustomRepository customRepository;
+     private final IAssessmentRepository assessmentRepository;
 
 
 
@@ -118,6 +116,13 @@ public class TopicServiceImpl implements ITopicService {
         if(topicSid!=null)
         {
             Topic topic = topicRepository.findTopicBySid(BaseEntity.hexStringToByteArray(topicSid));
+            List<Assessment> assessments=assessmentRepository.findAssessmentByTopicForDelete(topic);
+            if(CollectionUtils.isNotEmpty(assessments)){
+                assessments.forEach(assessment -> {
+                    assessment.setStatus(AssessmentEnum.Status.DELETED);
+                    assessmentRepository.save(assessment);
+                });
+            }
             if(topic!=null)
             {
                 topic.setStatus(AssessmentEnum.Status.DELETED);
