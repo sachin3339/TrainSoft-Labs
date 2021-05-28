@@ -1,6 +1,5 @@
 package com.trainsoft.assessment.service.impl;
 
-import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.trainsoft.assessment.commons.CommonUtils;
 import com.trainsoft.assessment.commons.JsonUtils;
 import com.trainsoft.assessment.commons.Utility;
@@ -29,7 +28,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @AllArgsConstructor
@@ -1111,7 +1109,7 @@ public class AssessmentServiceImpl implements IAssessmentService
         if(companySid==null)
             throw new InvalidSidException("Company Sid is null !");
 
-         List<Assessment> assessmentList = assessmentRepository.getAssessmentByCategory(getCompany(companySid),
+         List<Assessment> assessmentList = assessmentRepository.findAssessmentByCompanyCategory(getCompany(companySid),
                  categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)),pageable);
         return getAssessmentToList(assessmentList);
     }
@@ -1122,7 +1120,7 @@ public class AssessmentServiceImpl implements IAssessmentService
             throw new InvalidSidException("Company Sid is null !");
         if(categorySid==null)
             throw new InvalidSidException("Category Sid is null !");
-        return assessmentRepository.getAssessmentCountByCategory(getCompany(companySid)
+        return assessmentRepository.findAssessmentCountByCompanyCategory(getCompany(companySid)
                 ,categoryRepository.findCategoryBySid(BaseEntity.hexStringToByteArray(categorySid)));
     }
 
@@ -1313,7 +1311,7 @@ public class AssessmentServiceImpl implements IAssessmentService
             assessmentList = assessmentRepository.getAssessmentsByTagORDifficulty(tagList, difficultyList,company,category,pageable);
         }
         else {
-            assessmentList = assessmentRepository.getAssessmentByCategory(company, category, pageable);
+            assessmentList = assessmentRepository.findAssessmentByCompanyCategory(company, category, pageable);
         }
 
         return getAssessmentToList(assessmentList);
@@ -1336,7 +1334,7 @@ public class AssessmentServiceImpl implements IAssessmentService
             return assessmentRepository.getAssessmentsCountByTagORDifficulty(tagList, difficultyList,company,category);
         }
         else {
-            return assessmentRepository.getAssessmentCountByCategory(company,category);
+            return assessmentRepository.findAssessmentCountByCompanyCategory(company,category);
         }
     }
 

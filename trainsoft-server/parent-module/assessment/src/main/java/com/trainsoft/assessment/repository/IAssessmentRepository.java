@@ -36,11 +36,11 @@ public interface IAssessmentRepository extends JpaRepository<Assessment,Integer>
     @Query("SELECT COUNT(assess) FROM Assessment  as assess WHERE assess.difficulty=:difficulty AND assess.status='ENABLED' AND assess.categoryId=:category AND assess.company=:company")
     Integer getAssessmentCountByDifficulty(Company company,AssessmentEnum.QuizSetDifficulty difficulty,Category category);
 
-    @Query("SELECT assess FROM Assessment  as assess WHERE assess.categoryId=:category AND assess.status='ENABLED' AND assess.company=:company")
-    List<Assessment> getAssessmentByCategory(Company company,Category category,Pageable pageable);
+    @Query("SELECT assess FROM Assessment  as assess WHERE assess.company=:company AND assess.categoryId=:category AND assess.status='ENABLED'")
+    List<Assessment> findAssessmentByCompanyCategory(Company company, Category category, Pageable pageable);
 
-    @Query("SELECT COUNT(assess) FROM Assessment  as assess WHERE assess.categoryId=:category AND assess.status='ENABLED' AND assess.company=:company")
-    Integer getAssessmentCountByCategory(Company company,Category category);
+    @Query("SELECT COUNT(assess) FROM Assessment  as assess WHERE assess.company=:company and assess.categoryId=:category AND assess.status='ENABLED'")
+    Integer findAssessmentCountByCompanyCategory(Company company, Category category);
 
     @Query("SELECT assess FROM Assessment as assess WHERE ( assess.title like :searchString OR assess.description like :searchString) AND assess.company =:company AND assess.categoryId =:category AND assess.status ='ENABLED'")
     List<Assessment> searchAssessmentByCategory(Company company,Category category, String searchString,Pageable pageable);
